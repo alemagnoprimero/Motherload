@@ -13,6 +13,8 @@ import {
   maxHull,
   cargoValue,
   upgradeCost,
+  depth,
+  type Controls,
   type Direction,
   type Ore,
   type Upgrade,
@@ -24,10 +26,10 @@ const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
 $("app").innerHTML = `
 <header><a class="wordmark" href="./"><span class="brand-icon">M</span> MOTHERLOAD<span class="edition">FIELD EDITION / 01</span></a><span class="status"><i></i> SYSTEMS ONLINE</span></header>
 <main><section class="intro"><div><div class="eyebrow">MARS OPERATIONS · SECTOR 07</div><h1>The deep frontier<span>.</span></h1><p>A little deeper. A little richer. Make it back in one piece.</p></div><div class="save-tools"><span id="save-status">LOCAL SAVE · READY</span><div><button id="save">Save</button><button id="load">Load</button><button id="pause" aria-pressed="false">Pause</button></div></div></section>
-<div class="dashboard"><section class="mission"><div class="telemetry"><div><span>DEPTH</span><strong id="depth">0 <small>m</small></strong></div><div><span>CREDITS</span><strong id="money">$60</strong></div><div><span>CARGO VALUE</span><strong id="value">$0</strong></div><div class="location"><i></i><span id="location">SURFACE BASE</span></div></div><div id="game" role="application" aria-label="Mining game. Arrow keys or WASD to drive and drill; up to fly."></div><div class="message"><span>◈</span><p id="message" role="status"></p></div><div class="controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrow keys <b>Move & drill</b></span><span><kbd>↑</kbd> Fly <span class="dot">·</span> <kbd>P</kbd> Pause</span></div><div class="touch" aria-label="Touch driving controls"><button data-dir="left" aria-label="Move left">←</button><button data-dir="up" aria-label="Fly upward">↑</button><button data-dir="down" aria-label="Drill down">↓</button><button data-dir="right" aria-label="Move right">→</button></div></section>
+<div class="dashboard"><section class="mission"><div class="telemetry"><div><span>DEPTH</span><strong id="depth">0 <small>m</small></strong></div><div><span>CREDITS</span><strong id="money">$60</strong></div><div><span>CARGO VALUE</span><strong id="value">$0</strong></div><div class="location"><i></i><span id="location">SURFACE BASE</span></div></div><div id="game" role="application" aria-label="Mining game. Arrow keys or WASD to drive and drill; up to fly."></div><div class="message"><span>◈</span><p id="message" role="status"></p></div><div class="controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrow keys <b>Move & drill</b></span><span><kbd>↑</kbd> + <kbd>←</kbd><kbd>→</kbd> Steer in flight <span class="dot">·</span> <kbd>P</kbd> Pause</span></div><div class="touch" aria-label="Touch driving controls"><button data-dir="left" aria-label="Move left">←</button><button data-dir="up" aria-label="Fly upward">↑</button><button data-dir="down" aria-label="Drill down">↓</button><button data-dir="right" aria-label="Move right">→</button></div></section>
 <aside><section class="panel rig"><div class="panel-title"><h2>YOUR RIG</h2><span id="rig-level">MK. I</span></div><div class="rig-title"><span class="rig-symbol">▰</span><div><strong>The Prospector</strong><small>LIGHT MINING VEHICLE</small></div></div><div class="meter-label"><span>Fuel</span><b id="fuel-label"></b></div><div class="meter"><i id="fuel-bar"></i></div><div class="meter-label"><span>Hull integrity</span><b id="hull-label"></b></div><div class="meter hull"><i id="hull-bar"></i></div><div class="cargo-head"><span>Cargo hold</span><b id="cargo-label"></b></div><div id="cargo-slots"></div><div id="cargo-detail">Nothing onboard. Go find something good.</div></section>
 <section class="panel station"><div class="panel-title"><h2>SURFACE SERVICES</h2><span id="dock-state" class="badge">DOCKED</span></div><p id="station-note">One more trip starts here.</p><button class="primary" id="sell">Sell minerals <span id="sell-value">$0 →</span></button><div class="service-row"><button id="refuel">Refuel <small>$1 / unit</small></button><button id="repair">Repair <small>$0.70 / unit</small></button></div><div class="upgrade-heading">MAKE YOUR NEXT RUN COUNT</div><div id="upgrades"></div></section>
-<section class="field-note"><span>FIELD NOTE / 001</span><p>Your drill cuts sideways and down. Keep a clear route back up, and watch your fuel.</p><button id="recover">Request recovery ↗</button><small>Cargo + 20% of credits · restores 50% fuel & hull</small></section></aside></div>
+<section class="field-note"><span>FIELD NOTE / 001</span><p>Hold Up + Left/Right to fly and steer together. Land on a ledge to drill sideways. Tap Up to stop a cut.</p><button id="recover">Request recovery ↗</button><small>Cargo + 20% of credits · restores 50% fuel & hull</small></section></aside></div>
 <footer><span>INDEPENDENT PROTOTYPE · ORIGINAL PLACEHOLDER ART</span><div><span id="record">BEST DEPTH 0 m</span><button id="new-game">New expedition</button></div></footer></main><dialog id="confirm"><h2 id="confirm-title"></h2><p id="confirm-copy"></p><div><button id="cancel">Cancel</button><button id="confirm-action" class="primary">Confirm</button></div></dialog>`;
 let mine = new Mine(),
   paused = false,
@@ -77,7 +79,7 @@ function save(manual = false) {
 }
 function sync() {
   const s = mine.state;
-  $("depth").innerHTML = `${Math.max(0, s.y - SURFACE) * 10} <small>m</small>`;
+  $("depth").innerHTML = `${depth(s)} <small>m</small>`;
   $("money").textContent = `$${s.money.toLocaleString()}`;
   $("value").textContent = `$${cargoValue(s)}`;
   $("location").textContent = paused
@@ -161,7 +163,7 @@ function togglePause() {
 }
 $("pause").onclick = togglePause;
 const keys = new Set<string>();
-let touch: Direction | undefined;
+const touches = new Map<number, Direction>();
 const mapped: Record<string, Direction> = {
   ArrowLeft: "left",
   a: "left",
@@ -174,16 +176,19 @@ const mapped: Record<string, Direction> = {
 };
 window.addEventListener("keydown", (e) => {
   if ($<HTMLDialogElement>("confirm").open) return;
-  if (mapped[e.key]) {
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  if (mapped[key]) {
     e.preventDefault();
-    keys.add(e.key);
+    keys.add(key);
   }
   if (e.key.toLowerCase() === "p" && !e.repeat) togglePause();
 });
-window.addEventListener("keyup", (e) => keys.delete(e.key));
+window.addEventListener("keyup", (e) =>
+  keys.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key),
+);
 function clearInput() {
   keys.clear();
-  touch = undefined;
+  touches.clear();
 }
 window.addEventListener("blur", () => {
   clearInput();
@@ -201,13 +206,13 @@ document.querySelectorAll<HTMLButtonElement>("[data-dir]").forEach((button) => {
   button.onpointerdown = (e) => {
     e.preventDefault();
     button.setPointerCapture(e.pointerId);
-    touch = button.dataset.dir as Direction;
+    touches.set(e.pointerId, button.dataset.dir as Direction);
   };
   button.onpointerup =
     button.onpointercancel =
     button.onlostpointercapture =
-      () => {
-        touch = undefined;
+      (e) => {
+        touches.delete(e.pointerId);
       };
 });
 let onConfirm = () => {},
@@ -272,15 +277,26 @@ class MineScene extends Phaser.Scene {
   update(_time: number, delta: number) {
     const dt = Math.min(delta / 1000, 0.25);
     this.elapsed += dt;
+    const controls: Controls = {};
+    for (const direction of [
+      ...Array.from(keys).map((k) => mapped[k]),
+      ...touches.values(),
+    ])
+      if (direction) controls[direction] = true;
     const direction =
-      touch ??
-      Array.from(keys)
-        .map((k) => mapped[k])
-        .filter(Boolean)
-        .at(-1);
+      mine.drillDirection ??
+      (controls.left
+        ? "left"
+        : controls.right
+          ? "right"
+          : controls.up
+            ? "up"
+            : controls.down
+              ? "down"
+              : undefined);
     if (!paused) {
       for (let remaining = dt; remaining > 0; remaining -= 0.05)
-        mine.tick(Math.min(remaining, 0.05), direction);
+        mine.tick(Math.min(remaining, 0.05), controls);
       saveTimer += dt;
       if (saveTimer > 5) {
         save();
@@ -295,16 +311,8 @@ class MineScene extends Phaser.Scene {
     const s = mine.state,
       g = this.g,
       tile = 32;
-    this.px = Phaser.Math.Linear(
-      this.px,
-      s.x * tile + 16,
-      Math.min(1, dt * 18),
-    );
-    this.py = Phaser.Math.Linear(
-      this.py,
-      s.y * tile + 16,
-      Math.min(1, dt * 18),
-    );
+    this.px = mine.renderX * tile + 16;
+    this.py = mine.renderY * tile + 16;
     this.cameraY = Phaser.Math.Linear(
       this.cameraY,
       Math.max(0, this.py - 240),
@@ -427,7 +435,7 @@ class MineScene extends Phaser.Scene {
     g.fillCircle(px, py, 65);
     g.fillStyle(0x000000, 0.4);
     g.fillEllipse(px, py + 14, 35, 9);
-    if (direction === "up" && !paused && s.fuel > 0 && s.hull > 0) {
+    if (mine.thrusting && !paused && s.fuel > 0 && s.hull > 0) {
       g.fillStyle(0xf5c667);
       g.fillTriangle(
         px - 7,
@@ -450,6 +458,12 @@ class MineScene extends Phaser.Scene {
     g.fillRoundedRect(px - 8, py - 9, 15, 10, 2);
     g.fillStyle(0xdaece2);
     g.fillRect(px - 6, py - 7, 4, 2);
+    if (!mine.grounded && !mine.docked && !mine.progress) {
+      g.lineStyle(2, 0xb6cbb9);
+      g.lineBetween(px, py - 11, px, py - 20);
+      const blade = Math.cos(this.elapsed * 55) * 19;
+      g.lineBetween(px - blade, py - 20, px + blade, py - 20);
+    }
     g.fillStyle(0xa4b4a6);
     if (direction === "left")
       g.fillTriangle(px - 14, py - 3, px - 14, py + 8, px - 25, py + 3);

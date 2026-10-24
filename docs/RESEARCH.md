@@ -80,3 +80,24 @@ The first milestone preserves the loop and input directions, not numerical or ph
 3. Compare original save/reload terrain regeneration and station interactions in Ruffle; investigate full-cargo excavation behavior.
 4. Decide whether to adopt the verified original economy and mineral roster after playtesting the shorter prototype loop.
 5. Test real Android devices: touch cancellation, browser backgrounding, GPU performance and storage policies. Browser emulation is not physical-device validation.
+
+## Hands-on follow-up: movement and side drilling
+
+The first checkpoint's Ruffle validation reached the title/menu screens; it did **not** establish hands-on gameplay parity. The follow-up entered the actual game, dismissed the opening transmission, drilled down, drilled left across supported terrain, collected Ironium in the interactive session, and used Up + Right together to fly through the excavated cavity. The repeatable capture script now enters Instructions and closes it before selecting New Game, which reliably activated this build's menu in these Ruffle sessions.
+
+The captured repeat run shows depth changing from approximately −49 ft after downward excavation to −50 ft after lateral excavation, then −37 ft after diagonal flight. The independently generated terrain differs between runs. These are observed screen states, not measurements of exact physics constants. Screenshots: `artifacts/original-mining.png`, `original-lateral.png`, and `original-diagonal.png`.
+
+The original preserves horizontal steering during upward thrust. Its side-drill entry checks ground/tread support and excludes Up; a floating rig against a wall does not automatically start drilling. A ledge can be above a deeper shaft: "grounded" does not mean "at the deepest point in the mine." Once drilling starts, the animation advances toward the chosen tile rather than changing targets on every gravity step. Static citations: `frame_1/DoAction.as:745–858`, `:2470–2646`; `DefineSprite_430/frame_10–13/DoAction.as`.
+
+Ruffle emitted repeated `non-registered character tileEmpty` console diagnostics during gameplay and two HTTP 404 console messages in the repeat capture. The game visibly remained playable, and no JavaScript page errors occurred. Emulation is therefore useful qualitative evidence, not proof of exact native Flash behavior or timing. The capture script reports console diagnostics separately and explicitly requires screenshot inspection rather than presenting title loading as a gameplay assertion.
+
+### Changes informed by the follow-up
+
+- Replaced tile-step travel with continuous, bounded acceleration, gravity, damping, and collision checks. Cargo count adds a provisional mass factor; it is not the original mineral-mass formula.
+- Up and horizontal input operate together. Touch tracks each pointer independently, so releasing one finger does not release the other direction.
+- Side drilling starts on supported terrain, including intermediate ledges. Unsupported drilling displays an explicit explanation instead of starting/resetting progress as the rig falls.
+- A started cut holds its selected tile and completes after key release. Up cancels the cut as a deliberate responsiveness aid; this cancellation is not claimed to reproduce the original animation logic.
+- Fall damage occurs on impact, not when upward thrust merely arrests a fall.
+- Saves use schema 2 with fractional positions; schema 1 saves migrate without changing terrain, inventory, money or upgrades. The storage key remains `motherload.frontier.v1` so existing installations find their save.
+
+Remaining fidelity work: tune acceleration/thrust/braking with measured play traces, mineral-weight differences, original drill/depth timing, generated cave geometry, and physical Android testing. The earlier provisional grid-motion description above records the first checkpoint; this section supersedes it for movement and position saving.

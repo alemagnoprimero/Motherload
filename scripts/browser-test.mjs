@@ -96,6 +96,62 @@ try {
   await page.locator("#confirm-action").click();
   assert.equal(await page.locator("#money").innerText(), "$60");
   checks++;
+  // Check combined keyboard input through the actual UI, without a test-only game API.
+  await page.keyboard.down("ArrowUp");
+  await page.keyboard.down("ArrowRight");
+  await page.waitForTimeout(350);
+  await page.keyboard.up("ArrowRight");
+  await page.keyboard.up("ArrowUp");
+  await page.locator("#pause").click();
+  await page.locator("#save").click();
+  const flown = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.ok(
+    flown.x > 12.2 && flown.y < 3,
+    "keyboard thrust and steering must work together",
+  );
+  assert.equal(flown.version, 2);
+  checks++;
+  // Load a legitimate save with a ledge at 40 m beside a shaft continuing to 170 m.
+  // Drive the scenario with ordinary keyboard input and inspect the normal Save output.
+  const ledge = structuredClone(flown);
+  ledge.x = 13;
+  ledge.y = 7.15;
+  ledge.deepest = 40;
+  ledge.fuel = 100;
+  ledge.hull = 100;
+  for (let y = 4; y <= 20; y++)
+    for (let x = 10; x <= 13; x++) ledge.tiles[y * 24 + x] = 0;
+  ledge.tiles[8 * 24 + 13] = 1;
+  ledge.tiles[7 * 24 + 14] = 1;
+  await page.goto(base + "/reference/");
+  await page.evaluate(
+    (state) =>
+      localStorage.setItem("motherload.frontier.v1", JSON.stringify(state)),
+    ledge,
+  );
+  await page.goto(base);
+  await page.locator("canvas").waitFor();
+  await page.keyboard.down("ArrowRight");
+  await page.waitForTimeout(950);
+  await page.keyboard.up("ArrowRight");
+  await page.locator("#pause").click();
+  await page.locator("#save").click();
+  const cut = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.equal(
+    cut.tiles[7 * 24 + 14],
+    0,
+    "keyboard drilling must cut from an intermediate ledge",
+  );
+  assert.ok(
+    cut.x >= 14 && cut.y < 8,
+    "the rig must stay on the ledge instead of dropping to the shaft bottom",
+  );
+  await page.screenshot({ path: "artifacts/ledge-drill.png", fullPage: true });
+  checks++;
   await page.goto(base + "/reference/");
   await page.waitForFunction(() =>
     document.querySelector("#status")?.textContent.includes("Ruffle ready"),
@@ -138,13 +194,60 @@ try {
     true,
   );
   checks++;
+  await phone.locator("#new-game").click();
+  await phone.locator("#confirm-action").click();
+  await down.scrollIntoViewIfNeeded();
+  const upBox = await phone.locator('[data-dir="up"]').boundingBox();
+  const rightBox = await phone.locator('[data-dir="right"]').boundingBox();
+  const upPoint = {
+    id: 1,
+    x: upBox.x + upBox.width / 2,
+    y: upBox.y + upBox.height / 2,
+  };
+  const rightPoint = {
+    id: 2,
+    x: rightBox.x + rightBox.width / 2,
+    y: rightBox.y + rightBox.height / 2,
+  };
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [upPoint, rightPoint],
+  });
+  await phone.waitForTimeout(350);
+  await phone.locator("#save").evaluate((button) => button.click());
+  const both = await phone.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.ok(
+    both.x > 12.2 && both.y < 3,
+    "two fingers must steer and thrust together",
+  );
+  // Removing the right contact must leave the up contact active.
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [upPoint],
+  });
+  await phone.waitForTimeout(700);
+  await phone.locator("#save").evaluate((button) => button.click());
+  const upOnly = await phone.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.ok(
+    upOnly.y < both.y - 1,
+    "releasing one finger must not release the other",
+  );
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  checks++;
   await phone.screenshot({
     path: "artifacts/android-layout.png",
     fullPage: true,
   });
   assert.deepEqual(errors, []);
   console.log(
-    `${checks} browser checks passed: keyboard mining, save/reload, surface services, upgrade, pause, recovery, corrupt-save protection, reset, Ruffle initialization, touch/layout. No page errors.`,
+    `${checks} browser checks passed: keyboard mining, save/reload, surface services, upgrade, pause, recovery, corrupt-save protection, reset, Ruffle initialization, touch/layout, combined keyboard input, multi-touch release, and intermediate-ledge drilling. No page errors.`,
   );
 } finally {
   await browser.close();

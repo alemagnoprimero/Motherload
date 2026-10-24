@@ -18,14 +18,14 @@ Production: `npm run build`, then `npm run preview -- --port 4173`. The static `
 ## First expedition
 
 1. Hold **Down / S** to mine the four iron deposits directly below the starting rig. They fill four cargo slots and are worth $100.
-2. Hold **Up / W** to fly back through your shaft to depth 0 m. The rig stays docked when you release thrust.
+2. Hold **Up / W** to fly back through your shaft to depth 0 m. Hold **Up + Left/Right** together to steer in flight. The rig stays docked when you release thrust.
 3. Click **Sell minerals**, **Refuel**, and **Repair**. Purchase the **Drill assembly** for $100; it reduces excavation time immediately.
-4. Explore sideways with **Left/Right or A/D**, then drill deeper for more valuable minerals. The drill cannot cut upward. Magma and long falls damage the hull.
+4. Explore sideways with **Left/Right or A/D**, then drill deeper for more valuable minerals. The drill cannot cut upward. Side drilling requires support beneath the rig; land on a ledge at any depth before cutting into a wall. A cut finishes after you release its direction; tap **Up** to cancel it. Magma and hard landings damage the hull.
 5. **Save** and reload the page. Terrain, inventory, credits, fuel, hull, upgrades and position are restored. **Load** restores the most recent snapshot. Autosave runs every five active seconds, after services, and on page exit/backgrounding.
 
-**P / Pause** suspends the simulation; losing focus also pauses it. Phones show four press-and-hold direction buttons. Recovery returns you to the surface with half fuel/hull, but forfeits cargo and 20% of credits. It works even if you have no credits. Recovery and New expedition require an in-game confirmation.
+**P / Pause** suspends the simulation; losing focus also pauses it. Phones show four press-and-hold direction buttons; two fingers can hold Up and a horizontal direction together. Recovery returns you to the surface with half fuel/hull, but forfeits cargo and 20% of credits. It works even if you have no credits. Recovery and New expedition require an in-game confirmation.
 
-Saves use localStorage key `motherload.frontier.v1`; they belong to the current browser and origin. Private browsing, cleared site data, a different port, or a different device may not retain the same save. Invalid/unsupported saves are left intact and autosave is suspended until a new expedition is explicitly started. No backend or account is required.
+Older prototype saves migrate automatically to schema 2 with fractional vehicle positions. Keep the same browser, host and port when updating to retain your existing save. Saves use localStorage key `motherload.frontier.v1`; they belong to the current browser and origin. Private browsing, cleared site data, a different port, or a different device may not retain the same save. Invalid/unsupported saves are left intact and autosave is suspended until a new expedition is explicitly started. No backend or account is required.
 
 ## Validate
 
