@@ -149,7 +149,7 @@ h1 span {
 }
 .dashboard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 285px;
+  grid-template-columns: 1fr;
   gap: 22px;
   align-items: start;
 }
@@ -249,96 +249,11 @@ kbd {
   margin: 0 6px;
   color: #69795d;
 }
-.panel {
-  border: 1px solid #344233;
-  border-radius: 7px;
-  padding: 18px;
-  background: #1b2720;
-  margin-bottom: 15px;
-}
-.panel-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 h2 {
   font: 10px monospace;
   letter-spacing: 1.3px;
   margin: 0;
   font-weight: 600;
-}
-.panel-title > span {
-  font: 9px monospace;
-  color: #98a98a;
-}
-.rig-title {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  margin: 23px 0;
-}
-.rig-symbol {
-  font-size: 34px;
-  color: #e6b96a;
-  line-height: 1;
-}
-.rig-title strong {
-  font-size: 15px;
-  font-weight: 500;
-}
-.rig-title small {
-  display: block;
-  font: 8px monospace;
-  letter-spacing: 1px;
-  color: #8a9a81;
-  margin-top: 5px;
-}
-.meter-label,
-.cargo-head {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  margin-bottom: 8px;
-  color: #b7c2a7;
-}
-.meter-label b,
-.cargo-head b {
-  font: 10px monospace;
-  color: #c7cdb6;
-}
-.meter {
-  height: 5px;
-  border-radius: 3px;
-  background: #39432e;
-  margin-bottom: 17px;
-  overflow: hidden;
-}
-.meter i {
-  display: block;
-  height: 100%;
-  background: #e1b768;
-  transition: width 0.1s;
-}
-.meter.hull i {
-  background: #b6c590;
-}
-.meter i.low {
-  background: #e77e58;
-}
-.cargo-head {
-  margin-top: 21px;
-}
-#cargo-slots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-#cargo-slots i {
-  width: 23px;
-  height: 17px;
-  border: 1px solid #4b553c;
-  border-radius: 2px;
-  background: #263021;
 }
 #cargo-detail {
   color: #97a186;
@@ -347,21 +262,6 @@ h2 {
   margin-top: 9px;
   min-height: 15px;
 }
-.badge {
-  background: #36442b;
-  color: #c8d7a8 !important;
-  padding: 4px 6px;
-  border-radius: 3px;
-}
-.badge.away {
-  color: #b4a592 !important;
-  background: #38342a;
-}
-.station p {
-  font-size: 11px;
-  color: #9ba88b;
-  margin: 13px 0 15px;
-}
 .primary {
   background: #d6bc7d;
   color: #1d271e;
@@ -369,103 +269,6 @@ h2 {
 }
 .primary:hover:enabled {
   background: #e9cf92;
-}
-.station > .primary {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  padding: 12px;
-}
-.service-row {
-  display: flex;
-  gap: 7px;
-  margin-top: 8px;
-}
-.service-row button {
-  flex: 1;
-  text-align: left;
-  padding: 10px 12px;
-}
-.service-row small {
-  display: block;
-  font-size: 9px;
-  font-weight: 400;
-  color: #9da98d;
-  margin-top: 3px;
-}
-.upgrade-heading {
-  font: 8px monospace;
-  letter-spacing: 1px;
-  color: #94a180;
-  border-top: 1px solid #36422d;
-  padding-top: 18px;
-  margin-top: 18px;
-  margin-bottom: 10px;
-}
-.upgrade {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  text-align: left;
-  border: 0;
-  border-bottom: 1px solid #33412c;
-  background: transparent;
-  border-radius: 0;
-  padding: 10px 0;
-  gap: 9px;
-}
-.upgrade:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-.upgrade-icon {
-  font-size: 24px;
-  color: #d1bc80;
-  width: 24px;
-}
-.upgrade b {
-  font-size: 11px;
-  font-weight: 500;
-}
-.upgrade small {
-  display: block;
-  font-size: 9px;
-  color: #93a080;
-  margin-top: 3px;
-  font-weight: 400;
-}
-.upgrade strong {
-  margin-left: auto;
-  font: 11px monospace;
-  color: #d7bf88;
-}
-.field-note {
-  padding: 6px 8px;
-}
-.field-note > span {
-  font: 9px monospace;
-  letter-spacing: 1px;
-  color: #b1ba94;
-}
-.field-note p {
-  font-size: 11px;
-  line-height: 1.7;
-  color: #9ba68c;
-  margin: 9px 0 12px;
-}
-.field-note button {
-  font-size: 10px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #d0ba87;
-}
-.field-note small {
-  display: block;
-  font-size: 8px;
-  color: #879479;
-  margin-top: 5px;
 }
 footer {
   display: flex;
@@ -552,7 +355,7 @@ dialog > div {
     padding: 25px 4%;
   }
   .dashboard {
-    grid-template-columns: minmax(0, 1fr) 250px;
+    grid-template-columns: 1fr;
     gap: 14px;
   }
   h1 {
@@ -567,9 +370,6 @@ dialog > div {
   }
   .controls {
     flex-wrap: wrap;
-  }
-  .panel {
-    padding: 14px;
   }
   .status {
     font-size: 9px;
@@ -640,17 +440,6 @@ dialog > div {
     font-size: 9px;
     padding: 12px;
   }
-  aside {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  .panel {
-    padding: 19px;
-  }
-  .field-note {
-    padding: 10px;
-  }
   footer {
     font-size: 7px;
     line-height: 1.6;
@@ -659,9 +448,6 @@ dialog > div {
   footer > div {
     flex-wrap: wrap;
     gap: 8px;
-  }
-  #cargo-slots i {
-    width: 26px;
   }
   .message {
     padding: 9px 14px;
@@ -756,8 +542,7 @@ dialog > div {
 #hud-cargo-bar {
   background: #76b7b0;
 }
-.flight-hud b.low,
-.meter i.low {
+.flight-hud b.low {
   background: #f58b68 !important;
 }
 #cargo-mass {
@@ -766,10 +551,6 @@ dialog > div {
   color: #829b88;
   font: 8px monospace;
   letter-spacing: 0.4px;
-}
-#cargo-slots i {
-  width: 17px;
-  height: 13px;
 }
 .storage-notice {
   display: flex;
@@ -791,26 +572,6 @@ dialog > div {
   flex: 0 0 auto;
   padding: 7px 9px;
   font-size: 10px;
-}
-.station-close {
-  display: none;
-}
-.station-feedback {
-  font-size: 11px;
-  color: #d5c18e;
-  line-height: 1.5;
-  min-height: 0;
-}
-#station-backdrop {
-  position: fixed;
-  z-index: 40;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-  background: #06100cbb;
 }
 .touch button {
   position: relative;
@@ -980,9 +741,6 @@ body:is(.compact-layout, .focus-mode) #game {
   height: 100%;
   width: 100%;
 }
-body:is(.compact-layout, .focus-mode) #station-panel {
-  display: none;
-}
 body:is(.compact-layout, .focus-mode) .telemetry {
   padding: 8px 12px;
   gap: 12px;
@@ -1030,7 +788,7 @@ body:is(.compact-layout, .focus-mode) .flight-hud i {
 }
 body:is(.compact-layout, .focus-mode) .game-actions {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 4px;
   padding: 5px 6px;
 }
@@ -1087,50 +845,6 @@ body:is(.compact-layout, .focus-mode) .storage-notice button {
   padding: 5px 8px;
 }
 
-body.station-open #station-panel {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  z-index: 50;
-  top: max(12px, env(safe-area-inset-top));
-  right: max(12px, env(safe-area-inset-right));
-  bottom: max(12px, env(safe-area-inset-bottom));
-  width: min(360px, calc(100vw - 24px));
-  padding: 15px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  background: #14241c;
-  border: 1px solid #697b56;
-  border-radius: 9px;
-  box-shadow: 0 15px 70px #0008;
-}
-body.station-open .station-close {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 14px;
-  order: -1;
-  font: 10px monospace;
-  color: #c4cda9;
-}
-.station-close button {
-  font-size: 10px;
-  padding: 9px;
-}
-body.station-open .station {
-  order: 0;
-}
-body.station-open .rig {
-  order: 1;
-}
-body.station-open .field-note {
-  order: 2;
-}
-body.station-open .panel {
-  flex: 0 0 auto;
-}
-
 @media (orientation: landscape) and (max-height: 500px) {
   body:is(.compact-layout, .focus-mode) main {
     padding: 4px max(6px, env(safe-area-inset-right)) 4px
@@ -1178,8 +892,61 @@ body.station-open .panel {
 }
 @media (prefers-reduced-motion: reduce) {
   button,
-  .meter i,
   .flight-hud b {
     transition: none;
   }
+}
+
+.equipment-summary {
+  margin: 18px 0;
+  padding: 14px;
+  background: #17271f;
+  border: 1px solid #40533f;
+  border-radius: 6px;
+}
+.equipment-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font: 10px monospace;
+  color: #d6c18e;
+}
+.equipment-summary dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px;
+  margin: 12px 0;
+  font-size: 12px;
+  color: #b4c9b2;
+}
+.equipment-summary dd {
+  margin: 0;
+  text-align: right;
+  font-family: monospace;
+}
+.equipment-summary p {
+  margin: 10px 0;
+  font-size: 11px;
+}
+.recovery-tools {
+  display: block;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #40513e;
+}
+.recovery-tools button {
+  width: 100%;
+  min-height: 42px;
+}
+#game:focus {
+  outline: none;
+}
+#game:focus-visible {
+  outline: 2px solid #eec477;
+  outline-offset: -2px;
+}
+
+/* While visiting a building, the canvas menu replaces movement controls. */
+body[data-station]:is(.compact-layout, .focus-mode) .touch {
+  display: none;
 }

@@ -23,7 +23,7 @@ try {
   await runMobileSmoke(browser, base, "artifacts/production-mobile");
   assert.deepEqual(errors, []);
   console.log(
-    `Production smoke passed at ${base}: mining and surface sale, import, fuel/repair, drill/engine upgrades and reload, portrait/landscape HUD and touch; no page errors.`,
+    `Production smoke passed at ${base}: mining and physical travel to exchange, canvas sale/services/upgrades, save import/reload, portrait/small-landscape native touch station menus and HUD; no page errors.`,
   );
 } finally {
   await browser.close();

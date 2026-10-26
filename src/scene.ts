@@ -7,15 +7,28 @@ import {
   ORES,
   isOre,
   maxHull,
+  STATIONS,
+  nearbyStation,
   type Controls,
+  type StationId,
+  type ServiceAction,
 } from "./model";
 import { ART_TEXTURE, createArt } from "./art";
+import { StationUi, type StationCommand } from "./station-ui";
+import { insideRect, nearbyPromptRect } from "./station-layout";
+export type { StationCommand } from "./station-ui";
 
 export interface SceneBindings {
   getMine: () => Mine;
   isPaused: () => boolean;
   getControls: () => Controls;
   onUpdate: (dt: number) => void;
+  getStation: () => StationId | undefined;
+  onOpenStation: (station: StationId) => void;
+  onCloseStation: () => void;
+  onService: (action: ServiceAction) => void;
+  isBusy: () => boolean;
+  getStationCommand: () => StationCommand | undefined;
   onEvent?: (kind: "pickup" | "damage" | "drill" | "thrust" | "idle") => void;
 }
 interface Chip {
@@ -51,6 +64,7 @@ export function createMineScene(bindings: SceneBindings) {
     private previousMine: Mine | undefined;
     private previousSize = "";
     private inspect: { x: number; y: number; life: number } | undefined;
+    private stationUi!: StationUi;
 
     create() {
       createArt(this);
@@ -58,6 +72,7 @@ export function createMineScene(bindings: SceneBindings) {
       this.marks = this.add.graphics().setDepth(2);
       this.rig = this.add.image(0, 0, ART_TEXTURE, "rig-idle-0").setDepth(4);
       this.effects = this.add.graphics().setDepth(5);
+      this.stationUi = new StationUi(this, bindings);
       for (let i = 0; i < 20; i++)
         this.labels.push(
           this.add
@@ -71,7 +86,32 @@ export function createMineScene(bindings: SceneBindings) {
             .setDepth(6),
         );
       this.input.on("pointerup", (pointer: Phaser.Input.Pointer) => {
+        if (bindings.getStation()) {
+          this.stationUi.pointerUp(pointer, bindings.isBusy());
+          return;
+        }
+        if (bindings.isBusy() || bindings.isPaused()) return;
         const tile = this.scale.height < 260 ? 24 : 32;
+        const nearby = nearbyStation(bindings.getMine().state);
+        if (nearby) {
+          const building = {
+            x: nearby.left * tile - this.cameraX,
+            y: (SURFACE + 1) * tile - this.cameraY - 1.5 * tile,
+            width: nearby.width * tile,
+            height: 1.5 * tile,
+          };
+          const prompt = nearbyPromptRect(this.scale.width, this.scale.height);
+          if (
+            (insideRect(pointer, building) &&
+              insideRect({ x: pointer.downX, y: pointer.downY }, building)) ||
+            (insideRect(pointer, prompt) &&
+              insideRect({ x: pointer.downX, y: pointer.downY }, prompt))
+          ) {
+            this.inspect = undefined;
+            bindings.onOpenStation(nearby.id);
+            return;
+          }
+        }
         this.inspect = {
           x: Math.floor((pointer.x + this.cameraX) / tile),
           y: Math.floor((pointer.y + this.cameraY) / tile),
@@ -106,6 +146,12 @@ export function createMineScene(bindings: SceneBindings) {
     update(_time: number, delta: number) {
       const dt = Math.min(Math.max(delta / 1000, 0), 0.25);
       const mine = bindings.getMine();
+      this.stationUi.command(
+        bindings.getStation(),
+        mine,
+        bindings.isBusy(),
+        bindings.getStationCommand(),
+      );
       const paused = bindings.isPaused();
       const input = bindings.getControls();
       const changedMine = this.previousMine !== mine;
@@ -266,13 +312,16 @@ export function createMineScene(bindings: SceneBindings) {
             surfaceY,
           );
         }
-        for (const [x, title, icon, color] of [
-          [1, "EXCHANGE", "◆", 0xc6d4b0],
-          [6, "FUEL", "F", 0xe8b568],
-          [15, "REPAIR", "+", 0x85c9bf],
-          [20, "UPGRADES", "↑", 0xc1b2df],
-        ] as const) {
-          const sx = x * tile - cx,
+        const nearby = nearbyStation(s);
+        const signs = {
+          exchange: ["EXCHANGE", "◆", 0xc6d4b0],
+          fuel: ["FUEL", "F", 0xe8b568],
+          repair: ["REPAIR", "+", 0x85c9bf],
+          upgrades: ["UPGRADES", "↑", 0xc1b2df],
+        } as const;
+        for (const station of STATIONS) {
+          const [title, icon, color] = signs[station.id];
+          const sx = station.left * tile - cx,
             sy = surfaceY - 1.5 * tile;
           bg.fillStyle(0x142d30);
           bg.fillRoundedRect(sx, sy, 3 * tile, 1.5 * tile, 3);
@@ -285,6 +334,18 @@ export function createMineScene(bindings: SceneBindings) {
           bg.fillRect(sx + 8, sy + 14, tile - 8, 3);
           bg.fillStyle(0x193032);
           bg.fillRect(sx + 1.2 * tile, sy + 16, 0.7 * tile, 1.1 * tile);
+          if (nearby?.id === station.id) {
+            g.lineStyle(2, color, 0.9);
+            g.strokeRoundedRect(
+              sx - 2,
+              sy - 2,
+              station.width * tile + 4,
+              1.5 * tile + 4,
+              4,
+            );
+            g.fillStyle(color, 0.18);
+            g.fillRect(sx, surfaceY - 5, station.width * tile, 5);
+          }
           if (sx > -3 * tile && sx < width) {
             text(sx + 1.5 * tile, sy - 17, title, "#d8dcbf", true);
             text(
@@ -464,7 +525,28 @@ export function createMineScene(bindings: SceneBindings) {
                 ? "TREADS DOWN"
                 : "AIRBORNE";
       text(8, 8, status, target ? "#ffdb96" : "#bad4c6");
-      if (this.inspect && !paused) {
+      const nearby = nearbyStation(s);
+      const station = bindings.getStation();
+      if (nearby && !paused && !station) {
+        const prompt = nearbyPromptRect(width, height);
+        fx.fillStyle(0x203f3e, 0.96);
+        fx.fillRoundedRect(prompt.x, prompt.y, prompt.width, prompt.height, 6);
+        fx.lineStyle(1, 0xd8bb78);
+        fx.strokeRoundedRect(
+          prompt.x,
+          prompt.y,
+          prompt.width,
+          prompt.height,
+          6,
+        );
+        text(
+          width / 2,
+          prompt.y + 12,
+          `E / Enter or tap · ${nearby.name}`,
+          "#ffe1a1",
+          true,
+        );
+      } else if (this.inspect && !paused && !station) {
         const type = mine.tile(this.inspect.x, this.inspect.y);
         if (isOre(type))
           text(
@@ -487,7 +569,7 @@ export function createMineScene(bindings: SceneBindings) {
         fx.lineStyle(4, 0xff9475, this.flash * 2);
         fx.strokeRect(2, 2, width - 4, height - 4);
       }
-      if (paused || s.fuel <= 0 || s.hull <= 0) {
+      if (!station && (paused || s.fuel <= 0 || s.hull <= 0)) {
         fx.fillStyle(0x071b20, 0.65);
         fx.fillRect(0, 0, width, height);
         text(
@@ -498,6 +580,7 @@ export function createMineScene(bindings: SceneBindings) {
           true,
         );
       }
+      this.stationUi.render(station, mine, bindings.isBusy());
     }
   };
 }

@@ -19,6 +19,8 @@ import {
   snapshot,
   runCoreSmoke,
   runMobileSmoke,
+  stationOpen,
+  stationClose,
 } from "./browser-helpers.mjs";
 const BACKUP_KEY = SAVE_KEY + ".backup";
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:5173/";
@@ -58,40 +60,9 @@ try {
     page = watch(await context.newPage());
   await runCoreSmoke(page, base);
   check(
-    "keyboard expedition, sale, services, drill/engine upgrades and reload",
+    "mining, physical travel to exchange, canvas station services/upgrades and reload",
   );
   await page.screenshot({ path: "artifacts/desktop.png", fullPage: true });
-
-  // A slow storage lock must not permit another purchase after the first
-  // snapshot has already been taken, leaving paid equipment unsaved.
-  await importState(page, fixture({ money: 10000 }));
-  await pause(page);
-  await page.evaluate(() => {
-    window.lockHeld = false;
-    navigator.locks.request(
-      "motherload.frontier.v1.write",
-      () =>
-        new Promise((resolve) => {
-          window.releaseTestLock = resolve;
-          window.lockHeld = true;
-        }),
-    );
-  });
-  await page.waitForFunction(() => window.lockHeld);
-  await page.evaluate(() => {
-    const button = document.querySelector("#upgrade-drill");
-    button.click();
-    button.click();
-  });
-  assert.equal(await page.locator("#upgrade-drill").isDisabled(), true);
-  await page.evaluate(() => window.releaseTestLock());
-  await settled(page);
-  const purchase = await savedState(page);
-  assert.equal(purchase.upgrades.drill, 1);
-  assert.equal(purchase.money, 9250);
-  check(
-    "pending save blocks repeated purchases and persists exactly one upgrade",
-  );
 
   const exportBaseline = await snapshot(page);
   await openTools(page);
@@ -174,7 +145,7 @@ try {
     "second-tab changes pause stale play and prevent overwriting newer progress",
   );
 
-  const recovered = fixture({ money: 2468, inventory: [3, 9] });
+  const recovered = fixture({ x: 7, money: 2468, fuel: 4, inventory: [3, 9] });
   const corrupt = await bootWith({
     [SAVE_KEY]: "damaged-primary",
     [BACKUP_KEY]: JSON.stringify(recovered),
@@ -184,14 +155,34 @@ try {
     await corrupt.page.evaluate((key) => localStorage.getItem(key), SAVE_KEY),
     "damaged-primary",
   );
+  await stationOpen(corrupt.page, "fuel");
+  await corrupt.page.keyboard.press("Enter");
+  await corrupt.page.waitForFunction(() =>
+    document.querySelector("#hud-fuel").textContent.startsWith("10 / 10"),
+  );
+  await stationClose(corrupt.page);
   await openTools(corrupt.page);
+  const [readOnlyExport] = await Promise.all([
+    corrupt.page.waitForEvent("download"),
+    corrupt.page.locator("#export-save").click(),
+  ]);
+  const inMemory = JSON.parse(
+    await readFile(await readOnlyExport.path(), "utf8"),
+  );
+  assert.equal(inMemory.fuel, 10);
+  assert.equal(inMemory.money, 2462);
+  assert.equal(
+    await corrupt.page.evaluate((key) => localStorage.getItem(key), SAVE_KEY),
+    "damaged-primary",
+    "in-memory services must not overwrite protected storage",
+  );
   await corrupt.page.locator("#restore-backup").click();
   await corrupt.page.locator("#confirm-action").click();
   await settled(corrupt.page);
   assert.deepEqual(await readState(corrupt.page), recovered);
   await corrupt.context.close();
   check(
-    "corrupt primary stays intact until confirmed recovery from valid backup",
+    "protected storage permits in-memory station trade/export and explicit backup recovery",
   );
 
   const legacy = legacyFixture(),
@@ -273,13 +264,47 @@ try {
       ) === 1,
   );
   await page.waitForFunction(
-    () => document.querySelector("#dock-state").textContent === "DOCKED",
+    () => parseInt(document.querySelector("#depth").textContent, 10) === 0,
   );
   await page.keyboard.up("ArrowUp");
   const finished = await snapshot(page);
   assert.equal(finished.mined, 1);
   assert.equal(finished.tiles[4 * WIDTH + 12], 0);
   check("Up completes exactly one active cut before ascent");
+
+  await importState(page, fixture({ x: 21, money: 10000 }));
+  await stationOpen(page, "upgrades");
+  await page.evaluate((lockName) => {
+    window.qaLockHeld = false;
+    void navigator.locks.request(lockName, async () => {
+      window.qaLockHeld = true;
+      await new Promise((resolve) => {
+        window.qaReleaseLock = resolve;
+      });
+    });
+  }, SAVE_KEY + ".write");
+  await page.waitForFunction(() => window.qaLockHeld);
+  try {
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => document.body.dataset.saving === "true");
+    for (let repeat = 0; repeat < 3; repeat++)
+      await page.keyboard.press("Enter");
+    await page.waitForTimeout(150);
+  } finally {
+    await page.evaluate(() => window.qaReleaseLock());
+  }
+  await settled(page);
+  const once = await readState(page);
+  assert.equal(
+    once.upgrades.drill,
+    1,
+    "repeated confirmation while saving must not queue another purchase",
+  );
+  assert.equal(once.money, 9250);
+  await stationClose(page);
+  check(
+    "canvas purchases ignore repeated confirmation while persistence is busy",
+  );
 
   await page.locator("#sound-toggle").click();
   assert.equal(
@@ -371,7 +396,7 @@ try {
     { type: "pointercancel", direction: "up" },
   ]);
   check(
-    "portrait/landscape HUD and controls fit; two-finger release/cancel is independent",
+    "portrait/landscape canvas shops and HUD fit; native touch trade/navigation and finger release work",
   );
 
   await importState(phone, flight);

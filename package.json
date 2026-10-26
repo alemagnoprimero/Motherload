@@ -14,7 +14,7 @@
     "test:production": "node scripts/production-smoke.mjs"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22.18"
   },
   "dependencies": {
     "phaser": "3.90.0"

@@ -13,14 +13,16 @@ Existing expeditions retain their excavated maps. To explore the new cave genera
 1. Hold **Down / S** to drill the starter vein below the rig. The stock bay holds seven minerals. The neighboring vein to the right provides a second early expedition.
 2. Hold **Up / W** to return through your shaft. Combine Up with **Left/Right or A/D** to steer. Counter-steer to brake momentum. Side drilling requires a ledge under the rig, at any depth; you cannot drill upward.
 3. A started cut completes even after releasing its direction. Hold Up during the cut to lift off immediately afterward.
-4. At depth 0, open **Base** on a phone or use the desktop service panel: sell the haul, refuel, repair if damaged, and select an upgrade. Two starter expeditions normally fund the first $750 upgrade. Upgrade cards show the actual capacity or performance change.
+4. Return to the surface and drive to a building's illuminated bay. Press **E / Enter**, or tap the nearby building or its on-screen prompt, to open its interface **inside the game**. The **Exchange** buys your haul, **Fuel** refills your tank, **Repair** restores hull, and **Upgrades** sells equipment. You must visit the correct building. Two starter expeditions normally fund the first $750 upgrade.
 5. Explore caves and deeper deposits. Mineral weight affects handling; engines improve thrust and acceleration. Hard landings and magma damage the hull. Ordinary drilling does not.
 
 Phones have separate left/right and down/up controls; hold two with different fingers to steer in flight. Fuel, hull and cargo stay beside the playfield in portrait and landscape. **Expand** fills the available screen; native fullscreen is used when supported. Tap or click a mineral to identify it.
 
-**P / Pause** suspends the expedition. Opening Base or Tools also pauses play, and leaving the browser clears held controls. Enable **♪ On** for sound; adjust volume in Tools. Sound starts muted on each visit.
+Inside a building, use **arrows / Tab** to select equipment and **Enter** to buy, or tap the canvas controls. Upgrade cards show the actual capacity or performance change. **Escape** or the in-game close button returns to the mine. The rig stays parked while you use a building.
 
-Recovery returns the rig to the surface with half its fuel and hull, at the cost of cargo and 20% of credits. It remains available without money and requires confirmation.
+**P / Pause** suspends the expedition. Building interfaces and Tools also pause play, and leaving the browser clears held controls. Enable **♪ On** for sound; adjust volume in Tools. Sound starts muted on each visit.
+
+**Tools → Request recovery** returns the rig to the surface with half its fuel and hull, at the cost of cargo and 20% of credits. It remains available without money and requires confirmation.
 
 ### Saves and transfer between devices
 
@@ -36,7 +38,7 @@ Saves belong to the current browser and address. Export/import transfers them ma
 
 ## Run locally
 
-Requires Node.js 22+ and npm. Run these commands **from the project folder containing `package.json`**, not from `C:\Windows\System32`:
+Requires Node.js 22.18+ and npm; Node 24 LTS is recommended. Run these commands **from the project folder containing `package.json`**, not from `C:\Windows\System32`:
 
 ```sh
 npm ci
@@ -93,8 +95,8 @@ The reference is identified as version `0.934 (MC)`; it has not been proven byte
 
 - `src/model.ts`: world generation, simulation, economy, upgrades and save validation/migration.
 - `src/storage.ts`: validated persistence, backups, import/export and conflict protection.
-- `src/main.ts`, `src/style.css`: controls, responsive interface and service/save dialogs.
-- `src/scene.ts`, `src/art.ts`, `src/audio.ts`: camera, original artwork, animation, feedback and synthesized sound.
+- `src/main.ts`, `src/style.css`: controls, responsive HUD and save tools.
+- `src/scene.ts`, `src/station-ui.ts`, `src/art.ts`, `src/audio.ts`: camera, in-game building interfaces, original artwork, animation, feedback and synthesized sound.
 - `tests/`: simulation and storage regressions.
 - `scripts/`: browser validation, production smoke checks and reference research.
 

@@ -111,3 +111,9 @@ See [movement measurements](MOVEMENT_REFERENCE.md) for timed Ruffle observations
 The remake now adopts the ten-mineral roster, mineral weights, starting resources, original drill/engine/tank/cargo/hull tables, fuel price and repair price documented above. Engine upgrades affect the simulation, and ordinary soil cuts no longer damage hull. The world now has seeded cave pockets and depth-sensitive deposits.
 
 Generation uses a bounded 24 × 100 world, assisted starter veins, compressed depth bands and a guarantee that every mineral survives cave carving; those are deliberate remake choices, not a copy of the original random generator. Fuel uses nominal 42 fps conversion of the inspected per-frame quantities, with elapsed-time parity still unmeasured. Full terrain saves remain an explicit user requirement. See [PROJECT.md](PROJECT.md) for the complete current behavior, migration policy, validation and remaining deviations.
+
+## Physical surface buildings — 2026-10-26
+
+The inspected `vehicle.prototype.tileEvents` routine in `frame_1/DoAction.as:2760–2800` automatically changes to fuel, selling, upgrade and repair frames when the rig is in ground mode at the corresponding surface tile, after a short building timer. Entering a shop also stops horizontal motion. Earlier exploratory Ruffle play entered those shops, but did not establish complete timing parity for every transaction.
+
+The remake now requires visiting the matching physical building and renders each service interface inside Phaser. The external Base/sidebar shop has been removed. Explicit E / Enter or touch entry, the compressed building layout, and the new interface artwork are remake usability choices. The model independently rejects transactions away from their required building. Existing save schema, prices and equipment effects are unchanged.

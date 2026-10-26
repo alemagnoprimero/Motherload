@@ -48,6 +48,32 @@ export const UPGRADE_KEYS = [
   "engine",
 ] as const;
 export type Upgrade = (typeof UPGRADE_KEYS)[number];
+export type ServiceAction = "sell" | "refuel" | "repair" | Upgrade;
+export const STATIONS = [
+  { id: "exchange", name: "Ore exchange", left: 1, width: 3, center: 2 },
+  { id: "fuel", name: "Fuel depot", left: 6, width: 3, center: 7 },
+  { id: "repair", name: "Repair bay", left: 15, width: 3, center: 16 },
+  { id: "upgrades", name: "Upgrade depot", left: 20, width: 3, center: 21 },
+] as const;
+export type Station = (typeof STATIONS)[number];
+export type StationId = Station["id"];
+export function stationForAction(action: ServiceAction): StationId | undefined {
+  if (action === "sell") return "exchange";
+  if (action === "refuel") return "fuel";
+  if (action === "repair") return "repair";
+  return UPGRADE_KEYS.includes(action) ? "upgrades" : undefined;
+}
+export function nearbyStation(s: Pick<State, "x" | "y">): Station | undefined {
+  const surfaceY = SURFACE + 0.15;
+  if (
+    !Number.isFinite(s.x) ||
+    !Number.isFinite(s.y) ||
+    Math.abs(s.y - surfaceY) > 0.2 ||
+    s.y > SURFACE + 0.151
+  )
+    return undefined;
+  return STATIONS.find((station) => Math.abs(s.x - station.center) <= 1);
+}
 export const UPGRADE_LEVELS = {
   drill: [2, 2.8, 4, 5, 7, 9.5, 12],
   tank: [10, 15, 25, 40, 60, 100, 150],
@@ -446,10 +472,16 @@ export class Mine {
     s.deepest = Math.max(s.deepest, depth(s));
     this.cancelDrill();
   }
-  service(action: "sell" | "refuel" | "repair" | Upgrade) {
+  service(action: ServiceAction) {
     const s = this.state;
-    if (!this.docked) {
-      this.message = "Surface services are available at depth 0 m.";
+    const requiredStation = stationForAction(action);
+    if (!requiredStation) {
+      this.message = "Unknown surface service.";
+      return false;
+    }
+    if (nearbyStation(s)?.id !== requiredStation) {
+      const station = STATIONS.find((entry) => entry.id === requiredStation)!;
+      this.message = `Park at the ${station.name.toLowerCase()} on the surface to use this service.`;
       return false;
     }
     if (action === "sell") {

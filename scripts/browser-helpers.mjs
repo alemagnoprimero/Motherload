@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright-core";
+import { writeFile } from "node:fs/promises";
+import { stationLayout, nearbyPromptRect } from "../src/station-layout.ts";
 
 export const SAVE_KEY = "motherload.frontier.v1";
 export const WIDTH = 24;
@@ -60,6 +62,8 @@ export function launchBrowser() {
   });
 }
 export async function ready(page, base) {
+  page.setDefaultTimeout(15000);
+  page.setDefaultNavigationTimeout(30000);
   const response = await page.goto(base);
   assert.equal(response.status(), 200);
   await page.locator("canvas").waitFor();
@@ -114,8 +118,170 @@ export async function snapshot(page) {
   await pause(page);
   return savedState(page);
 }
+export const STATION_CENTERS = {
+  exchange: 2,
+  fuel: 7,
+  repair: 16,
+  upgrades: 21,
+};
+export async function stationOpen(page, id) {
+  await pause(page, false);
+  await page.keyboard.press("e");
+  await page.waitForFunction((id) => document.body.dataset.station === id, id);
+}
+export async function stationClose(page) {
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.body.dataset.station);
+  await pause(page);
+}
+export function rawState(page) {
+  return page.evaluate((key) => localStorage.getItem(key), SAVE_KEY);
+}
+export async function written(page, previous) {
+  // Canvas keyboard commands are consumed on render frames; saving may not
+  // have begun when Enter returns, so waiting only for "not busy" is racy.
+  await page.waitForFunction(
+    ([key, raw]) => localStorage.getItem(key) !== raw,
+    [SAVE_KEY, previous],
+  );
+  await settled(page);
+}
+export async function stationBuy(page, id, index = 0) {
+  await stationOpen(page, id);
+  for (let step = 0; step < index; step++)
+    await page.keyboard.press("ArrowDown");
+  const previous = await rawState(page);
+  await page.keyboard.press("Enter");
+  await written(page, previous);
+  const state = await readState(page);
+  await stationClose(page);
+  return state;
+}
+export async function driveToStation(page, id) {
+  const target = STATION_CENTERS[id],
+    trace = [];
+  let held,
+    previous,
+    simulationMs = 0;
+  await pause(page, false);
+  // Explicit browser frames preserve real keyboard input while preventing
+  // protocol/rendering latency from extending a short steering pulse.
+  await page.clock.install();
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  async function sample() {
+    await page.locator("#save").evaluate((button) => button.click());
+    // Web Locks settle asynchronously without advancing the simulation.
+    // A default waitForFunction would poll RAF, which is paused here.
+    for (let attempt = 0; attempt < 250; attempt++) {
+      if (await page.evaluate(() => document.body.dataset.saving === "false"))
+        return readState(page);
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+    throw new Error("Saving did not settle during the keyboard travel check");
+  }
+  try {
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const state = await sample();
+      const velocity = previous ? (state.x - previous.x) / 0.08 : 0;
+      trace.push({
+        simulationMs,
+        x: state.x,
+        y: state.y,
+        fuel: state.fuel,
+        velocity,
+        held,
+      });
+      if (
+        Math.abs(state.x - target) <= 0.85 &&
+        Math.abs(state.y - 3.15) < 0.19
+      ) {
+        if (held) {
+          await page.keyboard.up(held);
+          held = undefined;
+        }
+        await page.keyboard.press("e");
+        if ((await page.evaluate(() => document.body.dataset.station)) === id) {
+          await writeFile(
+            `artifacts/travel-${id}.json`,
+            JSON.stringify(trace, null, 2),
+          );
+          return;
+        }
+      }
+      // Position feedback plus counter-steering brakes before crossing the bay.
+      const desired = target - state.x - velocity * 0.3;
+      const steering = desired >= 0 ? "ArrowRight" : "ArrowLeft";
+      if (held !== steering) {
+        if (held) await page.keyboard.up(held);
+        await page.keyboard.down(steering);
+        held = steering;
+      }
+      previous = state;
+      await page.clock.runFor(80);
+      simulationMs += 80;
+    }
+    throw new Error(
+      `Could not drive to ${id}; final trace: ${JSON.stringify(trace.slice(-8))}`,
+    );
+  } catch (error) {
+    await writeFile(
+      `artifacts/travel-${id}-failure.json`,
+      JSON.stringify(trace, null, 2),
+    );
+    await page
+      .screenshot({ path: "artifacts/travel-failure.png", fullPage: true })
+      .catch(() => {});
+    throw error;
+  } finally {
+    if (held) await page.keyboard.up(held);
+    await page.clock.resume();
+  }
+}
+export async function canvasTap(page, cdp, rect) {
+  const box = await page.locator("canvas").boundingBox();
+  const point = {
+    id: 7,
+    x: box.x + rect.x + rect.width / 2,
+    y: box.y + rect.y + rect.height / 2,
+  };
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [point],
+  });
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+}
+export async function canvasGeometry(page, id, selected = 0) {
+  const box = await page.locator("canvas").boundingBox();
+  return {
+    ...stationLayout(box.width, box.height, id, selected),
+    opener: nearbyPromptRect(box.width, box.height),
+  };
+}
 export async function runCoreSmoke(page, base) {
   await ready(page, base);
+  assert.equal(
+    await page
+      .locator(
+        "#station-toggle,#station-panel,#sell,#refuel,#repair,button[id^='upgrade-']",
+      )
+      .count(),
+    0,
+    "building transactions must live in the game canvas",
+  );
+  await pause(page);
+  const untouched = await savedState(page);
+  await page.keyboard.press("Enter");
+  assert.ok(
+    !(await page.evaluate(() => document.body.dataset.station)),
+    "Enter far from any building must not open a menu",
+  );
+  const afterEnter = await savedState(page);
+  assert.equal(afterEnter.money, untouched.money);
+  assert.equal(afterEnter.fuel, untouched.fuel);
+  assert.deepEqual(afterEnter.inventory, untouched.inventory);
   await pause(page, false);
   await page.keyboard.down("ArrowDown");
   await page.waitForFunction(
@@ -135,38 +301,49 @@ export async function runCoreSmoke(page, base) {
   await pause(page, false);
   await page.keyboard.down("ArrowUp");
   await page.waitForFunction(
-    () => document.querySelector("#dock-state").textContent === "DOCKED",
+    () => parseInt(document.querySelector("#depth").textContent, 10) === 0,
   );
   await page.keyboard.up("ArrowUp");
-  await pause(page);
-  await page.locator("#sell").click();
-  await settled(page);
+  // Actually travel from the mined shaft to the exchange. The normal Save
+  // output lets the driver steer; there is no direct game-state test API.
+  await driveToStation(page, "exchange");
+  const beforeSale = await readState(page);
+  assert.ok(
+    beforeSale.inventory.length >= 2,
+    "opening a station must not also buy/sell",
+  );
+  const saleBefore = await rawState(page);
+  await page.keyboard.press("Enter");
+  await written(page, saleBefore);
   const sold = await readState(page);
   assert.equal(
     sold.money,
     mined.money + mined.inventory.reduce((n, ore) => n + VALUES[ore], 0),
   );
   assert.deepEqual(sold.inventory, []);
-  // A legitimate earned-credit fixture keeps this smoke check short. Simulation
-  // tests separately prove that normal repeated expeditions fund the upgrade.
-  const service = fixture({
+  await page.screenshot({
+    path: "artifacts/exchange-keyboard.png",
+    fullPage: true,
+  });
+  await stationClose(page);
+  // Earned-credit fixtures keep each remaining station check short. Every
+  // transaction still goes through the canvas menu at the matching building.
+  let service = fixture({
+    x: 2,
     money: 2000,
     fuel: 4,
     hull: 5,
     inventory: [3, 9, 10],
   });
   await importState(page, service);
-  await pause(page);
-  await page.locator("#sell").click();
-  await settled(page);
-  await page.locator("#refuel").click();
-  await settled(page);
-  await page.locator("#repair").click();
-  await settled(page);
-  await page.locator("#upgrade-drill").click();
-  await settled(page);
-  await page.locator("#upgrade-engine").click();
-  await settled(page);
+  service = await stationBuy(page, "exchange");
+  await importState(page, { ...service, x: 7, y: 3.15 });
+  service = await stationBuy(page, "fuel");
+  await importState(page, { ...service, x: 16, y: 3.15 });
+  service = await stationBuy(page, "repair");
+  await importState(page, { ...service, x: 21, y: 3.15 });
+  await stationBuy(page, "upgrades", 0);
+  await stationBuy(page, "upgrades", 4);
   const upgraded = await savedState(page);
   assert.equal(upgraded.fuel, 10);
   assert.equal(upgraded.hull, 10);
@@ -176,10 +353,13 @@ export async function runCoreSmoke(page, base) {
   await page.reload();
   await page.locator("canvas").waitFor();
   await pause(page);
-  const restored = await readState(page);
-  assert.deepEqual(restored, upgraded);
-  assert.equal(await page.locator("#rig-level").innerText(), "DRILL LV. 2");
-  assert.equal(await page.locator("#engine-level").innerText(), "ENGINE LV. 2");
+  assert.deepEqual(await readState(page), upgraded);
+  await stationOpen(page, "upgrades");
+  await page.screenshot({
+    path: "artifacts/desktop-station.png",
+    fullPage: true,
+  });
+  await stationClose(page);
   return { mined, upgraded };
 }
 export async function assertMobileLayout(page) {
@@ -230,6 +410,100 @@ export async function assertMobileLayout(page) {
     ),
   );
 }
+export async function rendered(page) {
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+}
+export async function runMobileStationChecks(page, cdp, path) {
+  for (const [label, viewport, selected] of [
+    ["portrait", { width: 393, height: 851 }, 0],
+    ["small-landscape", { width: 568, height: 320 }, 1],
+  ]) {
+    try {
+      await page.setViewportSize(viewport);
+      await importState(page, fixture({ x: 21, money: 10000 }));
+      await pause(page, false);
+      await rendered(page);
+      await assertMobileLayout(page);
+      let layout = await canvasGeometry(page, "upgrades");
+      await canvasTap(page, cdp, layout.opener);
+      await page.waitForFunction(
+        () => document.body.dataset.station === "upgrades",
+      );
+      await rendered(page);
+      await settled(page);
+      assert.equal(
+        (await readState(page)).money,
+        10000,
+        "opening a building by touch must not also purchase",
+      );
+      assert.equal(await page.locator("#money").innerText(), "$10,000");
+      layout = await canvasGeometry(page, "upgrades");
+      if (selected) {
+        assert.ok(
+          layout.next,
+          "compact upgrade menu must provide touch navigation",
+        );
+        await canvasTap(page, cdp, layout.next);
+        await rendered(page);
+        layout = await canvasGeometry(page, "upgrades", selected);
+      }
+      const action = selected ? "tank" : "drill";
+      const button = layout.actions.find((item) => item.action === action).rect;
+      const box = await page.locator("canvas").boundingBox();
+      assert.ok(
+        button.y >= 0 &&
+          button.y + button.height <= box.height &&
+          button.height >= 40,
+        "station purchase target must fit the canvas",
+      );
+      const purchaseBefore = await rawState(page);
+      await canvasTap(page, cdp, button);
+      await written(page, purchaseBefore);
+      const bought = await readState(page);
+      assert.equal(bought.upgrades[action], 1);
+      assert.equal(bought.money, 9250);
+      await page.screenshot({
+        path: `${path}-station-${label}.png`,
+        fullPage: true,
+      });
+      layout = await canvasGeometry(page, "upgrades", selected);
+      await canvasTap(page, cdp, layout.close);
+      await page.waitForFunction(() => !document.body.dataset.station);
+      await rendered(page);
+      await pause(page);
+      await assertMobileLayout(page);
+      const closed = await savedState(page);
+      assert.equal(
+        closed.x,
+        21,
+        "menu input must not leave a movement key held",
+      );
+    } catch (error) {
+      await page
+        .screenshot({
+          path: `${path}-station-${label}-failure.png`,
+          fullPage: true,
+        })
+        .catch(() => {});
+      const diagnostic = {
+        label,
+        state: await readState(page).catch(() => undefined),
+        canvas: await page.locator("canvas").boundingBox(),
+        station: await page.evaluate(() => document.body.dataset.station),
+      };
+      await writeFile(
+        `${path}-station-${label}-failure.json`,
+        JSON.stringify(diagnostic, null, 2),
+      );
+      throw error;
+    }
+  }
+}
 export async function runMobileSmoke(browser, base, path) {
   const context = await browser.newContext({
     viewport: { width: 393, height: 851 },
@@ -276,6 +550,7 @@ export async function runMobileSmoke(browser, base, path) {
   );
   await assertMobileLayout(page);
   await page.locator("#focus").click();
+  await runMobileStationChecks(page, cdp, path);
   assert.deepEqual(errors, []);
   return { context, page, cdp };
 }

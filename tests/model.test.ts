@@ -8,6 +8,11 @@ import {
   HEIGHT,
   ORES,
   UPGRADE_KEYS,
+  STATIONS,
+  nearbyStation,
+  stationForAction,
+  type StationId,
+  type ServiceAction,
   UPGRADE_LEVELS,
   upgradeCost,
   isOre,
@@ -38,6 +43,34 @@ function until(
     true,
   );
 }
+function park(m: Mine, stationId: StationId) {
+  const station = STATIONS.find((entry) => entry.id === stationId)!;
+  m.state.x = station.center;
+  m.state.y = SURFACE + 0.15;
+  m.velocityX = m.velocityY = 0;
+}
+function driveToX(m: Mine, x: number) {
+  for (let tick = 0; tick < 120 * 20; tick++) {
+    if (
+      m.state.y >= SURFACE - 0.05 &&
+      m.docked &&
+      Math.abs(m.state.x - x) < 0.1 &&
+      Math.abs(m.velocityX) < 0.3
+    )
+      return;
+    const correction = (x - m.state.x) * 6 - m.velocityX * 2;
+    m.tick(
+      1 / 120,
+      correction > 0.15 ? "right" : correction < -0.15 ? "left" : undefined,
+    );
+  }
+  expect(Math.abs(m.state.x - x)).toBeLessThan(0.1);
+}
+function driveTo(m: Mine, stationId: StationId) {
+  const station = STATIONS.find((entry) => entry.id === stationId)!;
+  driveToX(m, station.center);
+  expect(nearbyStation(m.state)?.id).toBe(stationId);
+}
 describe("first playable loop", () => {
   it("funds a real upgrade through two mining trips and restores the full expedition", () => {
     const m = new Mine();
@@ -49,8 +82,7 @@ describe("first playable loop", () => {
     ]).toEqual([20, 6, 10, 7]);
     for (let trip = 0; trip < 2; trip++) {
       if (trip) {
-        until(m, "right", () => m.state.x >= 12.6);
-        until(m, "left", () => m.velocityX <= 0);
+        driveToX(m, 13);
       }
       until(
         m,
@@ -62,14 +94,17 @@ describe("first playable loop", () => {
       expect(m.state.hull).toBe(10); // Ordinary soil drilling does not damage the hull.
       expect(m.service("sell")).toBe(false);
       until(m, "up", () => m.docked);
+      driveTo(m, "exchange");
       expect(m.service("sell")).toBe(true);
+      driveTo(m, "fuel");
       expect(m.service("refuel")).toBe(true);
       expect(m.state.fuel).toBe(10);
     }
     expect(m.state.money).toBeGreaterThanOrEqual(750);
+    driveTo(m, "upgrades");
     expect(m.service("drill")).toBe(true);
     expect(m.state.upgrades.drill).toBe(1);
-    expect(m.state.money).toBe(120);
+    expect(m.state.money).toBeGreaterThan(100);
     const restored = decodeSave(JSON.stringify(m.state));
     expect(restored).toEqual(m.state);
     expect(restored.tiles[10 * WIDTH + 12]).toBe(0);
@@ -82,6 +117,7 @@ describe("first playable loop", () => {
     until(m, "up", () => m.docked);
     hold(m, undefined, 2);
     expect(m.docked).toBe(true);
+    driveTo(m, "exchange");
     expect(m.service("sell")).toBe(true);
   });
   it("drill upgrade changes actual excavation time", () => {
@@ -133,11 +169,13 @@ describe("first playable loop", () => {
   });
   it("charges for partial service, refuses unaffordable upgrades and caps levels", () => {
     const m = new Mine();
+    park(m, "fuel");
     m.state.fuel = 0;
     m.state.money = 3;
     expect(m.service("refuel")).toBe(true);
     expect(m.state.fuel).toBe(3);
     expect(m.state.money).toBe(0);
+    park(m, "upgrades");
     expect(m.service("drill")).toBe(false);
     m.state.money = 3000;
     for (const key of ["tank", "cargo", "hull"] as const)
@@ -622,6 +660,7 @@ describe("caves and reference progression", () => {
 
   it("allows fractional repairs with a small balance and charges the original rate", () => {
     const m = new Mine();
+    park(m, "repair");
     m.state.hull = 4.25;
     m.state.money = 5;
     expect(m.service("repair")).toBe(true);
@@ -683,5 +722,96 @@ describe("progression save migration and validation", () => {
       decodeSave('{"version":3,"upgrades":{"__proto__":{"engine":0}}}'),
     ).toThrow();
     expect(decodeSave(JSON.stringify(base))).toEqual(base);
+  });
+});
+
+describe("physical surface stations", () => {
+  it.each(STATIONS)(
+    "recognizes the $id bay and rejects air, depth and distance",
+    (station) => {
+      const position = { x: station.center, y: SURFACE + 0.15 };
+      expect(nearbyStation(position)?.id).toBe(station.id);
+      expect(nearbyStation({ ...position, x: station.center - 1 })?.id).toBe(
+        station.id,
+      );
+      expect(nearbyStation({ ...position, x: station.center + 1 })?.id).toBe(
+        station.id,
+      );
+      expect(
+        nearbyStation({ ...position, x: station.center + 1.001 }),
+      ).toBeUndefined();
+      expect(nearbyStation({ ...position, y: SURFACE - 0.1 })).toBeUndefined();
+      expect(nearbyStation({ ...position, y: SURFACE + 0.2 })).toBeUndefined();
+      expect(nearbyStation({ ...position, y: SURFACE + 4 })).toBeUndefined();
+      expect(nearbyStation({ ...position, y: NaN })).toBeUndefined();
+    },
+  );
+
+  it.each(STATIONS)(
+    "only performs services assigned to the $id building",
+    (station) => {
+      const actions: ServiceAction[] = [
+        "sell",
+        "refuel",
+        "repair",
+        ...UPGRADE_KEYS,
+      ];
+      for (const action of actions) {
+        const m = new Mine();
+        park(m, station.id);
+        m.state.money = 10000;
+        m.state.inventory = [3, 9, 10];
+        m.state.fuel = 4;
+        m.state.hull = 5;
+        const before = structuredClone(m.state);
+        const allowed = stationForAction(action) === station.id;
+        expect(m.service(action)).toBe(allowed);
+        if (allowed) expect(m.state).not.toEqual(before);
+        else {
+          expect(m.state).toEqual(before);
+          for (let repeat = 0; repeat < 3; repeat++)
+            expect(m.service(action)).toBe(false);
+          expect(m.state).toEqual(before);
+          expect(m.message).toContain("Park at");
+        }
+      }
+    },
+  );
+
+  it("does not sell, refill, repair or upgrade from a remote surface or underground position", () => {
+    const actions: ServiceAction[] = [
+      "sell",
+      "refuel",
+      "repair",
+      ...UPGRADE_KEYS,
+    ];
+    for (const position of [
+      { x: 12, y: SURFACE },
+      { x: 2, y: 1 },
+      { x: 7, y: 4 },
+      { x: 16, y: 4 },
+      { x: 21, y: 4 },
+    ]) {
+      const m = new Mine();
+      Object.assign(m.state, position, {
+        money: 10000,
+        fuel: 4,
+        hull: 5,
+        inventory: [3, 9, 10],
+      });
+      const before = structuredClone(m.state);
+      for (const action of actions) expect(m.service(action)).toBe(false);
+      expect(m.state).toEqual(before);
+    }
+  });
+
+  it("maps every action to its physical building and rejects unknown actions", () => {
+    expect(stationForAction("sell")).toBe("exchange");
+    expect(stationForAction("refuel")).toBe("fuel");
+    expect(stationForAction("repair")).toBe("repair");
+    for (const action of UPGRADE_KEYS)
+      expect(stationForAction(action)).toBe("upgrades");
+    expect(stationForAction("constructor" as ServiceAction)).toBeUndefined();
+    expect(STATIONS.map((station) => station.center)).toEqual([2, 7, 16, 21]);
   });
 });

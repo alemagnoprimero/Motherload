@@ -8,7 +8,7 @@ The planned first-expedition milestone now includes reference-calibrated movemen
 - Seeded 24 × 100 destructible world with natural cave pockets, intermediate ledges, stone, magma, bedrock and all ten minerals. New expeditions choose a new seed; saves preserve their exact excavated map.
 - Fuel in liters, weighted cargo, selling/refueling/repair, and drill/engine/tank/cargo/hull upgrade paths using the verified free-edition tables.
 - Original generated sprite atlas, distinct mineral silhouettes, animated vehicle states, exposed cave edges, cut targeting, collection/damage feedback and synthesized sound.
-- Desktop dashboard plus portrait/landscape phone layout: vital indicators, canvas and simultaneous touch controls fit the viewport. Base and Tools overlays pause the expedition. Focus/fullscreen mode is available.
+- Desktop playfield plus portrait/landscape phone layout: vital indicators, canvas and simultaneous touch controls fit the viewport. Each surface building has its own interface rendered inside the game, with proximity-gated keyboard and touch transactions. Building interfaces and Tools pause the expedition. Focus/fullscreen mode is available.
 - Complete local saves, schema migration, file export/import, validated backup restoration, quota/error protection and cross-tab conflict handling.
 - Docker background hosting and automatic GitHub Pages deployment. Public address: https://alemagnoprimero.github.io/Motherload/ .
 
@@ -31,7 +31,7 @@ These parts remain deliberate approximations or usability choices:
 | Drill time | Approximate 1.0 s down / 0.75 s side baseline, row-based depth multiplier and original drill ratios. Stone remains drillable with added resistance. |
 | Fuel | Source per-frame values converted using nominal 42 fps: about 0.063 L/s recurring use, 0.126 L/s per movement axis and 0.252 L/s additional drilling use, scaled by engine power. Real-time fuel parity has not been established. Docked idle does not consume fuel. |
 | Damage and recovery | Magma costs three HP; impact damage uses a tuned threshold/coefficient. Recovery loses cargo and 20% of credits and restores half fuel/hull. |
-| Surface | Services are available at any surface position. Docking prevents falling down a shaft while using services. |
+| Surface | Drive to the matching building's bay, then press E / Enter or tap to enter its canvas interface. The original automatically enters its shop frames at specific ground tiles; explicit entry avoids opening a shop while merely passing it. Docking prevents falling down a shaft while using services. |
 | Saving | Full excavated terrain and position persist, as requested, although the original's inspected save routine does not preserve them. |
 
 The finite, compressed mine and assisted opening are intended for this playable milestone. Long-run progression balance remains a playtest target; original prices alone do not establish original pacing.
@@ -50,11 +50,13 @@ Autosave runs every five active seconds. Visibility/page-exit saving is best eff
 
 ## Validation
 
-At this checkpoint, **70 simulation/storage tests and 14 browser scenarios pass**. TypeScript, formatting and production builds pass. The rebuilt Docker service is healthy and passes the production smoke checks for gameplay, import, services, upgrades, save/reload and portrait/landscape touch layout.
+At this checkpoint, **89 simulation/storage/layout tests and 14 browser scenarios pass**. TypeScript, formatting and production builds pass. The rebuilt Docker service is healthy and passes the production smoke checks for gameplay, import, services, upgrades, save/reload and portrait/landscape touch layout.
 
 Simulation and storage regressions cover the complete progression loop, movement/ledge/impact behavior, all minerals and equipment, fuel, cave generation, save compatibility, corrupt data, quota failures, concurrent writers, repeated purchases during pending saves, and interrupted backup restoration. Additional explorations validated 18,000 save snapshots across 30 seeded movement runs, all minerals across 100 generated worlds, and 2,048 combinations of legacy equipment and condition values.
 
-Browser scenarios cover natural mining and sale, service and upgrade persistence, export/import including cancellation and invalid files, backups and corrupt-primary recovery, legacy migration, actual two-tab conflicts, committed cuts, independent touch release/cancellation, pause clearing held input, visible portrait/landscape HUD, focus mode and sound preferences. Synthesized audio was also checked with Chromium audio analysers for active output and silence during mute/backgrounding.
+Station layout checks cover nine canvas sizes, including short landscape and narrow portrait windows. Navigation, purchase and exit targets must stay inside the canvas, retain usable touch dimensions and never overlap. Canvas resizing follows the available playfield when the building interface replaces phone driving controls.
+
+Browser scenarios cover natural mining and physical travel to the exchange, canvas service menus, correct building access, service and upgrade persistence, export/import including cancellation and invalid files, backups and corrupt-primary recovery, legacy migration, actual two-tab conflicts, committed cuts, independent touch release/cancellation, pause clearing held input, visible portrait/landscape HUD, focus mode and sound preferences. Station checks include opening without buying, rapid purchase input during a pending save, touch navigation and closing, and in-memory trade/export while a damaged primary save remains protected. Synthesized audio was also checked with Chromium audio analysers for active output and silence during mute/backgrounding.
 
 The art specimen and desktop/mobile screenshots are under ignored `artifacts/`. Browser emulation establishes layout and event behavior, not physical Android GPU performance or tactile feel. The production bundle remains around 1.2 MB before gzip because it includes Phaser; exact build output is reported by `npm run build`.
 
