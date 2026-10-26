@@ -70,11 +70,25 @@ try {
     await target.locator("#load").evaluate((button) => button.click());
   }
   async function capture(target, name) {
-    // Freeze while capturing so screenshot duration cannot alter the input trace.
-    const wasRunning =
-      (await target.locator("#pause").getAttribute("aria-pressed")) === "false";
-    await setRunning(target, false);
-    await target.locator("#save").evaluate((button) => button.click());
+    // The browser clock is already stopped outside explicit runFor calls.
+    // Pausing the game here would clear held keys/pointers and change the trace.
+    await target.evaluate(async () => {
+      document.querySelector("#save").click();
+      if (document.body.dataset.saving === "true") {
+        await new Promise((resolve) => {
+          const observer = new MutationObserver(() => {
+            if (document.body.dataset.saving === "false") {
+              observer.disconnect();
+              resolve();
+            }
+          });
+          observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ["data-saving"],
+          });
+        });
+      }
+    });
     const state = await target.evaluate(() =>
       JSON.parse(localStorage.getItem("motherload.frontier.v1")),
     );
@@ -92,7 +106,6 @@ try {
       downTiles: state.tiles.filter((_, i) => i % 24 === 12).slice(4, 11),
     };
     report.scenarios[name] = result;
-    await setRunning(target, wasRunning);
     return result;
   }
   await fixture(page, "ledge");

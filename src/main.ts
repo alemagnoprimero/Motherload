@@ -2,168 +2,520 @@ import Phaser from "phaser";
 import {
   Mine,
   createState,
-  decodeSave,
   SAVE_KEY,
-  WIDTH,
-  HEIGHT,
-  SURFACE,
   ORES,
+  UPGRADE_KEYS,
+  UPGRADE_LEVELS,
   capacity,
   maxFuel,
   maxHull,
   cargoValue,
+  cargoMass,
   upgradeCost,
   depth,
   type Controls,
   type Direction,
-  type Ore,
+  type State,
   type Upgrade,
 } from "./model";
+import {
+  SaveStore,
+  SaveError,
+  SAVE_BACKUP_KEY,
+  MAX_SAVE_BYTES,
+  type StorageLike,
+} from "./storage";
+import { createMineScene } from "./scene";
+import { GameAudio } from "./audio";
 import "./style.css";
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
   document.getElementById(id) as T;
 $("app").innerHTML = `
-<header><a class="wordmark" href="./"><span class="brand-icon">M</span> MOTHERLOAD<span class="edition">FIELD EDITION / 01</span></a><span class="status"><i></i> SYSTEMS ONLINE</span></header>
-<main><section class="intro"><div><div class="eyebrow">MARS OPERATIONS · SECTOR 07</div><h1>The deep frontier<span>.</span></h1><p>A little deeper. A little richer. Make it back in one piece.</p></div><div class="save-tools"><span id="save-status">LOCAL SAVE · READY</span><div><button id="save">Save</button><button id="load">Load</button><button id="pause" aria-pressed="false">Pause</button></div></div></section>
-<div class="dashboard"><section class="mission"><div class="telemetry"><div><span>DEPTH</span><strong id="depth">0 <small>m</small></strong></div><div><span>CREDITS</span><strong id="money">$60</strong></div><div><span>CARGO VALUE</span><strong id="value">$0</strong></div><div class="location"><i></i><span id="location">SURFACE BASE</span></div></div><div id="game" role="application" aria-label="Mining game. Arrow keys or WASD to drive and drill; up to fly."></div><div class="message"><span>◈</span><p id="message" role="status"></p></div><div class="controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrow keys <b>Move & drill</b></span><span><kbd>↑</kbd> + <kbd>←</kbd><kbd>→</kbd> Steer in flight <span class="dot">·</span> <kbd>P</kbd> Pause</span></div><div class="touch" aria-label="Touch driving controls"><button data-dir="left" aria-label="Move left">←</button><button data-dir="up" aria-label="Fly upward">↑</button><button data-dir="down" aria-label="Drill down">↓</button><button data-dir="right" aria-label="Move right">→</button></div></section>
-<aside><section class="panel rig"><div class="panel-title"><h2>YOUR RIG</h2><span id="rig-level">MK. I</span></div><div class="rig-title"><span class="rig-symbol">▰</span><div><strong>The Prospector</strong><small>LIGHT MINING VEHICLE</small></div></div><div class="meter-label"><span>Fuel</span><b id="fuel-label"></b></div><div class="meter"><i id="fuel-bar"></i></div><div class="meter-label"><span>Hull integrity</span><b id="hull-label"></b></div><div class="meter hull"><i id="hull-bar"></i></div><div class="cargo-head"><span>Cargo hold</span><b id="cargo-label"></b></div><div id="cargo-slots"></div><div id="cargo-detail">Nothing onboard. Go find something good.</div></section>
-<section class="panel station"><div class="panel-title"><h2>SURFACE SERVICES</h2><span id="dock-state" class="badge">DOCKED</span></div><p id="station-note">One more trip starts here.</p><button class="primary" id="sell">Sell minerals <span id="sell-value">$0 →</span></button><div class="service-row"><button id="refuel">Refuel <small>$1 / unit</small></button><button id="repair">Repair <small>$0.70 / unit</small></button></div><div class="upgrade-heading">MAKE YOUR NEXT RUN COUNT</div><div id="upgrades"></div></section>
-<section class="field-note"><span>FIELD NOTE / 001</span><p>Hold Up + Left/Right to fly and steer together. Land on a ledge to drill sideways. Cuts finish before the rig responds to thrust. Counter-steer to brake your momentum.</p><button id="recover">Request recovery ↗</button><small>Cargo + 20% of credits · restores 50% fuel & hull</small></section></aside></div>
-<footer><span>INDEPENDENT PROTOTYPE · ORIGINAL PLACEHOLDER ART</span><div><span id="record">BEST DEPTH 0 m</span><button id="new-game">New expedition</button></div></footer></main><dialog id="confirm"><h2 id="confirm-title"></h2><p id="confirm-copy"></p><div><button id="cancel">Cancel</button><button id="confirm-action" class="primary">Confirm</button></div></dialog>`;
-let mine = new Mine(),
-  paused = false,
-  storageBlocked = false,
-  saveTimer = 0;
+<header><a class="wordmark" href="./"><span class="brand-icon">M</span> MOTHERLOAD<span class="edition">FIELD EDITION / 02</span></a><span class="status"><i></i> SYSTEMS ONLINE</span></header>
+<main><section class="intro"><div><div class="eyebrow">MARS OPERATIONS · SECTOR 07</div><h1>The deep frontier<span>.</span></h1><p>A little deeper. A little richer. Make it back in one piece.</p></div><div class="save-tools"><span id="save-status" role="status">LOCAL SAVE · READY</span><span>YOUR EXPEDITION · YOUR DEVICE</span></div></section>
+<div id="storage-notice" class="storage-notice" role="alert" hidden><span id="storage-copy"></span><button id="reload-external" hidden>Load newer save</button><button id="notice-tools">Save tools</button></div>
+<div class="dashboard"><section class="mission" aria-label="Mining expedition"><div class="telemetry"><div><span>DEPTH</span><strong id="depth">0 <small>m</small></strong></div><div><span>CREDITS</span><strong id="money">$20</strong></div><div class="cargo-value"><span>CARGO VALUE</span><strong id="value">$0</strong></div><div class="location"><i></i><span id="location">SURFACE BASE</span></div></div>
+<div id="flight-hud" class="flight-hud" aria-label="Vehicle status"><div><span>FUEL</span><strong id="hud-fuel">6 / 10 L</strong><i><b id="hud-fuel-bar"></b></i></div><div><span>HULL</span><strong id="hud-hull">10 / 10</strong><i><b id="hud-hull-bar"></b></i></div><div><span>CARGO</span><strong id="hud-cargo">0 / 7</strong><i><b id="hud-cargo-bar"></b></i></div></div>
+<div class="game-actions"><button id="pause" aria-pressed="false">Pause</button><button id="station-toggle" aria-controls="station-panel" aria-expanded="false">Base</button><button id="save">Save</button><button id="load">Load</button><button id="tools-toggle" aria-haspopup="dialog">Tools</button><button id="focus" aria-pressed="false" aria-label="Expand the game to fill the screen">Expand</button><button id="sound-toggle" aria-pressed="false" aria-label="Enable sound">♪ Off</button></div>
+<div id="game" role="application" aria-label="Mining game. Arrow keys or WASD to drive and drill; Up to fly."></div><div class="message"><span aria-hidden="true">◈</span><p id="message" role="status"></p></div><div class="controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrows <b>Drive & drill</b></span><span><kbd>↑</kbd> + <kbd>←</kbd><kbd>→</kbd> Steer in flight <span class="dot">·</span> <kbd>P</kbd> Pause</span></div><div class="touch" aria-label="Touch driving controls"><button data-dir="left" aria-label="Move left">←</button><button data-dir="up" aria-label="Fly upward">↑</button><button data-dir="down" aria-label="Drill down">↓</button><button data-dir="right" aria-label="Move right">→</button></div></section>
+<aside id="station-panel" aria-label="Rig and surface services"><div class="station-close"><strong>BASE & RIG</strong><button id="close-station" aria-label="Close base panel">Back to mine ×</button></div><section class="panel rig"><div class="panel-title"><h2>YOUR RIG</h2><span id="rig-level">DRILL LV. 1</span></div><div class="rig-title"><span class="rig-symbol">▰</span><div><strong>The Prospector</strong><small id="engine-level">ENGINE LV. 1</small></div></div><div class="meter-label"><span>Fuel</span><b id="fuel-label"></b></div><div class="meter"><i id="fuel-bar"></i></div><div class="meter-label"><span>Hull integrity</span><b id="hull-label"></b></div><div class="meter hull"><i id="hull-bar"></i></div><div class="cargo-head"><span>Cargo hold</span><b id="cargo-label"></b></div><div id="cargo-slots"></div><div id="cargo-detail">Nothing onboard. Go find something good.</div><small id="cargo-mass"></small></section>
+<section class="panel station"><div class="panel-title"><h2>SURFACE SERVICES</h2><span id="dock-state" class="badge">DOCKED</span></div><p id="station-note">One more trip starts here.</p><p id="station-feedback" class="station-feedback" role="status"></p><button class="primary" id="sell">Sell minerals <span id="sell-value">$0 →</span></button><div class="service-row"><button id="refuel">Refuel <small>$1 / liter</small></button><button id="repair">Repair <small>$15 / hull point</small></button></div><div class="upgrade-heading">MAKE YOUR NEXT RUN COUNT</div><div id="upgrades"></div></section>
+<section class="field-note"><span>FIELD NOTE / 002</span><p>Hold Up + Left/Right to fly and steer together. Land on a ledge to drill sideways. Cuts finish before the rig responds to thrust. Counter-steer to brake. Heavy cargo needs more engine power.</p><button id="recover">Request recovery ↗</button><small>Cargo + 20% of credits · restores 50% fuel & hull</small></section></aside></div>
+<footer><span>INDEPENDENT REMAKE · ORIGINAL ART & SOUND</span><div><span id="record">BEST DEPTH 0 m</span><button id="new-game">New expedition</button></div></footer></main>
+<button id="station-backdrop" aria-label="Close base panel" hidden></button>
+<dialog id="tools" aria-labelledby="tools-title"><div class="dialog-heading"><h2 id="tools-title">Expedition tools</h2><button id="close-tools" aria-label="Close expedition tools">×</button></div><p>Save files let you move an expedition between computers and phones. Browser saves stay on this device.</p><div class="save-file-actions"><button id="export-save">Export save ↓</button><label class="file-button" for="import-save">Import save ↑<input type="file" id="import-save" accept="application/json,.json" /></label><button id="restore-backup">Restore backup</button></div><p id="tools-status" role="status"></p><div class="audio-setting"><label for="sound-volume">Sound volume</label><input id="sound-volume" type="range" min="0" max="100" value="45" /><output id="volume-label" for="sound-volume">45%</output></div><p class="small-copy">Sound starts only after you enable it. Export before clearing browser data or changing devices.</p><button id="tools-new-game">New expedition</button></dialog>
+<dialog id="confirm" aria-labelledby="confirm-title"><h2 id="confirm-title"></h2><p id="confirm-copy"></p><p id="confirm-error" role="alert"></p><div><button id="cancel">Cancel</button><button id="confirm-action" class="primary">Confirm</button></div></dialog>`;
+
+const keys = new Set<string>();
+const touches = new Map<number, Direction>();
+const randomSeed = () => crypto.getRandomValues(new Uint32Array(1))[0];
+let mine = new Mine(createState(randomSeed()));
+let paused = false;
+let storageBlocked = false;
+let externalConflict = false;
+let saveTimer = 0;
+let uiTimer = 0;
+let persistenceBusy = false;
+let savePromise: Promise<boolean> | undefined;
+let stationWasPaused = false;
+let toolsWasPaused = false;
+let focusMode = false;
+let nativeFullscreen = false;
+let muted = true;
+let volume = 0.45;
+const audio = new GameAudio();
+let storage: StorageLike;
 try {
-  const saved = localStorage.getItem(SAVE_KEY);
-  if (saved) {
-    mine = new Mine(decodeSave(saved));
-    mine.message = "Expedition restored. Welcome back, pilot.";
-    $("save-status").textContent = "LOCAL SAVE · RESTORED";
-  }
+  storage = localStorage;
 } catch {
-  storageBlocked = true;
-  $("save-status").textContent = "SAVE UNAVAILABLE · KEPT INTACT";
-  mine.message =
-    "Save could not be loaded. Autosave paused; use New expedition to start over.";
+  storage = {
+    getItem: () => {
+      throw new Error("Device storage unavailable");
+    },
+    setItem: () => {
+      throw new Error("Device storage unavailable");
+    },
+  };
 }
-const upgradeInfo: Record<Upgrade, [string, string]> = {
-  drill: ["Drill assembly", "Cut through rock faster"],
-  cargo: ["Cargo bay", "+6 mineral slots"],
-  tank: ["Fuel tank", "+50 fuel capacity"],
-  hull: ["Hull plating", "+40 hull capacity"],
-};
-$("upgrades").innerHTML = Object.entries(upgradeInfo)
-  .map(
-    ([key, [name, desc]]) =>
-      `<button class="upgrade" id="upgrade-${key}"><span class="upgrade-icon">${key === "drill" ? "⟡" : key === "cargo" ? "▦" : key === "tank" ? "◒" : "⬡"}</span><span><b>${name}</b><small>${desc}</small></span><strong id="price-${key}"></strong></button>`,
+try {
+  const preferences = JSON.parse(
+    storage.getItem("motherload.preferences.v1") || "null",
+  );
+  if (
+    preferences &&
+    typeof preferences.volume === "number" &&
+    Number.isFinite(preferences.volume)
   )
-  .join("");
-function save(manual = false) {
-  if (storageBlocked) {
-    if (manual)
-      mine.message =
-        "Saving is paused to protect the existing save. Start a new expedition to replace it.";
-    return;
+    volume = Math.max(0, Math.min(1, preferences.volume));
+} catch {
+  /* Invalid audio preferences do not block expedition storage. */
+}
+const saves = new SaveStore(storage);
+audio.setMuted(muted);
+audio.setVolume(volume);
+$("sound-volume").setAttribute("value", String(Math.round(volume * 100)));
+$("volume-label").textContent = `${Math.round(volume * 100)}%`;
+
+const upgradeInfo: Record<Upgrade, [string, string, string]> = {
+  drill: ["Drill assembly", "Faster cuts through deeper terrain", "⟡"],
+  engine: ["Engine", "More thrust for heavier loads", "↟"],
+  tank: ["Fuel tank", "More liters for the return trip", "◒"],
+  cargo: ["Cargo bay", "More mineral slots per expedition", "▦"],
+  hull: ["Hull plating", "More protection from impacts and hazards", "⬡"],
+};
+$("upgrades").innerHTML = UPGRADE_KEYS.map((key) => {
+  const [name, description, icon] = upgradeInfo[key];
+  return `<button class="upgrade" id="upgrade-${key}"><span class="upgrade-icon" aria-hidden="true">${icon}</span><span><b>${name}</b><small id="upgrade-detail-${key}">${description}</small></span><strong id="price-${key}"></strong></button>`;
+}).join("");
+
+function clearInput() {
+  keys.clear();
+  touches.clear();
+  document
+    .querySelectorAll("[data-dir]")
+    .forEach((button) => button.classList.remove("held"));
+}
+function setPaused(value: boolean) {
+  if (externalConflict) value = true;
+  if (value) clearInput();
+  paused = value;
+  $("pause").textContent = paused ? "Resume" : "Pause";
+  $("pause").setAttribute("aria-pressed", String(paused));
+  audio.update(mine, paused);
+  sync();
+}
+function setBusy(value: boolean) {
+  persistenceBusy = value;
+  document.body.dataset.saving = String(value);
+  $<HTMLButtonElement>("save").disabled = value;
+  $("save").textContent = value ? "Saving…" : "Save";
+  $<HTMLButtonElement>("load").disabled = value;
+  $<HTMLButtonElement>("confirm-action").disabled = value;
+  $<HTMLButtonElement>("cancel").disabled = value;
+  if (value) {
+    for (const id of [
+      "sell",
+      "refuel",
+      "repair",
+      ...UPGRADE_KEYS.map((key) => `upgrade-${key}`),
+    ])
+      $<HTMLButtonElement>(id).disabled = true;
   }
+}
+function showStorageNotice(message = "", conflict = false) {
+  $("storage-notice").hidden = !message;
+  $("storage-copy").textContent = message;
+  $("reload-external").hidden = !conflict;
+}
+function showError(error: unknown) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : "The expedition could not be saved.";
+  mine.message = message;
+  $("tools-status").textContent = message;
+  $("save-status").textContent = "LOCAL SAVE · NEEDS ATTENTION";
+  if (
+    error instanceof SaveError &&
+    (error.code === "conflict" || error.code === "blocked")
+  ) {
+    storageBlocked = true;
+    if (error.code === "conflict") externalConflict = true;
+    setPaused(true);
+  }
+  showStorageNotice(
+    message,
+    error instanceof SaveError && error.code === "conflict",
+  );
+  sync();
+}
+function refreshBackupButton() {
   try {
-    localStorage.setItem(SAVE_KEY, JSON.stringify(mine.state));
+    const backup = storage.getItem(SAVE_BACKUP_KEY);
+    $<HTMLButtonElement>("restore-backup").disabled = !backup;
+  } catch {
+    $<HTMLButtonElement>("restore-backup").disabled = true;
+  }
+}
+function loadSaved(manual = false) {
+  if (persistenceBusy) return;
+  const result = saves.load();
+  externalConflict = false;
+  storageBlocked = result.blocked;
+  if (result.state) {
+    mine = new Mine(result.state);
+    mine.message = result.notice || "Expedition restored. Welcome back, pilot.";
+    saveTimer = 0;
+    clearInput();
+  } else if (manual) {
+    mine.message = result.notice || "No saved expedition yet.";
+  }
+  $("save-status").textContent = result.blocked
+    ? "LOCAL SAVE · KEPT INTACT"
+    : result.state
+      ? "LOCAL SAVE · RESTORED"
+      : "LOCAL SAVE · READY";
+  showStorageNotice(result.notice || "");
+  refreshBackupButton();
+  sync();
+}
+async function save(manual = false): Promise<boolean> {
+  if (persistenceBusy) return savePromise || false;
+  if (storageBlocked) {
+    if (manual) {
+      mine.message =
+        "Saving is paused to protect the existing expedition. Use Load or the save tools.";
+      sync();
+    }
+    return false;
+  }
+  setBusy(true);
+  $("save-status").textContent = "LOCAL SAVE · SAVING";
+  try {
+    await saves.save(mine.state);
     $("save-status").textContent = "LOCAL SAVE · SAVED";
     if (manual) mine.message = "Expedition saved on this device.";
-  } catch {
-    $("save-status").textContent = "SAVE FAILED";
-    mine.message =
-      "Device storage is unavailable or full. Keep this tab open; progress is not saved.";
+    showStorageNotice();
+    refreshBackupButton();
+    return true;
+  } catch (error) {
+    showError(error);
+    return false;
+  } finally {
+    setBusy(false);
+    sync();
   }
 }
+function requestSave(manual = false) {
+  if (!savePromise) {
+    savePromise = save(manual).finally(() => {
+      savePromise = undefined;
+    });
+  }
+  return savePromise;
+}
+async function replaceExpedition(state: State) {
+  if (savePromise) await savePromise;
+  setBusy(true);
+  try {
+    await saves.replace(state);
+    mine = new Mine(state);
+    mine.message = "Expedition ready. Saving continues on this device.";
+    $("tools-status").textContent = "Expedition loaded and saved successfully.";
+    storageBlocked = false;
+    externalConflict = false;
+    saveTimer = 0;
+    clearInput();
+    $("save-status").textContent = "LOCAL SAVE · SAVED";
+    showStorageNotice();
+    refreshBackupButton();
+  } finally {
+    setBusy(false);
+    sync();
+  }
+}
+
+const liters = (value: number) => value.toFixed(1).replace(/\.0$/, "");
 function sync() {
-  const s = mine.state;
-  $("depth").innerHTML = `${depth(s)} <small>m</small>`;
-  $("money").textContent = `$${s.money.toLocaleString()}`;
-  $("value").textContent = `$${cargoValue(s)}`;
+  const state = mine.state;
+  const fuel = `${liters(state.fuel)} / ${maxFuel(state)}`;
+  const hull = `${Math.ceil(state.hull)} / ${maxHull(state)}`;
+  const cargo = `${state.inventory.length} / ${capacity(state)}`;
+  $("depth").innerHTML = `${depth(state)} <small>m</small>`;
+  $("money").textContent = `$${state.money.toLocaleString()}`;
+  $("value").textContent = `$${cargoValue(state).toLocaleString()}`;
   $("location").textContent = paused
     ? "EXPEDITION PAUSED"
     : mine.docked
       ? "SURFACE BASE"
       : "BELOW THE SURFACE";
-  $("fuel-label").textContent = `${Math.ceil(s.fuel)} / ${maxFuel(s)}`;
-  $("fuel-bar").style.width = `${(s.fuel / maxFuel(s)) * 100}%`;
-  $("fuel-bar").classList.toggle("low", s.fuel < maxFuel(s) * 0.25);
-  $("hull-label").textContent = `${Math.ceil(s.hull)} / ${maxHull(s)}`;
-  $("hull-bar").style.width = `${(s.hull / maxHull(s)) * 100}%`;
-  $("cargo-label").textContent = `${s.inventory.length} / ${capacity(s)}`;
+  $("fuel-label").textContent = fuel;
+  $("hull-label").textContent = hull;
+  $("cargo-label").textContent = cargo;
+  $("hud-fuel").textContent = `${fuel} L`;
+  $("hud-hull").textContent = hull;
+  $("hud-cargo").textContent = cargo;
+  for (const id of ["fuel-bar", "hud-fuel-bar"]) {
+    $(id).style.width = `${Math.max(0, (state.fuel / maxFuel(state)) * 100)}%`;
+    $(id).classList.toggle("low", state.fuel < maxFuel(state) * 0.25);
+  }
+  for (const id of ["hull-bar", "hud-hull-bar"]) {
+    $(id).style.width = `${Math.max(0, (state.hull / maxHull(state)) * 100)}%`;
+    $(id).classList.toggle("low", state.hull < maxHull(state) * 0.25);
+  }
+  $("hud-cargo-bar").style.width =
+    `${Math.min(100, (state.inventory.length / capacity(state)) * 100)}%`;
+  $("hud-cargo-bar").classList.toggle(
+    "low",
+    state.inventory.length >= capacity(state),
+  );
   $("cargo-slots").innerHTML = Array.from(
-    { length: capacity(s) },
-    (_, i) =>
-      `<i style="${s.inventory[i] ? `background:${ORES[s.inventory[i]].color};border-color:${ORES[s.inventory[i]].color}` : ""}"></i>`,
+    { length: capacity(state) },
+    (_, index) => {
+      const ore = state.inventory[index];
+      return `<i ${ore ? `title="${ORES[ore].name}" style="background:${ORES[ore].color};border-color:${ORES[ore].color}"` : ""}></i>`;
+    },
   ).join("");
-  $("cargo-detail").textContent = s.inventory.length
+  $("cargo-detail").textContent = state.inventory.length
     ? Object.entries(ORES)
         .map(([id, ore]) => {
-          const n = s.inventory.filter((o) => o === +id).length;
-          return n ? `${n} ${ore.name}` : "";
+          const count = state.inventory.filter((entry) => entry === +id).length;
+          return count ? `${count} ${ore.name}` : "";
         })
         .filter(Boolean)
         .join(" · ")
     : "Nothing onboard. Go find something good.";
+  $("cargo-mass").textContent =
+    `CARGO MASS ${cargoMass(state)} · ENGINE LV. ${state.upgrades.engine + 1}`;
   $("dock-state").textContent = mine.docked ? "DOCKED" : "AWAY";
   $("dock-state").classList.toggle("away", !mine.docked);
   $("station-note").textContent = mine.docked
-    ? "One more trip starts here."
-    : "Return to depth 0 m for services.";
-  $("sell-value").textContent = `$${cargoValue(s)} →`;
+    ? "Sell your haul, service the rig, then improve the next trip."
+    : "Return to depth 0 m to sell, service and upgrade.";
+  $("station-feedback").textContent = mine.message;
+  $("sell-value").textContent = `$${cargoValue(state).toLocaleString()} →`;
   for (const action of ["sell", "refuel", "repair"])
-    $<HTMLButtonElement>(action).disabled = !mine.docked;
-  for (const key of Object.keys(upgradeInfo) as Upgrade[]) {
-    const cost = upgradeCost(s, key);
-    $("price-" + key).textContent = cost === Infinity ? "MAX" : `$${cost}`;
+    $<HTMLButtonElement>(action).disabled = !mine.docked || persistenceBusy;
+  for (const key of UPGRADE_KEYS) {
+    const cost = upgradeCost(state, key);
+    $("price-" + key).textContent =
+      cost === Infinity ? "MAX" : `$${cost.toLocaleString()}`;
     $<HTMLButtonElement>("upgrade-" + key).disabled =
-      !mine.docked || s.money < cost;
+      !mine.docked || state.money < cost || persistenceBusy;
+    const level = state.upgrades[key];
+    const current = UPGRADE_LEVELS[key][level];
+    const next = UPGRADE_LEVELS[key][level + 1];
+    const unit = {
+      drill: "drill speed",
+      engine: "power",
+      tank: "L",
+      cargo: "slots",
+      hull: "hull points",
+    }[key];
+    $("upgrade-detail-" + key).textContent =
+      next === undefined
+        ? `Level ${level + 1} · ${current} ${unit} · fully upgraded`
+        : `Level ${level + 1} · ${current} → ${next} ${unit}`;
+    $("upgrade-" + key).title = upgradeInfo[key][1];
   }
-  $("rig-level").textContent = `DRILL LV. ${s.upgrades.drill + 1}`;
-  $("record").textContent = `BEST DEPTH ${s.deepest} m`;
-  $("message").textContent = paused
-    ? "Expedition paused. Press P or Resume when you’re ready."
-    : mine.message;
+  $("rig-level").textContent = `DRILL LV. ${state.upgrades.drill + 1}`;
+  $("engine-level").textContent = `ENGINE LV. ${state.upgrades.engine + 1}`;
+  $("record").textContent = `BEST DEPTH ${state.deepest} m`;
+  $("message").textContent = paused ? `Paused · ${mine.message}` : mine.message;
 }
 for (const action of ["sell", "refuel", "repair"] as const)
-  $(action).onclick = () => {
-    mine.service(action);
-    save();
+  $(action).onclick = async () => {
+    if (persistenceBusy) return;
+    if (mine.service(action))
+      audio.play(action === "sell" ? "sell" : "service");
+    await requestSave();
     sync();
   };
-for (const key of Object.keys(upgradeInfo) as Upgrade[])
-  $("upgrade-" + key).onclick = () => {
-    mine.service(key);
-    save();
+for (const key of UPGRADE_KEYS)
+  $("upgrade-" + key).onclick = async () => {
+    if (persistenceBusy) return;
+    if (mine.service(key)) audio.play("upgrade");
+    await requestSave();
     sync();
   };
 $("save").onclick = () => {
-  save(true);
-  sync();
+  void requestSave(true);
 };
-$("load").onclick = () => {
-  try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) throw new Error("No saved expedition yet.");
-    mine = new Mine(decodeSave(raw));
-    storageBlocked = false;
-    mine.message = "Saved expedition loaded.";
-  } catch (error) {
-    mine.message = error instanceof Error ? error.message : "Load failed.";
-  }
-  sync();
+$("load").onclick = () => loadSaved(true);
+$("pause").onclick = () => setPaused(!paused);
+$("reload-external").onclick = () => {
+  loadSaved(true);
+  setPaused(true);
 };
-function togglePause() {
-  paused = !paused;
-  $("pause").textContent = paused ? "Resume" : "Pause";
-  $("pause").setAttribute("aria-pressed", String(paused));
-  sync();
+
+function openStation() {
+  stationWasPaused = paused;
+  setPaused(true);
+  document.body.classList.add("station-open");
+  $("station-panel").setAttribute("role", "dialog");
+  $("station-panel").setAttribute("aria-modal", "true");
+  $("station-toggle").setAttribute("aria-expanded", "true");
+  $("station-backdrop").hidden = false;
+  $("close-station").focus();
 }
-$("pause").onclick = togglePause;
-const keys = new Set<string>();
-const touches = new Map<number, Direction>();
+function closeStation() {
+  document.body.classList.remove("station-open");
+  $("station-panel").removeAttribute("role");
+  $("station-panel").removeAttribute("aria-modal");
+  $("station-toggle").setAttribute("aria-expanded", "false");
+  $("station-backdrop").hidden = true;
+  setPaused(stationWasPaused);
+  $("station-toggle").focus();
+}
+$("station-toggle").onclick = openStation;
+$("close-station").onclick = closeStation;
+$("station-backdrop").onclick = closeStation;
+function openTools() {
+  if ($<HTMLDialogElement>("tools").open) return;
+  toolsWasPaused = paused;
+  setPaused(true);
+  refreshBackupButton();
+  $<HTMLDialogElement>("tools").showModal();
+}
+$("tools-toggle").onclick = openTools;
+$("notice-tools").onclick = openTools;
+$("close-tools").onclick = () => $<HTMLDialogElement>("tools").close();
+$<HTMLDialogElement>("tools").onclose = () => setPaused(toolsWasPaused);
+
+let confirmWasPaused = false;
+let confirmOperation: () => void | Promise<void> = () => {};
+function confirmAction(
+  title: string,
+  copy: string,
+  operation: () => void | Promise<void>,
+) {
+  confirmWasPaused = paused;
+  setPaused(true);
+  $("confirm-title").textContent = title;
+  $("confirm-copy").textContent = copy;
+  $("confirm-error").textContent = "";
+  confirmOperation = operation;
+  $<HTMLDialogElement>("confirm").showModal();
+}
+$("cancel").onclick = () => $<HTMLDialogElement>("confirm").close();
+$("confirm-action").onclick = async () => {
+  try {
+    await confirmOperation();
+    $<HTMLDialogElement>("confirm").close();
+  } catch (error) {
+    $("confirm-error").textContent =
+      error instanceof Error
+        ? error.message
+        : "The expedition could not be changed.";
+    showError(error);
+  }
+};
+$<HTMLDialogElement>("confirm").oncancel = (event) => {
+  if (persistenceBusy) event.preventDefault();
+};
+$<HTMLDialogElement>("confirm").onclose = () => setPaused(confirmWasPaused);
+$("recover").onclick = () =>
+  confirmAction(
+    "Call surface recovery?",
+    "You will lose your cargo and 20% of your credits. The crew restores half your fuel and hull, so you can start another run.",
+    async () => {
+      mine.recover();
+      await requestSave();
+    },
+  );
+const newExpedition = () =>
+  confirmAction(
+    "Start a new expedition?",
+    "This replaces the current expedition with a new mine. Your previous valid save will be kept as a backup. Export a file first if you want a separate copy.",
+    () => replaceExpedition(createState(randomSeed())),
+  );
+$("new-game").onclick = newExpedition;
+$("tools-new-game").onclick = newExpedition;
+$("restore-backup").onclick = () =>
+  confirmAction(
+    "Restore the backup expedition?",
+    "This replaces your current progress with the previous saved expedition. The current valid save will become the backup.",
+    async () => {
+      if (savePromise) await savePromise;
+      setBusy(true);
+      try {
+        const state = await saves.restoreBackup();
+        mine = new Mine(state);
+        mine.message = "Backup expedition restored.";
+        $("tools-status").textContent = mine.message;
+        storageBlocked = false;
+        externalConflict = false;
+        saveTimer = 0;
+        showStorageNotice();
+        $("save-status").textContent = "LOCAL SAVE · BACKUP RESTORED";
+      } finally {
+        setBusy(false);
+        refreshBackupButton();
+        sync();
+      }
+    },
+  );
+$("export-save").onclick = () => {
+  try {
+    const raw = saves.export(mine.state);
+    const url = URL.createObjectURL(
+      new Blob([raw], { type: "application/json" }),
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `motherload-${mine.state.seed}-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    $("tools-status").textContent =
+      "Save file exported. Keep it to import on another device.";
+  } catch (error) {
+    showError(error);
+  }
+};
+$<HTMLInputElement>("import-save").onchange = async (event) => {
+  const input = event.currentTarget as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+  try {
+    if (file.size > MAX_SAVE_BYTES)
+      throw new Error("Save files must be at most 256 KiB.");
+    const state = saves.inspectImport(await file.text());
+    confirmAction(
+      "Import this expedition?",
+      `Replace current progress with a mine at ${depth(state)} m, $${state.money.toLocaleString()}, and ${state.inventory.length} minerals onboard? Your current valid save will become the backup.`,
+      () => replaceExpedition(state),
+    );
+  } catch (error) {
+    $("tools-status").textContent =
+      error instanceof Error
+        ? error.message
+        : "This file could not be imported.";
+  } finally {
+    input.value = "";
+  }
+};
+
 const mapped: Record<string, Direction> = {
   ArrowLeft: "left",
   a: "left",
@@ -174,333 +526,211 @@ const mapped: Record<string, Direction> = {
   ArrowDown: "down",
   s: "down",
 };
-window.addEventListener("keydown", (e) => {
-  if ($<HTMLDialogElement>("confirm").open) return;
-  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+const dialogOpen = () =>
+  $<HTMLDialogElement>("confirm").open || $<HTMLDialogElement>("tools").open;
+window.addEventListener("keydown", (event) => {
+  if (
+    event.key === "Escape" &&
+    document.body.classList.contains("station-open") &&
+    !dialogOpen()
+  ) {
+    closeStation();
+    return;
+  }
+  if (dialogOpen()) return;
+  if (document.body.classList.contains("station-open")) {
+    if (event.key === "Tab") {
+      const buttons = [
+        ...$("station-panel").querySelectorAll<HTMLButtonElement>(
+          "button:not(:disabled)",
+        ),
+      ];
+      const first = buttons[0],
+        last = buttons.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    }
+    return;
+  }
+  if (event.key === "Escape" && focusMode && !document.fullscreenElement) {
+    applyFocus(false);
+    return;
+  }
+  if (
+    event.target instanceof HTMLInputElement ||
+    event.target instanceof HTMLTextAreaElement ||
+    (event.target instanceof HTMLElement && event.target.isContentEditable)
+  )
+    return;
+  const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
   if (mapped[key]) {
-    e.preventDefault();
+    event.preventDefault();
     keys.add(key);
   }
-  if (e.key.toLowerCase() === "p" && !e.repeat) togglePause();
+  if (key.toLowerCase() === "p" && !event.repeat) setPaused(!paused);
+  if (!muted) void audio.unlock();
 });
-window.addEventListener("keyup", (e) =>
-  keys.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key),
+window.addEventListener("keyup", (event) =>
+  keys.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key),
 );
-function clearInput() {
-  keys.clear();
-  touches.clear();
-}
-window.addEventListener("blur", () => {
-  clearInput();
-  if (!paused) togglePause();
-});
+window.addEventListener("blur", () => setPaused(true));
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
-    clearInput();
-    if (!paused) togglePause();
-    save();
+    setPaused(true);
+    void requestSave();
   }
 });
-window.addEventListener("pagehide", () => save());
+window.addEventListener("pagehide", () => {
+  void requestSave();
+});
+window.addEventListener("storage", (event) => {
+  if (event.key !== SAVE_KEY && event.key !== null) return;
+  try {
+    if (!saves.hasExternalChange()) return;
+    storageBlocked = true;
+    externalConflict = true;
+    setPaused(true);
+    $("save-status").textContent = "LOCAL SAVE · NEWER COPY IN ANOTHER TAB";
+    showStorageNotice(
+      "Another tab changed this expedition. Load its save before continuing, or export this tab’s progress from Tools.",
+      true,
+    );
+  } catch (error) {
+    showError(error);
+  }
+});
 document.querySelectorAll<HTMLButtonElement>("[data-dir]").forEach((button) => {
-  button.onpointerdown = (e) => {
-    e.preventDefault();
-    button.setPointerCapture(e.pointerId);
-    touches.set(e.pointerId, button.dataset.dir as Direction);
+  button.onpointerdown = (event) => {
+    event.preventDefault();
+    if (dialogOpen() || document.body.classList.contains("station-open"))
+      return;
+    button.setPointerCapture(event.pointerId);
+    touches.set(event.pointerId, button.dataset.dir as Direction);
+    button.classList.add("held");
+    if (!muted) void audio.unlock();
   };
   button.onpointerup =
     button.onpointercancel =
     button.onlostpointercapture =
-      (e) => {
-        touches.delete(e.pointerId);
+      (event) => {
+        touches.delete(event.pointerId);
+        if (![...touches.values()].includes(button.dataset.dir as Direction))
+          button.classList.remove("held");
       };
 });
-let onConfirm = () => {},
-  wasPaused = false;
-function confirmAction(title: string, copy: string, fn: () => void) {
-  wasPaused = paused;
-  paused = true;
+$("sound-toggle").onclick = () => {
+  muted = !muted;
+  audio.setMuted(muted);
+  if (!muted) void audio.unlock();
+  $("sound-toggle").textContent = muted ? "♪ Off" : "♪ On";
+  $("sound-toggle").setAttribute("aria-pressed", String(!muted));
+  $("sound-toggle").setAttribute(
+    "aria-label",
+    muted ? "Enable sound" : "Mute sound",
+  );
+};
+$<HTMLInputElement>("sound-volume").oninput = (event) => {
+  volume = Number((event.currentTarget as HTMLInputElement).value) / 100;
+  audio.setVolume(volume);
+  $("volume-label").textContent = `${Math.round(volume * 100)}%`;
+  try {
+    storage.setItem("motherload.preferences.v1", JSON.stringify({ volume }));
+  } catch {
+    /* Preferences do not block play. */
+  }
+};
+function applyFocus(value: boolean) {
+  focusMode = value;
+  document.body.classList.toggle("focus-mode", value);
+  $("focus").textContent = value ? "Window" : "Expand";
+  $("focus").setAttribute("aria-pressed", String(value));
+  $("focus").setAttribute(
+    "aria-label",
+    value
+      ? "Return to normal game layout"
+      : "Expand the game to fill the screen",
+  );
   clearInput();
-  $("confirm-title").textContent = title;
-  $("confirm-copy").textContent = copy;
-  onConfirm = fn;
-  $<HTMLDialogElement>("confirm").showModal();
 }
-$("recover").onclick = () =>
-  confirmAction(
-    "Call surface recovery?",
-    "You will lose your cargo and 20% of your credits. The crew restores half your fuel and hull, so you can always start another run.",
-    () => mine.recover(),
-  );
-$("new-game").onclick = () =>
-  confirmAction(
-    "Start a new expedition?",
-    "This replaces the saved expedition on this device. Your terrain, credits, and upgrades will be reset.",
-    () => {
-      mine = new Mine(createState());
-      storageBlocked = false;
-    },
-  );
-$("cancel").onclick = () => $<HTMLDialogElement>("confirm").close();
-$("confirm-action").onclick = () => {
-  onConfirm();
-  save();
-  $<HTMLDialogElement>("confirm").close();
+$("focus").onclick = async () => {
+  if (focusMode) {
+    applyFocus(false);
+    if (document.fullscreenElement)
+      await document.exitFullscreen().catch(() => {});
+  } else {
+    applyFocus(true);
+    if (document.documentElement.requestFullscreen) {
+      try {
+        await document.documentElement.requestFullscreen();
+        nativeFullscreen = true;
+      } catch {
+        /* CSS focus mode remains available. */
+      }
+    }
+  }
 };
-$<HTMLDialogElement>("confirm").onclose = () => {
-  paused = wasPaused;
-  sync();
-};
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement && nativeFullscreen) {
+    nativeFullscreen = false;
+    applyFocus(false);
+  }
+});
 
-class MineScene extends Phaser.Scene {
-  private g!: Phaser.GameObjects.Graphics;
-  private labels: Phaser.GameObjects.Text[] = [];
-  private px = 400;
-  private py = 112;
-  private cameraY = 0;
-  private elapsed = 0;
-  private uiTimer = 0;
-  create() {
-    this.g = this.add.graphics();
-    for (let i = 0; i < 20; i++)
-      this.labels.push(
-        this.add
-          .text(0, 0, "", {
-            fontFamily: "monospace",
-            fontSize: "11px",
-            color: "#c8ba9c",
-          })
-          .setDepth(2),
-      );
-    sync();
-  }
-  update(_time: number, delta: number) {
-    const dt = Math.min(delta / 1000, 0.25);
-    this.elapsed += dt;
-    const controls: Controls = {};
-    for (const direction of [
-      ...Array.from(keys).map((k) => mapped[k]),
-      ...touches.values(),
-    ])
-      if (direction) controls[direction] = true;
-    const direction =
-      mine.drillDirection ??
-      (controls.left
-        ? "left"
-        : controls.right
-          ? "right"
-          : controls.up
-            ? "up"
-            : controls.down
-              ? "down"
-              : undefined);
-    if (!paused) {
-      for (let remaining = dt; remaining > 0; remaining -= 0.05)
-        mine.tick(Math.min(remaining, 0.05), controls);
-      saveTimer += dt;
-      if (saveTimer > 5) {
-        save();
-        saveTimer = 0;
-      }
-    }
-    this.uiTimer += dt;
-    if (this.uiTimer > 0.1) {
-      sync();
-      this.uiTimer = 0;
-    }
-    const s = mine.state,
-      g = this.g,
-      tile = 32;
-    this.px = mine.renderX * tile + 16;
-    this.py = mine.renderY * tile + 16;
-    this.cameraY = Phaser.Math.Linear(
-      this.cameraY,
-      Math.max(0, this.py - 240),
-      Math.min(1, dt * 8),
-    );
-    const cam = this.cameraY;
-    g.clear();
-    g.fillStyle(0x182525);
-    g.fillRect(0, 0, 768, 576);
-    for (const label of this.labels) label.setVisible(false);
-    let li = 0;
-    const text = (x: number, y: number, value: string, color = "#c8ba9c") => {
-      const label = this.labels[li++];
-      if (label)
-        label.setPosition(x, y).setText(value).setColor(color).setVisible(true);
-    };
-    if (cam < 128) {
-      g.fillStyle(0x273e3c);
-      g.fillRect(0, -cam, 768, 128);
-      g.fillStyle(0x52625a);
-      g.fillCircle(637, 40 - cam, 23);
-      g.fillStyle(0x273e3c);
-      g.fillCircle(629, 33 - cam, 22);
-      g.fillStyle(0x344842);
-      g.fillPoints(
-        [
-          { x: 0, y: 110 - cam },
-          { x: 85, y: 48 - cam },
-          { x: 140, y: 91 - cam },
-          { x: 240, y: 42 - cam },
-          { x: 355, y: 115 - cam },
-          { x: 470, y: 64 - cam },
-          { x: 570, y: 110 - cam },
-          { x: 702, y: 70 - cam },
-          { x: 768, y: 111 - cam },
-          { x: 768, y: 128 - cam },
-          { x: 0, y: 128 - cam },
-        ],
-        true,
-      );
-      // Original, geometric placeholder base buildings.
-      for (const [x, name, c] of [
-        [40, "ORE EXCHANGE", 0x9cab9b],
-        [510, "FUEL / REPAIR", 0xd29e62],
-      ] as const) {
-        g.fillStyle(0x1b2929);
-        g.fillRect(x, 74 - cam, 180, 54);
-        g.fillStyle(c);
-        g.fillRect(x, 74 - cam, 180, 4);
-        g.fillStyle(0x3d514b);
-        g.fillRect(x + 10, 90 - cam, 40, 26);
-        g.fillRect(x + 130, 90 - cam, 36, 26);
-        text(x + 14, 57 - cam, name);
-        g.lineStyle(1, 0x6b7f70);
-        g.strokeRect(x, 74 - cam, 180, 54);
-      }
-      g.lineStyle(2, 0xaab496);
-      g.lineBetween(290, 128 - cam, 290, 43 - cam);
-      g.lineBetween(282, 43 - cam, 298, 43 - cam);
-      g.fillStyle(0xe2b46f);
-      g.fillTriangle(290, 43 - cam, 318, 49 - cam, 290, 58 - cam);
-    }
-    const first = Math.max(4, Math.floor(cam / 32)),
-      last = Math.min(HEIGHT - 1, Math.ceil((cam + 576) / 32));
-    for (let y = first; y <= last; y++)
-      for (let x = 0; x < WIDTH; x++) {
-        const t = mine.tile(x, y),
-          sx = x * 32,
-          sy = y * 32 - cam,
-          n = (x * 73 + y * 137) % 19;
-        if (!t) {
-          g.fillStyle(0x141e1c);
-          g.fillRect(sx, sy, 32, 32);
-          if ((x + y) % 3 === 0) {
-            g.fillStyle(0x22302b);
-            g.fillRect(sx + 10, sy + 23, 3, 2);
-          }
-          continue;
-        }
-        const colors = [
-          0, 0x66513d, 0x4b5148, 0x6a5741, 0x6c553c, 0x4d5740, 0x4a4f50,
-          0x773d2d, 0x303a35,
-        ];
-        g.fillStyle(colors[t] + (n > 10 ? 0x030303 : 0));
-        g.fillRect(sx + 1, sy + 1, 31, 31);
-        g.fillStyle(0x000000, 0.14);
-        g.fillTriangle(sx + 1, sy + 31, sx + 31, sy + 31, sx + 31, sy + 10);
-        g.fillStyle(0xffffff, 0.06);
-        g.fillRect(sx + 3, sy + 3, 23, 2);
-        if (t >= 3 && t <= 6) {
-          const c = Phaser.Display.Color.HexStringToColor(
-            ORES[t as Ore].color,
-          ).color;
-          g.fillStyle(c, 0.18);
-          g.fillCircle(sx + 16, sy + 16, 11);
-          g.fillStyle(c);
-          g.fillTriangle(sx + 8, sy + 19, sx + 13, sy + 9, sx + 19, sy + 17);
-          g.fillTriangle(sx + 17, sy + 22, sx + 21, sy + 12, sx + 26, sy + 21);
-          g.fillStyle(0xffffff, 0.5);
-          g.fillRect(sx + 12, sy + 11, 2, 3);
-        } else if (t === 7) {
-          g.fillStyle(0xf29b4f);
-          g.fillTriangle(sx + 5, sy + 25, sx + 14, sy + 5, sx + 26, sy + 23);
-        } else {
-          g.lineStyle(1, 0x000000, 0.17);
-          g.lineBetween(sx + 7, sy + 11, sx + 16 + (n % 5), sy + 17);
-          g.lineBetween(sx + 16, sy + 17, sx + 12, sy + 25);
-        }
-      }
-    g.fillStyle(0xa3ac7c);
-    g.fillRect(0, 128 - cam, 768, 3);
-    for (let y = Math.max(8, Math.ceil(first / 8) * 8); y <= last; y += 8) {
-      g.lineStyle(1, 0xe7d9b5, 0.1);
-      g.lineBetween(0, y * 32 - cam, 768, y * 32 - cam);
-      text(10, y * 32 - cam + 8, `${(y - SURFACE) * 10} m`, "#b2a68a");
-    }
-    const px = this.px,
-      py = this.py - cam;
-    g.fillStyle(0xe6c16d, 0.05);
-    g.fillCircle(px, py, 65);
-    g.fillStyle(0x000000, 0.4);
-    g.fillEllipse(px, py + 14, 35, 9);
-    if (mine.thrusting && !paused && s.fuel > 0 && s.hull > 0) {
-      g.fillStyle(0xf5c667);
-      g.fillTriangle(
-        px - 7,
-        py + 10,
-        px + 7,
-        py + 10,
-        px,
-        py + 24 + Math.sin(this.elapsed * 40) * 5,
-      );
-    }
-    g.fillStyle(0x1a2222);
-    g.fillRoundedRect(px - 17, py + 4, 34, 10, 4);
-    for (let i = 0; i < 4; i++) {
-      g.fillStyle(0x718176);
-      g.fillCircle(px - 11 + i * 7, py + 9, 3);
-    }
-    g.fillStyle(s.hull > 0 ? 0xe5b55e : 0x85745c);
-    g.fillRoundedRect(px - 14, py - 11, 28, 20, 4);
-    g.fillStyle(0x93c3c1);
-    g.fillRoundedRect(px - 8, py - 9, 15, 10, 2);
-    g.fillStyle(0xdaece2);
-    g.fillRect(px - 6, py - 7, 4, 2);
-    if (!mine.grounded && !mine.docked && !mine.progress) {
-      g.lineStyle(2, 0xb6cbb9);
-      g.lineBetween(px, py - 11, px, py - 20);
-      const blade = Math.cos(this.elapsed * 55) * 19;
-      g.lineBetween(px - blade, py - 20, px + blade, py - 20);
-    }
-    g.fillStyle(0xa4b4a6);
-    if (direction === "left")
-      g.fillTriangle(px - 14, py - 3, px - 14, py + 8, px - 25, py + 3);
-    else if (direction === "right")
-      g.fillTriangle(px + 14, py - 3, px + 14, py + 8, px + 25, py + 3);
-    else g.fillTriangle(px - 7, py + 13, px + 7, py + 13, px, py + 23);
-    g.fillStyle(0xf9ecc1);
-    g.fillRect(px + 11, py - 6, 4, 4);
-    if (mine.progress > 0) {
-      g.fillStyle(0x172320);
-      g.fillRect(px - 20, py - 23, 40, 4);
-      g.fillStyle(0xe6ba6e);
-      g.fillRect(px - 20, py - 23, 40 * mine.progress, 4);
-    }
-    if (paused || s.fuel <= 0 || s.hull <= 0) {
-      g.fillStyle(0x0d1818, 0.6);
-      g.fillRect(0, 0, 768, 576);
-      text(
-        278,
-        250,
-        paused ? "EXPEDITION PAUSED" : "RIG DISABLED · CALL RECOVERY",
-        "#f4d29a",
-      );
-    }
-  }
-}
-new Phaser.Game({
+const compactQuery = matchMedia("(max-width: 760px), (pointer: coarse)");
+const updateCompactLayout = () =>
+  document.body.classList.toggle("compact-layout", compactQuery.matches);
+compactQuery.addEventListener("change", updateCompactLayout);
+updateCompactLayout();
+setBusy(false);
+loadSaved();
+const game = new Phaser.Game({
   type: Phaser.AUTO,
-  width: 768,
-  height: 576,
   parent: "game",
+  width: $("game").clientWidth,
+  height: $("game").clientHeight,
   backgroundColor: "#182525",
-  scene: MineScene,
+  scene: createMineScene({
+    getMine: () => mine,
+    isPaused: () => paused,
+    getControls: () => {
+      const controls: Controls = {};
+      for (const direction of [
+        ...Array.from(keys).map((key) => mapped[key]),
+        ...touches.values(),
+      ])
+        if (direction) controls[direction] = true;
+      return controls;
+    },
+    onUpdate: (dt) => {
+      audio.update(mine, paused);
+      if (!paused && !storageBlocked) {
+        saveTimer += dt;
+        if (saveTimer >= 5) {
+          saveTimer = 0;
+          void requestSave();
+        }
+      }
+      uiTimer += dt;
+      if (uiTimer > 0.1) {
+        uiTimer = 0;
+        sync();
+      }
+    },
+  }),
   render: { antialias: true },
-  scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+  scale: { mode: Phaser.Scale.RESIZE, autoCenter: Phaser.Scale.NO_CENTER },
   input: { keyboard: false },
   fps: { smoothStep: false },
   banner: false,
   audio: { noAudio: true },
 });
+new ResizeObserver(() => {
+  const host = $("game");
+  if (host.clientWidth && host.clientHeight)
+    game.scale.resize(host.clientWidth, host.clientHeight);
+}).observe($("game"));

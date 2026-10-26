@@ -1,5 +1,7 @@
 # Movement and drilling reference measurements
 
+This document records the movement calibration checkpoint. The later economy, equipment, world and save changes are documented in [PROJECT.md](PROJECT.md).
+
 Measured on 2026-10-26 against the free Miniclip **0.934 (MC)** build identified in [RESEARCH.md](RESEARCH.md). This is a reference for the focused movement/drilling pass, not a claim of complete original-game parity.
 
 ## Reproduce locally

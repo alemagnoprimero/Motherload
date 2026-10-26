@@ -1,74 +1,73 @@
-# Project checkpoint — 2026-10-24
+# Project status — 2026-10-26
 
-## Implemented milestone
+## Current milestone
 
-- Phaser 3.90.0, strict TypeScript, Vite, locked npm dependencies. No server/database credentials required.
-- Seeded destructible terrain with four minerals, stone, magma, and a bedrock floor.
-- Keyboard driving/drilling/upward flight, gravity and fall damage; continuous acceleration, damping, gravity and collision detection, plus combined keyboard/multi-touch input.
-- Cargo limits, sale values, fuel, hull wear/damage, surface selling/refueling/repair.
-- Drill, tank, cargo and hull upgrades with three purchasable levels each.
-- Complete terrain/position/economy/inventory/condition/upgrade local saves, autosave, load, corruption protection and confirmed new-game reset.
-- Pointer-based touch controls, responsive layout, pause on blur/backgrounding, explicit recovery confirmation.
-- A separate Ruffle reference lab, pinned download/decompilation script, and original-build research notes.
+The planned first-expedition milestone now includes reference-calibrated movement, caves and route planning, original art and sound, mobile gameplay layout, reference economy/equipment, and resilient local saves.
 
-## Implementation decisions
+- Continuous movement, simultaneous thrust/steering, supported lateral drilling, committed cuts and collision-safe ledge alignment.
+- Seeded 24 × 100 destructible world with natural cave pockets, intermediate ledges, stone, magma, bedrock and all ten minerals. New expeditions choose a new seed; saves preserve their exact excavated map.
+- Fuel in liters, weighted cargo, selling/refueling/repair, and drill/engine/tank/cargo/hull upgrade paths using the verified free-edition tables.
+- Original generated sprite atlas, distinct mineral silhouettes, animated vehicle states, exposed cave edges, cut targeting, collection/damage feedback and synthesized sound.
+- Desktop dashboard plus portrait/landscape phone layout: vital indicators, canvas and simultaneous touch controls fit the viewport. Base and Tools overlays pause the expedition. Focus/fullscreen mode is available.
+- Complete local saves, schema migration, file export/import, validated backup restoration, quota/error protection and cross-tab conflict handling.
+- Docker background hosting and automatic GitHub Pages deployment. Public address: https://alemagnoprimero.github.io/Motherload/ .
 
-The original's economy and continuous mass-based physics are documented; the prototype now uses continuous physics with simpler provisional constants for a short first-playable loop. Economy, resource units and progression balance remain provisional; the movement calibration is recorded in MOVEMENT_REFERENCE.md. Source and artwork are newly authored. No original SWF, decompiled source, music or artwork is tracked or bundled into the production app.
+Source remains independent TypeScript/Phaser code. No original SWF, decompiled scripts, artwork or audio is tracked or included in production.
 
-The terrain model and save schema are independent of Phaser so their behavior can be tested without a browser. The renderer follows continuous vehicle position, advances through a selected drill cut and follows depth. Simulation uses bounded substeps from unsmoothed frame deltas; long background pauses do not consume an entire session of fuel. Surface docking prevents immediately falling back into a mined shaft when interacting with services.
+## Confirmed reference behavior and deliberate remake choices
 
-LocalStorage is per origin and browser. Multiple simultaneously active tabs are not coordinated; last writer wins. There is no cloud sync, offline service worker, import/export, or general migration framework; the implemented migration upgrades schema 1 to schema 2 without discarding the expedition. Rendering interpolants, partial drill progress and falling momentum are transient, while the specified persistent state is serialized.
+The verified research build is free Miniclip version `0.934 (MC)`. JPEXS inspection, unchanged-SWF play and separately instrumented Ruffle measurements are recorded in RESEARCH.md and MOVEMENT_REFERENCE.md. Publisher-hosted byte equality with the 2004 release remains unverified.
 
-## Validation and scope
+Adopted static reference facts include the ten mineral names/values/masses, starting $20 / 6 L / 10 HP / seven cargo slots, equipment prices and capacities, engine power, drill-speed ratios, $1/L fuel and $15/HP repair. Ordinary drilling no longer applies blanket hull wear. Up cannot begin an upward cut; side drilling requires local ground support. A started cut finishes before held Up launches the rig.
 
-Verified for the movement follow-up: 21 simulation tests and 13 browser checks passed, strict TypeScript and production build passed, formatting passed, and the pinned reference downloaded, hash-checked, exported 523 scripts, and ran in Ruffle without page errors. Run commands and artifact locations are documented in the README. Automated simulation and Chromium browser checks cover the complete first expedition, upgrades, service gating, save/reload, corrupt saves, full cargo, fuel depletion/recovery, hard falls, magma, pause and touch input. The production build includes a bundle-size warning because Phaser contributes roughly 1.2 MB before gzip; this is a performance follow-up, not a compilation failure.
+These parts remain deliberate approximations or usability choices:
 
-Desktop and mobile screenshots are captured under ignored `artifacts/`. Chromium touch emulation does not establish real Android performance. Ruffle execution and JPEXS export have been exercised against the identified reference file. Original wall-clock physics measurements remain future research.
+| Area | Current choice |
+| --- | --- |
+| World | 24 × 100 cells instead of 36 × 600; richer deposits move into compressed depth bands. Approximately a quarter of underground space forms connected pockets rather than copying the original's random empty-cell layout. |
+| Early progression | Two assisted starter veins make two ordinary return trips sufficient for a $750 upgrade. Each generated world retains at least one of every mineral at an appropriate depth. |
+| Movement | Continuous bounded substeps calibrated from a 42 fps reference; launch/landing animation timing and collision shape are not exact Flash equivalents. |
+| Heavy cargo | A minimum lift reserve keeps every valid load flyable. Engine upgrades affect acceleration, thrust, speed limits and fuel use; the reserve is a forgiving departure from the original. |
+| Drill time | Approximate 1.0 s down / 0.75 s side baseline, row-based depth multiplier and original drill ratios. Stone remains drillable with added resistance. |
+| Fuel | Source per-frame values converted using nominal 42 fps: about 0.063 L/s recurring use, 0.126 L/s per movement axis and 0.252 L/s additional drilling use, scaled by engine power. Real-time fuel parity has not been established. Docked idle does not consume fuel. |
+| Damage and recovery | Magma costs three HP; impact damage uses a tuned threshold/coefficient. Recovery loses cargo and 20% of credits and restores half fuel/hull. |
+| Surface | Services are available at any surface position. Docking prevents falling down a shaft while using services. |
+| Saving | Full excavated terrain and position persist, as requested, although the original's inspected save routine does not preserve them. |
 
-A lockfile-only reinstall succeeded using the retained, integrity-checked npm cache (`npm ci --offline --no-audit`). Fresh npm registry requests currently return HTTP 403 despite the saved domain requirement; review/save the network draft before refreshing dependencies online. Cached setup and the current preview work independently of that access.
+The finite, compressed mine and assisted opening are intended for this playable milestone. Long-run progression balance remains a playtest target; original prices alone do not establish original pacing.
 
-A local Git commit records this milestone; it is not automatically pushed. Do not treat a saved cloud configuration as publication or proof that a separate task restored local-only commits. Keep/publish the workspace snapshot and push the checkpoint through your normal repository workflow when ready.
+## Save behavior and compatibility
 
-## Next steps
+The storage key remains `motherload.frontier.v1`; its payload is now schema 3. Schema-1/schema-2 imports preserve all terrain, money, inventory, position and expedition statistics. Equipment maps to a new tier that preserves its previous capability. Fuel and hull keep their percentages of capacity. For example, an old eight-slot bay maps to an adequate new bay rather than dropping its eighth mineral.
 
-1. Playtest the full loop on a computer and a physical Android phone; tune controls, camera, fuel pressure and early upgrade timing.
-2. Tune the new continuous acceleration, cargo mass factor and grounded side-drill handling against measured reference play.
-3. Decide whether to adopt the confirmed original mineral roster, upgrade prices and capacities. Add balance presets only if useful.
-4. Measure original drilling/fuel timings in Ruffle and compare with the static formulas. Compare publisher/free-edition hashes when XGen's TLS endpoint works.
-5. Add save export/import, migrations, multi-tab conflict handling and resilient backup slots before expanding progression.
-6. Profile graphics and bundle size on Android, then add sound, tactile feedback, particles and richer original art.
-7. Consider larger/deeper terrain, radiator/engine upgrades, procedural caves, consumables and endgame only after the core loop feels right.
+Existing worlds are not regenerated during migration. Their old deposits are retained under the stable mineral tile IDs. Use New expedition to see the new cave/deposit generator; export first to keep a separate copy of an old run.
 
-## Movement follow-up
+SaveStore validates every snapshot and import. Ordinary saves rotate the previous valid primary into a backup before replacing it. Backup restoration uses a recovery journal so either a primary-write or backup-rotation failure leaves the preceding and requested expeditions recoverable. Corrupt/future saves are kept intact; a valid backup may be reviewed in memory while saving is blocked until an explicit restore or replacement. Import/New/Restore require confirmation.
 
-Played the actual SWF mining loop in Ruffle after correcting the previous title-only validation. See RESEARCH.md for observed behavior and emulation diagnostics. The updated browser checks drive diagonal keyboard flight, two-finger thrust/steering with partial finger release, and lateral excavation from a ledge above a deeper shaft. The simulation checks include collision/save edge cases and impact-only fall damage. Existing local saves migrate automatically.
+On HTTPS/localhost, Web Locks serialize writes, and each write checks its last-loaded raw value to reject stale tabs. A conflicting tab pauses and cannot resume until it loads the newer save or explicitly replaces it. A raw-value check remains on browsers without Web Locks, but it is not a fully atomic cross-tab transaction there. Explicit confirmed replacement intentionally backs up the latest valid primary.
 
-Windows update: stop the local dev server, extract the new source ZIP over the same project folder, restart `npm.cmd run dev -- --port 5173 --strictPort`, and reload the same URL. Dependencies did not change. Browser saves are separate from the project files.
+Autosave runs every five active seconds. Visibility/page-exit saving is best effort because browsers may suspend asynchronous work; Save is the reliable user-visible checkpoint. Velocity, partial cuts and animation state are transient. Local saves do not synchronize automatically across devices; export/import provides manual transfer. If browser storage is inaccessible, the current in-memory expedition can still be played and exported.
 
-## Hosting — 2026-10-26
+## Validation
 
-Added a multi-stage Docker build (Node 24 → Nginx), background Compose service on port 8080, health checking, restart-unless-stopped, and a read-only unprivileged runtime. Only the production build is served; the original SWF, research exports, caches, tests and source files are excluded from the runtime image. The actual container passed production browser checks for mining, save/reload, selling, upgrade persistence and mobile touch/layout.
+At this checkpoint, **70 simulation/storage tests and 14 browser scenarios pass**. TypeScript, formatting and production builds pass. The rebuilt Docker service is healthy and passes the production smoke checks for gameplay, import, services, upgrades, save/reload and portrait/landscape touch layout.
 
-Vite now emits relative asset URLs so the same build works at a domain root and GitHub Pages' `/Motherload/` path. The public repository contains a pinned GitHub Actions workflow that tests and builds gameplay changes pushed to `main`, then deploys only `dist/` to Pages. Hosted URL: https://alemagnoprimero.github.io/Motherload/ . GitHub rejected initial Pages activation through the integration with HTTP 403; the user enabled Pages manually, and the deployment was retried.
+Simulation and storage regressions cover the complete progression loop, movement/ledge/impact behavior, all minerals and equipment, fuel, cave generation, save compatibility, corrupt data, quota failures, concurrent writers, repeated purchases during pending saves, and interrupted backup restoration. Additional explorations validated 18,000 save snapshots across 30 seeded movement runs, all minerals across 100 generated worlds, and 2,048 combinations of legacy equipment and condition values.
 
-Cloud setup details: the Docker daemon had no egress proxy, so official Docker Hub image manifests and layers were downloaded through the workspace's existing HTTPS proxy and verified against compressed and uncompressed digests before loading into Docker. Container builds needed the proxy hostname mapped and the already-trusted platform CA supplied via a temporary BuildKit secret. TLS verification stayed enabled. Those environment-specific steps are unnecessary on a normal Docker Desktop installation with working registry access.
+Browser scenarios cover natural mining and sale, service and upgrade persistence, export/import including cancellation and invalid files, backups and corrupt-primary recovery, legacy migration, actual two-tab conflicts, committed cuts, independent touch release/cancellation, pause clearing held input, visible portrait/landscape HUD, focus mode and sound preferences. Synthesized audio was also checked with Chromium audio analysers for active output and silence during mute/backgrounding.
 
-Local browser saves do not synchronize to the website or other devices. The temporary cloud workspace is not an always-on public Docker host; Pages provides the durable public game address independently of the workspace and the user's computer.
+The art specimen and desktop/mobile screenshots are under ignored `artifacts/`. Browser emulation establishes layout and event behavior, not physical Android GPU performance or tactile feel. The production bundle remains around 1.2 MB before gzip because it includes Phaser; exact build output is reported by `npm run build`.
 
-Live deployment verification completed: the public HTTPS site passed the same production browser smoke test as the Docker container (mining, terrain/inventory reload, surface sale, upgrade persistence and mobile touch/layout, with no page errors). GitHub Actions completed successfully after Pages activation. The container was also restarted and returned healthy. To validate the public site from the cloud browser, its already-trusted proxy CA had to be installed in Chromium's NSS trust store in the same execution context; no certificate-verification bypass was used.
+## Development and delivery
 
-## Movement calibration — 2026-10-26
+See README.md for launch, Docker, testing and save-transfer instructions. The dev preview uses port 5173, Docker uses 8080, and Pages deploys only `dist/` after tests/build succeed for gameplay changes on `main`. The original reference lab stays separate from production.
 
-The first approved follow-up batch tunes movement and drilling; cave generation, station redesign, new artwork and the full original economy remain later stages.
+Cloud Docker builds use the existing environment proxy and its trusted CA through a temporary BuildKit secret. TLS verification remains enabled. Live HTTPS browser verification may require the same already-trusted proxy CA in Chromium's trust store. These cloud-specific steps are unnecessary on a normal Docker Desktop installation with registry access.
 
-Ground and air coasting now use reference-informed damping rather than stronger braking when a key is released. Acceleration, flight speeds and gravity use approximate continuous equivalents of the inspected 42 fps / 50 px game. Cargo uses the verified counterpart masses for the four existing minerals (1/2/6/10) and a base rig mass of 198. A deliberate minimum lift reserve keeps every existing cargo upgrade flyable until engine upgrades exist; it is not claimed as original behavior.
+## Remaining work after this milestone
 
-Downward targeting recognizes a solid tile under either tread when the center overhangs a gap. A cut begins only after vertical movement has settled, preserving landing damage. Downward cuts end at the bottom of the cleared cell, eliminating the extra settling pause before another cut. Pressing Up during a cut now allows it to finish before thrust takes over, matching the reference's committed-cut behavior and removing visual snapback. The field note and launch instructions reflect this control change.
-
-Stock soft-terrain cuts use a 1.0 s downward / 0.75 s sideways baseline and a source-informed depth factor. Stone resistance, upgrade multipliers, fuel costs, hull wear, collision dimensions and surface docking remain remake choices. Existing schema-1/schema-2 saves retain terrain, inventory, condition, credits and upgrades; no save reset is required.
-
-Evidence, timings, instrumentation details and remaining fidelity limits are in MOVEMENT_REFERENCE.md. Original captures and instrumented SWFs remain ignored research artifacts. Before/after remake captures use legitimate saves and ordinary keyboard/touch input. A deterministic movement exploration also validated 10,800 save snapshots across 30 seeded one-minute input traces without an invalid vehicle/terrain overlap.
-
-Validation for this batch: 35 simulation tests and 15 browser checks pass, including the full first expedition, save compatibility, offset landing-to-cut, overhanging tread support, impact damage, committed cuts, cargo mass and independent touch release/cancellation. TypeScript, production build and formatting pass. The rebuilt Docker service is healthy and passed its desktop/mobile production smoke test. The first four Iron still fund refueling, repairs and a drill upgrade, leaving $49. Browser emulation does not replace a physical Android playtest.
-
-The before/after comparison is saved locally at ignored `artifacts/movement-comparison.html` (with a PNG overview and separate scenario images/reports). It uses identical valid saved terrain and explicit browser-frame-clock input sequences against the previous checkpoint and this change, so screenshot/tool overhead does not extend held input. These are qualitative remake comparisons; original-game timing evidence is recorded separately.
+- Physical Android playtesting, especially thumb comfort, small-screen legibility, interruptions and sustained performance.
+- Controlled original loaded-versus-empty flight comparisons, deeper/upgraded drilling timings and fuel calibration. Preserve observed/source-confirmed versus provisional distinctions.
+- Larger/deeper campaign progression, temperature/radiator systems, consumables, artifacts, story and endgame encounters. These were follow-on campaign systems, not part of the first-expedition milestone.
+- Optional offline installation, cloud synchronization and broader accessibility work after gameplay feedback. No account or server is currently needed.
+- Repository licensing remains a project-owner decision.

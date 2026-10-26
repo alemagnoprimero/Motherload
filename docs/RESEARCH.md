@@ -1,6 +1,6 @@
 # Original reference investigation
 
-Inspected 2026-10-24. Findings describe **this identified syndicated build**, not every release of Motherload. No original scripts, artwork, audio, or SWF are committed or bundled in the remake.
+Initial inspection 2026-10-24; subsequent work is recorded below and in [current project status](PROJECT.md). Findings describe **this identified syndicated build**, not every release of Motherload. No original scripts, artwork, audio, or SWF are committed or bundled in the remake.
 
 ## Provenance and verification
 
@@ -60,7 +60,7 @@ Source: `frame_1/DoAction.as:398–421`.
 - Cargo slots: 7, 15, 25, 40, 70, 120; costs: 0, 750, 2,000, 5,000, 20,000, 100,000.
 - Radiator cooling multipliers: 1, .9, .75, .6, .4, .2.
 
-## Provisional remake decisions
+## Provisional remake decisions — first checkpoint (superseded below)
 
 The first milestone preserves the loop and input directions, not numerical or physics parity. `src/model.ts` is independently implemented from the brief; none of the decompiled scripts is imported or copied into the game.
 
@@ -105,3 +105,9 @@ Remaining fidelity work: tune acceleration/thrust/braking with measured play tra
 ## Quantitative movement follow-up — 2026-10-26
 
 See [movement measurements](MOVEMENT_REFERENCE.md) for timed Ruffle observations, a separately instrumented reference copy, and the resulting tuning decisions. This latest pass supersedes the earlier Up-to-cancel rule: a committed cut now finishes before thrust resumes. It also replaces cargo-count mass with mineral-specific mass for the current four-ore roster and removes release-only braking. The full mineral roster, economy, engine upgrades and fuel-unit conversion remain future work.
+
+## Expanded expedition milestone — 2026-10-26
+
+The remake now adopts the ten-mineral roster, mineral weights, starting resources, original drill/engine/tank/cargo/hull tables, fuel price and repair price documented above. Engine upgrades affect the simulation, and ordinary soil cuts no longer damage hull. The world now has seeded cave pockets and depth-sensitive deposits.
+
+Generation uses a bounded 24 × 100 world, assisted starter veins, compressed depth bands and a guarantee that every mineral survives cave carving; those are deliberate remake choices, not a copy of the original random generator. Fuel uses nominal 42 fps conversion of the inspected per-frame quantities, with elapsed-time parity still unmeasured. Full terrain saves remain an explicit user requirement. See [PROJECT.md](PROJECT.md) for the complete current behavior, migration policy, validation and remaining deviations.

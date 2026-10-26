@@ -1,21 +1,29 @@
-// Movement is calibrated in tile units against the inspected free edition.
-// Economy, fuel units, hull wear and upgrade balance remain provisional.
+// Static mineral/equipment tables match the inspected free edition.
+// World density, elapsed-time fuel conversion and damage remain remake tuning.
 export const WIDTH = 24,
   HEIGHT = 100,
   SURFACE = 3;
 export const SAVE_KEY = "motherload.frontier.v1";
+// Existing tile identifiers stay stable so old excavated maps can migrate intact.
 export const ORES = {
-  3: { name: "Iron", value: 25, mass: 1, color: "#b5c7cf" },
-  4: { name: "Gold", value: 75, mass: 2, color: "#f4c76b" },
-  5: { name: "Emerald", value: 180, mass: 6, color: "#75d6aa" },
-  6: { name: "Diamond", value: 400, mass: 10, color: "#b6c9ff" },
+  3: { name: "Ironium", value: 30, mass: 1, color: "#b5c7cf" },
+  4: { name: "Goldium", value: 250, mass: 2, color: "#f4c76b" },
+  5: { name: "Emerald", value: 5000, mass: 6, color: "#75d6aa" },
+  6: { name: "Diamond", value: 100000, mass: 10, color: "#b6c9ff" },
+  9: { name: "Bronzium", value: 60, mass: 1, color: "#c88b61" },
+  10: { name: "Silverium", value: 100, mass: 1, color: "#e4e9e6" },
+  11: { name: "Platinium", value: 750, mass: 3, color: "#b6d5d9" },
+  12: { name: "Einsteinium", value: 2000, mass: 4, color: "#b8d56d" },
+  13: { name: "Ruby", value: 20000, mass: 8, color: "#ef7884" },
+  14: { name: "Amazonite", value: 500000, mass: 12, color: "#67dcda" },
 } as const;
 export type Ore = keyof typeof ORES;
+export const isOre = (tile: unknown): tile is Ore =>
+  typeof tile === "number" && Object.hasOwn(ORES, tile);
 export type Direction = "left" | "right" | "up" | "down";
 export type Controls = Partial<Record<Direction, boolean>>;
 export const BODY_HALF = 0.35;
 // Approximate continuous equivalents of the reference's 42 fps, 50 px grid.
-// See docs/MOVEMENT_REFERENCE.md for measurements and remaining differences.
 const MOTION = {
   groundAcceleration: 26,
   airAcceleration: 17.6,
@@ -27,15 +35,31 @@ const MOTION = {
   maxAscent: 10.02,
   maxFall: 16.8,
   emptyMass: 198,
-  // Existing cargo upgrades predate engine upgrades. Keep every valid load
-  // recoverable by flight until that progression is introduced.
+  // A deliberate recovery allowance keeps even a completely loaded rig flyable.
   minimumLift: 4,
 };
 export const depth = (s: State) =>
   Math.max(0, Math.floor((s.y - SURFACE - 0.15 + 1e-4) * 10));
-export type Upgrade = "drill" | "tank" | "cargo" | "hull";
+export const UPGRADE_KEYS = [
+  "drill",
+  "tank",
+  "cargo",
+  "hull",
+  "engine",
+] as const;
+export type Upgrade = (typeof UPGRADE_KEYS)[number];
+export const UPGRADE_LEVELS = {
+  drill: [2, 2.8, 4, 5, 7, 9.5, 12],
+  tank: [10, 15, 25, 40, 60, 100, 150],
+  cargo: [7, 15, 25, 40, 70, 120],
+  hull: [10, 17, 30, 50, 80, 120, 180],
+  engine: [150, 160, 170, 180, 190, 200, 210],
+} as const;
+export const UPGRADE_PRICES = [
+  0, 750, 2000, 5000, 20000, 100000, 500000,
+] as const;
 export interface State {
-  version: 2;
+  version: 3;
   seed: number;
   tiles: number[];
   x: number;
@@ -48,17 +72,35 @@ export interface State {
   mined: number;
   deepest: number;
 }
-export const capacity = (s: State) => 8 + s.upgrades.cargo * 6;
-export const maxFuel = (s: State) => 100 + s.upgrades.tank * 50;
-export const maxHull = (s: State) => 100 + s.upgrades.hull * 40;
+export const capacity = (s: State) => UPGRADE_LEVELS.cargo[s.upgrades.cargo]!;
+export const maxFuel = (s: State) => UPGRADE_LEVELS.tank[s.upgrades.tank]!;
+export const maxHull = (s: State) => UPGRADE_LEVELS.hull[s.upgrades.hull]!;
 export const cargoValue = (s: State) =>
   s.inventory.reduce((n, ore) => n + ORES[ore].value, 0);
 export const cargoMass = (s: State) =>
   s.inventory.reduce((n, ore) => n + ORES[ore].mass, 0);
 export const upgradeCost = (s: State, key: Upgrade) =>
-  [100, 250, 600][s.upgrades[key]] ?? Infinity;
+  UPGRADE_KEYS.includes(key) && s.upgrades[key] + 1 < UPGRADE_LEVELS[key].length
+    ? UPGRADE_PRICES[s.upgrades[key] + 1]!
+    : Infinity;
+
+// The original's depth ordering is compressed into this bounded prototype mine.
+// The exact probabilities and assisted starter deposits are original remake design.
+const DEPOSITS: ReadonlyArray<{ ore: Ore; row: number; weight: number }> = [
+  { ore: 3, row: 4, weight: 12 },
+  { ore: 9, row: 5, weight: 10 },
+  { ore: 10, row: 8, weight: 8 },
+  { ore: 4, row: 14, weight: 6 },
+  { ore: 11, row: 24, weight: 5 },
+  { ore: 12, row: 36, weight: 4 },
+  { ore: 5, row: 48, weight: 3 },
+  { ore: 13, row: 62, weight: 2 },
+  { ore: 6, row: 76, weight: 1.5 },
+  { ore: 14, row: 88, weight: 1 },
+];
 export function createState(seed = 73021): State {
-  let r = seed >>> 0;
+  seed = seed >>> 0;
+  let r = seed;
   const random = () => {
     r = (Math.imul(r, 1664525) + 1013904223) >>> 0;
     return r / 4294967296;
@@ -68,32 +110,83 @@ export function createState(seed = 73021): State {
       p = random();
     if (y <= SURFACE) return 0;
     if (y === HEIGHT - 1) return 8;
-    if (y > 45 && p < 0.035) return 7;
-    if (y > 65 && p < 0.08) return 6;
-    if (y > 28 && p < 0.12) return 5;
-    if (y > 10 && p < 0.18) return 4;
-    if (p < 0.24) return 3;
-    return p > 0.86 ? 2 : 1;
+    if (y >= 52 && p < 0.025) return 7;
+    if (p > 0.88) return 2;
+    if (p < 0.36) {
+      const available = DEPOSITS.filter((deposit) => y >= deposit.row);
+      let choice =
+        random() *
+        available.reduce((total, deposit) => total + deposit.weight, 0);
+      for (const deposit of available) {
+        choice -= deposit.weight;
+        if (choice <= 0) return deposit.ore;
+      }
+    }
+    return 1;
   });
-  for (let y = 4; y <= 7; y++) tiles[y * WIDTH + 12] = 3;
+  // Elliptical chambers leave irregular floors and intermediate ledges instead
+  // of isolated one-cell holes. Most pockets still require a drilled entrance.
+  for (let row = 9; row < HEIGHT - 3; row += 5) {
+    for (let pocket = 0; pocket < 2; pocket++) {
+      const cx = 2 + random() * (WIDTH - 4),
+        cy = row + random() * 2;
+      const rx = 2 + random() * 2.2,
+        ry = 1.2 + random() * 1.4;
+      for (
+        let y = Math.max(5, Math.floor(cy - ry));
+        y <= Math.min(HEIGHT - 2, Math.ceil(cy + ry));
+        y++
+      )
+        for (
+          let x = Math.max(0, Math.floor(cx - rx));
+          x <= Math.min(WIDTH - 1, Math.ceil(cx + rx));
+          x++
+        )
+          if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 < 1)
+            tiles[y * WIDTH + x] = 0;
+    }
+  }
+  // This compact mine has fewer deep cells than the original's 600 rows.
+  // Keep every mineral discoverable even when a rare deposit was carved away.
+  for (const deposit of DEPOSITS) {
+    if (tiles.includes(deposit.ore)) continue;
+    const candidates: number[] = [];
+    for (let index = deposit.row * WIDTH; index < (HEIGHT - 1) * WIDTH; index++)
+      if (tiles[index] === 1 || tiles[index] === 2) candidates.push(index);
+    // Existing deposits are never replaced while ensuring a missing rarity.
+    if (candidates.length)
+      tiles[candidates[Math.floor(random() * candidates.length)]!] =
+        deposit.ore;
+  }
+  // Two modest starter veins let ordinary early expeditions fund the first
+  // $750 upgrade without replacing the reference prices with a cheap preset.
+  const starter: Ore[][] = [
+    [3, 3, 3, 3, 9, 10, 10],
+    [3, 9, 3, 9, 10, 10, 10],
+  ];
+  for (let column = 0; column < starter.length; column++)
+    starter[column].forEach((ore, index) => {
+      tiles[(index + 4) * WIDTH + 12 + column] = ore;
+    });
   return {
-    version: 2,
+    version: 3,
     seed,
     tiles,
     x: 12,
     y: SURFACE,
-    money: 60,
-    fuel: 100,
-    hull: 100,
+    money: 20,
+    fuel: 6,
+    hull: 10,
     inventory: [],
-    upgrades: { drill: 0, tank: 0, cargo: 0, hull: 0 },
+    upgrades: { drill: 0, tank: 0, cargo: 0, hull: 0, engine: 0 },
     mined: 0,
     deepest: 0,
   };
 }
 export class Mine {
   state: State;
-  message = "Welcome, pilot. Drill below the rig to find your first iron.";
+  message =
+    "Welcome, pilot. Mine Ironium below the rig, then return to sell and refuel.";
   progress = 0;
   velocityX = 0;
   velocityY = 0;
@@ -112,6 +205,11 @@ export class Mine {
   get renderX() {
     const d = this.drilling;
     return d ? d.startX + (d.x - d.startX) * this.progress : this.state.x;
+  }
+  get drillTarget() {
+    return this.drilling
+      ? { x: this.drilling.x, y: this.drilling.y }
+      : undefined;
   }
   get renderY() {
     const d = this.drilling;
@@ -169,7 +267,19 @@ export class Mine {
     }
     const dx = Number(Boolean(input.right)) - Number(Boolean(input.left));
     if (dx) this.facing = dx < 0 ? "left" : "right";
-    if (!this.docked) s.fuel = Math.max(0, s.fuel - dt * 0.08);
+    const engineFactor = UPGRADE_LEVELS.engine[s.upgrades.engine]! / 150;
+    // Original per-frame values normalized at 42 fps; emulated wall-clock fuel
+    // timing still needs calibration. Docked idle is free as a usability aid.
+    const activeAxes = Number(Boolean(dx)) + Number(Boolean(input.up));
+    const fuelRate =
+      (this.docked ? 0 : 0.063) + (this.drilling ? 0.252 : activeAxes * 0.126);
+    s.fuel = Math.max(0, s.fuel - dt * fuelRate * engineFactor);
+    if (s.fuel === 0) {
+      this.message = "Fuel exhausted. Call recovery to return to the surface.";
+      this.velocityX = this.velocityY = 0;
+      this.cancelDrill();
+      return;
+    }
     // The reference commits to a selected cut. Finish it before responding to
     // thrust, so the displayed rig never jumps back out of a half-cut tile.
     if (this.drilling) {
@@ -209,15 +319,8 @@ export class Mine {
             this.message = dx
               ? "Side drilling needs a ledge. Hold Up + Left/Right to steer, then land before cutting."
               : "Land on the terrain before drilling down.";
-          } else if (
-            tile >= 3 &&
-            tile <= 6 &&
-            s.inventory.length >= capacity(s)
-          ) {
+          } else if (isOre(tile) && s.inventory.length >= capacity(s)) {
             this.message = "Cargo full. Return to the surface to sell.";
-          } else if (s.fuel < 1.5) {
-            s.fuel = 0;
-            this.message = "Fuel exhausted. Call recovery.";
           } else {
             this.drilling = {
               x: tx,
@@ -228,7 +331,7 @@ export class Mine {
                 ((dx ? 0.75 : 1) *
                   (tile === 2 ? 1.85 : 1) *
                   (1 + Math.max(0, s.y - SURFACE) * 0.0125)) /
-                (1 + s.upgrades.drill * 0.55),
+                (UPGRADE_LEVELS.drill[s.upgrades.drill]! / 2),
             };
             this.drillDirection = dx < 0 ? "left" : dx > 0 ? "right" : "down";
             this.velocityX = this.velocityY = 0;
@@ -242,18 +345,20 @@ export class Mine {
     const massFactor = 1 + cargoMass(s) / MOTION.emptyMass;
     const drag = supported ? MOTION.groundDrag : MOTION.airDrag;
     const acceleration =
-      (dx * (supported ? MOTION.groundAcceleration : MOTION.airAcceleration)) /
+      (dx *
+        engineFactor *
+        (supported ? MOTION.groundAcceleration : MOTION.airAcceleration)) /
       massFactor;
     const decay = Math.exp(-drag * dt);
     // Identical drag with and without input preserves reference-style coasting.
     this.velocityX =
       this.velocityX * decay + (acceleration / drag) * (1 - decay);
     this.velocityX = Math.max(
-      -MOTION.maxHorizontal,
-      Math.min(MOTION.maxHorizontal, this.velocityX),
+      -MOTION.maxHorizontal * engineFactor,
+      Math.min(MOTION.maxHorizontal * engineFactor, this.velocityX),
     );
     const thrust = Math.max(
-      MOTION.thrust / massFactor,
+      (MOTION.thrust * engineFactor) / massFactor,
       MOTION.gravity + MOTION.minimumLift,
     );
     this.velocityY =
@@ -261,11 +366,10 @@ export class Mine {
         Math.exp(-MOTION.airDrag * dt) +
       MOTION.gravity * dt;
     this.velocityY = Math.max(
-      -MOTION.maxAscent,
+      -MOTION.maxAscent * engineFactor,
       Math.min(MOTION.maxFall, this.velocityY),
     );
-    const oldX = s.x,
-      oldY = s.y;
+    const oldY = s.y;
     this.moveAxis("x", this.velocityX * dt);
     this.moveAxis("y", this.velocityY * dt);
     // Surface docking is retained as a deliberate usability aid.
@@ -278,13 +382,6 @@ export class Mine {
       s.y = SURFACE + 0.15;
       this.velocityY = 0;
     }
-    s.fuel = Math.max(
-      0,
-      s.fuel -
-        Math.abs(s.x - oldX) * 0.15 -
-        Math.max(0, oldY - s.y) * 0.4 -
-        (input.up ? dt * 0.12 : 0),
-    );
     if (input.up && this.blocked(s.x, s.y - 0.04))
       this.message =
         "The drill cannot cut upward. Steer into your open tunnel.";
@@ -314,7 +411,7 @@ export class Mine {
       }
       end = free;
       if (axis === "y" && this.velocityY > 7) {
-        const damage = Math.round((this.velocityY - 7) * 4);
+        const damage = Math.max(1, Math.round((this.velocityY - 7) * 0.6));
         s.hull = Math.max(0, s.hull - damage);
         this.message = `Hard landing: −${damage} hull. Use upward thrust to brake.`;
       }
@@ -338,12 +435,11 @@ export class Mine {
     // End at the bottom of the cleared cell. Solid ground below can accept
     // the next cut immediately; an open pocket still starts a natural fall.
     s.y = this.drillDirection === "down" ? d.y + 0.5 - BODY_HALF : d.startY;
-    s.fuel = Math.max(0, s.fuel - 1.5);
     s.mined++;
-    s.hull = Math.max(0, s.hull - (tile === 7 ? 30 : 0.6));
-    if (tile >= 3 && tile <= 6) {
-      s.inventory.push(tile as Ore);
-      this.message = `${ORES[tile as Ore].name} collected. Cargo worth $${cargoValue(s)}.`;
+    if (tile === 7) s.hull = Math.max(0, s.hull - 3);
+    if (isOre(tile)) {
+      s.inventory.push(tile);
+      this.message = `${ORES[tile].name} collected. Cargo worth $${cargoValue(s)}.`;
     }
     if (tile === 7)
       this.message = "Magma pocket! Hull damaged. Return for repairs.";
@@ -368,8 +464,8 @@ export class Mine {
     if (action === "refuel" || action === "repair") {
       const key = action === "refuel" ? "fuel" : "hull",
         max = key === "fuel" ? maxFuel(s) : maxHull(s),
-        rate = key === "fuel" ? 1 : 0.7;
-      const amount = Math.min(max - s[key], Math.floor(s.money / rate));
+        rate = key === "fuel" ? 1 : 15;
+      const amount = Math.min(max - s[key], s.money / rate);
       if (amount <= 0) {
         this.message =
           s[key] >= max
@@ -377,12 +473,15 @@ export class Mine {
             : "Not enough credits. Sell minerals first.";
         return false;
       }
-      const cost = Math.ceil(amount * rate);
+      // Fractional migrated condition and small balances can buy a partial
+      // repair. Avoid a floating-point cent beyond the available whole credits.
+      const cost = Math.min(s.money, Math.ceil(amount * rate - 1e-9));
       s[key] = Math.min(max, s[key] + amount);
       s.money -= cost;
       this.message = `${action === "refuel" ? "Fuel" : "Hull"} restored for $${cost}.`;
       return true;
     }
+    if (!UPGRADE_KEYS.includes(action)) return false;
     const cost = upgradeCost(s, action);
     if (s.money < cost) {
       this.message =
@@ -412,46 +511,109 @@ export class Mine {
   }
 }
 export function decodeSave(raw: string): State {
-  const s = JSON.parse(raw) as State;
-  const num = (x: unknown, max: number, integer = false): boolean =>
-    typeof x === "number" &&
-    Number.isFinite(x) &&
-    x >= 0 &&
-    x <= max &&
-    (!integer || Number.isInteger(x));
+  const invalid = () =>
+    new Error("Unsupported or damaged save. Existing save has been kept.");
+  if (raw.length > 150_000) throw invalid();
+  const source: unknown = JSON.parse(raw);
+  const record = (value: unknown): value is Record<string, unknown> =>
+    value !== null && typeof value === "object" && !Array.isArray(value);
+  const num = (value: unknown, max: number, integer = false): value is number =>
+    typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= 0 &&
+    value <= max &&
+    (!integer || Number.isInteger(value));
   if (
-    !s ||
-    !([1, 2] as readonly unknown[]).includes(s.version) ||
-    !num(s.seed, 4294967295, true) ||
-    !Array.isArray(s.tiles) ||
-    s.tiles.length !== WIDTH * HEIGHT ||
-    s.tiles.some((t) => !num(t, 8, true)) ||
-    !num(s.x, WIDTH - 1) ||
-    !num(s.y, HEIGHT - 1.5 - BODY_HALF + 1e-6) ||
-    !s.upgrades ||
-    ["drill", "tank", "cargo", "hull"].some(
-      (k) => !num(s.upgrades[k as Upgrade], 3, true),
-    ) ||
-    !num(s.money, 1e12, true) ||
-    !num(s.fuel, maxFuel(s)) ||
-    !num(s.hull, maxHull(s)) ||
-    !Array.isArray(s.inventory) ||
-    s.inventory.length > capacity(s) ||
-    s.inventory.some((o) => ![3, 4, 5, 6].includes(o)) ||
-    !num(s.mined, WIDTH * HEIGHT, true) ||
-    !num(s.deepest, (HEIGHT - SURFACE) * 10, true) ||
-    s.tiles[Math.round(s.y) * WIDTH + Math.round(s.x)] !== 0 ||
-    s.tiles.slice(0, WIDTH * (SURFACE + 1)).some((t) => t !== 0) ||
-    s.tiles.slice(-WIDTH).some((t) => t !== 8)
+    !record(source) ||
+    ![1, 2, 3].includes(source.version as number) ||
+    !record(source.upgrades)
   )
-    throw new Error(
-      "Unsupported or damaged save. Existing save has been kept.",
-    );
+    throw invalid();
+  const legacy = source.version !== 3;
+  const required = legacy
+    ? UPGRADE_KEYS.filter((key) => key !== "engine")
+    : UPGRADE_KEYS;
+  for (const key of required)
+    if (
+      !Object.hasOwn(source.upgrades, key) ||
+      !num(
+        source.upgrades[key],
+        legacy ? 3 : UPGRADE_LEVELS[key].length - 1,
+        true,
+      )
+    )
+      throw invalid();
+  const old = source.upgrades as Record<Upgrade, number>;
+  const oldFuel = legacy ? 100 + old.tank * 50 : UPGRADE_LEVELS.tank[old.tank]!;
+  const oldHull = legacy ? 100 + old.hull * 40 : UPGRADE_LEVELS.hull[old.hull]!;
+  const oldCargo = legacy
+    ? 8 + old.cargo * 6
+    : UPGRADE_LEVELS.cargo[old.cargo]!;
+  if (
+    !num(source.seed, 4294967295, true) ||
+    !Array.isArray(source.tiles) ||
+    source.tiles.length !== WIDTH * HEIGHT ||
+    source.tiles.some((tile) => !num(tile, legacy ? 8 : 14, true)) ||
+    !num(source.x, WIDTH - 1) ||
+    !num(source.y, HEIGHT - 1.5 - BODY_HALF + 1e-6) ||
+    !num(source.money, 1e12, true) ||
+    !num(source.fuel, oldFuel) ||
+    !num(source.hull, oldHull) ||
+    !Array.isArray(source.inventory) ||
+    source.inventory.length > oldCargo ||
+    source.inventory.some((ore) =>
+      legacy ? ![3, 4, 5, 6].includes(ore) : !isOre(ore),
+    ) ||
+    !num(source.mined, WIDTH * HEIGHT, true) ||
+    !num(source.deepest, (HEIGHT - SURFACE) * 10, true) ||
+    source.tiles.slice(0, WIDTH * (SURFACE + 1)).some((tile) => tile !== 0) ||
+    source.tiles.slice(-WIDTH).some((tile) => tile !== 8)
+  )
+    throw invalid();
+  const tierAtLeast = (key: Upgrade, value: number) => {
+    const found = UPGRADE_LEVELS[key].findIndex((stat) => stat >= value - 1e-8);
+    return found < 0 ? UPGRADE_LEVELS[key].length - 1 : found;
+  };
+  // Preserve equipment capability rather than reusing tier numbers from the
+  // shorter prototype tables. Fuel and hull retain their condition fractions.
+  const upgrades: Record<Upgrade, number> = legacy
+    ? {
+        drill: tierAtLeast("drill", 2 * (1 + old.drill * 0.55)),
+        tank: tierAtLeast("tank", oldFuel / 10),
+        cargo: tierAtLeast("cargo", oldCargo),
+        hull: tierAtLeast("hull", oldHull / 10),
+        engine: 0,
+      }
+    : {
+        drill: old.drill,
+        tank: old.tank,
+        cargo: old.cargo,
+        hull: old.hull,
+        engine: old.engine,
+      };
+  const s: State = {
+    version: 3,
+    seed: source.seed,
+    tiles: [...source.tiles],
+    x: source.x,
+    y: source.y,
+    money: source.money,
+    fuel: source.fuel,
+    hull: source.hull,
+    inventory: [...source.inventory],
+    upgrades,
+    mined: source.mined,
+    deepest: source.deepest,
+  };
+  if (legacy) {
+    s.fuel = (s.fuel / oldFuel) * maxFuel(s);
+    s.hull = (s.hull / oldHull) * maxHull(s);
+  }
   for (const x of [s.x - BODY_HALF + 1e-6, s.x + BODY_HALF - 1e-6])
     for (const y of [s.y - BODY_HALF + 1e-6, s.y + BODY_HALF - 1e-6])
       if (s.tiles[Math.floor(y + 0.5) * WIDTH + Math.floor(x + 0.5)] !== 0)
         throw new Error(
           "Saved vehicle overlaps solid terrain. Existing save has been kept.",
         );
-  return { ...s, version: 2 };
+  return s;
 }

@@ -5,6 +5,13 @@ import {
   decodeSave,
   SURFACE,
   WIDTH,
+  HEIGHT,
+  ORES,
+  UPGRADE_KEYS,
+  UPGRADE_LEVELS,
+  upgradeCost,
+  isOre,
+  cargoMass,
   capacity,
   maxFuel,
   maxHull,
@@ -32,28 +39,41 @@ function until(
   );
 }
 describe("first playable loop", () => {
-  it("mines, returns, sells, services, upgrades and restores a complete expedition", () => {
+  it("funds a real upgrade through two mining trips and restores the full expedition", () => {
     const m = new Mine();
-    until(m, "down", () => m.state.inventory.length === 4);
-    expect(m.state.inventory).toEqual([3, 3, 3, 3]);
-    expect(Math.round(m.state.y)).toBe(7);
-    expect(m.state.fuel).toBeLessThan(100);
-    expect(m.state.hull).toBeLessThan(100);
-    expect(m.service("sell")).toBe(false);
-    until(m, "up", () => m.docked);
-    expect(m.docked).toBe(true);
-    expect(cargoValue(m.state)).toBe(100);
-    expect(m.service("sell")).toBe(true);
-    expect(m.state.money).toBe(160);
-    expect(m.service("refuel")).toBe(true);
-    expect(m.state.fuel).toBe(100);
-    expect(m.service("repair")).toBe(true);
-    expect(m.state.hull).toBe(100);
+    expect([
+      m.state.money,
+      m.state.fuel,
+      m.state.hull,
+      capacity(m.state),
+    ]).toEqual([20, 6, 10, 7]);
+    for (let trip = 0; trip < 2; trip++) {
+      if (trip) {
+        until(m, "right", () => m.state.x >= 12.6);
+        until(m, "left", () => m.velocityX <= 0);
+      }
+      until(
+        m,
+        "down",
+        () => m.state.inventory.length === capacity(m.state),
+        20,
+      );
+      expect(m.state.fuel).toBeGreaterThan(0);
+      expect(m.state.hull).toBe(10); // Ordinary soil drilling does not damage the hull.
+      expect(m.service("sell")).toBe(false);
+      until(m, "up", () => m.docked);
+      expect(m.service("sell")).toBe(true);
+      expect(m.service("refuel")).toBe(true);
+      expect(m.state.fuel).toBe(10);
+    }
+    expect(m.state.money).toBeGreaterThanOrEqual(750);
     expect(m.service("drill")).toBe(true);
     expect(m.state.upgrades.drill).toBe(1);
+    expect(m.state.money).toBe(120);
     const restored = decodeSave(JSON.stringify(m.state));
     expect(restored).toEqual(m.state);
-    expect(restored.tiles[7 * WIDTH + 12]).toBe(0);
+    expect(restored.tiles[10 * WIDTH + 12]).toBe(0);
+    expect(restored.tiles[10 * WIDTH + 13]).toBe(0);
     expect(restored.inventory).toEqual([]);
   });
   it("stays docked over a mined shaft when thrust is released", () => {
@@ -108,8 +128,8 @@ describe("first playable loop", () => {
     m.recover();
     expect(m.state.y).toBe(SURFACE);
     expect(m.state.inventory).toEqual([]);
-    expect(m.state.money).toBe(48);
-    expect(m.state.fuel).toBe(50);
+    expect(m.state.money).toBe(16);
+    expect(m.state.fuel).toBe(5);
   });
   it("charges for partial service, refuses unaffordable upgrades and caps levels", () => {
     const m = new Mine();
@@ -119,13 +139,13 @@ describe("first playable loop", () => {
     expect(m.state.fuel).toBe(3);
     expect(m.state.money).toBe(0);
     expect(m.service("drill")).toBe(false);
-    m.state.money = 2000;
+    m.state.money = 3000;
     for (const key of ["tank", "cargo", "hull"] as const)
       expect(m.service(key)).toBe(true);
-    expect(maxFuel(m.state)).toBe(150);
-    expect(maxHull(m.state)).toBe(140);
-    expect(capacity(m.state)).toBe(14);
-    m.state.upgrades.drill = 3;
+    expect(maxFuel(m.state)).toBe(15);
+    expect(maxHull(m.state)).toBe(17);
+    expect(capacity(m.state)).toBe(15);
+    m.state.upgrades.drill = 6;
     expect(m.service("drill")).toBe(false);
   });
   it("restores a loaded inventory, damaged hull, fuel, money, upgrades and excavated terrain", () => {
@@ -146,11 +166,11 @@ describe("first playable loop", () => {
     for (let y = 4; y <= 11; y++) m.state.tiles[y * WIDTH + 12] = 0;
     until(m, undefined, () => m.grounded);
     expect(m.state.y).toBeCloseTo(11.15, 4);
-    expect(m.state.hull).toBeLessThan(100);
+    expect(m.state.hull).toBeLessThan(10);
     const hullAfterLanding = m.state.hull;
     m.state.tiles[12 * WIDTH + 12] = 7;
     until(m, "down", () => m.state.mined === 1);
-    expect(m.state.hull).toBe(hullAfterLanding - 30);
+    expect(m.state.hull).toBe(hullAfterLanding - 3);
     m.state.hull = 0;
     const y = m.state.y;
     hold(m, "up", 1);
@@ -158,7 +178,7 @@ describe("first playable loop", () => {
   });
   it("rejects corrupt, future, oversized and impossible saves", () => {
     for (const patch of [
-      { version: 3 },
+      { version: 4 },
       { money: -1 },
       { money: 1.5 },
       { fuel: 999 },
@@ -217,8 +237,8 @@ describe("flight, ledges, and drilling regression coverage", () => {
     const light = chamber(),
       heavy = chamber();
     light.state.x = heavy.state.x = 11;
-    light.state.inventory = Array(8).fill(3);
-    heavy.state.inventory = Array(8).fill(6);
+    light.state.inventory = Array(7).fill(3);
+    heavy.state.inventory = Array(7).fill(6);
     hold(light, { up: true, right: true }, 0.4);
     hold(heavy, { up: true, right: true }, 0.4);
     expect(light.state.inventory.length).toBe(heavy.state.inventory.length);
@@ -226,15 +246,15 @@ describe("flight, ledges, and drilling regression coverage", () => {
     expect(light.state.y).toBeLessThan(heavy.state.y - 0.05);
     expect(heavy.velocityY).toBeLessThan(0);
   });
-  it("can return with the heaviest full upgraded hold before engine upgrades exist", () => {
+  it("can return with a full largest bay of heavy ore without stranding existing saves", () => {
     const m = chamber();
     m.state.y = 15;
-    m.state.upgrades.cargo = 3;
-    m.state.inventory = Array(capacity(m.state)).fill(6);
+    m.state.upgrades.cargo = 5;
+    m.state.inventory = Array(capacity(m.state)).fill(14);
     until(m, "up", () => m.docked);
-    expect(m.state.inventory).toHaveLength(26);
+    expect(m.state.inventory).toHaveLength(120);
     expect(m.state.fuel).toBeGreaterThan(0);
-    expect(m.state.hull).toBe(100);
+    expect(m.state.hull).toBe(10);
     expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
   });
   it("supports upward thrust and lateral steering in the same tick", () => {
@@ -366,7 +386,7 @@ describe("flight, ledges, and drilling regression coverage", () => {
         released = falling();
       held.tick(1 / 120, direction);
       released.tick(1 / 120);
-      expect(released.state.hull).toBeLessThan(100);
+      expect(released.state.hull).toBeLessThan(10);
       expect(held.state.hull).toBe(released.state.hull);
       expect(held.state.mined).toBe(0);
       expect(held.progress).toBe(0);
@@ -410,7 +430,7 @@ describe("flight, ledges, and drilling regression coverage", () => {
     hold(m, undefined, 0.4);
     hold(m, "up", 0.6);
     expect(m.velocityY).toBeLessThan(0);
-    expect(m.state.hull).toBe(100);
+    expect(m.state.hull).toBe(10);
   });
   it("has equivalent motion at 30 and 120 simulation updates per second", () => {
     const a = chamber(),
@@ -421,17 +441,39 @@ describe("flight, ledges, and drilling regression coverage", () => {
     expect(a.state.y).toBeCloseTo(b.state.y, 6);
     expect(a.state.fuel).toBeCloseTo(b.state.fuel, 6);
   });
-  it("migrates old integer-position saves without losing terrain, money or upgrades", () => {
-    const legacy = {
-      ...createState(),
-      version: 1,
-      money: 345,
-      upgrades: { drill: 1, tank: 1, hull: 0, cargo: 0 },
-    };
-    legacy.tiles[4 * WIDTH + 12] = 0;
-    const loaded = decodeSave(JSON.stringify(legacy));
-    expect(loaded).toEqual({ ...legacy, version: 2 });
-  });
+  it.each([1, 2])(
+    "migrates schema %i without losing excavations, cargo or equipment capability",
+    (version) => {
+      const legacy = {
+        ...createState(),
+        version,
+        money: 345,
+        fuel: 75,
+        hull: 80,
+        inventory: Array(8).fill(3),
+        upgrades: { drill: 1, tank: 1, hull: 2, cargo: 0 },
+      };
+      legacy.tiles = legacy.tiles.map((tile) => (tile > 8 ? 1 : tile));
+      legacy.tiles[4 * WIDTH + 12] = 0;
+      const loaded = decodeSave(JSON.stringify(legacy));
+      expect(loaded.version).toBe(3);
+      expect(loaded.tiles).toEqual(legacy.tiles);
+      expect(loaded.inventory).toEqual(legacy.inventory);
+      expect(loaded.money).toBe(345);
+      expect([loaded.x, loaded.y]).toEqual([legacy.x, legacy.y]);
+      expect(loaded.upgrades).toEqual({
+        drill: 2,
+        tank: 1,
+        hull: 2,
+        cargo: 1,
+        engine: 0,
+      });
+      expect(loaded.fuel / maxFuel(loaded)).toBeCloseTo(75 / 150);
+      expect(loaded.hull / maxHull(loaded)).toBeCloseTo(80 / 180);
+      expect(capacity(loaded)).toBeGreaterThanOrEqual(8);
+      expect(decodeSave(JSON.stringify(loaded))).toEqual(loaded);
+    },
+  );
   it("round-trips fractional position and rejects a hull overlapping an adjacent solid cell", () => {
     const m = chamber();
     hold(m, { up: true, right: true }, 0.25);
@@ -449,5 +491,197 @@ describe("flight, ledges, and drilling regression coverage", () => {
     const before = JSON.stringify(m.state);
     hold(m, { up: true, right: true }, 1);
     expect(JSON.stringify(m.state)).toBe(before);
+  });
+});
+
+describe("caves and reference progression", () => {
+  it.each([1, 2, 42, 73021, 123456])(
+    "creates reproducible chambers, ledges and every mineral at valid depths for seed %i",
+    (seed) => {
+      const s = createState(seed),
+        underground = s.tiles.slice(4 * WIDTH, -WIDTH);
+      const emptyFraction =
+        underground.filter((tile) => tile === 0).length / underground.length;
+      expect(emptyFraction).toBeGreaterThan(0.15);
+      expect(emptyFraction).toBeLessThan(0.45);
+      expect(createState(seed).tiles).toEqual(s.tiles);
+      expect(s.tiles.slice(-WIDTH)).toEqual(Array(WIDTH).fill(8));
+      const minimumRows: Record<number, number> = {
+        3: 4,
+        9: 5,
+        10: 8,
+        4: 14,
+        11: 24,
+        12: 36,
+        5: 48,
+        13: 62,
+        6: 76,
+        14: 88,
+        7: 52,
+      };
+      for (const ore of Object.keys(ORES).map(Number))
+        expect(underground).toContain(ore);
+      for (let index = 4 * WIDTH; index < WIDTH * (HEIGHT - 1); index++) {
+        const tile = s.tiles[index];
+        if (minimumRows[tile])
+          expect(Math.floor(index / WIDTH)).toBeGreaterThanOrEqual(
+            minimumRows[tile],
+          );
+      }
+      // At least one roomy chamber has a floor: flight and landing are useful.
+      let chamberFloor = false;
+      for (let y = 5; y < HEIGHT - 2; y++)
+        for (let x = 1; x < WIDTH - 2; x++) {
+          const at = (dx: number, dy: number) =>
+            s.tiles[(y + dy) * WIDTH + x + dx];
+          if (
+            at(0, 0) === 0 &&
+            at(1, 0) === 0 &&
+            at(0, -1) === 0 &&
+            at(1, -1) === 0 &&
+            at(0, 1) !== 0
+          )
+            chamberFloor = true;
+        }
+      expect(chamberFloor).toBe(true);
+    },
+  );
+
+  it("uses the verified prices, capacities and values rather than the shortened prototype economy", () => {
+    const m = new Mine();
+    expect(
+      Object.values(ORES)
+        .map((ore) => ore.value)
+        .sort((a, b) => a - b),
+    ).toEqual([30, 60, 100, 250, 750, 2000, 5000, 20000, 100000, 500000]);
+    for (const key of UPGRADE_KEYS) expect(upgradeCost(m.state, key)).toBe(750);
+    m.state.upgrades = { drill: 6, tank: 6, hull: 6, cargo: 5, engine: 6 };
+    expect([maxFuel(m.state), maxHull(m.state), capacity(m.state)]).toEqual([
+      150, 180, 120,
+    ]);
+    for (const key of UPGRADE_KEYS)
+      expect(upgradeCost(m.state, key)).toBe(Infinity);
+  });
+
+  it("collects all ten mineral identifiers and separates mass, slots and sale value", () => {
+    for (const ore of Object.keys(ORES).map(Number)) {
+      expect(isOre(ore)).toBe(true);
+      const m = new Mine();
+      m.state.tiles[4 * WIDTH + 12] = ore;
+      until(m, "down", () => m.state.mined === 1);
+      expect(m.state.inventory).toEqual([ore]);
+      expect(cargoValue(m.state)).toBe(ORES[ore as keyof typeof ORES].value);
+      expect(cargoMass(m.state)).toBe(ORES[ore as keyof typeof ORES].mass);
+      expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+    }
+    expect(isOre("3")).toBe(false);
+    expect(isOre("__proto__")).toBe(false);
+  });
+
+  it("engine upgrades increase steering and lift while using more fuel", () => {
+    const stock = chamber(),
+      upgraded = chamber();
+    stock.state.y = upgraded.state.y = 15;
+    stock.state.x = upgraded.state.x = 11;
+    upgraded.state.upgrades.engine = 6;
+    hold(stock, { up: true, right: true }, 0.4);
+    hold(upgraded, { up: true, right: true }, 0.4);
+    expect(upgraded.state.x).toBeGreaterThan(stock.state.x + 0.15);
+    expect(upgraded.state.y).toBeLessThan(stock.state.y - 0.15);
+    expect(upgraded.state.fuel).toBeLessThan(stock.state.fuel);
+    expect((6 - upgraded.state.fuel) / (6 - stock.state.fuel)).toBeCloseTo(
+      1.4,
+      6,
+    );
+  });
+
+  it("uses time-based liters with no fuel charge for docked idle and no soil hull wear", () => {
+    const parked = new Mine();
+    hold(parked, undefined, 10);
+    expect(parked.state.fuel).toBe(6);
+    const idle = chamber();
+    idle.state.y = 12;
+    hold(idle, undefined, 1);
+    expect(6 - idle.state.fuel).toBeCloseTo(0.063, 6);
+    const thrust = chamber();
+    thrust.state.y = 15;
+    hold(thrust, "up", 1);
+    expect(6 - thrust.state.fuel).toBeCloseTo(0.189, 6);
+    const drill = new Mine();
+    until(drill, "down", () => drill.state.mined === 1);
+    expect(6 - drill.state.fuel).toBeGreaterThan(0.2);
+    expect(6 - drill.state.fuel).toBeLessThan(0.5);
+    expect(drill.state.hull).toBe(10);
+    const exhausted = chamber();
+    exhausted.state.fuel = 0.000001;
+    const position = [exhausted.state.x, exhausted.state.y];
+    exhausted.tick(1 / 120, { up: true, right: true });
+    expect(exhausted.state.fuel).toBe(0);
+    expect([exhausted.state.x, exhausted.state.y]).toEqual(position);
+  });
+
+  it("allows fractional repairs with a small balance and charges the original rate", () => {
+    const m = new Mine();
+    m.state.hull = 4.25;
+    m.state.money = 5;
+    expect(m.service("repair")).toBe(true);
+    expect(m.state.hull).toBeCloseTo(4.25 + 5 / 15);
+    expect(m.state.money).toBe(0);
+    m.state.money = 100;
+    expect(m.service("repair")).toBe(true);
+    expect(m.state.hull).toBe(10);
+    expect(m.state.money).toBe(18);
+    expect(m.service("constructor" as "engine")).toBe(false);
+  });
+});
+
+describe("progression save migration and validation", () => {
+  it("retains a full legacy bay, all upgrade benefits and condition fractions", () => {
+    const legacy = {
+      ...createState(),
+      version: 2,
+      fuel: 200,
+      hull: 110,
+      money: 1500,
+      inventory: Array(26).fill(6),
+      upgrades: { drill: 3, tank: 3, hull: 3, cargo: 3 },
+    };
+    legacy.tiles = legacy.tiles.map((tile) => (tile > 8 ? 1 : tile));
+    legacy.tiles[4 * WIDTH + 12] = 0;
+    const loaded = decodeSave(JSON.stringify(legacy));
+    expect(loaded.upgrades).toEqual({
+      drill: 4,
+      tank: 2,
+      hull: 2,
+      cargo: 3,
+      engine: 0,
+    });
+    expect(loaded.inventory).toEqual(legacy.inventory);
+    expect(loaded.tiles).toEqual(legacy.tiles);
+    expect(loaded.fuel).toBe(20);
+    expect(loaded.hull).toBe(15);
+    expect(loaded.money).toBe(1500);
+    expect(
+      UPGRADE_LEVELS.drill[loaded.upgrades.drill] / 2,
+    ).toBeGreaterThanOrEqual(2.65);
+  });
+
+  it("rejects malformed new and legacy saves before modifying their representation", () => {
+    const base = createState();
+    for (const patch of [
+      { upgrades: { drill: 0, tank: 0, hull: 0, cargo: 0 } },
+      { upgrades: { ...base.upgrades, engine: 7 } },
+      { upgrades: { ...base.upgrades, cargo: 6 } },
+      { inventory: Array(8).fill(3) },
+      { inventory: ["3"] },
+      { tiles: base.tiles.map((tile, i) => (i === WIDTH * 10 ? 15 : tile)) },
+      { version: 2 }, // A legacy map cannot contain newly introduced identifiers.
+    ])
+      expect(() => decodeSave(JSON.stringify({ ...base, ...patch }))).toThrow();
+    expect(() => decodeSave(" ".repeat(150001))).toThrow();
+    expect(() =>
+      decodeSave('{"version":3,"upgrades":{"__proto__":{"engine":0}}}'),
+    ).toThrow();
+    expect(decodeSave(JSON.stringify(base))).toEqual(base);
   });
 });
