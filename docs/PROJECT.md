@@ -13,7 +13,7 @@
 
 ## Implementation decisions
 
-The original's economy and continuous mass-based physics are documented; the prototype now uses continuous physics with simpler provisional constants for a short first-playable loop. All balance constants are provisional. Source and artwork are newly authored. No original SWF, decompiled source, music or artwork is tracked or bundled into the production app.
+The original's economy and continuous mass-based physics are documented; the prototype now uses continuous physics with simpler provisional constants for a short first-playable loop. Economy, resource units and progression balance remain provisional; the movement calibration is recorded in MOVEMENT_REFERENCE.md. Source and artwork are newly authored. No original SWF, decompiled source, music or artwork is tracked or bundled into the production app.
 
 The terrain model and save schema are independent of Phaser so their behavior can be tested without a browser. The renderer follows continuous vehicle position, advances through a selected drill cut and follows depth. Simulation uses bounded substeps from unsmoothed frame deltas; long background pauses do not consume an entire session of fuel. Surface docking prevents immediately falling back into a mined shaft when interacting with services.
 
@@ -56,3 +56,19 @@ Cloud setup details: the Docker daemon had no egress proxy, so official Docker H
 Local browser saves do not synchronize to the website or other devices. The temporary cloud workspace is not an always-on public Docker host; Pages provides the durable public game address independently of the workspace and the user's computer.
 
 Live deployment verification completed: the public HTTPS site passed the same production browser smoke test as the Docker container (mining, terrain/inventory reload, surface sale, upgrade persistence and mobile touch/layout, with no page errors). GitHub Actions completed successfully after Pages activation. The container was also restarted and returned healthy. To validate the public site from the cloud browser, its already-trusted proxy CA had to be installed in Chromium's NSS trust store in the same execution context; no certificate-verification bypass was used.
+
+## Movement calibration — 2026-10-26
+
+The first approved follow-up batch tunes movement and drilling; cave generation, station redesign, new artwork and the full original economy remain later stages.
+
+Ground and air coasting now use reference-informed damping rather than stronger braking when a key is released. Acceleration, flight speeds and gravity use approximate continuous equivalents of the inspected 42 fps / 50 px game. Cargo uses the verified counterpart masses for the four existing minerals (1/2/6/10) and a base rig mass of 198. A deliberate minimum lift reserve keeps every existing cargo upgrade flyable until engine upgrades exist; it is not claimed as original behavior.
+
+Downward targeting recognizes a solid tile under either tread when the center overhangs a gap. A cut begins only after vertical movement has settled, preserving landing damage. Downward cuts end at the bottom of the cleared cell, eliminating the extra settling pause before another cut. Pressing Up during a cut now allows it to finish before thrust takes over, matching the reference's committed-cut behavior and removing visual snapback. The field note and launch instructions reflect this control change.
+
+Stock soft-terrain cuts use a 1.0 s downward / 0.75 s sideways baseline and a source-informed depth factor. Stone resistance, upgrade multipliers, fuel costs, hull wear, collision dimensions and surface docking remain remake choices. Existing schema-1/schema-2 saves retain terrain, inventory, condition, credits and upgrades; no save reset is required.
+
+Evidence, timings, instrumentation details and remaining fidelity limits are in MOVEMENT_REFERENCE.md. Original captures and instrumented SWFs remain ignored research artifacts. Before/after remake captures use legitimate saves and ordinary keyboard/touch input. A deterministic movement exploration also validated 10,800 save snapshots across 30 seeded one-minute input traces without an invalid vehicle/terrain overlap.
+
+Validation for this batch: 35 simulation tests and 15 browser checks pass, including the full first expedition, save compatibility, offset landing-to-cut, overhanging tread support, impact damage, committed cuts, cargo mass and independent touch release/cancellation. TypeScript, production build and formatting pass. The rebuilt Docker service is healthy and passed its desktop/mobile production smoke test. The first four Iron still fund refueling, repairs and a drill upgrade, leaving $49. Browser emulation does not replace a physical Android playtest.
+
+The before/after comparison is saved locally at ignored `artifacts/movement-comparison.html` (with a PNG overview and separate scenario images/reports). It uses identical valid saved terrain and explicit browser-frame-clock input sequences against the previous checkpoint and this change, so screenshot/tool overhead does not extend held input. These are qualitative remake comparisons; original-game timing evidence is recorded separately.

@@ -113,11 +113,11 @@ try {
   );
   assert.equal(flown.version, 2);
   checks++;
-  // Load a legitimate save with a ledge at 40 m beside a shaft continuing to 170 m.
-  // Drive the scenario with ordinary keyboard input and inspect the normal Save output.
+  // Fall onto an offset ledge at 40 m beside a shaft continuing to 170 m.
+  // The fixture starts airborne; ordinary keyboard input then cuts from the ledge.
   const ledge = structuredClone(flown);
-  ledge.x = 13;
-  ledge.y = 7.15;
+  ledge.x = 13.1;
+  ledge.y = 5.4;
   ledge.deepest = 40;
   ledge.fuel = 100;
   ledge.hull = 100;
@@ -125,6 +125,8 @@ try {
     for (let x = 10; x <= 13; x++) ledge.tiles[y * 24 + x] = 0;
   ledge.tiles[8 * 24 + 13] = 1;
   ledge.tiles[7 * 24 + 14] = 1;
+  ledge.tiles[8 * 24 + 14] = 1;
+  ledge.tiles[7 * 24 + 15] = 8;
   await page.goto(base + "/reference/");
   await page.evaluate(
     (state) =>
@@ -133,8 +135,28 @@ try {
   );
   await page.goto(base);
   await page.locator("canvas").waitFor();
+  await page.waitForFunction(() => {
+    document.querySelector("#save").click();
+    const state = JSON.parse(localStorage.getItem("motherload.frontier.v1"));
+    return state.y >= 7.14 && state.y < 7.16;
+  });
+  const landed = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.equal(
+    landed.x,
+    13.1,
+    "the rig must land at the fractional horizontal offset",
+  );
   await page.keyboard.down("ArrowRight");
-  await page.waitForTimeout(950);
+  await page.waitForFunction(() => {
+    document.querySelector("#save").click();
+    return (
+      JSON.parse(localStorage.getItem("motherload.frontier.v1")).tiles[
+        7 * 24 + 14
+      ] === 0
+    );
+  });
   await page.keyboard.up("ArrowRight");
   await page.locator("#pause").click();
   await page.locator("#save").click();
@@ -151,6 +173,89 @@ try {
     "the rig must stay on the ledge instead of dropping to the shaft bottom",
   );
   await page.screenshot({ path: "artifacts/ledge-drill.png", fullPage: true });
+  checks++;
+  // Load through the UI: reloading directly after changing storage would fire
+  // pagehide autosave and replace this fixture with the preceding expedition.
+  const committedCut = structuredClone(flown);
+  committedCut.x = 12.1;
+  committedCut.y = 3.15;
+  committedCut.fuel = 100;
+  committedCut.hull = 100;
+  committedCut.inventory = [];
+  committedCut.mined = 0;
+  committedCut.tiles[4 * 24 + 12] = 3;
+  await page.evaluate(
+    (state) =>
+      localStorage.setItem("motherload.frontier.v1", JSON.stringify(state)),
+    committedCut,
+  );
+  await page.locator("#load").click();
+  await page.keyboard.down("ArrowDown");
+  await page.locator("#pause").click();
+  await page.waitForTimeout(250);
+  await page.keyboard.up("ArrowDown");
+  await page.keyboard.down("ArrowUp");
+  await page.waitForFunction(() => {
+    document.querySelector("#save").click();
+    const state = JSON.parse(localStorage.getItem("motherload.frontier.v1"));
+    return state.tiles[4 * 24 + 12] === 0 && state.y < 3.8;
+  });
+  await page.keyboard.up("ArrowUp");
+  await page.locator("#pause").click();
+  await page.locator("#save").click();
+  const finishedCut = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.equal(
+    finishedCut.mined,
+    1,
+    "Up must let the selected cut finish exactly once",
+  );
+  assert.deepEqual(finishedCut.inventory, [3]);
+  assert.equal(
+    finishedCut.tiles[4 * 24 + 12],
+    0,
+    "Up must not restore the cut tile",
+  );
+  checks++;
+
+  const flight = structuredClone(flown);
+  flight.x = 11;
+  flight.y = 15;
+  flight.fuel = 100;
+  flight.hull = 100;
+  for (let y = 4; y <= 24; y++)
+    for (let x = 8; x <= 18; x++) flight.tiles[y * 24 + x] = 0;
+  await page.evaluate(
+    (state) =>
+      localStorage.setItem("motherload.frontier.v1", JSON.stringify(state)),
+    flight,
+  );
+  await page.locator("#load").click();
+  await page.keyboard.down("ArrowUp");
+  await page.keyboard.down("ArrowRight");
+  await page.locator("#pause").click();
+  await page.waitForTimeout(450);
+  await page.locator("#save").evaluate((button) => button.click());
+  const powered = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  await page.keyboard.up("ArrowUp");
+  await page.keyboard.up("ArrowRight");
+  await page.waitForTimeout(150);
+  await page.locator("#pause").click();
+  await page.locator("#save").click();
+  const coasting = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.ok(
+    powered.x > flight.x && powered.y < flight.y,
+    "thrust and steering must move diagonally within an open shaft",
+  );
+  assert.ok(
+    coasting.x > powered.x + 0.05 && coasting.y < powered.y,
+    "releasing flight controls must retain momentum before gravity reverses ascent",
+  );
   checks++;
   await page.goto(base + "/reference/");
   await page.waitForFunction(() =>
@@ -196,6 +301,13 @@ try {
   checks++;
   await phone.locator("#new-game").click();
   await phone.locator("#confirm-action").click();
+  await phone.locator("#pause").click();
+  await phone.evaluate(
+    (state) =>
+      localStorage.setItem("motherload.frontier.v1", JSON.stringify(state)),
+    flight,
+  );
+  await phone.locator("#load").click();
   await down.scrollIntoViewIfNeeded();
   const upBox = await phone.locator('[data-dir="up"]').boundingBox();
   const rightBox = await phone.locator('[data-dir="right"]').boundingBox();
@@ -209,23 +321,32 @@ try {
     x: rightBox.x + rightBox.width / 2,
     y: rightBox.y + rightBox.height / 2,
   };
+  await phone.evaluate(() => {
+    window.touchEvents = [];
+    for (const type of ["pointerup", "pointercancel"])
+      document.querySelector(".touch").addEventListener(type, (event) => {
+        window.touchEvents.push({ type, direction: event.target.dataset.dir });
+      });
+  });
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: [upPoint, rightPoint],
   });
+  await phone.locator("#pause").evaluate((button) => button.click());
   await phone.waitForTimeout(350);
   await phone.locator("#save").evaluate((button) => button.click());
   const both = await phone.evaluate(() =>
     JSON.parse(localStorage.getItem("motherload.frontier.v1")),
   );
   assert.ok(
-    both.x > 12.2 && both.y < 3,
+    both.x > flight.x + 0.2 && both.y < flight.y - 0.1,
     "two fingers must steer and thrust together",
   );
-  // Removing the right contact must leave the up contact active.
+  // CDP touchEnd names the released contact. A touchMove with only Up does
+  // not release Right and therefore cannot verify independent finger release.
   await cdp.send("Input.dispatchTouchEvent", {
-    type: "touchMove",
-    touchPoints: [upPoint],
+    type: "touchEnd",
+    touchPoints: [rightPoint],
   });
   await phone.waitForTimeout(700);
   await phone.locator("#save").evaluate((button) => button.click());
@@ -236,10 +357,28 @@ try {
     upOnly.y < both.y - 1,
     "releasing one finger must not release the other",
   );
+  assert.deepEqual(
+    await phone.evaluate(() => window.touchEvents),
+    [{ type: "pointerup", direction: "right" }],
+    "the right contact must release without releasing Up",
+  );
   await cdp.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
+    type: "touchCancel",
     touchPoints: [],
   });
+  await phone.waitForTimeout(1200);
+  await phone.locator("#save").evaluate((button) => button.click());
+  const cancelled = await phone.evaluate(() =>
+    JSON.parse(localStorage.getItem("motherload.frontier.v1")),
+  );
+  assert.ok(
+    cancelled.y > upOnly.y + 0.5,
+    "cancelling the remaining touch must stop thrust and allow the rig to fall",
+  );
+  assert.deepEqual(await phone.evaluate(() => window.touchEvents), [
+    { type: "pointerup", direction: "right" },
+    { type: "pointercancel", direction: "up" },
+  ]);
   checks++;
   await phone.screenshot({
     path: "artifacts/android-layout.png",
@@ -247,7 +386,7 @@ try {
   });
   assert.deepEqual(errors, []);
   console.log(
-    `${checks} browser checks passed: keyboard mining, save/reload, surface services, upgrade, pause, recovery, corrupt-save protection, reset, Ruffle initialization, touch/layout, combined keyboard input, multi-touch release, and intermediate-ledge drilling. No page errors.`,
+    `${checks} browser checks passed: keyboard mining, save/reload, surface services, upgrade, pause, recovery, corrupt-save protection, reset, Ruffle initialization, touch/layout, combined keyboard input, touch release/cancel, landing then ledge drilling, committed-cut thrust, and flight coasting. No page errors.`,
   );
 } finally {
   await browser.close();

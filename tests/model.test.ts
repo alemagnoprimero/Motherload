@@ -59,7 +59,7 @@ describe("first playable loop", () => {
   it("stays docked over a mined shaft when thrust is released", () => {
     const m = new Mine();
     hold(m, "down", 1.4);
-    hold(m, "up", 1);
+    until(m, "up", () => m.docked);
     hold(m, undefined, 2);
     expect(m.docked).toBe(true);
     expect(m.service("sell")).toBe(true);
@@ -68,8 +68,10 @@ describe("first playable loop", () => {
     const a = new Mine(),
       b = new Mine();
     b.state.upgrades.drill = 1;
-    hold(a, "down", 0.5);
-    hold(b, "down", 0.5);
+    for (let i = 0; i < 120 * 3 && b.state.mined === 0; i++) {
+      a.tick(1 / 120, "down");
+      b.tick(1 / 120, "down");
+    }
     expect(a.state.mined).toBe(0);
     expect(b.state.mined).toBe(1);
   });
@@ -142,12 +144,13 @@ describe("first playable loop", () => {
     const m = new Mine();
     m.state.y = 4;
     for (let y = 4; y <= 11; y++) m.state.tiles[y * WIDTH + 12] = 0;
-    hold(m, undefined, 2);
+    until(m, undefined, () => m.grounded);
     expect(m.state.y).toBeCloseTo(11.15, 4);
-    expect(m.state.hull).toBe(88);
+    expect(m.state.hull).toBeLessThan(100);
+    const hullAfterLanding = m.state.hull;
     m.state.tiles[12 * WIDTH + 12] = 7;
-    hold(m, "down", 0.7);
-    expect(m.state.hull).toBe(58);
+    until(m, "down", () => m.state.mined === 1);
+    expect(m.state.hull).toBe(hullAfterLanding - 30);
     m.state.hull = 0;
     const y = m.state.y;
     hold(m, "up", 1);
@@ -192,8 +195,47 @@ describe("flight, ledges, and drilling regression coverage", () => {
     hold(m, undefined, 0.15);
     expect(m.state.x).toBeGreaterThan(x);
     expect(m.velocityX).toBeLessThan(velocity);
+    const coastingVelocity = m.velocityX;
     hold(m, undefined, 1);
-    expect(m.velocityX).toBeLessThan(0.001);
+    expect(m.velocityX / coastingVelocity).toBeGreaterThan(0.06);
+    expect(m.velocityX / coastingVelocity).toBeLessThan(0.09);
+  });
+  it("retains airborne momentum longer than ground momentum after release", () => {
+    const ground = new Mine(),
+      air = chamber();
+    ground.state.x = air.state.x = 11;
+    ground.velocityX = air.velocityX = 2;
+    hold(ground, undefined, 1);
+    hold(air, undefined, 1);
+    expect(ground.velocityX / 2).toBeGreaterThan(0.06);
+    expect(ground.velocityX / 2).toBeLessThan(0.09);
+    expect(air.velocityX / 2).toBeGreaterThan(0.4);
+    expect(air.velocityX / 2).toBeLessThan(0.46);
+    expect(air.state.x).toBeGreaterThan(ground.state.x);
+  });
+  it("makes heavier minerals affect ascent and steering even with equal cargo slots", () => {
+    const light = chamber(),
+      heavy = chamber();
+    light.state.x = heavy.state.x = 11;
+    light.state.inventory = Array(8).fill(3);
+    heavy.state.inventory = Array(8).fill(6);
+    hold(light, { up: true, right: true }, 0.4);
+    hold(heavy, { up: true, right: true }, 0.4);
+    expect(light.state.inventory.length).toBe(heavy.state.inventory.length);
+    expect(light.state.x).toBeGreaterThan(heavy.state.x + 0.05);
+    expect(light.state.y).toBeLessThan(heavy.state.y - 0.05);
+    expect(heavy.velocityY).toBeLessThan(0);
+  });
+  it("can return with the heaviest full upgraded hold before engine upgrades exist", () => {
+    const m = chamber();
+    m.state.y = 15;
+    m.state.upgrades.cargo = 3;
+    m.state.inventory = Array(capacity(m.state)).fill(6);
+    until(m, "up", () => m.docked);
+    expect(m.state.inventory).toHaveLength(26);
+    expect(m.state.fuel).toBeGreaterThan(0);
+    expect(m.state.hull).toBe(100);
+    expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
   });
   it("supports upward thrust and lateral steering in the same tick", () => {
     const m = chamber();
@@ -225,7 +267,29 @@ describe("flight, ledges, and drilling regression coverage", () => {
     expect(m.message).toContain("needs a ledge");
     expect(m.state.y).toBeGreaterThan(8);
   });
-  it("finishes one selected cut on key release and allows thrust to cancel the next cut", () => {
+  it.each([
+    { direction: "right" as const, x: 12.8, supportX: 13, targetX: 14 },
+    { direction: "left" as const, x: 11.2, supportX: 11, targetX: 10 },
+  ])(
+    "starts a held $direction cut after landing off-center on an intermediate ledge",
+    ({ direction, x, supportX, targetX }) => {
+      const m = chamber();
+      m.state.x = x;
+      m.state.y = 6.75;
+      m.state.tiles[8 * WIDTH + supportX] = 1;
+      m.state.tiles[7 * WIDTH + targetX] = 1;
+      expect(m.grounded).toBe(false);
+      until(m, direction, () => m.progress > 0);
+      expect(m.state.y).toBeCloseTo(7.15, 4);
+      expect(m.grounded).toBe(true);
+      until(m, direction, () => m.state.mined === 1);
+      expect(m.tile(targetX, 7)).toBe(0);
+      expect(m.state.x).toBe(targetX);
+      expect(m.state.y).toBeCloseTo(7.15, 4);
+      expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+    },
+  );
+  it("finishes one selected cut on key release", () => {
     const m = chamber();
     m.state.x = 13;
     m.state.y = 7.15;
@@ -236,13 +300,110 @@ describe("flight, ledges, and drilling regression coverage", () => {
     until(m, undefined, () => m.state.mined === 1);
     expect(m.tile(14, 7)).toBe(0);
     expect(m.state.y).toBeCloseTo(7.15);
+  });
+  it("finishes an active cut before thrusting without snapping back or starting another cut", () => {
     const n = new Mine();
-    hold(n, "down", 0.2);
+    until(n, "down", () => n.progress >= 0.5);
+    const renderedY = n.renderY;
+    const savedDuringCut = decodeSave(JSON.stringify(n.state));
+    expect(savedDuringCut.tiles[4 * WIDTH + 12]).toBe(3);
+    expect(savedDuringCut.mined).toBe(0);
+    n.tick(1 / 120, "up");
     expect(n.progress).toBeGreaterThan(0);
+    expect(n.renderY).toBeGreaterThanOrEqual(renderedY);
+    expect(n.renderY - renderedY).toBeLessThan(0.1);
+    until(n, "up", () => n.state.mined === 1);
+    expect(n.tile(12, 4)).toBe(0);
+    expect(decodeSave(JSON.stringify(n.state))).toEqual(n.state);
+    const completedY = n.state.y;
     hold(n, "up", 0.1);
-    expect(n.progress).toBe(0);
-    expect(n.tile(12, 4)).toBe(3);
-    expect(n.state.mined).toBe(0);
+    expect(n.velocityY).toBeLessThan(0);
+    expect(n.state.y).toBeLessThan(completedY);
+    expect(n.state.mined).toBe(1);
+    expect(n.tile(12, 5)).toBe(3);
+  });
+  it.each([
+    { x: 12.6, supportX: 12, emptyX: 13 },
+    { x: 12.4, supportX: 13, emptyX: 12 },
+  ])(
+    "drills the contacted ledge under the tread at x=$x and preserves valid saves",
+    ({ x, supportX, emptyX }) => {
+      const m = chamber();
+      m.state.x = x;
+      m.state.y = 7.15;
+      m.state.tiles[8 * WIDTH + supportX] = 1;
+      expect(m.grounded).toBe(true);
+      expect(m.tile(emptyX, 8)).toBe(0);
+      expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+      until(m, "down", () => m.progress > 0);
+      expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+      until(m, undefined, () => m.state.mined === 1);
+      expect(m.tile(supportX, 8)).toBe(0);
+      expect(m.tile(emptyX, 8)).toBe(0);
+      expect(m.state.x).toBe(supportX);
+      expect(Math.round(m.state.y)).toBe(8);
+      expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+    },
+  );
+  it.each([
+    { direction: "right" as const, y: 7.13 },
+    { direction: "down" as const, y: 7.13 },
+    { direction: "right" as const, y: 7.14995 },
+    { direction: "down" as const, y: 7.14995 },
+  ])(
+    "applies landing damage before a held $direction cut at y=$y",
+    ({ direction, y }) => {
+      const falling = () => {
+        const m = chamber();
+        m.state.x = 13;
+        m.state.y = y;
+        m.state.tiles[8 * WIDTH + 13] = 1;
+        m.state.tiles[7 * WIDTH + 14] = 1;
+        m.velocityY = 10;
+        return m;
+      };
+      const held = falling(),
+        released = falling();
+      held.tick(1 / 120, direction);
+      released.tick(1 / 120);
+      expect(released.state.hull).toBeLessThan(100);
+      expect(held.state.hull).toBe(released.state.hull);
+      expect(held.state.mined).toBe(0);
+      expect(held.progress).toBe(0);
+      expect(held.state.y).toBeCloseTo(released.state.y, 4);
+      until(held, direction, () => held.progress > 0);
+    },
+  );
+  it("chains downward cuts without waiting to settle between solid tiles", () => {
+    const m = new Mine(),
+      completions: number[] = [];
+    for (let tick = 1; tick <= 120 * 5 && completions.length < 3; tick++) {
+      const mined = m.state.mined;
+      m.tick(1 / 120, "down");
+      if (m.state.mined > mined) {
+        completions.push(tick / 120);
+        expect(m.grounded).toBe(true);
+        expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+      }
+    }
+    expect(completions).toHaveLength(3);
+    for (let i = 1; i < completions.length; i++)
+      expect(completions[i] - completions[i - 1]).toBeLessThanOrEqual(
+        // Depth slows successive cuts slightly, but must not add a settling pause.
+        completions[0] + i * 0.02 + 2 / 120,
+      );
+  });
+  it("falls into an open pocket after a completed downward cut", () => {
+    const m = new Mine();
+    for (let y = 5; y <= 8; y++) m.state.tiles[y * WIDTH + 12] = 0;
+    until(m, "down", () => m.state.mined === 1);
+    const y = m.state.y;
+    expect(m.grounded).toBe(false);
+    hold(m, undefined, 0.2);
+    expect(m.state.y).toBeGreaterThan(y);
+    expect(m.velocityY).toBeGreaterThan(0);
+    expect(m.state.mined).toBe(1);
+    expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
   });
   it("brakes a fall with thrust without applying landing damage in midair", () => {
     const m = chamber();

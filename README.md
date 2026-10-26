@@ -38,7 +38,7 @@ Production: `npm run build`, then `npm run preview -- --port 4173`. The static `
 1. Hold **Down / S** to mine the four iron deposits directly below the starting rig. They fill four cargo slots and are worth $100.
 2. Hold **Up / W** to fly back through your shaft to depth 0 m. Hold **Up + Left/Right** together to steer in flight. The rig stays docked when you release thrust.
 3. Click **Sell minerals**, **Refuel**, and **Repair**. Purchase the **Drill assembly** for $100; it reduces excavation time immediately.
-4. Explore sideways with **Left/Right or A/D**, then drill deeper for more valuable minerals. The drill cannot cut upward. Side drilling requires support beneath the rig; land on a ledge at any depth before cutting into a wall. A cut finishes after you release its direction; tap **Up** to cancel it. Magma and hard landings damage the hull.
+4. Explore sideways with **Left/Right or A/D**, then drill deeper for more valuable minerals. The drill cannot cut upward. Side drilling requires support beneath the rig; land on a ledge at any depth before cutting into a wall. A cut finishes after you release its direction; hold **Up** to lift off as soon as it completes. The rig coasts after you release steering; press the opposite direction to brake. Heavy minerals reduce acceleration and climb speed. Magma and hard landings damage the hull.
 5. **Save** and reload the page. Terrain, inventory, credits, fuel, hull, upgrades and position are restored. **Load** restores the most recent snapshot. Autosave runs every five active seconds, after services, and on page exit/backgrounding.
 
 **P / Pause** suspends the simulation; losing focus also pauses it. Phones show four press-and-hold direction buttons; two fingers can hold Up and a horizontal direction together. Recovery returns you to the surface with half fuel/hull, but forfeits cargo and 20% of credits. It works even if you have no credits. Recovery and New expedition require an in-game confirmation.
@@ -67,6 +67,8 @@ node scripts/reference-test.mjs
 ```
 
 The setup script downloads the identified free Miniclip SWF from the exact CrazyGames listing location and the official JPEXS 26.4.0 distribution. It checks pinned SHA-256 hashes and exports scripts into ignored `reference/decompiled/`. JPEXS lives in ignored `.cache/reference-tools/jpexs/`. Re-running setup validates existing downloads before reuse. Ruffle 0.7.1 is locked in npm dependencies. The local file chooser does not upload the SWF.
+
+For repeatable movement research, run `node scripts/reference-measure.mjs` with the dev server running. It checks the canonical SWF hash, creates a separate instrumented copy with a read-only telemetry callback, and captures actual positions, velocities, cut transitions, and fuel under ignored `artifacts/reference-measure/`. See [movement measurements and limitations](docs/MOVEMENT_REFERENCE.md). `node scripts/movement-capture.mjs current` captures remake scenarios through keyboard and touch controls. Neither research runner is part of the production game.
 
 See [research findings](docs/RESEARCH.md) for provenance, edition identification, original mechanics, citations, and explicit differences in the prototype. The publisher-hosted file could not be compared because XGen's upstream TLS verification failed. The verified reference is the identified syndicated `0.934 (MC)` build, not a claim of byte equality with the 2004 original.
 

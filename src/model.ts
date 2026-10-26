@@ -1,18 +1,36 @@
-// All numeric balance values are provisional, not verified against the original SWF.
+// Movement is calibrated in tile units against the inspected free edition.
+// Economy, fuel units, hull wear and upgrade balance remain provisional.
 export const WIDTH = 24,
   HEIGHT = 100,
   SURFACE = 3;
 export const SAVE_KEY = "motherload.frontier.v1";
 export const ORES = {
-  3: { name: "Iron", value: 25, color: "#b5c7cf" },
-  4: { name: "Gold", value: 75, color: "#f4c76b" },
-  5: { name: "Emerald", value: 180, color: "#75d6aa" },
-  6: { name: "Diamond", value: 400, color: "#b6c9ff" },
+  3: { name: "Iron", value: 25, mass: 1, color: "#b5c7cf" },
+  4: { name: "Gold", value: 75, mass: 2, color: "#f4c76b" },
+  5: { name: "Emerald", value: 180, mass: 6, color: "#75d6aa" },
+  6: { name: "Diamond", value: 400, mass: 10, color: "#b6c9ff" },
 } as const;
 export type Ore = keyof typeof ORES;
 export type Direction = "left" | "right" | "up" | "down";
 export type Controls = Partial<Record<Direction, boolean>>;
 export const BODY_HALF = 0.35;
+// Approximate continuous equivalents of the reference's 42 fps, 50 px grid.
+// See docs/MOVEMENT_REFERENCE.md for measurements and remaining differences.
+const MOTION = {
+  groundAcceleration: 26,
+  airAcceleration: 17.6,
+  groundDrag: 2.6,
+  airDrag: 0.85,
+  maxHorizontal: 12.35,
+  gravity: 11.54,
+  thrust: 26.7,
+  maxAscent: 10.02,
+  maxFall: 16.8,
+  emptyMass: 198,
+  // Existing cargo upgrades predate engine upgrades. Keep every valid load
+  // recoverable by flight until that progression is introduced.
+  minimumLift: 4,
+};
 export const depth = (s: State) =>
   Math.max(0, Math.floor((s.y - SURFACE - 0.15 + 1e-4) * 10));
 export type Upgrade = "drill" | "tank" | "cargo" | "hull";
@@ -35,6 +53,8 @@ export const maxFuel = (s: State) => 100 + s.upgrades.tank * 50;
 export const maxHull = (s: State) => 100 + s.upgrades.hull * 40;
 export const cargoValue = (s: State) =>
   s.inventory.reduce((n, ore) => n + ORES[ore].value, 0);
+export const cargoMass = (s: State) =>
+  s.inventory.reduce((n, ore) => n + ORES[ore].mass, 0);
 export const upgradeCost = (s: State, key: Upgrade) =>
   [100, 250, 600][s.upgrades[key]] ?? Infinity;
 export function createState(seed = 73021): State {
@@ -97,7 +117,8 @@ export class Mine {
     const d = this.drilling;
     return d
       ? d.startY +
-          ((this.drillDirection === "down" ? d.y : d.startY) - d.startY) *
+          ((this.drillDirection === "down" ? d.y + 0.5 - BODY_HALF : d.startY) -
+            d.startY) *
             this.progress
       : this.state.y;
   }
@@ -114,7 +135,13 @@ export class Mine {
     return false;
   }
   get grounded() {
-    return this.blocked(this.state.x, this.state.y + 0.025);
+    // Only actual tread contact counts. A generous probe could start a cut
+    // before landing and erase the incoming velocity (and impact damage).
+    const { x, y } = this.state;
+    const row = Math.floor(y + BODY_HALF + 0.5 + 1e-4);
+    return [x - BODY_HALF + 1e-7, x + BODY_HALF - 1e-7].some(
+      (foot) => this.tile(Math.floor(foot + 0.5), row) !== 0,
+    );
   }
   private cancelDrill() {
     this.drilling = undefined;
@@ -143,28 +170,45 @@ export class Mine {
     const dx = Number(Boolean(input.right)) - Number(Boolean(input.left));
     if (dx) this.facing = dx < 0 ? "left" : "right";
     if (!this.docked) s.fuel = Math.max(0, s.fuel - dt * 0.08);
-    // A cut stays on one selected tile. Thrust is an explicit escape/cancel.
-    if (this.drilling && input.up) this.cancelDrill();
+    // The reference commits to a selected cut. Finish it before responding to
+    // thrust, so the displayed rig never jumps back out of a half-cut tile.
     if (this.drilling) {
+      this.thrusting = false;
+      if (input.up)
+        this.message = "Finishing the cut. Hold Up to lift off afterward.";
       this.advanceDrill(dt);
       return;
     }
     const supported =
       this.grounded || (this.docked && s.y >= SURFACE && !input.up);
     if (!input.up) {
-      const tx = Math.floor(s.x + (dx ? dx * (BODY_HALF + 0.21) : 0) + 0.5);
+      let tx = Math.floor(s.x + (dx ? dx * (BODY_HALF + 0.21) : 0) + 0.5);
       const ty = Math.floor(
         s.y + (!dx && input.down ? BODY_HALF + 0.21 : 0) + 0.5,
       );
+      // At a ledge's edge the center can be over air while one tread is still
+      // supported. Drill that support instead of silently ignoring Down.
+      if (!dx && input.down && supported && this.tile(tx, ty) === 0) {
+        const support = [
+          Math.floor(s.x - BODY_HALF + 0.5 + 1e-7),
+          Math.floor(s.x + BODY_HALF + 0.5 - 1e-7),
+        ]
+          .sort((a, b) => Math.abs(a - s.x) - Math.abs(b - s.x))
+          .find((x) => this.tile(x, ty) !== 0);
+        if (support !== undefined) tx = support;
+      }
       if (
         (dx || input.down) &&
         (tx !== Math.round(s.x) || ty !== Math.round(s.y))
       ) {
         const tile = this.tile(tx, ty);
-        if (tile > 0 && tile !== 8) {
-          if (!supported) {
-            this.message =
-              "Side drilling needs a ledge. Hold Up + Left/Right to steer, then land before cutting.";
+        if (tile === 8) {
+          this.message = "Bedrock blocks the drill. Find another route.";
+        } else if (tile > 0) {
+          if (!supported || this.velocityY !== 0) {
+            this.message = dx
+              ? "Side drilling needs a ledge. Hold Up + Left/Right to steer, then land before cutting."
+              : "Land on the terrain before drilling down.";
           } else if (
             tile >= 3 &&
             tile <= 6 &&
@@ -181,7 +225,10 @@ export class Mine {
               startX: s.x,
               startY: s.y,
               duration:
-                (tile === 2 ? 1.2 : 0.65) / (1 + s.upgrades.drill * 0.55),
+                ((dx ? 0.75 : 1) *
+                  (tile === 2 ? 1.85 : 1) *
+                  (1 + Math.max(0, s.y - SURFACE) * 0.0125)) /
+                (1 + s.upgrades.drill * 0.55),
             };
             this.drillDirection = dx < 0 ? "left" : dx > 0 ? "right" : "down";
             this.velocityX = this.velocityY = 0;
@@ -192,14 +239,31 @@ export class Mine {
       }
     }
     // Continuous acceleration and damping, in tile units per second.
-    const massFactor = 1 + s.inventory.length * 0.025;
-    this.velocityX += ((dx * (supported ? 24 : 14)) / massFactor) * dt;
-    this.velocityX *= Math.exp(
-      -(dx ? (supported ? 3.5 : 2.2) : supported ? 12 : 2.4) * dt,
+    const massFactor = 1 + cargoMass(s) / MOTION.emptyMass;
+    const drag = supported ? MOTION.groundDrag : MOTION.airDrag;
+    const acceleration =
+      (dx * (supported ? MOTION.groundAcceleration : MOTION.airAcceleration)) /
+      massFactor;
+    const decay = Math.exp(-drag * dt);
+    // Identical drag with and without input preserves reference-style coasting.
+    this.velocityX =
+      this.velocityX * decay + (acceleration / drag) * (1 - decay);
+    this.velocityX = Math.max(
+      -MOTION.maxHorizontal,
+      Math.min(MOTION.maxHorizontal, this.velocityX),
     );
-    this.velocityX = Math.max(-4.5, Math.min(4.5, this.velocityX));
-    this.velocityY += (14 - (input.up ? 27 / massFactor : 0)) * dt;
-    this.velocityY = Math.max(-5, Math.min(10, this.velocityY));
+    const thrust = Math.max(
+      MOTION.thrust / massFactor,
+      MOTION.gravity + MOTION.minimumLift,
+    );
+    this.velocityY =
+      (this.velocityY - (input.up ? thrust : 0) * dt) *
+        Math.exp(-MOTION.airDrag * dt) +
+      MOTION.gravity * dt;
+    this.velocityY = Math.max(
+      -MOTION.maxAscent,
+      Math.min(MOTION.maxFall, this.velocityY),
+    );
     const oldX = s.x,
       oldY = s.y;
     this.moveAxis("x", this.velocityX * dt);
@@ -271,7 +335,9 @@ export class Mine {
     const tile = this.tile(d.x, d.y);
     s.tiles[d.y * WIDTH + d.x] = 0;
     s.x = d.x;
-    s.y = this.drillDirection === "down" ? d.y : d.startY;
+    // End at the bottom of the cleared cell. Solid ground below can accept
+    // the next cut immediately; an open pocket still starts a natural fall.
+    s.y = this.drillDirection === "down" ? d.y + 0.5 - BODY_HALF : d.startY;
     s.fuel = Math.max(0, s.fuel - 1.5);
     s.mined++;
     s.hull = Math.max(0, s.hull - (tile === 7 ? 30 : 0.6));

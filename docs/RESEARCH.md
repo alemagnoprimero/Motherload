@@ -101,3 +101,7 @@ Ruffle emitted repeated `non-registered character tileEmpty` console diagnostics
 - Saves use schema 2 with fractional positions; schema 1 saves migrate without changing terrain, inventory, money or upgrades. The storage key remains `motherload.frontier.v1` so existing installations find their save.
 
 Remaining fidelity work: tune acceleration/thrust/braking with measured play traces, mineral-weight differences, original drill/depth timing, generated cave geometry, and physical Android testing. The earlier provisional grid-motion description above records the first checkpoint; this section supersedes it for movement and position saving.
+
+## Quantitative movement follow-up — 2026-10-26
+
+See [movement measurements](MOVEMENT_REFERENCE.md) for timed Ruffle observations, a separately instrumented reference copy, and the resulting tuning decisions. This latest pass supersedes the earlier Up-to-cancel rule: a committed cut now finishes before thrust resumes. It also replaces cargo-count mass with mineral-specific mass for the current four-ore roster and removes release-only braking. The full mineral roster, economy, engine upgrades and fuel-unit conversion remain future work.
