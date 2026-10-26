@@ -81,3 +81,5 @@ See [research findings](docs/RESEARCH.md) for provenance, edition identification
 - [Project notes and next steps](docs/PROJECT.md).
 
 Motherload is associated with XGen Studios. This is an independent prototype, not an official release. No license to redistribute the original game or assets is implied. Repository licensing remains to be chosen by the project owner.
+
+If your Docker build runs behind an organization HTTPS proxy, its trusted CA can be supplied as a temporary BuildKit secret (`--secret id=proxy_ca,src=/path/to/trusted-ca.pem`). The Dockerfile adds that CA to Node's normal trust store only during dependency installation. It does not disable certificate verification or place the CA in the runtime image. Proxy build arguments and DNS configuration must match that host's network; ordinary Docker Desktop installations do not need this cloud-specific setup.

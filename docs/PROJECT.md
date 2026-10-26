@@ -44,3 +44,13 @@ A local Git commit records this milestone; it is not automatically pushed. Do no
 Played the actual SWF mining loop in Ruffle after correcting the previous title-only validation. See RESEARCH.md for observed behavior and emulation diagnostics. The updated browser checks drive diagonal keyboard flight, two-finger thrust/steering with partial finger release, and lateral excavation from a ledge above a deeper shaft. The simulation checks include collision/save edge cases and impact-only fall damage. Existing local saves migrate automatically.
 
 Windows update: stop the local dev server, extract the new source ZIP over the same project folder, restart `npm.cmd run dev -- --port 5173 --strictPort`, and reload the same URL. Dependencies did not change. Browser saves are separate from the project files.
+
+## Hosting — 2026-10-26
+
+Added a multi-stage Docker build (Node 24 → Nginx), background Compose service on port 8080, health checking, restart-unless-stopped, and a read-only unprivileged runtime. Only the production build is served; the original SWF, research exports, caches, tests and source files are excluded from the runtime image. The actual container passed production browser checks for mining, save/reload, selling, upgrade persistence and mobile touch/layout.
+
+Vite now emits relative asset URLs so the same build works at a domain root and GitHub Pages' `/Motherload/` path. The public repository contains a pinned GitHub Actions workflow that tests and builds gameplay changes pushed to `main`, then deploys only `dist/` to Pages. Hosted URL: https://alemagnoprimero.github.io/Motherload/ . GitHub rejected initial Pages activation through the integration with HTTP 403; the user enabled Pages manually, and the deployment was retried.
+
+Cloud setup details: the Docker daemon had no egress proxy, so official Docker Hub image manifests and layers were downloaded through the workspace's existing HTTPS proxy and verified against compressed and uncompressed digests before loading into Docker. Container builds needed the proxy hostname mapped and the already-trusted platform CA supplied via a temporary BuildKit secret. TLS verification stayed enabled. Those environment-specific steps are unnecessary on a normal Docker Desktop installation with working registry access.
+
+Local browser saves do not synchronize to the website or other devices. The temporary cloud workspace is not an always-on public Docker host; Pages provides the durable public game address independently of the workspace and the user's computer.
