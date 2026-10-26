@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:browser": "node scripts/browser-test.mjs",
     "reference": "vite --host 0.0.0.0 --port 4174",
-    "format:check": "prettier --check src tests scripts/*.mjs index.html reference/index.html"
+    "format:check": "prettier --check src tests scripts/*.mjs index.html reference/index.html",
+    "test:production": "node scripts/production-smoke.mjs"
   },
   "engines": {
     "node": ">=22"

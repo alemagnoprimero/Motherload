@@ -2,7 +2,25 @@
 
 A single-player browser mining prototype in Phaser 3 and TypeScript. New geometric placeholder artwork; no original game assets are included. Keyboard and touch controls, mining, cargo, fuel, hull damage, surface services, four upgrade paths, and complete local terrain persistence are implemented.
 
-## Run
+## Play online or keep a container running
+
+The hosted game is at https://alemagnoprimero.github.io/Motherload/ once the **Publish playable game** deployment is green. Open the same address on a computer or Android phone. No Node.js, ZIP extraction or local server is needed for that version. Gameplay changes pushed to `main` are built, tested and published by `.github/workflows/pages.yml`; only the production `dist/` files are uploaded.
+
+To host it yourself with Docker Desktop or a Docker server, run this once from the project folder:
+
+```sh
+docker compose up -d --build
+```
+
+Open `http://localhost:8080`. The container runs in the background and restarts when Docker starts, unless you explicitly stop it. Your PC must be on and Docker must be running. A phone on the same Wi-Fi can use `http://YOUR-PC-IP:8080`; access away from that network needs a hosted site or a configured server/domain. A container in this temporary Codex workspace is not permanent hosting.
+
+Update the source, then run the same command to rebuild. `docker compose logs --tail=50` shows startup output; `docker compose down` stops/removes the local container. Set `MOTHERLOAD_PORT` to change the host port. The image builds with Node 24 and serves static files using Nginx on port 8080, as an unprivileged user, with a health check. The Compose service has a read-only root filesystem and a temporary writable `/tmp`.
+
+Saves remain local to each browser and address. Moving from localhost to the hosted URL starts a separate save; desktop and phone progress do not synchronize. Keep a consistent URL for each device. No game accounts or server-side save service are configured.
+
+For production validation, set `PREVIEW_URL` to the container/site URL and run `npm run test:production`. This launches isolated desktop and mobile browser contexts and checks mining, save/reload, selling, an upgrade, and touch input without requiring the development-only reference lab.
+
+## Run locally for development
 
 Requires Node.js 22+ and npm. From this repository:
 

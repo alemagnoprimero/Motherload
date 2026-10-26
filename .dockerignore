@@ -1,0 +1,14 @@
+**
+!Dockerfile
+!package.json
+!package-lock.json
+!.npmrc
+!index.html
+!tsconfig.json
+!vite.config.ts
+!src/
+!src/**
+!tests/
+!tests/**
+!docker/
+!docker/nginx.conf
