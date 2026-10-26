@@ -70,6 +70,10 @@ export async function ready(page, base) {
   await page.waitForFunction(() => document.body.dataset.saving !== undefined);
 }
 export async function pause(page, value = true) {
+  if (!value) {
+    await page.bringToFront();
+    await rendered(page);
+  }
   await page.locator("#pause").evaluate((button, value) => {
     if ((button.getAttribute("aria-pressed") === "true") !== value)
       button.click();
@@ -90,12 +94,18 @@ export function readState(page) {
   );
 }
 export async function openTools(page) {
+  await page.bringToFront();
   if (!(await page.locator("#tools").evaluate((dialog) => dialog.open)))
     await page.locator("#tools-toggle").click();
 }
 export async function closeTools(page) {
-  if (await page.locator("#tools").evaluate((dialog) => dialog.open))
+  if (await page.locator("#tools").evaluate((dialog) => dialog.open)) {
     await page.locator("#close-tools").click();
+    await page.waitForFunction(() => !document.querySelector("#tools").open);
+    // Native dialog close events restore the prior pause state asynchronously.
+    // Let that finish before a following gameplay command resumes the rig.
+    await rendered(page);
+  }
 }
 export async function importRaw(page, raw, confirm = true) {
   await openTools(page);
