@@ -1,7 +1,9 @@
+import { observeTerrain } from "./discovery";
+
 // Static mineral/equipment tables match the inspected free edition.
 // World density, elapsed-time fuel conversion and damage remain remake tuning.
 export const WIDTH = 24,
-  HEIGHT = 100,
+  HEIGHT = 600,
   SURFACE = 3;
 export const SAVE_KEY = "motherload.frontier.v1";
 // Existing tile identifiers stay stable so old excavated maps can migrate intact.
@@ -85,9 +87,10 @@ export const UPGRADE_PRICES = [
   0, 750, 2000, 5000, 20000, 100000, 500000,
 ] as const;
 export interface State {
-  version: 3;
+  version: 4;
   seed: number;
   tiles: number[];
+  discovered: number[];
   x: number;
   y: number;
   money: number;
@@ -98,6 +101,10 @@ export interface State {
   mined: number;
   deepest: number;
 }
+// Imported expeditions retain their original 100-row geography.
+export const worldHeight = (s: Pick<State, "tiles">) => s.tiles.length / WIDTH;
+export const maxDepth = (s: Pick<State, "tiles">) =>
+  (worldHeight(s) - SURFACE - 2) * 10;
 export const capacity = (s: State) => UPGRADE_LEVELS.cargo[s.upgrades.cargo]!;
 export const maxFuel = (s: State) => UPGRADE_LEVELS.tank[s.upgrades.tank]!;
 export const maxHull = (s: State) => UPGRADE_LEVELS.hull[s.upgrades.hull]!;
@@ -110,19 +117,80 @@ export const upgradeCost = (s: State, key: Upgrade) =>
     ? UPGRADE_PRICES[s.upgrades[key] + 1]!
     : Infinity;
 
-// The original's depth ordering is compressed into this bounded prototype mine.
-// The exact probabilities and assisted starter deposits are original remake design.
-const DEPOSITS: ReadonlyArray<{ ore: Ore; row: number; weight: number }> = [
-  { ore: 3, row: 4, weight: 12 },
-  { ore: 9, row: 5, weight: 10 },
-  { ore: 10, row: 8, weight: 8 },
-  { ore: 4, row: 14, weight: 6 },
-  { ore: 11, row: 24, weight: 5 },
-  { ore: 12, row: 36, weight: 4 },
-  { ore: 5, row: 48, weight: 3 },
-  { ore: 13, row: 62, weight: 2 },
-  { ore: 6, row: 76, weight: 1.5 },
-  { ore: 14, row: 88, weight: 1 },
+// These geological bands and generation probabilities are remake balancing,
+// not a transcription of the original random-map algorithm. Values stay exact.
+export const STRATA = [
+  {
+    name: "Regolith",
+    depth: 0,
+    oreChance: 0.3,
+    stoneChance: 0.08,
+    magmaChance: 0,
+    magmaDamage: 3,
+  },
+  {
+    name: "Shale",
+    depth: 300,
+    oreChance: 0.26,
+    stoneChance: 0.14,
+    magmaChance: 0,
+    magmaDamage: 3,
+  },
+  {
+    name: "Basalt",
+    depth: 900,
+    oreChance: 0.22,
+    stoneChance: 0.2,
+    magmaChance: 0.008,
+    magmaDamage: 3,
+  },
+  {
+    name: "Crystal beds",
+    depth: 1800,
+    oreChance: 0.18,
+    stoneChance: 0.24,
+    magmaChance: 0.025,
+    magmaDamage: 4,
+  },
+  {
+    name: "Molten belt",
+    depth: 3000,
+    oreChance: 0.15,
+    stoneChance: 0.28,
+    magmaChance: 0.045,
+    magmaDamage: 7,
+  },
+  {
+    name: "Abyss",
+    depth: 4500,
+    oreChance: 0.12,
+    stoneChance: 0.32,
+    magmaChance: 0.06,
+    magmaDamage: 12,
+  },
+] as const;
+export const stratumAtDepth = (meters: number) => {
+  for (let index = STRATA.length - 1; index >= 0; index--)
+    if (meters >= STRATA[index]!.depth) return STRATA[index]!;
+  return STRATA[0];
+};
+export const magmaDamageAtDepth = (meters: number) =>
+  stratumAtDepth(meters).magmaDamage;
+const DEPOSITS: ReadonlyArray<{
+  ore: Ore;
+  depth: number;
+  weights: readonly number[];
+}> = [
+  { ore: 3, depth: 0, weights: [50, 10, 0, 0, 0, 0] },
+  { ore: 9, depth: 20, weights: [30, 25, 8, 0, 0, 0] },
+  { ore: 10, depth: 50, weights: [18, 40, 25, 10, 0, 0] },
+  { ore: 4, depth: 150, weights: [2, 23, 43, 32, 15, 5] },
+  { ore: 11, depth: 300, weights: [0, 2, 20, 35, 30, 20] },
+  { ore: 12, depth: 900, weights: [0, 0, 4, 20, 36, 36] },
+  { ore: 5, depth: 1800, weights: [0, 0, 0, 3, 15, 25] },
+  { ore: 13, depth: 3000, weights: [0, 0, 0, 0, 3.8, 12.8] },
+  { ore: 6, depth: 3800, weights: [0, 0, 0, 0, 0.2, 1] },
+  { ore: 14, depth: 5000, weights: [0, 0, 0, 0, 0, 0.2] },
 ];
 export function createState(seed = 73021): State {
   seed = seed >>> 0;
@@ -136,15 +204,20 @@ export function createState(seed = 73021): State {
       p = random();
     if (y <= SURFACE) return 0;
     if (y === HEIGHT - 1) return 8;
-    if (y >= 52 && p < 0.025) return 7;
-    if (p > 0.88) return 2;
-    if (p < 0.36) {
-      const available = DEPOSITS.filter((deposit) => y >= deposit.row);
+    const meters = (y - SURFACE) * 10,
+      stratum = stratumAtDepth(meters),
+      band = STRATA.indexOf(stratum);
+    if (p < stratum.magmaChance) return 7;
+    if (p >= 1 - stratum.stoneChance) return 2;
+    if (p < stratum.magmaChance + stratum.oreChance) {
+      const available = DEPOSITS.filter(
+        (deposit) => meters >= deposit.depth && deposit.weights[band]! > 0,
+      );
       let choice =
         random() *
-        available.reduce((total, deposit) => total + deposit.weight, 0);
+        available.reduce((total, deposit) => total + deposit.weights[band]!, 0);
       for (const deposit of available) {
-        choice -= deposit.weight;
+        choice -= deposit.weights[band]!;
         if (choice <= 0) return deposit.ore;
       }
     }
@@ -153,7 +226,11 @@ export function createState(seed = 73021): State {
   // Elliptical chambers leave irregular floors and intermediate ledges instead
   // of isolated one-cell holes. Most pockets still require a drilled entrance.
   for (let row = 9; row < HEIGHT - 3; row += 5) {
-    for (let pocket = 0; pocket < 2; pocket++) {
+    for (
+      let pocket = 0;
+      pocket < ((row - SURFACE) * 10 < 1800 ? 2 : 1);
+      pocket++
+    ) {
       const cx = 2 + random() * (WIDTH - 4),
         cy = row + random() * 2;
       const rx = 2 + random() * 2.2,
@@ -172,12 +249,16 @@ export function createState(seed = 73021): State {
             tiles[y * WIDTH + x] = 0;
     }
   }
-  // This compact mine has fewer deep cells than the original's 600 rows.
-  // Keep every mineral discoverable even when a rare deposit was carved away.
+  // Keep every mineral discoverable even if the rarest deposit was carved away.
   for (const deposit of DEPOSITS) {
     if (tiles.includes(deposit.ore)) continue;
     const candidates: number[] = [];
-    for (let index = deposit.row * WIDTH; index < (HEIGHT - 1) * WIDTH; index++)
+    for (
+      let index =
+        (SURFACE + Math.max(1, Math.ceil(deposit.depth / 10))) * WIDTH;
+      index < (HEIGHT - 1) * WIDTH;
+      index++
+    )
       if (tiles[index] === 1 || tiles[index] === 2) candidates.push(index);
     // Existing deposits are never replaced while ensuring a missing rarity.
     if (candidates.length)
@@ -194,10 +275,11 @@ export function createState(seed = 73021): State {
     starter[column].forEach((ore, index) => {
       tiles[(index + 4) * WIDTH + 12 + column] = ore;
     });
-  return {
-    version: 3,
+  const state: State = {
+    version: 4,
     seed,
     tiles,
+    discovered: Array(tiles.length).fill(0),
     x: 12,
     y: SURFACE,
     money: 20,
@@ -208,6 +290,8 @@ export function createState(seed = 73021): State {
     mined: 0,
     deepest: 0,
   };
+  observeTerrain(tiles, state.discovered, WIDTH, SURFACE, state.x, state.y);
+  return state;
 }
 export class Mine {
   state: State;
@@ -219,11 +303,42 @@ export class Mine {
   facing: "left" | "right" = "right";
   thrusting = false;
   drillDirection: Direction | undefined;
+  private visible = new Set<number>();
   private drilling:
     | { x: number; y: number; startX: number; startY: number; duration: number }
     | undefined;
   constructor(state = createState()) {
     this.state = state;
+    this.refreshVisibility();
+  }
+  refreshVisibility() {
+    const s = this.state;
+    this.visible = observeTerrain(
+      s.tiles,
+      s.discovered,
+      WIDTH,
+      SURFACE,
+      s.x,
+      s.y,
+    );
+  }
+  isKnown(x: number, y: number) {
+    return (
+      x >= 0 &&
+      x < WIDTH &&
+      y >= 0 &&
+      y < worldHeight(this.state) &&
+      this.state.discovered[Math.floor(y) * WIDTH + Math.floor(x)] === 1
+    );
+  }
+  isVisible(x: number, y: number) {
+    return (
+      x >= 0 &&
+      x < WIDTH &&
+      y >= 0 &&
+      y < worldHeight(this.state) &&
+      this.visible.has(Math.floor(y) * WIDTH + Math.floor(x))
+    );
   }
   get docked() {
     return this.state.y <= SURFACE + 0.151;
@@ -247,7 +362,7 @@ export class Mine {
       : this.state.y;
   }
   tile(x: number, y: number) {
-    return x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT
+    return x < 0 || x >= WIDTH || y < 0 || y >= worldHeight(this.state)
       ? 8
       : this.state.tiles[Math.floor(y) * WIDTH + Math.floor(x)];
   }
@@ -281,6 +396,7 @@ export class Mine {
       this.step(dt, controls);
       remaining -= dt;
     }
+    this.refreshVisibility();
   }
   private step(dt: number, input: Controls) {
     const s = this.state;
@@ -422,7 +538,7 @@ export class Mine {
     const candidate = Math.max(
       0,
       Math.min(
-        axis === "x" ? WIDTH - 1 : HEIGHT - 1.5 - BODY_HALF,
+        axis === "x" ? WIDTH - 1 : worldHeight(s) - 1.5 - BODY_HALF,
         start + amount,
       ),
     );
@@ -464,7 +580,8 @@ export class Mine {
     // the next cut immediately; an open pocket still starts a natural fall.
     s.y = this.drillDirection === "down" ? d.y + 0.5 - BODY_HALF : d.startY;
     s.mined++;
-    if (tile === 7) s.hull = Math.max(0, s.hull - 3);
+    const magmaDamage = magmaDamageAtDepth((d.y - SURFACE) * 10);
+    if (tile === 7) s.hull = Math.max(0, s.hull - magmaDamage);
     if (isOre(tile)) {
       // Like the reference's doneDigging/addToBay sequence, a full bay limits
       // collection, not excavation. Excess ore is discarded rather than
@@ -477,7 +594,7 @@ export class Mine {
       }
     }
     if (tile === 7)
-      this.message = "Magma pocket! Hull damaged. Return for repairs.";
+      this.message = `Magma pocket! −${magmaDamage} hull. Return for repairs.`;
     s.deepest = Math.max(s.deepest, depth(s));
     this.cancelDrill();
   }
@@ -549,12 +666,15 @@ export class Mine {
     this.cancelDrill();
     this.message =
       "Recovered at the surface. Lost cargo and 20% of credits; fuel and hull restored to 50%.";
+    this.refreshVisibility();
   }
 }
 export function decodeSave(raw: string): State {
   const invalid = () =>
     new Error("Unsupported or damaged save. Existing save has been kept.");
-  if (raw.length > 150_000) throw invalid();
+  // The portable export is pretty-printed: two 600-row arrays need ~200 KiB.
+  // Match SaveStore's file limit while retaining a bound before JSON parsing.
+  if (raw.length > 256 * 1024) throw invalid();
   const source: unknown = JSON.parse(raw);
   const record = (value: unknown): value is Record<string, unknown> =>
     value !== null && typeof value === "object" && !Array.isArray(value);
@@ -566,11 +686,11 @@ export function decodeSave(raw: string): State {
     (!integer || Number.isInteger(value));
   if (
     !record(source) ||
-    ![1, 2, 3].includes(source.version as number) ||
+    ![1, 2, 3, 4].includes(source.version as number) ||
     !record(source.upgrades)
   )
     throw invalid();
-  const legacy = source.version !== 3;
+  const legacy = (source.version as number) < 3;
   const required = legacy
     ? UPGRADE_KEYS.filter((key) => key !== "engine")
     : UPGRADE_KEYS;
@@ -590,13 +710,18 @@ export function decodeSave(raw: string): State {
   const oldCargo = legacy
     ? 8 + old.cargo * 6
     : UPGRADE_LEVELS.cargo[old.cargo]!;
+  const height = Array.isArray(source.tiles) ? source.tiles.length / WIDTH : 0;
   if (
     !num(source.seed, 4294967295, true) ||
     !Array.isArray(source.tiles) ||
-    source.tiles.length !== WIDTH * HEIGHT ||
+    !(source.version === 4 ? [100, HEIGHT] : [100]).includes(height) ||
     source.tiles.some((tile) => !num(tile, legacy ? 8 : 14, true)) ||
+    (source.version === 4 &&
+      (!Array.isArray(source.discovered) ||
+        source.discovered.length !== source.tiles.length ||
+        source.discovered.some((known) => known !== 0 && known !== 1))) ||
     !num(source.x, WIDTH - 1) ||
-    !num(source.y, HEIGHT - 1.5 - BODY_HALF + 1e-6) ||
+    !num(source.y, height - 1.5 - BODY_HALF + 1e-6) ||
     !num(source.money, 1e12, true) ||
     !num(source.fuel, oldFuel) ||
     !num(source.hull, oldHull) ||
@@ -605,8 +730,8 @@ export function decodeSave(raw: string): State {
     source.inventory.some((ore) =>
       legacy ? ![3, 4, 5, 6].includes(ore) : !isOre(ore),
     ) ||
-    !num(source.mined, WIDTH * HEIGHT, true) ||
-    !num(source.deepest, (HEIGHT - SURFACE) * 10, true) ||
+    !num(source.mined, WIDTH * height, true) ||
+    !num(source.deepest, (height - SURFACE) * 10, true) ||
     source.tiles.slice(0, WIDTH * (SURFACE + 1)).some((tile) => tile !== 0) ||
     source.tiles.slice(-WIDTH).some((tile) => tile !== 8)
   )
@@ -633,9 +758,13 @@ export function decodeSave(raw: string): State {
         engine: old.engine,
       };
   const s: State = {
-    version: 3,
+    version: 4,
     seed: source.seed,
     tiles: [...source.tiles],
+    discovered:
+      source.version === 4
+        ? [...(source.discovered as number[])]
+        : Array(source.tiles.length).fill(0),
     x: source.x,
     y: source.y,
     money: source.money,
@@ -650,6 +779,8 @@ export function decodeSave(raw: string): State {
     s.fuel = (s.fuel / oldFuel) * maxFuel(s);
     s.hull = (s.hull / oldHull) * maxHull(s);
   }
+  if (source.version !== 4)
+    observeTerrain(s.tiles, s.discovered, WIDTH, SURFACE, s.x, s.y);
   for (const x of [s.x - BODY_HALF + 1e-6, s.x + BODY_HALF - 1e-6])
     for (const y of [s.y - BODY_HALF + 1e-6, s.y + BODY_HALF - 1e-6])
       if (s.tiles[Math.floor(y + 0.5) * WIDTH + Math.floor(x + 0.5)] !== 0)

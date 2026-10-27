@@ -1014,3 +1014,83 @@ body.focus-mode:not(.compact-layout) .game-actions button {
 body.focus-mode:not(.compact-layout) .game-actions #pause {
   margin-right: auto;
 }
+
+/* One quiet exploration objective keeps depth progression in the playfield HUD. */
+.frontier-strip {
+  grid-column: 1 / -1;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 22px 6px;
+  border-top: 1px solid #ffffff08;
+  background: #0c1724;
+  color: #91a8bd;
+  font-size: 10px;
+  line-height: 13px;
+}
+.frontier-region {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #b7cfdd;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.frontier-region i {
+  width: 4px;
+  height: 4px;
+  background: #61dbe9;
+  transform: rotate(45deg);
+}
+#frontier-goal {
+  justify-self: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.frontier-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  background: #182a3a;
+}
+#frontier-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #3386a3, #79dce9);
+  transition: width 0.15s;
+}
+body.compact-layout .frontier-strip {
+  padding: 3px 13px 5px;
+  gap: 9px;
+  font-size: 8px;
+  line-height: 11px;
+}
+body.compact-layout .frontier-region {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .frontier-strip,
+  body.compact-layout .frontier-strip {
+    padding: 2px 10px 4px;
+    font-size: 7.5px;
+    line-height: 10px;
+  }
+  .frontier-region,
+  body.compact-layout .frontier-region {
+    font-size: 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #frontier-fill {
+    transition: none;
+  }
+}

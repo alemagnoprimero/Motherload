@@ -5,7 +5,6 @@ import {
   SAVE_KEY,
   SURFACE,
   WIDTH,
-  HEIGHT,
 } from "../src/model";
 import {
   MAX_SAVE_BYTES,
@@ -37,9 +36,9 @@ function legacySave() {
   return JSON.stringify({
     version: 2,
     seed: 123,
-    tiles: Array.from({ length: WIDTH * HEIGHT }, (_, index) => {
+    tiles: Array.from({ length: WIDTH * 100 }, (_, index) => {
       const row = Math.floor(index / WIDTH);
-      return row <= SURFACE ? 0 : row === HEIGHT - 1 ? 8 : 1;
+      return row <= SURFACE ? 0 : row === 99 ? 8 : 1;
     }),
     x: 12,
     y: SURFACE,

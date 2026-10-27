@@ -2,7 +2,10 @@ import Phaser from "phaser";
 import {
   Mine,
   WIDTH,
-  HEIGHT,
+  worldHeight,
+  STRATA,
+  stratumAtDepth,
+  magmaDamageAtDepth,
   SURFACE,
   ORES,
   isOre,
@@ -13,9 +16,9 @@ import {
   type StationId,
   type ServiceAction,
 } from "./model";
+import { DISCOVERY_RADIUS } from "./discovery";
 import {
   ART_TEXTURE,
-  ART_CELL,
   MODELS_TEXTURE,
   SKY_TEXTURE,
   CAVE_TEXTURE,
@@ -52,6 +55,9 @@ interface Chip {
   color: number;
   size: number;
 }
+const STRATUM_TINTS = [
+  0xffffff, 0xe3d4c4, 0xc6cedb, 0xb9d5dc, 0xdca99a, 0xb6a3d2,
+] as const;
 
 // One atlas, culled terrain and small recycled pools keep the scene lightweight.
 // The camera follows the rig instead of shrinking the whole mine to phone width.
@@ -60,6 +66,10 @@ export function createMineScene(bindings: SceneBindings) {
     private background!: Phaser.GameObjects.Graphics;
     private marks!: Phaser.GameObjects.Graphics;
     private effects!: Phaser.GameObjects.Graphics;
+    private fog!: Phaser.GameObjects.Graphics;
+    private overlay!: Phaser.GameObjects.Graphics;
+    private unknowns: Phaser.GameObjects.Image[] = [];
+    private frontier: { name: string; depth: number; life: number } | undefined;
     private rig!: Phaser.GameObjects.Image;
     private sky!: Phaser.GameObjects.Image;
     private cave!: Phaser.GameObjects.TileSprite;
@@ -131,7 +141,7 @@ export function createMineScene(bindings: SceneBindings) {
       this.vignette = this.add
         .image(0, 0, VIGNETTE_TEXTURE)
         .setOrigin(0)
-        .setDepth(8);
+        .setDepth(10);
       this.buildings = STATIONS.map((station) =>
         this.add
           .image(
@@ -152,6 +162,8 @@ export function createMineScene(bindings: SceneBindings) {
         .setOrigin(0.5, 0.54)
         .setDepth(4);
       this.effects = this.add.graphics().setDepth(5);
+      this.fog = this.add.graphics().setDepth(9);
+      this.overlay = this.add.graphics().setDepth(11);
       this.stationUi = new StationUi(this, bindings);
       for (let i = 0; i < 30; i++)
         this.labels.push(
@@ -163,7 +175,7 @@ export function createMineScene(bindings: SceneBindings) {
               backgroundColor: "#101925c7",
               padding: { x: 7, y: 4 },
             })
-            .setDepth(6),
+            .setDepth(12),
         );
       this.input.on("pointerup", (pointer: Phaser.Input.Pointer) => {
         if (bindings.getStation()) {
@@ -192,11 +204,13 @@ export function createMineScene(bindings: SceneBindings) {
             return;
           }
         }
-        this.inspect = {
-          x: Math.floor((pointer.x + this.cameraX) / tile),
-          y: Math.floor((pointer.y + this.cameraY) / tile),
-          life: 3,
-        };
+        const x = Math.floor((pointer.x + this.cameraX) / tile);
+        const y = Math.floor((pointer.y + this.cameraY) / tile);
+        // Inspection follows the same sight rule as rendering. Clicking dark
+        // terrain must never become a remote mineral detector.
+        this.inspect = bindings.getMine().isVisible(x, y)
+          ? { x, y, life: 3 }
+          : undefined;
       });
       if (this.artFailed)
         bindings.getMine().message =
@@ -247,15 +261,29 @@ export function createMineScene(bindings: SceneBindings) {
         this.chips = [];
         this.popup = undefined;
         this.inspect = undefined;
+        this.frontier = undefined;
         this.flash = 0;
         this.previousMine = mine;
       }
       const oldMined = mine.state.mined;
       const oldCargo = mine.state.inventory.length;
       const oldHull = mine.state.hull;
+      const oldDeepest = mine.state.deepest;
       if (!paused) {
         mine.tick(dt, input);
         this.elapsed += dt;
+        if (this.frontier && (this.frontier.life -= dt) <= 0)
+          this.frontier = undefined;
+        const reached = STRATA.filter(
+          (entry) =>
+            entry.depth > oldDeepest && entry.depth <= mine.state.deepest,
+        ).at(-1);
+        if (reached)
+          this.frontier = {
+            name: reached.name,
+            depth: reached.depth,
+            life: 4.5,
+          };
         this.flash = Math.max(0, this.flash - dt);
         if (this.popup && (this.popup.life -= dt) <= 0) this.popup = undefined;
         if (this.inspect && (this.inspect.life -= dt) <= 0)
@@ -316,6 +344,7 @@ export function createMineScene(bindings: SceneBindings) {
       }
       bindings.onUpdate(dt);
       const s = mine.state;
+      const rows = worldHeight(s);
       const width = this.scale.width,
         height = this.scale.height;
       const tile = tileSizeForViewport(width, height),
@@ -331,9 +360,11 @@ export function createMineScene(bindings: SceneBindings) {
               WIDTH * tile - width,
             );
       const targetY = Phaser.Math.Clamp(
-        worldY - height * 0.42 + mine.velocityY * tile * 0.04,
+        worldY -
+          height * (mine.thrusting && mine.velocityY < -1 ? 0.54 : 0.42) +
+          mine.velocityY * tile * 0.04,
         0,
-        HEIGHT * tile - height,
+        Math.max(0, rows * tile - height),
       );
       const size = `${width}:${height}:${tile}`;
       if (
@@ -359,7 +390,10 @@ export function createMineScene(bindings: SceneBindings) {
       bg.clear();
       g.clear();
       fx.clear();
+      this.fog.clear();
+      this.overlay.clear();
       for (const item of this.tiles) item.setVisible(false);
+      for (const item of this.unknowns) item.setVisible(false);
       for (const item of this.labels) item.setVisible(false);
       let labelIndex = 0;
       const text = (
@@ -378,15 +412,21 @@ export function createMineScene(bindings: SceneBindings) {
           .setVisible(true);
         if (item.style.color !== color) item.setColor(color);
       };
-      this.cave.setSize(width, height).setTilePosition(cx * 0.42, cy * 0.42);
+      const currentStratum = STRATA.indexOf(
+        stratumAtDepth(Math.max(0, (s.y - SURFACE) * 10)),
+      );
+      this.cave
+        .setSize(width, height)
+        .setTilePosition(cx * 0.42, cy * 0.42)
+        .setTint(STRATUM_TINTS[currentStratum]);
       this.vignette.setDisplaySize(width, height).setAlpha(0.72);
-      const lightSize = tile * (mine.progress ? 7 : 6);
+      const lightSize = tile * (mine.progress ? 9 : 8.5);
       this.lamp
         .setPosition(px, py)
         .setDisplaySize(lightSize, lightSize)
         .setAlpha(s.y > SURFACE + 0.3 ? 1 : 0.25);
       // The far wall moves more slowly than the mine: excavated space has depth.
-      bg.fillStyle(0x0b111d, 0.12 + Math.min(0.18, (s.y / HEIGHT) * 0.18));
+      bg.fillStyle(0x0b111d, 0.12 + Math.min(0.18, (s.y / rows) * 0.18));
       bg.fillRect(0, 0, width, height);
       const surfaceY = (SURFACE + 1) * tile - cy;
       this.sky.setVisible(surfaceY > 0);
@@ -501,15 +541,52 @@ export function createMineScene(bindings: SceneBindings) {
         }
       }
       const firstRow = Math.max(SURFACE + 1, Math.floor(cy / tile));
-      const lastRow = Math.min(HEIGHT - 1, Math.ceil((cy + height) / tile));
+      const lastRow = Math.min(rows - 1, Math.ceil((cy + height) / tile));
       const firstCol = Math.max(0, Math.floor(cx / tile));
       const lastCol = Math.min(WIDTH - 1, Math.ceil((cx + width) / tile));
-      let visible = 0;
+      let visible = 0,
+        obscured = 0;
+      const knownAir = (x: number, y: number) =>
+        mine.isKnown(x, y) && mine.tile(x, y) === 0;
       for (let y = firstRow; y <= lastRow; y++) {
+        const terrainTint =
+          STRATUM_TINTS[STRATA.indexOf(stratumAtDepth((y - SURFACE) * 10))];
         for (let x = firstCol; x <= lastCol; x++) {
-          const type = mine.tile(x, y),
-            sx = x * tile - cx,
+          const sx = x * tile - cx,
             sy = y * tile - cy;
+          if (!mine.isKnown(x, y)) {
+            let cover = this.unknowns[obscured++];
+            if (!cover) {
+              cover = this.add
+                .image(0, 0, ART_TEXTURE)
+                .setOrigin(0)
+                .setDepth(9.1);
+              this.unknowns.push(cover);
+            }
+            // Opaque, type-independent substrate also covers undiscovered air.
+            // It sits above lights/effects so a cave cannot leak as a silhouette.
+            cover
+              .setFrame(`unknown-${(x * 17 + y * 31) % 3}`)
+              .setPosition(sx, sy)
+              .setDisplaySize(tile + 0.7, tile + 0.7)
+              .setVisible(true);
+            continue;
+          }
+          const type = mine.tile(x, y);
+          const lit = mine.isVisible(x, y);
+          const distanceSquared =
+            (x - mine.renderX) ** 2 + (y - mine.renderY) ** 2;
+          const shade = lit
+            ? Math.min(
+                0.42,
+                (distanceSquared / (DISCOVERY_RADIUS * DISCOVERY_RADIUS)) *
+                  0.42,
+              )
+            : type === 0
+              ? 0.54
+              : 0.76;
+          this.fog.fillStyle(0x02050c, shade);
+          this.fog.fillRect(sx, sy, tile + 0.3, tile + 0.3);
           if (type === 0) continue;
           let sprite = this.tiles[visible++];
           if (!sprite) {
@@ -520,10 +597,10 @@ export function createMineScene(bindings: SceneBindings) {
             .setFrame(`tile-${type}-${(x * 17 + y * 31) % 3}`)
             .setPosition(sx, sy)
             .setDisplaySize(tile + 0.3, tile + 0.3)
-            .setTint(y > 55 ? 0xc6cedb : y > 25 ? 0xe3d4c4 : 0xffffff)
+            .setTint(terrainTint)
             .setVisible(true);
           // Highlight exposed faces, making walkable ledges and cave ceilings legible.
-          if (mine.tile(x, y - 1) === 0) {
+          if (knownAir(x, y - 1)) {
             g.fillStyle(
               type === 7 ? 0xffa568 : type === 8 ? 0x7f94b0 : 0xe5ae77,
               0.75,
@@ -531,16 +608,16 @@ export function createMineScene(bindings: SceneBindings) {
             g.fillRect(sx, sy, tile, 2 * scale);
           }
           g.fillStyle(0x050a13, 0.75);
-          if (mine.tile(x - 1, y) === 0)
+          if (knownAir(x - 1, y))
             g.fillRect(sx, sy + 2 * scale, 2 * scale, tile - 2 * scale);
-          if (mine.tile(x + 1, y) === 0)
+          if (knownAir(x + 1, y))
             g.fillRect(
               sx + tile - 2 * scale,
               sy + 2 * scale,
               2 * scale,
               tile - 2 * scale,
             );
-          if (mine.tile(x, y + 1) === 0)
+          if (knownAir(x, y + 1))
             g.fillRect(sx, sy + tile - 2 * scale, tile, 2 * scale);
         }
       }
@@ -550,7 +627,7 @@ export function createMineScene(bindings: SceneBindings) {
         text(7, y * tile - cy + 3, `${(y - SURFACE) * 10} m`, "#798caa");
       }
       const target = mine.drillTarget;
-      if (target) {
+      if (target && mine.isVisible(target.x, target.y)) {
         const x = target.x * tile - cx,
           y = target.y * tile - cy;
         g.fillStyle(0xf8d88d, 0.08 + mine.progress * 0.1);
@@ -664,10 +741,10 @@ export function createMineScene(bindings: SceneBindings) {
           true,
         );
       if (mine.progress > 0) {
-        fx.fillStyle(0x111c2b, 0.95);
-        fx.fillRoundedRect(px - 21, py - 29 * scale, 42, 5, 2);
-        fx.fillStyle(0xffb45a);
-        fx.fillRoundedRect(
+        this.overlay.fillStyle(0x111c2b, 0.95);
+        this.overlay.fillRoundedRect(px - 21, py - 29 * scale, 42, 5, 2);
+        this.overlay.fillStyle(0xffb45a);
+        this.overlay.fillRoundedRect(
           px - 20,
           py - 29 * scale + 1,
           40 * mine.progress,
@@ -696,10 +773,16 @@ export function createMineScene(bindings: SceneBindings) {
       const station = bindings.getStation();
       if (nearby && !paused && !station) {
         const prompt = nearbyPromptRect(width, height);
-        fx.fillStyle(0x142334, 0.96);
-        fx.fillRoundedRect(prompt.x, prompt.y, prompt.width, prompt.height, 6);
-        fx.lineStyle(1, 0xffb45a);
-        fx.strokeRoundedRect(
+        this.overlay.fillStyle(0x142334, 0.96);
+        this.overlay.fillRoundedRect(
+          prompt.x,
+          prompt.y,
+          prompt.width,
+          prompt.height,
+          6,
+        );
+        this.overlay.lineStyle(1, 0xffb45a);
+        this.overlay.strokeRoundedRect(
           prompt.x,
           prompt.y,
           prompt.width,
@@ -713,7 +796,12 @@ export function createMineScene(bindings: SceneBindings) {
           "#ffe1a1",
           true,
         );
-      } else if (this.inspect && !paused && !station) {
+      } else if (
+        this.inspect &&
+        !paused &&
+        !station &&
+        mine.isVisible(this.inspect.x, this.inspect.y)
+      ) {
         const type = mine.tile(this.inspect.x, this.inspect.y);
         if (isOre(type))
           text(
@@ -727,18 +815,36 @@ export function createMineScene(bindings: SceneBindings) {
           text(
             width / 2,
             height - 27,
-            type === 7 ? "MAGMA · Hull damage" : "BEDROCK · Cannot drill",
+            type === 7
+              ? `MAGMA · ${magmaDamageAtDepth((this.inspect.y - SURFACE) * 10)} hull damage`
+              : "BEDROCK · Cannot drill",
             "#efb78c",
             true,
           );
       }
+      if (this.frontier && !station && !paused) {
+        const noticeWidth = Math.min(350, width - 24),
+          noticeX = (width - noticeWidth) / 2;
+        this.overlay.fillStyle(0x101d2e, 0.94);
+        this.overlay.fillRoundedRect(noticeX, 40, noticeWidth, 57, 8);
+        this.overlay.lineStyle(1, 0x65d4df, 0.75);
+        this.overlay.strokeRoundedRect(noticeX, 40, noticeWidth, 57, 8);
+        text(width / 2, 47, this.frontier.name.toUpperCase(), "#ffce8b", true);
+        text(
+          width / 2,
+          70,
+          `New frontier · ${this.frontier.depth.toLocaleString()} m`,
+          "#c8dcea",
+          true,
+        );
+      }
       if (this.flash > 0) {
-        fx.lineStyle(4, 0xff9475, this.flash * 2);
-        fx.strokeRect(2, 2, width - 4, height - 4);
+        this.overlay.lineStyle(4, 0xff9475, this.flash * 2);
+        this.overlay.strokeRect(2, 2, width - 4, height - 4);
       }
       if (!station && (paused || s.fuel <= 0 || s.hull <= 0)) {
-        fx.fillStyle(0x070d19, 0.66);
-        fx.fillRect(0, 0, width, height);
+        this.overlay.fillStyle(0x070d19, 0.66);
+        this.overlay.fillRect(0, 0, width, height);
         text(
           width / 2,
           height / 2 - 12,

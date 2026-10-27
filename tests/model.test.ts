@@ -71,6 +71,13 @@ function driveTo(m: Mine, stationId: StationId) {
   driveToX(m, station.center);
   expect(nearbyStation(m.state)?.id).toBe(stationId);
 }
+function oldMap() {
+  const state = createState();
+  state.tiles = state.tiles.slice(0, WIDTH * 100);
+  state.tiles.fill(8, WIDTH * 99);
+  state.discovered = state.discovered.slice(0, state.tiles.length);
+  return state;
+}
 describe("first playable loop", () => {
   it("funds a real upgrade through two mining trips and restores the full expedition", () => {
     const m = new Mine();
@@ -219,7 +226,7 @@ describe("first playable loop", () => {
   });
   it("rejects corrupt, future, oversized and impossible saves", () => {
     for (const patch of [
-      { version: 4 },
+      { version: 5 },
       { money: -1 },
       { money: 1.5 },
       { fuel: 999 },
@@ -592,7 +599,7 @@ describe("flight, ledges, and drilling regression coverage", () => {
     "migrates schema %i without losing excavations, cargo or equipment capability",
     (version) => {
       const legacy = {
-        ...createState(),
+        ...oldMap(),
         version,
         money: 345,
         fuel: 75,
@@ -603,7 +610,7 @@ describe("flight, ledges, and drilling regression coverage", () => {
       legacy.tiles = legacy.tiles.map((tile) => (tile > 8 ? 1 : tile));
       legacy.tiles[4 * WIDTH + 12] = 0;
       const loaded = decodeSave(JSON.stringify(legacy));
-      expect(loaded.version).toBe(3);
+      expect(loaded.version).toBe(4);
       expect(loaded.tiles).toEqual(legacy.tiles);
       expect(loaded.inventory).toEqual(legacy.inventory);
       expect(loaded.money).toBe(345);
@@ -657,14 +664,14 @@ describe("caves and reference progression", () => {
         3: 4,
         9: 5,
         10: 8,
-        4: 14,
-        11: 24,
-        12: 36,
-        5: 48,
-        13: 62,
-        6: 76,
-        14: 88,
-        7: 52,
+        4: 18,
+        11: 33,
+        12: 93,
+        5: 183,
+        13: 303,
+        6: 383,
+        14: 503,
+        7: 93,
       };
       for (const ore of Object.keys(ORES).map(Number))
         expect(underground).toContain(ore);
@@ -786,7 +793,7 @@ describe("caves and reference progression", () => {
 describe("progression save migration and validation", () => {
   it("retains a full legacy bay, all upgrade benefits and condition fractions", () => {
     const legacy = {
-      ...createState(),
+      ...oldMap(),
       version: 2,
       fuel: 200,
       hull: 110,
@@ -826,7 +833,7 @@ describe("progression save migration and validation", () => {
       { version: 2 }, // A legacy map cannot contain newly introduced identifiers.
     ])
       expect(() => decodeSave(JSON.stringify({ ...base, ...patch }))).toThrow();
-    expect(() => decodeSave(" ".repeat(150001))).toThrow();
+    expect(() => decodeSave(" ".repeat(256 * 1024 + 1))).toThrow();
     expect(() =>
       decodeSave('{"version":3,"upgrades":{"__proto__":{"engine":0}}}'),
     ).toThrow();

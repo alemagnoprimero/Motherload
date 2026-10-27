@@ -9,16 +9,30 @@ export const SKY_TEXTURE = "frontier-sky";
 export const CAVE_TEXTURE = "frontier-cave";
 export const LIGHT_TEXTURE = "frontier-light";
 export const VIGNETTE_TEXTURE = "frontier-vignette";
-export const ART_FRAMES = Array.from({ length: 14 }, (_, i) => i + 1).flatMap(
-  (tile) =>
+export const ART_FRAMES = [
+  ...Array.from({ length: 14 }, (_, i) => i + 1).flatMap((tile) =>
     [0, 1, 2].map((variant) => ({
       name: `tile-${tile}-${variant}`,
       tile,
       variant,
     })),
-);
+  ),
+  ...[0, 1, 2].map((variant) => ({
+    name: `unknown-${variant}`,
+    tile: 0,
+    variant,
+  })),
+];
 export const tileSizeForViewport = (width: number, height: number) =>
-  height < 280 ? 32 : width < 600 ? 40 : width < 1050 ? 48 : 56;
+  height < 280
+    ? 32
+    : width < 600
+      ? 40
+      : width < 900
+        ? 56
+        : width < 1200
+          ? 72
+          : 80;
 
 export function preloadArt(scene: Phaser.Scene) {
   scene.load.atlas(
@@ -60,13 +74,16 @@ function terrain(
   const rock = tile === 2,
     bedrock = tile === 8,
     magma = tile === 7;
-  const base = rock
-    ? [91, 104, 115]
-    : bedrock
-      ? [39, 49, 65]
-      : magma
-        ? [67, 40, 37]
-        : [133, 83, 57];
+  const hidden = tile === 0;
+  const base = hidden
+    ? [10, 15, 24]
+    : rock
+      ? [91, 104, 115]
+      : bedrock
+        ? [39, 49, 65]
+        : magma
+          ? [67, 40, 37]
+          : [133, 83, 57];
   const seed = variant * 97 + (rock ? 31 : bedrock ? 71 : 11);
   const relief = (x: number, y: number) =>
     noise(x / 22, y / 12, seed) * 0.6 +
@@ -75,7 +92,8 @@ function terrain(
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const value = relief(x, y);
-      const normal = (relief(x - 1, y - 1) - relief(x + 1, y + 1)) * 1.6;
+      const normal =
+        (relief(x - 1, y - 1) - relief(x + 1, y + 1)) * (hidden ? 0.18 : 1.6);
       const grain = hash(x, y, seed) - 0.5;
       const strata = Math.sin(
         y * (bedrock ? 0.21 : 0.12) +
@@ -96,7 +114,11 @@ function terrain(
   }
   context.putImageData(image, 0, 0);
   context.lineCap = "round";
-  for (let crack = 0; crack < (rock ? 4 : bedrock ? 6 : 3); crack++) {
+  for (
+    let crack = 0;
+    crack < (hidden ? 0 : rock ? 4 : bedrock ? 6 : 3);
+    crack++
+  ) {
     let x = hash(crack, 1, seed) * size,
       y = hash(crack, 2, seed) * size;
     context.beginPath();
@@ -202,21 +224,40 @@ function fallbackModels(scene: Phaser.Scene) {
 export function createArt(scene: Phaser.Scene) {
   fallbackModels(scene);
   if (!scene.textures.exists(ART_TEXTURE)) {
+    // Extruded gutters prevent linear filtering from sampling a neighboring
+    // mineral frame into the edge of an otherwise opaque unknown cell.
+    const padding = 2,
+      stride = ART_CELL + padding * 2;
     const atlas = scene.textures.createCanvas(
       ART_TEXTURE,
-      ART_COLUMNS * ART_CELL,
-      Math.ceil(ART_FRAMES.length / ART_COLUMNS) * ART_CELL,
+      ART_COLUMNS * stride,
+      Math.ceil(ART_FRAMES.length / ART_COLUMNS) * stride,
     )!;
     const tileCanvas = document.createElement("canvas");
     tileCanvas.width = tileCanvas.height = ART_CELL;
     const context = tileCanvas.getContext("2d")!;
     for (let index = 0; index < ART_FRAMES.length; index++) {
       const frame = ART_FRAMES[index],
-        x = (index % ART_COLUMNS) * ART_CELL,
-        y = Math.floor(index / ART_COLUMNS) * ART_CELL;
+        x = (index % ART_COLUMNS) * stride + padding,
+        y = Math.floor(index / ART_COLUMNS) * stride + padding;
       context.clearRect(0, 0, ART_CELL, ART_CELL);
       terrain(scene, context, frame.tile, frame.variant);
       atlas.context.drawImage(tileCanvas, x, y);
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dy === 0) continue;
+          atlas.context.drawImage(
+            tileCanvas,
+            dx < 0 ? 0 : dx > 0 ? ART_CELL - 1 : 0,
+            dy < 0 ? 0 : dy > 0 ? ART_CELL - 1 : 0,
+            dx === 0 ? ART_CELL : 1,
+            dy === 0 ? ART_CELL : 1,
+            x + (dx < 0 ? -padding : dx > 0 ? ART_CELL : 0),
+            y + (dy < 0 ? -padding : dy > 0 ? ART_CELL : 0),
+            dx === 0 ? ART_CELL : padding,
+            dy === 0 ? ART_CELL : padding,
+          );
+        }
       atlas.add(frame.name, 0, x, y, ART_CELL, ART_CELL);
     }
     atlas.refresh();

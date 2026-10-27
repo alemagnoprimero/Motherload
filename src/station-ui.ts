@@ -36,32 +36,37 @@ interface Offer {
 }
 const UPGRADE_LABELS: Record<
   Upgrade,
-  { name: string; unit: string; detail: string }
+  { name: string; unit: string; detail: string; benefit: string }
 > = {
   drill: {
     name: "Drill assembly",
     unit: "Drill speed",
-    detail: "Finish each cut faster.",
+    detail: "Harder rock, faster cuts.",
+    benefit: "Harder rock",
   },
   tank: {
     name: "Fuel tank",
     unit: "Liters",
-    detail: "Travel farther before returning for fuel.",
+    detail: "Longer deep return trips.",
+    benefit: "Range",
   },
   cargo: {
     name: "Cargo bay",
     unit: "Mineral slots",
-    detail: "Carry more minerals on every expedition.",
+    detail: "Fewer surface returns.",
+    benefit: "Hauls",
   },
   hull: {
     name: "Hull plating",
     unit: "Hull points",
-    detail: "Withstand harder landings and hazards.",
+    detail: "Magma and impact protection.",
+    benefit: "Protection",
   },
   engine: {
     name: "Engine",
     unit: "Engine power",
-    detail: "Accelerate and climb faster under load.",
+    detail: "Stronger loaded climbs.",
+    benefit: "Lift",
   },
 };
 const dollars = (value: number) => `$${Math.ceil(value).toLocaleString()}`;
@@ -115,7 +120,7 @@ function offer(mine: Mine, action: ServiceAction): Offer {
     title: `${info.name} · LV ${tier + 1}`,
     shortTitle: `${action[0].toUpperCase() + action.slice(1)} · LV ${tier + 1}`,
     detail: `${info.unit} ${values[tier]}${next === undefined ? " · MAX" : ` → ${next}`}`,
-    shortDetail: `${values[tier]}${next === undefined ? " · MAX" : ` → ${next}`}`,
+    shortDetail: `${values[tier]}${next === undefined ? " · MAX" : ` → ${next}`} · ${info.benefit}`,
     description: info.detail,
     button: !Number.isFinite(price)
       ? "Fully upgraded"
@@ -458,12 +463,19 @@ export class StationUi {
           width: textWidth,
           maxLines: 1,
         });
-        text(rect.x + 58, rect.y + 31, item.detail, {
-          size: 12,
-          color: "#82d4e2",
-          width: textWidth,
-          maxLines: 1,
-        });
+        text(
+          rect.x + 58,
+          rect.y + 31,
+          station === "upgrades"
+            ? `${item.detail} · ${item.description}`
+            : item.detail,
+          {
+            size: 12,
+            color: "#82d4e2",
+            width: textWidth,
+            maxLines: 1,
+          },
+        );
         if (rect.height > 100) {
           text(rect.x + 58, rect.y + 64, item.description, {
             size: 12,

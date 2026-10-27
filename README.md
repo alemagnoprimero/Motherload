@@ -6,7 +6,7 @@ A single-player browser mining game in Phaser and TypeScript, inspired by Mother
 
 Open **https://alemagnoprimero.github.io/Motherload/** on a computer or Android phone. No installation or local server is required. Gameplay changes pushed to `main` are tested, built and deployed automatically.
 
-Existing expeditions retain their excavated maps. To explore the new cave generation and expanded mineral deposits, choose **Tools → New expedition**. Export your existing expedition first if you want to keep a separate copy; starting over requires confirmation.
+Existing expeditions retain their excavated maps and receive the new discovery system. **New expeditions** use a 600-row mine, reaching roughly 6,000 metres through six geological regions. To explore that deeper world and its revised mineral distribution, choose **Tools → New expedition**. Export your existing expedition first if you want to keep a separate copy; starting over requires confirmation.
 
 ### Controls and first expeditions
 
@@ -14,9 +14,10 @@ Existing expeditions retain their excavated maps. To explore the new cave genera
 2. Hold **Up / W** to return through your shaft. Combine Up with **Left/Right or A/D** to steer. Counter-steer to brake momentum. Side drilling requires a ledge under the rig, at any depth; you cannot drill upward.
 3. A started cut completes even after releasing its direction. Hold Up during the cut to lift off immediately afterward.
 4. Return to the surface and drive to a building's illuminated bay. Press **E / Enter**, or tap the nearby building or its on-screen prompt, to open its interface **inside the game**. The **Exchange** buys your haul, **Fuel** refills your tank, **Repair** restores hull, and **Upgrades** sells equipment. You must visit the correct building. Two starter expeditions normally fund the first $750 upgrade.
-5. Explore caves and deeper deposits. Mineral weight affects handling; engines improve thrust and acceleration. Hard landings and magma damage the hull. Ordinary drilling does not.
+5. Explore to find your next route. The lamp reveals nearby tunnels and the first solid wall face; ore and caverns behind rock stay unknown. Discovered terrain is remembered and saved. The frontier strip tracks your next depth milestone.
+6. Deeper layers contain fewer deposits but more valuable minerals, harder rock and stronger magma hazards. Drill and tank upgrades extend expeditions; cargo upgrades improve each return; engines lift heavy loads; hull upgrades increase the margin for mistakes. Ordinary drilling does not damage the hull.
 
-Phones have separate left/right and down/up controls; hold two with different fingers to steer in flight. Fuel, hull and cargo stay beside the playfield in portrait and landscape. **Expand** fills the available screen; native fullscreen is used when supported. Tap or click a mineral to identify it.
+Phones have separate left/right and down/up controls; hold two with different fingers to steer in flight. Fuel, hull and cargo stay beside the playfield in portrait and landscape. **Expand** fills the available screen; native fullscreen is used when supported. Tap or click illuminated terrain to identify it; clicking unexplored ground does not reveal what it contains.
 
 You can return to any supported ledge and drill down again, regardless of your deepest point. Down selects the floor while you hold a horizontal direction to align; horizontal steering still works while airborne.
 
@@ -28,11 +29,11 @@ Inside a building, use **arrows / Tab** to select equipment and **Enter** to buy
 
 ### Saves and transfer between devices
 
-**Save** records terrain, position, money, inventory, vehicle condition and upgrades. Autosave runs every five active seconds; background/exit saves are best effort, so use Save before closing after an important purchase or discovery. Loading resets transient velocity and unfinished cut animation, not completed excavation.
+**Save** records terrain, discoveries, position, money, inventory, vehicle condition and upgrades. Autosave runs every five active seconds; background/exit saves are best effort, so use Save before closing after an important purchase or discovery. Loading resets transient velocity and unfinished cut animation, not completed excavation.
 
 - **Tools → Export save** downloads a validated JSON file. **Import save** previews the expedition and asks before replacing current progress.
 - The previous valid saved expedition becomes a backup. **Restore backup** asks before replacing the primary save.
-- Older schema-1/schema-2 saves migrate to schema 3. Terrain, cash, inventory and position are preserved. Fuel/hull percentages and equipment capability are preserved while the original's smaller units and longer upgrade tables are adopted.
+- Older schema-1/schema-2/schema-3 saves migrate to schema 4, preserving their 100-row terrain, cash, inventory and position. Schema-3 equipment and condition are unchanged; earlier equipment retains its capability and fuel/hull percentages. Old saves begin discovery around the vehicle because their previous viewing history was not recorded; natural caves are not automatically revealed.
 - A damaged or unsupported primary save is kept intact. A valid backup can be loaded for review; autosave stays blocked until an explicit restoration or replacement.
 - If another tab changes the expedition, this tab pauses and offers **Load newer save**. HTTPS/localhost uses Web Locks to serialize writes; older/insecure browsers also check for changed save data before writing.
 
@@ -73,9 +74,12 @@ npm run build
 npm run format:check
 npm run test:browser       # dev preview on port 5173
 npm run test:production    # Docker/site; defaults to port 8080
+node scripts/discovery-smoke.mjs # focused hidden-terrain and deep-world checks
 ```
 
 Browser checks use `/usr/bin/chromium`; set `CHROMIUM_PATH` if needed. `PREVIEW_URL` selects another preview or the public site. The checks cover gameplay, equipment effects, save migration/transfer/recovery, tab conflicts, touch release/cancellation, sound controls, and portrait/landscape layout. Screenshots are written to ignored `artifacts/`. Emulated phones do not establish physical Android performance.
+
+See [PROGRESSION.md](docs/PROGRESSION.md) for the exploration rules, depth bands, balancing rationale and playtest targets.
 
 ## Create or modify the 3D artwork
 

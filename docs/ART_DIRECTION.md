@@ -21,7 +21,9 @@ Minerals have different silhouettes as well as colors:
 | Diamond | Broad octahedral jewel |
 | Amazonite | Asymmetric turquoise spires |
 
-The scene adds a warm sunset, layered distant ridges, surface dust, parallax cave walls, vehicle lighting and contact shadows. Exposed cave edges, bedrock strata, magma cracks, station signs, cut outlines, drill vibration/chips and impact feedback preserve gameplay readability. Tapping or clicking a deposit identifies it. The camera follows the rig with larger terrain cells: typically 56 pixels on desktop, 40 on phones and 32 in a short landscape viewport. Those visual sizes do not alter collision or drilling distances.
+The scene adds a warm sunset, layered distant ridges, surface dust, parallax cave walls, vehicle lighting and contact shadows. Exposed cave edges, bedrock strata, magma cracks, station signs, cut outlines, drill vibration/chips and impact feedback preserve gameplay readability. Tapping illuminated terrain identifies it. The camera follows the rig with local framing: typically 80 pixels per cell on a wide desktop, 72 on a medium viewport, 40 on phones and 32 in short landscape. Those visual sizes do not alter collision or drilling distances.
+
+Three opaque, type-independent ground frames cover unexplored cells, including hidden air. Current sight illuminates exposed faces and tunnels; remembered terrain is dim. Fog covers world effects, and cave-edge highlights only use known neighbors, so neither light nor outlines reveal hidden geology. Geological regions tint the atmosphere, and first frontier crossings receive a brief canvas notice. The instrument strip tracks the next depth target without listing undiscovered mineral locations.
 
 Surface buildings highlight their docking bays when the rig is close enough to enter. Their service interfaces are drawn in the Phaser playfield, using the same industrial palette and station identity as the world. Touch controls, equipment comparisons, purchase feedback and the exit control stay inside that interface; there is no separate website shop panel.
 

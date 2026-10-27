@@ -25,6 +25,7 @@ import {
   freezeFrames,
   sampleClockedState,
 } from "./browser-helpers.mjs";
+import { runDiscoverySmoke } from "./discovery-smoke.mjs";
 const BACKUP_KEY = SAVE_KEY + ".backup";
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:5173/";
 await mkdir("artifacts", { recursive: true });
@@ -57,6 +58,7 @@ async function bootWith(storage) {
   return { context, page };
 }
 try {
+  checks.push(...(await runDiscoverySmoke(browser, base)));
   let context = await browser.newContext({
       viewport: { width: 1440, height: 1100 },
     }),
@@ -208,10 +210,19 @@ try {
   const migrated = await bootWith({ [SAVE_KEY]: legacyRaw });
   await pause(migrated.page);
   const current = await savedState(migrated.page);
-  assert.equal(current.version, 3);
+  assert.equal(current.version, 4);
   assert.equal(current.money, legacy.money);
   assert.deepEqual(current.inventory, legacy.inventory);
   assert.deepEqual(current.tiles, legacy.tiles);
+  assert.equal(current.tiles.length, WIDTH * 100);
+  assert.equal(current.discovered.length, current.tiles.length);
+  assert.ok(current.discovered.includes(1));
+  assert.ok(current.discovered.includes(0));
+  assert.equal(
+    await migrated.page.locator("#world-note").evaluate((note) => note.hidden),
+    false,
+    "imported compact mines must explain how to start a deeper expedition",
+  );
   assert.ok(current.upgrades.cargo >= 1);
   assert.equal(
     await migrated.page.evaluate(

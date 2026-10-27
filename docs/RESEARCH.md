@@ -110,7 +110,7 @@ See [movement measurements](MOVEMENT_REFERENCE.md) for timed Ruffle observations
 
 The remake now adopts the ten-mineral roster, mineral weights, starting resources, original drill/engine/tank/cargo/hull tables, fuel price and repair price documented above. Engine upgrades affect the simulation, and ordinary soil cuts no longer damage hull. The world now has seeded cave pockets and depth-sensitive deposits.
 
-Generation uses a bounded 24 × 100 world, assisted starter veins, compressed depth bands and a guarantee that every mineral survives cave carving; those are deliberate remake choices, not a copy of the original random generator. Fuel uses nominal 42 fps conversion of the inspected per-frame quantities, with elapsed-time parity still unmeasured. Full terrain saves remain an explicit user requirement. See [PROJECT.md](PROJECT.md) for the complete current behavior, migration policy, validation and remaining deviations.
+At that checkpoint, generation used a bounded 24 × 100 world, assisted starter veins, compressed depth bands and a guarantee that every mineral survives cave carving; those were deliberate remake choices, not a copy of the original random generator. The later discovery/progression pass below expands new maps to 600 rows. Fuel uses nominal 42 fps conversion of the inspected per-frame quantities, with elapsed-time parity still unmeasured. Full terrain saves remain an explicit user requirement. See [PROJECT.md](PROJECT.md) for the complete current behavior, migration policy, validation and remaining deviations.
 
 ## Physical surface buildings — 2026-10-26
 
@@ -125,3 +125,9 @@ The reported Down-only failure was reproduced through a complete input-driven tr
 The original `doneDigging` routine clears the terrain at `frame_1/DoAction.as:929`, then attempts `addToBay` at line 941. Failed collection produces the cargo-full warning at lines 946–949. The remake now follows that order: a full bay limits collection, not excavation; additional minerals are discarded without adding cargo or credits. The HUD and collection feedback warn about this loss. Round-trip regressions cover both stock and upgraded cargo bays and preserve the existing terrain, currency, inventory and save validation rules.
 
 Down also selects downward excavation when combined with horizontal steering after landing. This is a deliberate input-priority choice for the remake; the change is not presented as a confirmed copy of the original key ordering. Ground support, impact damage, committed cuts and the prohibition on upward drilling remain in effect.
+
+## Discovery and depth progression — 2026-10-26
+
+The earlier 100-row prototype exposed too much terrain and compressed valuable deposits into a short descent. New expeditions now use 600 rows, six geological bands, local wall-occluded sight, persistent exploration memory and rarer but more valuable deep deposits. Stone frequency and magma damage rise with depth; the existing depth-scaled drill time now spans the larger world. Original mineral values, masses and upgrade tables are retained.
+
+These visibility rules, strata, deposit weights, hazard scaling, frontier notices and camera choices are deliberate remake design, not newly confirmed original behavior. [PROGRESSION.md](PROGRESSION.md) records aggregate generation results and controlled excursion evidence. Existing compact saved worlds remain intact under schema 4; their earlier viewing history cannot be reconstructed, so initial discovery is limited to the current vicinity rather than revealing natural caves.

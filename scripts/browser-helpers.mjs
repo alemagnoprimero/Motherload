@@ -5,6 +5,7 @@ import { stationLayout, nearbyPromptRect } from "../src/station-layout.ts";
 
 export const SAVE_KEY = "motherload.frontier.v1";
 export const WIDTH = 24;
+export const HEIGHT = 600;
 const VALUES = {
   3: 30,
   4: 250,
@@ -18,13 +19,20 @@ const VALUES = {
   14: 500000,
 };
 
-export function fixture(patch = {}) {
+export function fixture(patch = {}, height = HEIGHT) {
   return {
-    version: 3,
+    version: 4,
     seed: 73021,
-    tiles: Array.from({ length: 2400 }, (_, i) =>
-      Math.floor(i / WIDTH) <= 3 ? 0 : Math.floor(i / WIDTH) === 99 ? 8 : 1,
+    tiles: Array.from({ length: WIDTH * height }, (_, i) =>
+      Math.floor(i / WIDTH) <= 3
+        ? 0
+        : Math.floor(i / WIDTH) === height - 1
+          ? 8
+          : 1,
     ),
+    // Service and physics regressions isolate their own behavior from fog.
+    // Discovery-specific fixtures start with a separate unexplored mask.
+    discovered: Array(WIDTH * height).fill(1),
     x: 12,
     y: 3.15,
     money: 2000,
@@ -44,13 +52,17 @@ export function flightFixture() {
   return state;
 }
 export function legacyFixture() {
-  const state = fixture({
-    version: 2,
-    money: 1234,
-    fuel: 57,
-    hull: 63,
-    inventory: Array(8).fill(3),
-  });
+  const state = fixture(
+    {
+      version: 2,
+      money: 1234,
+      fuel: 57,
+      hull: 63,
+      inventory: Array(8).fill(3),
+    },
+    100,
+  );
+  delete state.discovered;
   delete state.upgrades.engine;
   state.tiles[4 * WIDTH + 12] = 0;
   return state;
@@ -476,6 +488,14 @@ export async function runCoreSmoke(page, base) {
   );
   await pause(page);
   const untouched = await savedState(page);
+  assert.equal(untouched.version, 4);
+  assert.equal(untouched.tiles.length, WIDTH * HEIGHT);
+  assert.equal(untouched.discovered.length, untouched.tiles.length);
+  assert.ok(untouched.discovered.includes(1));
+  assert.ok(
+    untouched.discovered.includes(0),
+    "a new expedition must leave the unexplored mine hidden",
+  );
   await page.keyboard.press("Enter");
   assert.ok(
     !(await page.evaluate(() => document.body.dataset.station)),
@@ -497,7 +517,7 @@ export async function runCoreSmoke(page, base) {
   const mined = await snapshot(page);
   assert.ok(mined.inventory.length >= 2 && mined.inventory.length <= 7);
   assert.equal(mined.tiles[4 * WIDTH + 12], 0);
-  assert.equal(mined.version, 3);
+  assert.equal(mined.version, 4);
   assert.ok(mined.fuel < 6 && mined.hull > 0);
   await page.reload();
   await page.locator("canvas").waitFor();
@@ -626,14 +646,50 @@ export async function runMobileStationChecks(page, cdp, path) {
     ["portrait", { width: 393, height: 851 }, 0],
     ["small-landscape", { width: 568, height: 320 }, 1],
   ]) {
+    let entrySnapshot;
     try {
       await page.setViewportSize(viewport);
       await importState(page, fixture({ x: 21, money: 10000 }));
-      await pause(page, false);
-      await rendered(page);
-      await assertMobileLayout(page);
-      let layout = await canvasGeometry(page, "upgrades");
-      await canvasTap(page, cdp, layout.opener);
+      await pause(page);
+      await freezeFrames(page);
+      let layout;
+      try {
+        // Entry deliberately ignores input while saving. Keep the native tap
+        // within a bounded simulation interval so protocol/rendering latency
+        // cannot start the next autosave between touchDown and touchUp.
+        await page.locator("#pause").evaluate((button) => button.click());
+        await page.clock.runFor(200);
+        await assertMobileLayout(page);
+        layout = await canvasGeometry(page, "upgrades");
+        entrySnapshot = await page.evaluate(() => {
+          const canvas = document.querySelector("canvas");
+          return {
+            saving: document.body.dataset.saving,
+            paused: document
+              .querySelector("#pause")
+              .getAttribute("aria-pressed"),
+            fullscreen: Boolean(document.fullscreenElement),
+            width: canvas.width,
+            height: canvas.height,
+            bounds: canvas.getBoundingClientRect().toJSON(),
+          };
+        });
+        assert.equal(entrySnapshot.saving, "false");
+        assert.equal(entrySnapshot.paused, "false");
+        assert.equal(entrySnapshot.fullscreen, false);
+        assert.equal(
+          entrySnapshot.width,
+          Math.round(entrySnapshot.bounds.width),
+        );
+        assert.equal(
+          entrySnapshot.height,
+          Math.round(entrySnapshot.bounds.height),
+        );
+        await canvasTap(page, cdp, layout.opener);
+        await page.clock.runFor(80);
+      } finally {
+        await page.clock.resume();
+      }
       await page.waitForFunction(
         () => document.body.dataset.station === "upgrades",
       );
@@ -695,6 +751,7 @@ export async function runMobileStationChecks(page, cdp, path) {
         .catch(() => {});
       const diagnostic = {
         label,
+        entrySnapshot,
         state: await readState(page).catch(() => undefined),
         canvas: await page.locator("canvas").boundingBox(),
         station: await page.evaluate(() => document.body.dataset.station),
@@ -753,6 +810,12 @@ export async function runMobileSmoke(browser, base, path) {
   );
   await assertMobileLayout(page);
   await page.locator("#focus").click();
+  await page.waitForFunction(
+    () =>
+      !document.fullscreenElement &&
+      !document.body.classList.contains("focus-mode"),
+  );
+  await rendered(page);
   await runMobileStationChecks(page, cdp, path);
   assert.deepEqual(errors, []);
   return { context, page, cdp };
