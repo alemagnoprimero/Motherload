@@ -10,5 +10,10 @@
 !src/**
 !tests/
 !tests/**
+!assets/
+!assets/generated/
+!assets/generated/**
+!scripts/
+!scripts/check-assets.mjs
 !docker/
 !docker/nginx.conf

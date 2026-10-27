@@ -7,6 +7,8 @@ RUN --mount=type=secret,id=proxy_ca,target=/tmp/proxy-ca.pem \
 COPY index.html tsconfig.json vite.config.ts ./
 COPY src ./src
 COPY tests ./tests
+COPY assets/generated ./assets/generated
+COPY scripts/check-assets.mjs ./scripts/check-assets.mjs
 RUN npm run build
 
 FROM nginx:1.28-alpine AS runtime

@@ -5,6 +5,8 @@ on:
     paths:
       - "src/**"
       - "tests/**"
+      - "assets/generated/**"
+      - "scripts/check-assets.mjs"
       - "index.html"
       - "vite.config.ts"
       - "tsconfig.json"

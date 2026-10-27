@@ -131,12 +131,15 @@ describe("first playable loop", () => {
     expect(a.state.mined).toBe(0);
     expect(b.state.mined).toBe(1);
   });
-  it("blocks full cargo without deleting the mineral", () => {
+  it("keeps a full bay intact while excavating and discarding excess ore", () => {
     const m = new Mine();
     m.state.inventory = Array(capacity(m.state)).fill(3);
-    hold(m, "down", 2);
-    expect(m.state.y).toBeCloseTo(3.15, 4);
-    expect(m.state.tiles[4 * WIDTH + 12]).toBe(3);
+    until(m, "down", () => m.state.mined === 1);
+    expect(m.state.y).toBeCloseTo(4.15, 4);
+    expect(m.state.tiles[4 * WIDTH + 12]).toBe(0);
+    expect(m.state.inventory).toEqual(Array(7).fill(3));
+    expect(m.state.money).toBe(20);
+    expect(m.message).toContain("Cargo full: Ironium discarded");
   });
   it("never drills upward, crosses walls or spends credits underground", () => {
     const m = new Mine();
@@ -242,6 +245,112 @@ function chamber() {
   m.state.y = 8;
   return m;
 }
+
+// Reach an earlier shelf through real input, after filling the stock bay and
+// proving that the deeper dirt remains drillable. No position is teleported.
+function returnToOreShelf(cargoTier = 0) {
+  const m = new Mine(createState(73021));
+  m.state.fuel = 10;
+  m.state.upgrades.cargo = cargoTier;
+  for (let y = SURFACE + 1; y < HEIGHT - 1; y++)
+    for (let x = 0; x < WIDTH; x++) m.state.tiles[y * WIDTH + x] = 1;
+  for (let y = 4; y <= 7; y++)
+    for (let x = 10; x <= 15; x++) m.state.tiles[y * WIDTH + x] = 0;
+  for (let y = 8; y <= 14; y++) m.state.tiles[y * WIDTH + 12] = 3;
+  m.state.tiles[8 * WIDTH + 13] = 3;
+  until(m, "down", () => m.state.mined === 8, 20);
+  expect(m.state.inventory).toHaveLength(7);
+  expect(m.state.y).toBeCloseTo(15.15);
+  expect(m.tile(12, 15)).toBe(0);
+  until(m, "up", () => m.state.y <= 6.5);
+  for (let tick = 0; tick < 8 * 120; tick++) {
+    const correction = (13 - m.state.x) * 6 - m.velocityX * 2;
+    m.tick(
+      1 / 120,
+      correction > 0.15 ? "right" : correction < -0.15 ? "left" : undefined,
+    );
+    if (
+      m.grounded &&
+      Math.abs(m.state.x - 13) < 0.04 &&
+      Math.abs(m.velocityX) < 0.1
+    )
+      break;
+  }
+  expect(m.grounded).toBe(true);
+  expect(m.velocityY).toBe(0);
+  expect(m.state.x).toBeCloseTo(13, 1);
+  expect(m.state.y).toBeCloseTo(7.15, 4);
+  expect(m.state.deepest).toBe(120);
+  return m;
+}
+
+describe("returning to a shallower ledge", () => {
+  it.each([
+    { cargoTier: 0, expectedCargo: 7, discarded: true },
+    { cargoTier: 1, expectedCargo: 8, discarded: false },
+  ])(
+    "deploys Down after a full descent/ascent with cargo tier $cargoTier",
+    ({ cargoTier, expectedCargo, discarded }) => {
+      const m = returnToOreShelf(cargoTier);
+      const money = m.state.money,
+        fuel = m.state.fuel;
+      until(m, "down", () => m.state.mined === 9, 2);
+      expect(m.tile(13, 8)).toBe(0);
+      expect(m.state.inventory).toHaveLength(expectedCargo);
+      expect(m.state.inventory.length).toBeLessThanOrEqual(capacity(m.state));
+      expect(m.state.money).toBe(money);
+      expect(m.state.fuel).toBeLessThan(fuel);
+      expect(m.state.deepest).toBe(120);
+      expect(m.state.y).toBeCloseTo(8.15);
+      expect(m.message.includes("discarded")).toBe(discarded);
+      expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+    },
+  );
+
+  it.each(["left", "right"] as const)(
+    "honors Down while holding %s to align on a returned-to shelf",
+    (direction) => {
+      const m = returnToOreShelf(1);
+      m.tick(1 / 120, { down: true, [direction]: true });
+      expect(m.progress).toBeGreaterThan(0);
+      expect(m.drillDirection).toBe("down");
+      expect(m.drillTarget).toEqual({ x: 13, y: 8 });
+      until(m, undefined, () => m.state.mined === 9, 2);
+      expect(m.tile(13, 8)).toBe(0);
+      expect(m.state.inventory).toHaveLength(8);
+      expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+    },
+  );
+
+  it("keeps horizontal steering while holding Down above a ledge", () => {
+    const m = chamber();
+    m.state.y = 6;
+    m.state.tiles[8 * WIDTH + 13] = 1;
+    hold(m, { down: true, right: true }, 0.1);
+    expect(m.state.x).toBeGreaterThan(12);
+    expect(m.state.y).toBeGreaterThan(6);
+    expect(m.progress).toBe(0);
+    expect(m.state.mined).toBe(0);
+  });
+
+  it("cuts an ore wall with a full bay without creating cargo or credits", () => {
+    const m = chamber();
+    m.state.x = 13;
+    m.state.y = 7.15;
+    m.state.inventory = Array(capacity(m.state)).fill(3);
+    m.state.tiles[8 * WIDTH + 13] = 1;
+    m.state.tiles[7 * WIDTH + 14] = 6;
+    const inventory = [...m.state.inventory],
+      money = m.state.money;
+    until(m, "right", () => m.state.mined === 1, 2);
+    expect(m.tile(14, 7)).toBe(0);
+    expect(m.state.inventory).toEqual(inventory);
+    expect(m.state.money).toBe(money);
+    expect(m.message).toContain("Diamond discarded");
+    expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
+  });
+});
+
 describe("flight, ledges, and drilling regression coverage", () => {
   it("accelerates continuously and decelerates instead of hopping between cells", () => {
     const m = new Mine();

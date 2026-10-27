@@ -6,3 +6,5 @@ reference/decompiled/
 *.log
 .cache/
 logs/
+__pycache__/
+*.pyc

@@ -1,6 +1,6 @@
 # Motherload · The deep frontier
 
-A single-player browser mining game in Phaser and TypeScript, inspired by Motherload's free edition. Mine destructible terrain, explore caves, collect ten minerals, return to sell and service the rig, and buy drill, engine, tank, cargo and hull upgrades. Artwork and synthesized sound are newly authored.
+A single-player browser mining game in Phaser and TypeScript, inspired by Motherload's free edition. Mine destructible terrain, explore caves, collect ten minerals, return to sell and service the rig, and buy drill, engine, tank, cargo and hull upgrades. Original 3D models supply the vehicle, buildings and minerals; their rendered sprites keep the browser game lightweight. Sound is newly synthesized.
 
 ## Play
 
@@ -10,13 +10,15 @@ Existing expeditions retain their excavated maps. To explore the new cave genera
 
 ### Controls and first expeditions
 
-1. Hold **Down / S** to drill the starter vein below the rig. The stock bay holds seven minerals. The neighboring vein to the right provides a second early expedition.
+1. Hold **Down / S** to drill the starter vein below the rig. The stock bay holds seven minerals. The neighboring vein to the right provides a second early expedition. A full bay does **not** block excavation: additional ore is discarded, so sell your load before collecting more valuables.
 2. Hold **Up / W** to return through your shaft. Combine Up with **Left/Right or A/D** to steer. Counter-steer to brake momentum. Side drilling requires a ledge under the rig, at any depth; you cannot drill upward.
 3. A started cut completes even after releasing its direction. Hold Up during the cut to lift off immediately afterward.
 4. Return to the surface and drive to a building's illuminated bay. Press **E / Enter**, or tap the nearby building or its on-screen prompt, to open its interface **inside the game**. The **Exchange** buys your haul, **Fuel** refills your tank, **Repair** restores hull, and **Upgrades** sells equipment. You must visit the correct building. Two starter expeditions normally fund the first $750 upgrade.
 5. Explore caves and deeper deposits. Mineral weight affects handling; engines improve thrust and acceleration. Hard landings and magma damage the hull. Ordinary drilling does not.
 
 Phones have separate left/right and down/up controls; hold two with different fingers to steer in flight. Fuel, hull and cargo stay beside the playfield in portrait and landscape. **Expand** fills the available screen; native fullscreen is used when supported. Tap or click a mineral to identify it.
+
+You can return to any supported ledge and drill down again, regardless of your deepest point. Down selects the floor while you hold a horizontal direction to align; horizontal steering still works while airborne.
 
 Inside a building, use **arrows / Tab** to select equipment and **Enter** to buy, or tap the canvas controls. Upgrade cards show the actual capacity or performance change. **Escape** or the in-game close button returns to the mine. The rig stays parked while you use a building.
 
@@ -75,6 +77,17 @@ npm run test:production    # Docker/site; defaults to port 8080
 
 Browser checks use `/usr/bin/chromium`; set `CHROMIUM_PATH` if needed. `PREVIEW_URL` selects another preview or the public site. The checks cover gameplay, equipment effects, save migration/transfer/recovery, tab conflicts, touch release/cancellation, sound controls, and portrait/landscape layout. Screenshots are written to ignored `artifacts/`. Emulated phones do not establish physical Android performance.
 
+## Create or modify the 3D artwork
+
+The game remains a 2D mining simulation with 3D-authored artwork. Node.js coordinates Blender to build original meshes, export editable GLB models, and render the animated atlas. Phaser displays those renders with terrain detail, atmospheric layers and lighting effects; a Node server or live 3D renderer is not required to play.
+
+```sh
+npm run assets:build
+npm run assets:check
+```
+
+Asset authoring requires Blender and Python with Pillow; see [the asset pipeline](docs/ASSET_PIPELINE.md) for setup and model sources. Normal `npm ci`, builds, Docker and GitHub Pages use the committed renders and do **not** require Blender. Builds validate the atlas, and Vite gives its PNG/JSON content-based URLs so updated art does not reuse stale cached frames.
+
 ## Original reference research
 
 Java 21, Python 3, curl and SHA-256 tools are used for the separate reference lab:
@@ -97,6 +110,7 @@ The reference is identified as version `0.934 (MC)`; it has not been proven byte
 - `src/storage.ts`: validated persistence, backups, import/export and conflict protection.
 - `src/main.ts`, `src/style.css`: controls, responsive HUD and save tools.
 - `src/scene.ts`, `src/station-ui.ts`, `src/art.ts`, `src/audio.ts`: camera, in-game building interfaces, original artwork, animation, feedback and synthesized sound.
+- `assets/source/`, `assets/models/`, `assets/generated/`: original 3D model generators, editable models and browser-ready renders.
 - `tests/`: simulation and storage regressions.
 - `scripts/`: browser validation, production smoke checks and reference research.
 

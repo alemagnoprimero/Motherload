@@ -21,6 +21,9 @@ import {
   runMobileSmoke,
   stationOpen,
   stationClose,
+  runReturnLedgeSmoke,
+  freezeFrames,
+  sampleClockedState,
 } from "./browser-helpers.mjs";
 const BACKUP_KEY = SAVE_KEY + ".backup";
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:5173/";
@@ -54,7 +57,7 @@ async function bootWith(storage) {
   return { context, page };
 }
 try {
-  const context = await browser.newContext({
+  let context = await browser.newContext({
       viewport: { width: 1440, height: 1100 },
     }),
     page = watch(await context.newPage());
@@ -63,6 +66,11 @@ try {
     "mining, physical travel to exchange, canvas station services/upgrades and reload",
   );
   await page.screenshot({ path: "artifacts/desktop.png", fullPage: true });
+
+  await runReturnLedgeSmoke(page);
+  check(
+    "mine deep, return to an earlier ore shelf, and drill down with a full cargo bay",
+  );
 
   const exportBaseline = await snapshot(page);
   await openTools(page);
@@ -73,6 +81,16 @@ try {
   const exported = await readFile(await download.path(), "utf8");
   assert.deepEqual(JSON.parse(exported), exportBaseline);
   await closeTools(page);
+  // Frame-clock controls install context-wide initialization hooks. Transfer
+  // the real exported expedition to a fresh browser before testing ordinary
+  // storage and cross-tab behavior, just as a player transfers to a device.
+  await context.close();
+  context = await browser.newContext({
+    viewport: { width: 1440, height: 1100 },
+  });
+  page = watch(await context.newPage());
+  await ready(page, base);
+  await pause(page);
   await importState(page, fixture({ money: 4321 }));
   await importRaw(page, exported);
   assert.deepEqual(await savedState(page), exportBaseline);
@@ -363,20 +381,28 @@ try {
         }),
       );
   });
-  await pause(phone, false);
+  // Software rendering can make a Save probe take longer than the intended
+  // touch hold. Advance bounded frames so the rig cannot reach the surface
+  // while the test is inspecting a state midway through this flight.
+  const advancePhone = async (milliseconds) => {
+    for (let elapsed = 0; elapsed < milliseconds; elapsed += 80)
+      await phone.clock.fastForward(Math.min(80, milliseconds - elapsed));
+  };
+  await freezeFrames(phone);
+  await phone.locator("#pause").evaluate((button) => button.click());
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: points,
   });
-  await phone.waitForTimeout(350);
-  const both = await savedState(phone);
+  await advancePhone(350);
+  const both = await sampleClockedState(phone);
   assert.ok(both.x > flight.x + 0.2 && both.y < flight.y - 0.1);
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchEnd",
     touchPoints: [points[1]],
   });
-  await phone.waitForTimeout(500);
-  const upOnly = await savedState(phone);
+  await advancePhone(500);
+  const upOnly = await sampleClockedState(phone);
   assert.ok(upOnly.y < both.y - 0.5);
   assert.deepEqual(await phone.evaluate(() => window.touchEvents), [
     { type: "pointerup", direction: "right" },
@@ -385,8 +411,9 @@ try {
     type: "touchCancel",
     touchPoints: [],
   });
-  await phone.waitForTimeout(1800);
-  const cancelled = await snapshot(phone);
+  await advancePhone(1800);
+  await pause(phone);
+  const cancelled = await sampleClockedState(phone);
   assert.ok(
     cancelled.y > upOnly.y + 0.5,
     "cancelled thrust must eventually give way to gravity",
@@ -395,32 +422,38 @@ try {
     { type: "pointerup", direction: "right" },
     { type: "pointercancel", direction: "up" },
   ]);
+  await phone.clock.resume();
   check(
     "portrait/landscape canvas shops and HUD fit; native touch trade/navigation and finger release work",
   );
 
   await importState(phone, flight);
-  await pause(phone, false);
+  await freezeFrames(phone);
+  await phone.locator("#pause").evaluate((button) => button.click());
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: [points[0]],
   });
-  await phone.waitForTimeout(200);
+  await advancePhone(200);
   await pause(phone, true);
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchEnd",
     touchPoints: [],
   });
-  const held = await savedState(phone);
-  await phone.waitForTimeout(300);
-  assert.deepEqual(await savedState(phone), held);
-  await pause(phone, false);
-  await phone.waitForTimeout(1500);
-  const resumed = await snapshot(phone);
+  const held = await sampleClockedState(phone);
+  await advancePhone(300);
+  assert.deepEqual(await sampleClockedState(phone), held);
+  // The phone is already in the foreground; avoid waiting for a render frame
+  // inside pause(false) while its animation clock is intentionally frozen.
+  await phone.locator("#pause").evaluate((button) => button.click());
+  await advancePhone(1500);
+  await pause(phone);
+  const resumed = await sampleClockedState(phone);
   assert.ok(
     resumed.y > held.y,
     "pause must clear the held thrust before resume",
   );
+  await phone.clock.resume();
   check("pause clears held touch input and freezes simulation");
 
   await page.goto(
@@ -433,9 +466,14 @@ try {
   assert.deepEqual(errors, []);
   console.log(`${checks.length} browser scenarios passed; no page errors.`);
 } catch (error) {
+  if (errors.length) console.error("Browser page errors:", errors);
   if (activePage && !activePage.isClosed())
     await activePage
-      .screenshot({ path: "artifacts/browser-failure.png", fullPage: true })
+      .screenshot({
+        path: "artifacts/browser-failure.png",
+        fullPage: true,
+        timeout: 5000,
+      })
       .catch(() => {});
   throw error;
 } finally {

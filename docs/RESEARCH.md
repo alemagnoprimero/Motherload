@@ -117,3 +117,11 @@ Generation uses a bounded 24 × 100 world, assisted starter veins, compressed de
 The inspected `vehicle.prototype.tileEvents` routine in `frame_1/DoAction.as:2760–2800` automatically changes to fuel, selling, upgrade and repair frames when the rig is in ground mode at the corresponding surface tile, after a short building timer. Entering a shop also stops horizontal motion. Earlier exploratory Ruffle play entered those shops, but did not establish complete timing parity for every transaction.
 
 The remake now requires visiting the matching physical building and renders each service interface inside Phaser. The external Base/sidebar shop has been removed. Explicit E / Enter or touch entry, the compressed building layout, and the new interface artwork are remake usability choices. The model independently rejects transactions away from their required building. Existing save schema, prices and equipment effects are unchanged.
+
+## Returning to an earlier ledge with a full bay — 2026-10-26
+
+The reported Down-only failure was reproduced through a complete input-driven trip: collect seven Ironium tiles while descending, drill deeper dirt, fly back through the shaft, and land on an earlier ore shelf. The rig was grounded with zero vertical velocity, yet the former full-cargo guard refused to start drilling the ore. Dirt remained drillable, giving the appearance of a deepest-depth restriction. There was no actual restriction based on the saved deepest-depth value.
+
+The original `doneDigging` routine clears the terrain at `frame_1/DoAction.as:929`, then attempts `addToBay` at line 941. Failed collection produces the cargo-full warning at lines 946–949. The remake now follows that order: a full bay limits collection, not excavation; additional minerals are discarded without adding cargo or credits. The HUD and collection feedback warn about this loss. Round-trip regressions cover both stock and upgraded cargo bays and preserve the existing terrain, currency, inventory and save validation rules.
+
+Down also selects downward excavation when combined with horizontal steering after landing. This is a deliberate input-priority choice for the remake; the change is not presented as a confirmed copy of the original key ordering. Ground support, impact damage, committed cuts and the prohibition on upward drilling remain in effect.

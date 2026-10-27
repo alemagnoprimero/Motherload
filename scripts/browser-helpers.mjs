@@ -64,10 +64,56 @@ export function launchBrowser() {
 export async function ready(page, base) {
   page.setDefaultTimeout(15000);
   page.setDefaultNavigationTimeout(30000);
-  const response = await page.goto(base);
-  assert.equal(response.status(), 200);
-  await page.locator("canvas").waitFor();
-  await page.waitForFunction(() => document.body.dataset.saving !== undefined);
+  const assets = new Map();
+  const collect = (response) => {
+    const match = new URL(response.url()).pathname.match(
+      /frontier-atlas[^/]*\.(png|json)$/,
+    );
+    if (match) assets.set(match[1], response);
+  };
+  page.on("response", collect);
+  try {
+    const response = await page.goto(base);
+    assert.equal(response.status(), 200);
+    await page.locator("canvas").waitFor();
+    await page.waitForFunction(
+      () => document.body.dataset.saving !== undefined,
+    );
+    await page
+      .locator('#game[aria-busy="false"][data-art-status="ready"]')
+      .waitFor();
+    // A functioning fallback alone must not pass a release of the new artwork.
+    // Check the actual resources loaded by Phaser, including hashed Pages URLs.
+    for (const extension of ["png", "json"]) {
+      const resource = assets.get(extension);
+      assert.ok(resource, `the generated ${extension} atlas must be loaded`);
+      assert.ok(
+        resource.ok(),
+        `${resource.url()} returned HTTP ${resource.status()}`,
+      );
+      assert.equal(await resource.finished(), null);
+    }
+    const png = await assets.get("png").body();
+    assert.deepEqual([...png.subarray(0, 4)], [137, 80, 78, 71]);
+    const atlas = await assets.get("json").json();
+    for (const frame of [
+      "rig-idle-0",
+      "rig-down-0",
+      "rig-side-0",
+      "rig-flight-0",
+      "building-exchange",
+      "building-fuel",
+      "building-repair",
+      "building-upgrades",
+      ...Object.keys(VALUES).map((ore) => `ore-${ore}`),
+    ])
+      assert.ok(
+        atlas.frames[frame],
+        `${frame} must be present in the delivered atlas`,
+      );
+  } finally {
+    page.off("response", collect);
+  }
 }
 export async function pause(page, value = true) {
   if (!value) {
@@ -167,6 +213,25 @@ export async function stationBuy(page, id, index = 0) {
   await stationClose(page);
   return state;
 }
+const clockedPages = new WeakSet();
+export async function freezeFrames(page) {
+  if (!clockedPages.has(page)) {
+    await page.clock.install();
+    clockedPages.add(page);
+  }
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+}
+export async function sampleClockedState(page) {
+  await page.locator("#save").evaluate((button) => button.click());
+  // Web Locks settle independently of the frozen animation clock. Polling
+  // normal Save output keeps these input regressions out of game internals.
+  for (let attempt = 0; attempt < 250; attempt++) {
+    if (await page.evaluate(() => document.body.dataset.saving === "false"))
+      return readState(page);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  throw new Error("Saving did not settle during the keyboard travel check");
+}
 export async function driveToStation(page, id) {
   const target = STATION_CENTERS[id],
     trace = [];
@@ -176,22 +241,10 @@ export async function driveToStation(page, id) {
   await pause(page, false);
   // Explicit browser frames preserve real keyboard input while preventing
   // protocol/rendering latency from extending a short steering pulse.
-  await page.clock.install();
-  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
-  async function sample() {
-    await page.locator("#save").evaluate((button) => button.click());
-    // Web Locks settle asynchronously without advancing the simulation.
-    // A default waitForFunction would poll RAF, which is paused here.
-    for (let attempt = 0; attempt < 250; attempt++) {
-      if (await page.evaluate(() => document.body.dataset.saving === "false"))
-        return readState(page);
-      await new Promise((resolve) => setTimeout(resolve, 20));
-    }
-    throw new Error("Saving did not settle during the keyboard travel check");
-  }
+  await freezeFrames(page);
   try {
     for (let attempt = 0; attempt < 100; attempt++) {
-      const state = await sample();
+      const state = await sampleClockedState(page);
       const velocity = previous ? (state.x - previous.x) / 0.08 : 0;
       trace.push({
         simulationMs,
@@ -245,6 +298,146 @@ export async function driveToStation(page, id) {
   } finally {
     if (held) await page.keyboard.up(held);
     await page.clock.resume();
+  }
+}
+export async function runReturnLedgeSmoke(
+  page,
+  path = "artifacts/return-ledge",
+) {
+  const state = fixture({ money: 20, x: 12, fuel: 10 });
+  for (let y = 4; y <= 7; y++)
+    for (let x = 10; x <= 15; x++) state.tiles[y * WIDTH + x] = 0;
+  for (let y = 8; y <= 14; y++) state.tiles[y * WIDTH + 12] = 3;
+  state.tiles[8 * WIDTH + 13] = 3;
+  await importState(page, state);
+  await pause(page, false);
+  await freezeFrames(page);
+  const held = new Set(),
+    trace = [];
+  async function controls(keys) {
+    for (const key of held)
+      if (!keys.includes(key)) {
+        await page.keyboard.up(key);
+        held.delete(key);
+      }
+    for (const key of keys)
+      if (!held.has(key)) {
+        await page.keyboard.down(key);
+        held.add(key);
+      }
+  }
+  async function advance(phase, milliseconds = 80) {
+    if (trace.at(-1)?.phase !== phase)
+      console.log(`Return-to-ledge check: ${phase}`);
+    // One bounded 80ms animation frame exercises the same native controls and
+    // collision substeps without rendering five redundant software-GPU frames
+    // for every Save snapshot in this longer round trip.
+    await page.clock.fastForward(milliseconds);
+    const saved = await sampleClockedState(page);
+    trace.push({
+      phase,
+      x: saved.x,
+      y: saved.y,
+      mined: saved.mined,
+      cargo: saved.inventory.length,
+    });
+    return saved;
+  }
+  try {
+    await controls(["ArrowDown"]);
+    let deep;
+    for (let step = 0; step < 260; step++) {
+      deep = await advance("descend");
+      if (deep.mined >= 8) break;
+    }
+    assert.ok(deep.mined >= 8 && deep.deepest >= 120);
+    assert.equal(
+      deep.inventory.length,
+      7,
+      "the descent must fill the stock cargo bay",
+    );
+    await controls(["ArrowUp"]);
+    let ascending;
+    for (let step = 0; step < 150; step++) {
+      ascending = await advance("ascend");
+      // Thrust coasts after release. Releasing near the shelf avoids flying
+      // all the way back to the automatic surface docking plane.
+      if (ascending.y <= 7.5) break;
+    }
+    assert.ok(ascending.y <= 7.5, "fly back toward the earlier ore shelf");
+    await controls([]);
+    let landed,
+      previous = ascending;
+    for (let step = 0; step < 150; step++) {
+      landed = await advance("land on earlier shelf");
+      const vx = (landed.x - previous.x) / 0.08;
+      if (Math.abs(landed.x - 13) < 0.12 && Math.abs(landed.y - 7.15) < 0.005)
+        break;
+      const correction = (13 - landed.x) * 6 - vx * 2;
+      await controls(
+        correction > 0.15
+          ? ["ArrowRight"]
+          : correction < -0.15
+            ? ["ArrowLeft"]
+            : [],
+      );
+      previous = landed;
+    }
+    assert.ok(
+      Math.abs(landed.x - 13) < 0.12 && Math.abs(landed.y - 7.15) < 0.005,
+      `must actually land on the upper shelf: ${JSON.stringify({ x: landed.x, y: landed.y, fuel: landed.fuel, deepest: landed.deepest })}`,
+    );
+    const priorCargo = [...landed.inventory],
+      peak = landed.deepest;
+    assert.equal(landed.tiles[8 * WIDTH + 13], 3);
+    await controls(["ArrowDown"]);
+    let cut;
+    for (let step = 0; step < 35; step++) {
+      cut = await advance("cut upper ore with full cargo");
+      if (cut.tiles[8 * WIDTH + 13] === 0) break;
+    }
+    await controls([]);
+    assert.equal(
+      cut.tiles[8 * WIDTH + 13],
+      0,
+      "Down must excavate an earlier ore shelf even when the cargo bay is full",
+    );
+    assert.ok(cut.mined > landed.mined);
+    assert.deepEqual(
+      cut.inventory,
+      priorCargo,
+      "discarded ore must not overfill cargo",
+    );
+    assert.equal(
+      cut.money,
+      state.money,
+      "discarded ore must not turn into credits",
+    );
+    assert.equal(
+      cut.deepest,
+      peak,
+      "the new cut is above the expedition's previous maximum depth",
+    );
+    await page.clock.runFor(120);
+    // Our normal Save reads replace transient service text with "saved".
+    // The persistent full-cargo warning must still explain that ore is lost.
+    assert.match(
+      await page.locator("#message").innerText(),
+      /cargo full.*(?:lost|discarded)/i,
+    );
+    await page.screenshot({ path: `${path}.png`, fullPage: true });
+    await writeFile(`${path}.json`, JSON.stringify(trace, null, 2));
+    return cut;
+  } catch (error) {
+    await writeFile(`${path}-failure.json`, JSON.stringify(trace, null, 2));
+    await page
+      .screenshot({ path: `${path}-failure.png`, fullPage: true })
+      .catch(() => {});
+    throw error;
+  } finally {
+    await controls([]);
+    await page.clock.resume();
+    await pause(page);
   }
 }
 export async function canvasTap(page, cdp, rect) {

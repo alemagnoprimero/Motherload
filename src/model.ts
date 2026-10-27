@@ -318,13 +318,16 @@ export class Mine {
     const supported =
       this.grounded || (this.docked && s.y >= SURFACE && !input.up);
     if (!input.up) {
-      let tx = Math.floor(s.x + (dx ? dx * (BODY_HALF + 0.21) : 0) + 0.5);
-      const ty = Math.floor(
-        s.y + (!dx && input.down ? BODY_HALF + 0.21 : 0) + 0.5,
+      // Down selects the floor even while the pilot counter-steers onto a
+      // shelf. Horizontal input still steers normally until the rig lands.
+      const drillX = input.down ? 0 : dx;
+      let tx = Math.floor(
+        s.x + (drillX ? drillX * (BODY_HALF + 0.21) : 0) + 0.5,
       );
+      const ty = Math.floor(s.y + (input.down ? BODY_HALF + 0.21 : 0) + 0.5);
       // At a ledge's edge the center can be over air while one tread is still
       // supported. Drill that support instead of silently ignoring Down.
-      if (!dx && input.down && supported && this.tile(tx, ty) === 0) {
+      if (input.down && supported && this.tile(tx, ty) === 0) {
         const support = [
           Math.floor(s.x - BODY_HALF + 0.5 + 1e-7),
           Math.floor(s.x + BODY_HALF + 0.5 - 1e-7),
@@ -334,7 +337,7 @@ export class Mine {
         if (support !== undefined) tx = support;
       }
       if (
-        (dx || input.down) &&
+        (drillX || input.down) &&
         (tx !== Math.round(s.x) || ty !== Math.round(s.y))
       ) {
         const tile = this.tile(tx, ty);
@@ -342,11 +345,9 @@ export class Mine {
           this.message = "Bedrock blocks the drill. Find another route.";
         } else if (tile > 0) {
           if (!supported || this.velocityY !== 0) {
-            this.message = dx
+            this.message = drillX
               ? "Side drilling needs a ledge. Hold Up + Left/Right to steer, then land before cutting."
               : "Land on the terrain before drilling down.";
-          } else if (isOre(tile) && s.inventory.length >= capacity(s)) {
-            this.message = "Cargo full. Return to the surface to sell.";
           } else {
             this.drilling = {
               x: tx,
@@ -354,12 +355,13 @@ export class Mine {
               startX: s.x,
               startY: s.y,
               duration:
-                ((dx ? 0.75 : 1) *
+                ((drillX ? 0.75 : 1) *
                   (tile === 2 ? 1.85 : 1) *
                   (1 + Math.max(0, s.y - SURFACE) * 0.0125)) /
                 (UPGRADE_LEVELS.drill[s.upgrades.drill]! / 2),
             };
-            this.drillDirection = dx < 0 ? "left" : dx > 0 ? "right" : "down";
+            this.drillDirection =
+              drillX < 0 ? "left" : drillX > 0 ? "right" : "down";
             this.velocityX = this.velocityY = 0;
             this.advanceDrill(dt);
             return;
@@ -464,8 +466,15 @@ export class Mine {
     s.mined++;
     if (tile === 7) s.hull = Math.max(0, s.hull - 3);
     if (isOre(tile)) {
-      s.inventory.push(tile);
-      this.message = `${ORES[tile].name} collected. Cargo worth $${cargoValue(s)}.`;
+      // Like the reference's doneDigging/addToBay sequence, a full bay limits
+      // collection, not excavation. Excess ore is discarded rather than
+      // making a mineral shelf impassable after returning from a deeper run.
+      if (s.inventory.length < capacity(s)) {
+        s.inventory.push(tile);
+        this.message = `${ORES[tile].name} collected. Cargo worth $${cargoValue(s)}.`;
+      } else {
+        this.message = `Cargo full: ${ORES[tile].name} discarded. Return to the exchange to sell.`;
+      }
     }
     if (tile === 7)
       this.message = "Magma pocket! Hull damaged. Return for repairs.";

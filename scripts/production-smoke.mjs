@@ -4,6 +4,7 @@ import {
   launchBrowser,
   runCoreSmoke,
   runMobileSmoke,
+  runReturnLedgeSmoke,
 } from "./browser-helpers.mjs";
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:8080/";
 await mkdir("artifacts", { recursive: true });
@@ -16,6 +17,7 @@ try {
     errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await runCoreSmoke(page, base);
+  await runReturnLedgeSmoke(page, "artifacts/production-return-ledge");
   await page.screenshot({
     path: "artifacts/production-desktop.png",
     fullPage: true,
