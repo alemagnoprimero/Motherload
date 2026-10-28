@@ -6,7 +6,7 @@ A single-player browser mining game in Phaser and TypeScript, inspired by Mother
 
 Open **https://alemagnoprimero.github.io/Motherload/** on a computer or Android phone. No installation or local server is required. Gameplay changes pushed to `main` are tested, built and deployed automatically.
 
-Existing expeditions retain their excavated maps and receive the new discovery system. **New expeditions** use a 600-row mine, reaching roughly 6,000 metres through six geological regions. To explore that deeper world and its revised mineral distribution, choose **Tools → New expedition**. Export your existing expedition first if you want to keep a separate copy; starting over requires confirmation.
+Existing expeditions retain their excavated maps and receive the new discovery system. **New expeditions** use a 600-row mine, reaching roughly 6,000 metres through six geological regions. To explore that deeper world and its revised mineral distribution, choose **Menu → New expedition**. Export your existing expedition first if you want to keep a separate copy; starting over requires confirmation.
 
 ### Controls and first expeditions
 
@@ -14,24 +14,26 @@ Existing expeditions retain their excavated maps and receive the new discovery s
 2. Hold **Up / W** to return through your shaft. Combine Up with **Left/Right or A/D** to steer. Counter-steer to brake momentum. Side drilling requires a ledge under the rig, at any depth; you cannot drill upward.
 3. A started cut completes even after releasing its direction. Hold Up during the cut to lift off immediately afterward.
 4. Return to the surface and drive to a building's illuminated bay. Press **E / Enter**, or tap the nearby building or its on-screen prompt, to open its interface **inside the game**. The **Exchange** buys your haul, **Fuel** refills your tank, **Repair** restores hull, and **Upgrades** sells equipment. You must visit the correct building. Two starter expeditions normally fund the first $750 upgrade.
-5. Explore to find your next route. The lamp reveals nearby tunnels and the first solid wall face; ore and caverns behind rock stay unknown. Discovered terrain is remembered and saved. The frontier strip tracks your next depth milestone.
+5. Explore to find your next route. The lamp reveals nearby tunnels and the first solid wall face; ore and caverns behind rock stay unknown. Discovered terrain is remembered and saved. Your pause menu tracks the next depth milestone.
 6. Deeper layers contain fewer deposits but more valuable minerals, harder rock and stronger magma hazards. Drill and tank upgrades extend expeditions; cargo upgrades improve each return; engines lift heavy loads; hull upgrades increase the margin for mistakes. Ordinary drilling does not damage the hull.
 
-Phones have separate left/right and down/up controls; hold two with different fingers to steer in flight. Fuel, hull and cargo stay beside the playfield in portrait and landscape. **Expand** fills the available screen; native fullscreen is used when supported. Tap or click illuminated terrain to identify it; clicking unexplored ground does not reveal what it contains.
+The game fills the browser window. **Menu / Escape / P** opens the single pause interface for fuel, hull, cargo, credits, depth, equipment, saving, sound, fullscreen and help. Closing the menu returns to the mine. Phones have separate left/right and down/up controls over the playfield; hold two with different fingers to steer in flight. Tap illuminated terrain to identify it; unexplored ground does not reveal its contents.
+
+The world wraps horizontally: crossing either side continues into the opposite side at the same depth. The same terrain, excavations and discoveries repeat around the 24-column circumference, so returning around the world never resets deposits. Motion, drilling, visibility, buildings and the camera all cross the seam. Vertical depth remains finite.
 
 You can return to any supported ledge and drill down again, regardless of your deepest point. Down selects the floor while you hold a horizontal direction to align; horizontal steering still works while airborne.
 
 Inside a building, use **arrows / Tab** to select equipment and **Enter** to buy, or tap the canvas controls. Upgrade cards show the actual capacity or performance change. **Escape** or the in-game close button returns to the mine. The rig stays parked while you use a building.
 
-**P / Pause** suspends the expedition. Building interfaces and Tools also pause play, and leaving the browser clears held controls. Enable **♪ On** for sound; adjust volume in Tools. Sound starts muted on each visit.
+The pause menu and building interfaces suspend the expedition; leaving the browser clears held controls. Enable **♪ On** and adjust volume inside Menu. Sound starts muted on each visit. Brief warnings announce low resources; detailed vehicle conditions are in Menu.
 
-**Tools → Request recovery** returns the rig to the surface with half its fuel and hull, at the cost of cargo and 20% of credits. It remains available without money and requires confirmation.
+**Menu → Request recovery** returns the rig to the surface with half its fuel and hull, at the cost of cargo and 20% of credits. It remains available without money and requires confirmation.
 
 ### Saves and transfer between devices
 
 **Save** records terrain, discoveries, position, money, inventory, vehicle condition and upgrades. Autosave runs every five active seconds; background/exit saves are best effort, so use Save before closing after an important purchase or discovery. Loading resets transient velocity and unfinished cut animation, not completed excavation.
 
-- **Tools → Export save** downloads a validated JSON file. **Import save** previews the expedition and asks before replacing current progress.
+- **Menu → Export save** downloads a validated JSON file. **Import save** previews the expedition and asks before replacing current progress.
 - The previous valid saved expedition becomes a backup. **Restore backup** asks before replacing the primary save.
 - Older schema-1/schema-2/schema-3 saves migrate to schema 4, preserving their 100-row terrain, cash, inventory and position. Schema-3 equipment and condition are unchanged; earlier equipment retains its capability and fuel/hull percentages. Old saves begin discovery around the vehicle because their previous viewing history was not recorded; natural caves are not automatically revealed.
 - A damaged or unsupported primary save is kept intact. A valid backup can be loaded for review; autosave stays blocked until an explicit restoration or replacement.
@@ -75,15 +77,16 @@ npm run format:check
 npm run test:browser       # dev preview on port 5173
 npm run test:production    # Docker/site; defaults to port 8080
 node scripts/discovery-smoke.mjs # focused hidden-terrain and deep-world checks
+node scripts/immersive-wrap-smoke.mjs # focused pause-menu and wrapping checks
 ```
 
 Browser checks use `/usr/bin/chromium`; set `CHROMIUM_PATH` if needed. `PREVIEW_URL` selects another preview or the public site. The checks cover gameplay, equipment effects, save migration/transfer/recovery, tab conflicts, touch release/cancellation, sound controls, and portrait/landscape layout. Screenshots are written to ignored `artifacts/`. Emulated phones do not establish physical Android performance.
 
-See [PROGRESSION.md](docs/PROGRESSION.md) for the exploration rules, depth bands, balancing rationale and playtest targets.
+See [PROGRESSION.md](docs/PROGRESSION.md) for exploration and depth bands, and [ECONOMY.md](docs/ECONOMY.md) for every mineral value, upgrade tier, service cost, generation weight, fuel/drill formula and tuning control.
 
 ## Create or modify the 3D artwork
 
-The game remains a 2D mining simulation with 3D-authored artwork. Node.js coordinates Blender to build original meshes, export editable GLB models, and render the animated atlas. Phaser displays those renders with terrain detail, atmospheric layers and lighting effects; a Node server or live 3D renderer is not required to play.
+The game remains a 2D mining simulation with 3D-authored artwork. Node.js coordinates Blender to build original meshes, export editable GLB models, and render the animated atlas. The crawler and stations use level orthographic elevations matching the game's flat terrain plane. Phaser displays those renders with terrain detail, atmospheric layers and lighting effects; a Node server or live 3D renderer is not required to play.
 
 ```sh
 npm run assets:build
@@ -112,7 +115,7 @@ The reference is identified as version `0.934 (MC)`; it has not been proven byte
 
 - `src/model.ts`: world generation, simulation, economy, upgrades and save validation/migration.
 - `src/storage.ts`: validated persistence, backups, import/export and conflict protection.
-- `src/main.ts`, `src/style.css`: controls, responsive HUD and save tools.
+- `src/main.ts`, `src/style.css`: controls, immersive playfield and pause menu.
 - `src/scene.ts`, `src/station-ui.ts`, `src/art.ts`, `src/audio.ts`: camera, in-game building interfaces, original artwork, animation, feedback and synthesized sound.
 - `assets/source/`, `assets/models/`, `assets/generated/`: original 3D model generators, editable models and browser-ready renders.
 - `tests/`: simulation and storage regressions.

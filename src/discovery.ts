@@ -11,10 +11,11 @@ export function observeTerrain(
   y: number,
 ): Set<number> {
   const height = tiles.length / width;
+  const columnIndex = (column: number) => ((column % width) + width) % width;
   const visible = new Set<number>();
   const reveal = (column: number, row: number) => {
-    if (column < 0 || column >= width || row < 0 || row >= height) return;
-    const index = row * width + column;
+    if (row < 0 || row >= height) return;
+    const index = row * width + columnIndex(column);
     discovered[index] = 1;
     visible.add(index);
   };
@@ -27,11 +28,7 @@ export function observeTerrain(
     startX = Math.floor(originX),
     startY = Math.floor(originY);
   const solid = (column: number, row: number) =>
-    column < 0 ||
-    column >= width ||
-    row < 0 ||
-    row >= height ||
-    tiles[row * width + column] !== 0;
+    row < 0 || row >= height || tiles[row * width + columnIndex(column)] !== 0;
   const unobstructed = (
     targetX: number,
     targetY: number,
@@ -82,8 +79,8 @@ export function observeTerrain(
     row++
   )
     for (
-      let column = Math.max(0, Math.floor(x - radius));
-      column <= Math.min(width - 1, Math.ceil(x + radius));
+      let column = Math.floor(x - radius);
+      column <= Math.ceil(x + radius);
       column++
     )
       if ((column - x) ** 2 + (row - y) ** 2 <= radius ** 2) {
@@ -92,7 +89,7 @@ export function observeTerrain(
         // ever looking through that wall into the cell behind it.
         const seen =
           unobstructed(column, row) ||
-          (tiles[row * width + column] !== 0 &&
+          (tiles[row * width + columnIndex(column)] !== 0 &&
             (unobstructed(column, row, 0.5, 0.001) ||
               unobstructed(column, row, 0.5, 0.999) ||
               unobstructed(column, row, 0.001, 0.5) ||

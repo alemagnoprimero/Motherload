@@ -11,6 +11,7 @@ import {
   pause,
   importState,
   freezeFrames,
+  resumeFrames,
   sampleClockedState,
   snapshot,
   openTools,
@@ -47,10 +48,7 @@ async function geometry(page, state) {
   const box = await page.locator("canvas").boundingBox();
   assert.ok(box && box.width >= 1200 && box.height >= 280);
   const tile = 80;
-  const cameraX = Math.max(
-    0,
-    Math.min((state.x + 0.5) * tile - box.width / 2, WIDTH * tile - box.width),
-  );
+  const cameraX = (state.x + 0.5) * tile - box.width / 2;
   const cameraY = Math.max(
     0,
     Math.min(
@@ -113,12 +111,13 @@ export async function runDiscoverySmoke(
     return state;
   };
   const load = async (state) => {
-    if (clockStarted) await page.clock.resume();
+    if (clockStarted) await resumeFrames(page);
     await pause(page);
     await importState(page, state);
+    await pause(page);
     await freezeFrames(page);
     clockStarted = true;
-    await page.locator("#pause").evaluate((button) => button.click());
+    await pause(page, false);
     await advance();
   };
   const inspect = async (state, label) => {
@@ -131,7 +130,12 @@ export async function runDiscoverySmoke(
       target.y + target.height / 2,
     );
     await advance();
-    const inspector = await page.screenshot({ clip: layout.inspector });
+    const inspector = await page.screenshot({
+      clip: layout.inspector,
+      // The immersive shell overlays a timed status toast near this strip.
+      // Compare the game inspector itself, not an unrelated toast's fade.
+      style: ".message { visibility: hidden !important; }",
+    });
     await writeFile(`${path}-${label}-ore.png`, ore);
     await writeFile(`${path}-${label}-cave.png`, cave);
     await writeFile(`${path}-${label}-inspector.png`, inspector);
@@ -159,9 +163,8 @@ export async function runDiscoverySmoke(
     await load(plain);
     const plainPixels = await inspect(plain, "plain");
     for (const region of ["ore", "cave", "inspector"])
-      assert.deepEqual(
-        hiddenPixels[region],
-        plainPixels[region],
+      assert.ok(
+        hiddenPixels[region].equals(plainPixels[region]),
         `unknown ${region} must not expose underlying ore or cave data`,
       );
     check(
@@ -190,10 +193,9 @@ export async function runDiscoverySmoke(
     knownPlain.tiles[index(ORE)] = 1;
     await load(knownPlain);
     const knownPlainPixels = await inspect(knownPlain, "revealed-plain");
-    assert.notDeepEqual(revealedPixels.ore, knownPlainPixels.ore);
-    assert.notDeepEqual(
-      revealedPixels.inspector,
-      knownPlainPixels.inspector,
+    assert.ok(!revealedPixels.ore.equals(knownPlainPixels.ore));
+    assert.ok(
+      !revealedPixels.inspector.equals(knownPlainPixels.inspector),
       "a discovered mineral must provide an identifiable in-game inspection",
     );
     check(
@@ -228,7 +230,7 @@ export async function runDiscoverySmoke(
       if (approached.discovered[cell])
         assert.equal(returned.discovered[cell], 1);
     assert.equal(returned.discovered[index(ORE)], 1);
-    await page.clock.resume();
+    await resumeFrames(page);
     await openTools(page);
     const [download] = await Promise.all([
       page.waitForEvent("download"),
@@ -303,11 +305,14 @@ export async function runDiscoverySmoke(
       ) > landed.deepest,
       "the deeper expedition must retain a reachable next frontier",
     );
-    assert.notEqual(await page.locator("#region-label").innerText(), "Surface");
+    assert.notEqual(
+      await page.locator("#region-label").textContent(),
+      "Surface",
+    );
     await page.screenshot({ path: `${path}-deep.png`, fullPage: true });
     await pause(page);
     const deepSave = await sample("save deep expedition");
-    await page.clock.resume();
+    await resumeFrames(page);
     await ready(page, base);
     await pause(page);
     const deepReloaded = await snapshot(page);

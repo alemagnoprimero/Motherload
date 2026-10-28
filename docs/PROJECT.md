@@ -1,4 +1,4 @@
-# Project status — 2026-10-26
+# Project status — 2026-10-28
 
 ## Current milestone
 
@@ -9,7 +9,8 @@ The planned first-expedition milestone now includes reference-calibrated movemen
 - Local, wall-occluded discovery with remembered explored terrain. Hidden caverns and minerals are indistinguishable from unexplored ground, including through the inspector. A compact frontier goal and first-crossing notices mark progress without exposing mineral locations.
 - Fuel in liters, weighted cargo, selling/refueling/repair, and drill/engine/tank/cargo/hull upgrade paths using the verified free-edition tables.
 - Original Blender-authored vehicle, building and mineral models, rendered into a browser atlas through a Node.js asset pipeline. Larger world art, textured strata, atmospheric depth, vehicle lighting, animated tools, collection/damage feedback and synthesized sound.
-- A game-first desktop and phone layout: compact mission instruments, vital indicators, canvas and simultaneous touch controls fit the viewport. Each surface building has its own interface rendered inside the game, with proximity-gated keyboard and touch transactions. Building interfaces and Tools pause the expedition. Focus/fullscreen mode is available.
+- An immersive canvas fills the desktop/phone viewport. A single pause menu contains vehicle conditions, progression, saving, settings, fullscreen and help. Touch controls overlay the playfield; brief warnings flag low resources. Each surface building retains an interface rendered inside the game, with proximity-gated keyboard and touch transactions.
+- Horizontal wrapping covers motion, collision, drilling, exploration and continuous camera travel. Terrain and surface buildings repeat around the same circumference; deposits do not regenerate when crossed.
 - Complete local saves, schema migration, file export/import, validated backup restoration, quota/error protection and cross-tab conflict handling.
 - Docker background hosting and automatic GitHub Pages deployment. Public address: https://alemagnoprimero.github.io/Motherload/ .
 
@@ -37,9 +38,10 @@ These parts remain deliberate approximations or usability choices:
 | Damage and recovery | Magma damage rises from three to twelve HP across deeper strata; impact damage uses a tuned threshold/coefficient. Recovery loses cargo and 20% of credits and restores half fuel/hull. |
 | Surface | Drive to the matching building's bay, then press E / Enter or tap to enter its canvas interface. The original automatically enters its shop frames at specific ground tiles; explicit entry avoids opening a shop while merely passing it. Docking prevents falling down a shaft while using services. |
 | Saving | Full excavated terrain and position persist, as requested, although the original's inspected save routine does not preserve them. |
-| Visual rendering | Actual 3D meshes are authored and rendered offline, then displayed in the existing 2D simulation. There is no real-time 3D physics or camera migration. Node.js runs the asset tooling; the published game remains static browser content. |
+| Visual rendering | Actual 3D meshes are authored offline; the crawler and buildings use level orthographic renders aligned with the flat 2D terrain. Node.js runs the asset tooling; the published game remains static browser content. |
+| Horizontal topology | A periodic 24-column mine replaces hard left/right edges. Canonical saved positions preserve the existing terrain and schema; views may show repeated copies of the same buildings and cells. |
 
-The deeper world, discovery, reward distribution and equipment feasibility are described in [PROGRESSION.md](PROGRESSION.md), including aggregate results across 40 seeds and input-driven excursion checks. Complete human campaign pacing remains a playtest target; original prices alone do not establish original pacing.
+The deeper world, discovery, reward distribution and equipment feasibility are described in [PROGRESSION.md](PROGRESSION.md), including aggregate results across 40 seeds and input-driven excursion checks. [ECONOMY.md](ECONOMY.md) records all economic tables, formulas, purchase comparisons and source tuning controls. Complete human campaign pacing remains a playtest target; original prices alone do not establish original pacing.
 
 ## Save behavior and compatibility
 
@@ -55,17 +57,19 @@ Autosave runs every five active seconds. Visibility/page-exit saving is best eff
 
 ## Validation
 
-At this checkpoint, **110 simulation/storage/layout tests and 19 browser scenarios pass**. TypeScript, formatting, generated-asset validation and production builds pass. The rebuilt Docker service is healthy and passes the production smoke checks for hidden terrain/inspection, discovery/deep-world saves, gameplay, import, services, upgrades and portrait/landscape touch layout.
+At this checkpoint, **122 simulation/storage/layout tests and 23 browser scenarios pass**. TypeScript, formatting, generated-asset validation and production builds pass. The rebuilt Docker service is healthy and passes the four focused immersive/wrapping scenarios against the production bundle. The browser regression also covers hidden terrain/inspection, discovery/deep-world saves, gameplay, import, services, upgrades and portrait/landscape touch layout.
 
 Simulation and storage regressions cover the complete progression loop, movement/ledge/impact behavior, all minerals and equipment, fuel, cave generation, save compatibility, corrupt data, quota failures, concurrent writers, repeated purchases during pending saves, and interrupted backup restoration. Current progression tests also cover sight occlusion, exact discovery persistence, old/new world boundaries, portable large saves, 40-seed scarcity/value curves, stronger magma and actual shallow/deep equipment excursions. Earlier checkpoint explorations validated 18,000 save snapshots across 30 seeded movement runs, all minerals across 100 generated worlds, and 2,048 combinations of legacy equipment and condition values.
 
-Station layout checks cover nine canvas sizes, including short landscape and narrow portrait windows. Navigation, purchase and exit targets must stay inside the canvas, retain usable touch dimensions and never overlap. Canvas resizing follows the available playfield when the building interface replaces phone driving controls.
+Station layout checks cover nine canvas sizes, including short landscape and narrow portrait windows. Navigation, purchase and exit targets must stay inside the canvas, retain usable touch dimensions and never overlap. The canvas fills the viewport in play and menu modes; driving controls hide during menus and building interactions. Station entry prompts reserve space above touch controls.
 
-Browser scenarios cover natural mining and physical travel to the exchange, a complete descent/return/landing/Down-only cut on an earlier ore shelf with a full bay, canvas service menus, correct building access, service and upgrade persistence, export/import including cancellation and invalid files, backups and corrupt-primary recovery, legacy migration, actual two-tab conflicts, committed cuts, independent touch release/cancellation, pause clearing held input, visible portrait/landscape HUD, focus mode and sound preferences. Asset checks require the actual PNG/JSON atlas to load and contain every expected rig, building and mineral frame; fallback artwork cannot pass. Station checks include opening without buying, rapid purchase input during a pending save, touch navigation and closing, and in-memory trade/export while a damaged primary save remains protected. Synthesized audio was also checked with Chromium audio analysers for active output and silence during mute/backgrounding.
+Browser scenarios cover natural mining and physical travel to the exchange, a complete descent/return/landing/Down-only cut on an earlier ore shelf with a full bay, canvas service menus, correct building access, service and upgrade persistence, export/import including cancellation and invalid files, backups and corrupt-primary recovery, legacy migration, actual two-tab conflicts, committed cuts, independent touch release/cancellation, pause clearing held input, portrait/landscape pause-menu status, fullscreen and sound preferences. Asset checks require the actual PNG/JSON atlas to load and contain every expected rig, building and mineral frame; fallback artwork cannot pass. Station checks include opening without buying, rapid purchase input during a pending save, touch navigation and closing, and in-memory trade/export while a damaged primary save remains protected. Synthesized audio was also checked with Chromium audio analysers for active output and silence during mute/backgrounding.
+
+Four immersive/wrapping scenarios check viewport-filling play, a single menu and paused simulation, opposite-edge ore rendering/inspection, native seam drilling and flight with save/reload, and physical station access after wrapping. Twelve model regressions cover repeated laps, airborne steering, wrapped collision and cuts, sight/occlusion, and canonical saves.
 
 Four discovery browser scenarios compare actual pixels for hidden ore versus hidden soil and caves, check the inspector cannot reveal them, verify positive mineral rendering/inspection after native drilling, preserve discovered terrain through retreat/export/reload, and exercise mining/flight below the old 100-row boundary. HUD checks cover first-frontier goals, legacy floor limits and in-game notices that do not replay on reload.
 
-The art specimen and desktop/mobile screenshots are under ignored `artifacts/`. Browser emulation establishes layout and event behavior, not physical Android GPU performance or tactile feel. Production JavaScript remains around 1.27 MB before gzip (about 345 kB compressed), plus a roughly 721 KiB lossless atlas and small frame metadata; exact build output is reported by `npm run build`. The 5.2 MB editable GLB collection stays out of the playable download.
+The art specimen and desktop/mobile screenshots are under ignored `artifacts/`. Browser emulation establishes layout and event behavior, not physical Android GPU performance or tactile feel. Production JavaScript remains around 1.27 MB before gzip (about 346 kB compressed), plus a roughly 656 KiB lossless atlas and small frame metadata; exact build output is reported by `npm run build`. The 5.2 MB editable GLB collection stays out of the playable download.
 
 ## Development and delivery
 

@@ -23,9 +23,11 @@ import {
   stationClose,
   runReturnLedgeSmoke,
   freezeFrames,
+  resumeFrames,
   sampleClockedState,
 } from "./browser-helpers.mjs";
 import { runDiscoverySmoke } from "./discovery-smoke.mjs";
+import { runImmersiveWrapSmoke } from "./immersive-wrap-smoke.mjs";
 const BACKUP_KEY = SAVE_KEY + ".backup";
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:5173/";
 await mkdir("artifacts", { recursive: true });
@@ -58,6 +60,7 @@ async function bootWith(storage) {
   return { context, page };
 }
 try {
+  checks.push(...(await runImmersiveWrapSmoke(browser, base)));
   checks.push(...(await runDiscoverySmoke(browser, base)));
   let context = await browser.newContext({
       viewport: { width: 1440, height: 1100 },
@@ -143,6 +146,7 @@ try {
   await pause(second);
   const external = fixture({ money: 9876 });
   await importState(second, external);
+  await openTools(page);
   await page.locator("#reload-external").waitFor({ state: "visible" });
   assert.equal(
     await page.locator("#pause").getAttribute("aria-pressed"),
@@ -157,6 +161,7 @@ try {
   await page.locator("#save").evaluate((button) => button.click());
   await page.waitForTimeout(100);
   assert.deepEqual(await readState(page), external);
+  await openTools(page);
   await page.locator("#reload-external").click();
   await settled(page);
   assert.deepEqual(await savedState(page), external);
@@ -335,6 +340,7 @@ try {
     "canvas purchases ignore repeated confirmation while persistence is busy",
   );
 
+  await openTools(page);
   await page.locator("#sound-toggle").click();
   assert.equal(
     await page.locator("#sound-toggle").getAttribute("aria-pressed"),
@@ -350,7 +356,7 @@ try {
     slider.value = "31";
     slider.dispatchEvent(new Event("input", { bubbles: true }));
   });
-  assert.equal(await page.locator("#volume-label").innerText(), "31%");
+  assert.equal(await page.locator("#volume-label").textContent(), "31%");
   await closeTools(page);
   await page.reload();
   await page.locator("canvas").waitFor();
@@ -376,12 +382,6 @@ try {
   await pause(phone);
   const flight = flightFixture();
   await importState(phone, flight);
-  const points = await Promise.all(
-    ["up", "right"].map(async (direction, id) => {
-      const b = await phone.locator(`[data-dir="${direction}"]`).boundingBox();
-      return { id: id + 1, x: b.x + b.width / 2, y: b.y + b.height / 2 };
-    }),
-  );
   await phone.evaluate(() => {
     window.touchEvents = [];
     for (const type of ["pointerup", "pointercancel"])
@@ -400,7 +400,13 @@ try {
       await phone.clock.fastForward(Math.min(80, milliseconds - elapsed));
   };
   await freezeFrames(phone);
-  await phone.locator("#pause").evaluate((button) => button.click());
+  await pause(phone, false);
+  const points = await Promise.all(
+    ["up", "right"].map(async (direction, id) => {
+      const b = await phone.locator(`[data-dir="${direction}"]`).boundingBox();
+      return { id: id + 1, x: b.x + b.width / 2, y: b.y + b.height / 2 };
+    }),
+  );
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: points,
@@ -433,14 +439,14 @@ try {
     { type: "pointerup", direction: "right" },
     { type: "pointercancel", direction: "up" },
   ]);
-  await phone.clock.resume();
+  await resumeFrames(phone);
   check(
     "portrait/landscape canvas shops and HUD fit; native touch trade/navigation and finger release work",
   );
 
   await importState(phone, flight);
   await freezeFrames(phone);
-  await phone.locator("#pause").evaluate((button) => button.click());
+  await pause(phone, false);
   await cdp.send("Input.dispatchTouchEvent", {
     type: "touchStart",
     touchPoints: [points[0]],
@@ -456,7 +462,7 @@ try {
   assert.deepEqual(await sampleClockedState(phone), held);
   // The phone is already in the foreground; avoid waiting for a render frame
   // inside pause(false) while its animation clock is intentionally frozen.
-  await phone.locator("#pause").evaluate((button) => button.click());
+  await pause(phone, false);
   await advancePhone(1500);
   await pause(phone);
   const resumed = await sampleClockedState(phone);
@@ -464,7 +470,7 @@ try {
     resumed.y > held.y,
     "pause must clear the held thrust before resume",
   );
-  await phone.clock.resume();
+  await resumeFrames(phone);
   check("pause clears held touch input and freezes simulation");
 
   await page.goto(

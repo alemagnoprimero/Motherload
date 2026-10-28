@@ -18,9 +18,23 @@ export const insideRect = (point: { x: number; y: number }, rect: CanvasRect) =>
   point.x <= rect.x + rect.width &&
   point.y >= rect.y &&
   point.y <= rect.y + rect.height;
-export function nearbyPromptRect(width: number, height: number): CanvasRect {
+export function nearbyPromptRect(
+  width: number,
+  height: number,
+  touch = false,
+): CanvasRect {
   const w = Math.min(340, width - 16);
-  return { x: (width - w) / 2, y: height - 50, width: w, height: 42 };
+  const controlsInset = touch
+    ? width > height && height <= 500
+      ? 82
+      : 104
+    : 0;
+  return {
+    x: (width - w) / 2,
+    y: Math.max(8, height - controlsInset - 50),
+    width: w,
+    height: 42,
+  };
 }
 
 /** Pure shared layout keeps canvas hit targets deterministic across resizing. */

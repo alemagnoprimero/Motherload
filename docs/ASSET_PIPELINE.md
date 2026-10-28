@@ -40,4 +40,17 @@ The atlas contains 18 crawler poses at 160 × 160 pixels: idle and damaged, plus
 
 Crawler frames share one camera, center and scale so changing animation poses never moves the collision body. Stations are framed against the same ground baseline. The game typically displays the crawler frame at 1.5 terrain cells and each building at 3 × 2 cells. Animation and camera placement remain renderer concerns; sprite imagery never changes the physics collision dimensions.
 
+The crawler and stations use a level, straight-on orthographic camera: world X is horizontal and world Z is vertical. Their foundations, tracks, doors and roofs therefore align with the flat mining cross-section. Soft material shading still shows the modeled geometry, while the camera introduces no isometric skew or receding ground platform. All crawler poses share a 124-pixel tread baseline in their 160-pixel frame; the extended auger remains within that same frame. The mineral clusters retain their independent studio views because they do not define a ground plane.
+
+Camera-only iterations can reuse the complete ignored render cache without rewriting the unchanged GLB geometry. For example:
+
+```sh
+blender --background --factory-startup --python-exit-code 1 --python assets/source/render_assets.py -- --only building- --renders-only --samples 64 --output .cache/asset-renders
+blender --background --factory-startup --python-exit-code 1 --python assets/source/render_assets.py -- --only rig- --renders-only --samples 64 --output .cache/asset-renders
+python3 assets/source/pack_assets.py .cache/asset-renders assets/generated
+npm run assets:check
+```
+
+The packer still requires all 32 frames; use a normal full asset build first when starting without a complete cache.
+
 The GLB exports contain real meshes and materials, ready to inspect in Blender or another glTF viewer. They are source/review artifacts and are not downloaded by players. They currently capture representative static poses, while sprite-frame mechanics are reproduced by the Python source. A future real-time 3D renderer could reuse these models, but this release remains a 2D game with 3D-rendered artwork.

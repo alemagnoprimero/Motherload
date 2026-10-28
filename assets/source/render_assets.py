@@ -17,6 +17,7 @@ from rig_models import build_rig
 ROOT = SOURCE.parent.parent
 parser = argparse.ArgumentParser()
 parser.add_argument('--only')
+parser.add_argument('--renders-only', action='store_true', help='Keep existing GLB geometry when changing camera/light renders only')
 parser.add_argument('--samples', type=int, default=64)
 parser.add_argument('--output', default=str(ROOT / '.cache/asset-renders'))
 args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else [])
@@ -172,6 +173,8 @@ def build_ore(ore):
 
 
 def export_model(filename, meshes):
+    if args.renders_only:
+        return
     bpy.ops.object.select_all(action='DESELECT')
     for obj in meshes:
         obj.select_set(True)
@@ -197,13 +200,16 @@ for name, kind, variant, frame, width, height in definitions:
     m = default_materials()
     if kind == 'rig':
         meshes = build_rig(variant, frame, m)
-        camera = setup(width, height, target=(0, 0, 1.0), scale=4.7, direction=(3, -10, 4.5))
+        # The mining world is a side elevation: keep x horizontal and z vertical.
+        # A shared level camera also keeps every pose on the 124px tread baseline,
+        # with room below it for the fully deployed downward auger.
+        camera = setup(width, height, target=(0, 0, 1.4575), scale=5.3, direction=(0, -10, 0))
         if variant == 'idle':
             export_model('prospector.glb', meshes)
     elif kind == 'building':
         from station_models import build_station
         meshes = build_station(variant, m)
-        camera = setup(width, height, target=(0, 0, 1.1), direction=(5, -12, 6))
+        camera = setup(width, height, target=(0, 0, 1.1), direction=(0, -12, 0))
         fit_camera(camera, meshes, bottom_align=True)
         export_model(f'{variant}-station.glb', meshes)
     else:

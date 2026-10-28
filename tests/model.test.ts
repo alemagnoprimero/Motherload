@@ -21,6 +21,7 @@ import {
   maxFuel,
   maxHull,
   cargoValue,
+  horizontalDelta,
   type Direction,
   type Controls,
 } from "../src/model";
@@ -161,8 +162,12 @@ describe("first playable loop", () => {
     m.state.x = 0;
     m.state.y = 5;
     m.state.tiles[5 * WIDTH] = 0;
+    m.state.tiles[5 * WIDTH + WIDTH - 1] = 8;
+    m.state.tiles[6 * WIDTH] = 1;
     hold(m, "left", 2);
-    expect(m.state.x).toBe(0);
+    expect(horizontalDelta(0, m.state.x)).toBeGreaterThanOrEqual(-0.151);
+    expect(horizontalDelta(0, m.state.x)).toBeLessThanOrEqual(0);
+    expect(m.tile(-1, 5)).toBe(8);
   });
   it("handles empty fuel and recovery without trapping the player", () => {
     const m = new Mine();
@@ -636,10 +641,12 @@ describe("flight, ledges, and drilling regression coverage", () => {
     bad.y = 3.4;
     expect(() => decodeSave(JSON.stringify(bad))).toThrow(/overlaps/);
   });
-  it("saves at the world boundary and holds position when disabled", () => {
+  it("saves after wrapping around the surface and holds position when disabled", () => {
     const m = new Mine();
     hold(m, "left", 10);
-    expect(m.state.x).toBe(0);
+    expect(m.state.x).toBeGreaterThanOrEqual(0);
+    expect(m.state.x).toBeLessThan(WIDTH);
+    expect(m.velocityX).toBeLessThan(-1);
     expect(decodeSave(JSON.stringify(m.state))).toEqual(m.state);
     m.state.fuel = 0;
     const before = JSON.stringify(m.state);

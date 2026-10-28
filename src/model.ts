@@ -6,6 +6,11 @@ export const WIDTH = 24,
   HEIGHT = 600,
   SURFACE = 3;
 export const SAVE_KEY = "motherload.frontier.v1";
+// Horizontal coordinates identify one circular strip of terrain. Rendering can
+// keep an unwrapped camera while persistence always stores a canonical column.
+export const wrapColumn = (value: number) => ((value % WIDTH) + WIDTH) % WIDTH;
+export const horizontalDelta = (from: number, to: number) =>
+  wrapColumn(to - from + WIDTH / 2) - WIDTH / 2;
 // Existing tile identifiers stay stable so old excavated maps can migrate intact.
 export const ORES = {
   3: { name: "Ironium", value: 30, mass: 1, color: "#b5c7cf" },
@@ -74,7 +79,9 @@ export function nearbyStation(s: Pick<State, "x" | "y">): Station | undefined {
     s.y > SURFACE + 0.151
   )
     return undefined;
-  return STATIONS.find((station) => Math.abs(s.x - station.center) <= 1);
+  return STATIONS.find(
+    (station) => Math.abs(horizontalDelta(s.x, station.center)) <= 1,
+  );
 }
 export const UPGRADE_LEVELS = {
   drill: [2, 2.8, 4, 5, 7, 9.5, 12],
@@ -324,20 +331,20 @@ export class Mine {
   }
   isKnown(x: number, y: number) {
     return (
-      x >= 0 &&
-      x < WIDTH &&
+      Number.isFinite(x) &&
       y >= 0 &&
       y < worldHeight(this.state) &&
-      this.state.discovered[Math.floor(y) * WIDTH + Math.floor(x)] === 1
+      this.state.discovered[
+        Math.floor(y) * WIDTH + wrapColumn(Math.floor(x))
+      ] === 1
     );
   }
   isVisible(x: number, y: number) {
     return (
-      x >= 0 &&
-      x < WIDTH &&
+      Number.isFinite(x) &&
       y >= 0 &&
       y < worldHeight(this.state) &&
-      this.visible.has(Math.floor(y) * WIDTH + Math.floor(x))
+      this.visible.has(Math.floor(y) * WIDTH + wrapColumn(Math.floor(x)))
     );
   }
   get docked() {
@@ -345,7 +352,9 @@ export class Mine {
   }
   get renderX() {
     const d = this.drilling;
-    return d ? d.startX + (d.x - d.startX) * this.progress : this.state.x;
+    return d
+      ? wrapColumn(d.startX + horizontalDelta(d.startX, d.x) * this.progress)
+      : this.state.x;
   }
   get drillTarget() {
     return this.drilling
@@ -362,9 +371,12 @@ export class Mine {
       : this.state.y;
   }
   tile(x: number, y: number) {
-    return x < 0 || x >= WIDTH || y < 0 || y >= worldHeight(this.state)
+    return !Number.isFinite(x) ||
+      !Number.isFinite(y) ||
+      y < 0 ||
+      y >= worldHeight(this.state)
       ? 8
-      : this.state.tiles[Math.floor(y) * WIDTH + Math.floor(x)];
+      : this.state.tiles[Math.floor(y) * WIDTH + wrapColumn(Math.floor(x))];
   }
   private blocked(x: number, y: number) {
     for (const cx of [x - BODY_HALF + 1e-7, x + BODY_HALF - 1e-7])
@@ -466,7 +478,7 @@ export class Mine {
               : "Land on the terrain before drilling down.";
           } else {
             this.drilling = {
-              x: tx,
+              x: wrapColumn(tx),
               y: ty,
               startX: s.x,
               startY: s.y,
@@ -535,13 +547,16 @@ export class Mine {
     if (!amount) return;
     const s = this.state,
       start = s[axis];
-    const candidate = Math.max(
-      0,
-      Math.min(
-        axis === "x" ? WIDTH - 1 : worldHeight(s) - 1.5 - BODY_HALF,
-        start + amount,
-      ),
-    );
+    // Search collision along the short continuous path, then wrap the final
+    // horizontal coordinate. Wrapping before the search would jump the bisection
+    // across the entire mine and can incorrectly collide with remote terrain.
+    const candidate =
+      axis === "x"
+        ? start + amount
+        : Math.max(
+            0,
+            Math.min(worldHeight(s) - 1.5 - BODY_HALF, start + amount),
+          );
     const collides = (value: number) =>
       this.blocked(axis === "x" ? value : s.x, axis === "y" ? value : s.y);
     let end = candidate;
@@ -562,7 +577,7 @@ export class Mine {
       if (axis === "x") this.velocityX = 0;
       else this.velocityY = 0;
     }
-    s[axis] = end;
+    s[axis] = axis === "x" ? wrapColumn(end) : end;
     if (end === start && candidate !== start + amount) {
       if (axis === "x") this.velocityX = 0;
       else this.velocityY = 0;
@@ -720,7 +735,8 @@ export function decodeSave(raw: string): State {
       (!Array.isArray(source.discovered) ||
         source.discovered.length !== source.tiles.length ||
         source.discovered.some((known) => known !== 0 && known !== 1))) ||
-    !num(source.x, WIDTH - 1) ||
+    !num(source.x, WIDTH) ||
+    source.x >= WIDTH ||
     !num(source.y, height - 1.5 - BODY_HALF + 1e-6) ||
     !num(source.money, 1e12, true) ||
     !num(source.fuel, oldFuel) ||
@@ -783,7 +799,11 @@ export function decodeSave(raw: string): State {
     observeTerrain(s.tiles, s.discovered, WIDTH, SURFACE, s.x, s.y);
   for (const x of [s.x - BODY_HALF + 1e-6, s.x + BODY_HALF - 1e-6])
     for (const y of [s.y - BODY_HALF + 1e-6, s.y + BODY_HALF - 1e-6])
-      if (s.tiles[Math.floor(y + 0.5) * WIDTH + Math.floor(x + 0.5)] !== 0)
+      if (
+        s.tiles[
+          Math.floor(y + 0.5) * WIDTH + wrapColumn(Math.floor(x + 0.5))
+        ] !== 0
+      )
         throw new Error(
           "Saved vehicle overlaps solid terrain. Existing save has been kept.",
         );

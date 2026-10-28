@@ -23,7 +23,9 @@ New expeditions contain 24 × 600 cells, with a reachable floor at 5,950 m. The 
 
 These probabilities describe the generator, not a promise about the next cell. Cave carving removes some deposits, and deeper strata have fewer cave pockets. Mineral selection shifts away from common shallow metals toward more valuable materials. Emeralds cannot appear before 1,800 m, rubies before 3,000 m, diamonds before 3,800 m, or Amazonite before 5,000 m. The rarest deposits remain scarce; the generator retains at least one of each mineral at a valid depth so no expedition loses a mineral entirely to cave carving.
 
-The compact frontier strip supplies a depth goal without identifying undiscovered mineral locations. Crossing a geological frontier for the first time gives a brief in-game acknowledgement. Returning through that depth or reloading does not replay it. Progress comes from discovery, access, equipment and sale proceeds; depth milestones do not award automatic cash.
+The pause menu supplies the next depth goal without identifying undiscovered mineral locations. Crossing a geological frontier for the first time gives a brief in-game acknowledgement. Returning through that depth or reloading does not replay it. Progress comes from discovery, access, equipment and sale proceeds; depth milestones do not award automatic cash.
+
+The 24-column world now wraps around horizontally. This is a periodic geography, with the same finite deposits and excavated routes after each lap. The camera follows continuously across the seam, and the lamp can reveal cells across it using the same occlusion rules. Saved horizontal positions use canonical coordinates within one circumference. Existing saved terrain remains valid, and the floor/depth scale is unchanged.
 
 ## Why equipment matters
 
@@ -41,6 +43,8 @@ There are no equipment-level doors or mandatory depth locks. A player can attemp
 Schema-1 through schema-3 saves keep their exact 100-row terrain and possessions. The migration adds discovery around the current vehicle without falsely marking every natural cave as explored. Schema-4 supports both old compact and new deep worlds, validates each discovery flag, and preserves that mask on reload/export/import. New expedition is the explicit way to adopt the new geography and distribution; it retains the existing confirmation and backup behavior.
 
 The local visibility rules, six named strata, deposit probabilities, hazard scaling, frontier feedback and camera changes are remake design choices. They are not claimed as measurements of the original SWF. Original tables and the previously documented movement/reference findings remain separate from these choices.
+
+The complete economic tables, formulas and their tuning locations are in [ECONOMY.md](ECONOMY.md). The immersive-menu, flat-projection and wrapping update changes presentation and traversal; it does not rebalance income, prices or depth bands.
 
 ## Balance checks and playtest targets
 

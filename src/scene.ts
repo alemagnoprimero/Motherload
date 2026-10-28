@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import {
   Mine,
   WIDTH,
+  wrapColumn,
+  horizontalDelta,
   worldHeight,
   STRATA,
   stratumAtDepth,
@@ -10,6 +12,8 @@ import {
   ORES,
   isOre,
   maxHull,
+  maxFuel,
+  capacity,
   STATIONS,
   nearbyStation,
   type Controls,
@@ -80,6 +84,10 @@ export function createMineScene(bindings: SceneBindings) {
     private artFailed = false;
     private tiles: Phaser.GameObjects.Image[] = [];
     private labels: Phaser.GameObjects.Text[] = [];
+    private unwrappedX = 0;
+    private previousRenderX = 0;
+    private warning: { text: string; life: number } | undefined;
+    private warningFlags = { fuel: false, hull: false, cargo: false };
     private cameraX = 0;
     private cameraY = 0;
     private elapsed = 0;
@@ -142,19 +150,7 @@ export function createMineScene(bindings: SceneBindings) {
         .image(0, 0, VIGNETTE_TEXTURE)
         .setOrigin(0)
         .setDepth(10);
-      this.buildings = STATIONS.map((station) =>
-        this.add
-          .image(
-            0,
-            0,
-            MODELS_TEXTURE,
-            this.textures.get(MODELS_TEXTURE).has(`building-${station.id}`)
-              ? `building-${station.id}`
-              : "rig-idle-0",
-          )
-          .setOrigin(0.5, 1)
-          .setDepth(3),
-      );
+      this.buildings = [];
       this.background = this.add.graphics().setDepth(0);
       this.marks = this.add.graphics().setDepth(2);
       this.rig = this.add
@@ -187,12 +183,25 @@ export function createMineScene(bindings: SceneBindings) {
         const nearby = nearbyStation(bindings.getMine().state);
         if (nearby) {
           const building = {
-            x: nearby.left * tile - this.cameraX,
+            x:
+              (nearby.left +
+                Math.round(
+                  ((pointer.x + this.cameraX) / tile -
+                    (nearby.left + nearby.width / 2)) /
+                    WIDTH,
+                ) *
+                  WIDTH) *
+                tile -
+              this.cameraX,
             y: (SURFACE + 1) * tile - this.cameraY - 2 * tile,
             width: nearby.width * tile,
             height: 2 * tile,
           };
-          const prompt = nearbyPromptRect(this.scale.width, this.scale.height);
+          const prompt = nearbyPromptRect(
+            this.scale.width,
+            this.scale.height,
+            this.hasDrivingTouchControls(),
+          );
           if (
             (insideRect(pointer, building) &&
               insideRect({ x: pointer.downX, y: pointer.downY }, building)) ||
@@ -204,7 +213,7 @@ export function createMineScene(bindings: SceneBindings) {
             return;
           }
         }
-        const x = Math.floor((pointer.x + this.cameraX) / tile);
+        const x = wrapColumn(Math.floor((pointer.x + this.cameraX) / tile));
         const y = Math.floor((pointer.y + this.cameraY) / tile);
         // Inspection follows the same sight rule as rendering. Clicking dark
         // terrain must never become a remote mineral detector.
@@ -223,6 +232,20 @@ export function createMineScene(bindings: SceneBindings) {
       bindings.onUpdate(0);
     }
 
+    private unwrapNearRig(x: number) {
+      return (
+        this.unwrappedX + 0.5 + horizontalDelta(this.previousRenderX + 0.5, x)
+      );
+    }
+
+    private hasDrivingTouchControls() {
+      return (
+        window.matchMedia("(pointer: coarse)").matches ||
+        this.scale.width <= 760 ||
+        document.body.classList.contains("compact-layout")
+      );
+    }
+
     private burst(
       x: number,
       y: number,
@@ -233,7 +256,7 @@ export function createMineScene(bindings: SceneBindings) {
       for (let i = 0; i < count && this.chips.length < 90; i++) {
         const life = 0.3 + Math.random() * 0.5;
         this.chips.push({
-          x,
+          x: this.unwrapNearRig(x),
           y,
           vx: (Math.random() - 0.5) * speed * 2,
           vy: -Math.random() * speed - 0.25,
@@ -262,6 +285,10 @@ export function createMineScene(bindings: SceneBindings) {
         this.popup = undefined;
         this.inspect = undefined;
         this.frontier = undefined;
+        this.warning = undefined;
+        this.warningFlags = { fuel: false, hull: false, cargo: false };
+        this.unwrappedX = mine.renderX;
+        this.previousRenderX = mine.renderX;
         this.flash = 0;
         this.previousMine = mine;
       }
@@ -272,6 +299,30 @@ export function createMineScene(bindings: SceneBindings) {
       if (!paused) {
         mine.tick(dt, input);
         this.elapsed += dt;
+        if (this.warning && (this.warning.life -= dt) <= 0)
+          this.warning = undefined;
+        const flags = {
+          fuel:
+            mine.state.fuel > 0 &&
+            mine.state.fuel / maxFuel(mine.state) <= 0.25,
+          hull:
+            mine.state.hull > 0 && mine.state.hull / maxHull(mine.state) <= 0.3,
+          cargo: mine.state.inventory.length >= capacity(mine.state),
+        };
+        const warnings = [
+          flags.fuel && !this.warningFlags.fuel
+            ? "Fuel low · Return to surface"
+            : "",
+          flags.hull && !this.warningFlags.hull
+            ? "Hull critical · Return for repairs"
+            : "",
+          flags.cargo && !this.warningFlags.cargo
+            ? "Cargo full · New ore will be lost"
+            : "",
+        ].filter(Boolean);
+        if (warnings.length)
+          this.warning = { text: warnings.join("\n"), life: 4.5 };
+        this.warningFlags = flags;
         if (this.frontier && (this.frontier.life -= dt) <= 0)
           this.frontier = undefined;
         const reached = STRATA.filter(
@@ -310,7 +361,7 @@ export function createMineScene(bindings: SceneBindings) {
           );
           if (collected && ore !== undefined) {
             this.popup = {
-              x: mine.renderX + 0.5,
+              x: this.unwrapNearRig(mine.renderX + 0.5),
               y: mine.renderY,
               text: `+ ${ORES[ore].name}`,
               life: 1.2,
@@ -349,16 +400,11 @@ export function createMineScene(bindings: SceneBindings) {
         height = this.scale.height;
       const tile = tileSizeForViewport(width, height),
         scale = tile / 32;
-      const worldX = (mine.renderX + 0.5) * tile;
+      this.unwrappedX += horizontalDelta(this.previousRenderX, mine.renderX);
+      this.previousRenderX = mine.renderX;
+      const worldX = (this.unwrappedX + 0.5) * tile;
       const worldY = (mine.renderY + 0.5) * tile;
-      const targetX =
-        width >= WIDTH * tile
-          ? -(width - WIDTH * tile) / 2
-          : Phaser.Math.Clamp(
-              worldX - width / 2 + mine.velocityX * tile * 0.06,
-              0,
-              WIDTH * tile - width,
-            );
+      const targetX = worldX - width / 2 + mine.velocityX * tile * 0.06;
       const targetY = Phaser.Math.Clamp(
         worldY -
           height * (mine.thrusting && mine.velocityY < -1 ? 0.54 : 0.42) +
@@ -403,11 +449,23 @@ export function createMineScene(bindings: SceneBindings) {
         color = "#ded6b8",
         centered = false,
       ) => {
-        const item = this.labels[labelIndex++];
-        if (!item) return;
+        let item = this.labels[labelIndex++];
+        if (!item) {
+          item = this.add
+            .text(0, 0, "", {
+              fontFamily: "system-ui, sans-serif",
+              fontSize: "11px",
+              color: "#ded6b8",
+              backgroundColor: "#101925c7",
+              padding: { x: 7, y: 4 },
+            })
+            .setDepth(12);
+          this.labels.push(item);
+        }
         item
           .setPosition(x, y)
           .setText(value)
+          .setAlign(centered ? "center" : "left")
           .setOrigin(centered ? 0.5 : 0, 0)
           .setVisible(true);
         if (item.style.color !== color) item.setColor(color);
@@ -436,7 +494,9 @@ export function createMineScene(bindings: SceneBindings) {
         this.sky
           .setPosition(0, surfaceY - skyHeight)
           .setDisplaySize(width, skyHeight);
-        const sunX = width * 0.76 - cx * 0.08,
+        const sunX =
+            width * 0.76 -
+            Math.sin((cx / (WIDTH * tile)) * Math.PI * 2) * tile * 0.35,
           sunY = surfaceY - tile * 2.8;
         for (let halo = 5; halo > 0; halo--) {
           bg.fillStyle(0xffc38d, 0.018);
@@ -455,8 +515,11 @@ export function createMineScene(bindings: SceneBindings) {
             { x: -tile, y: surfaceY },
           ];
           const step = tile * 1.7;
-          for (let i = -2; i <= width / step + 3; i++) {
-            const x = i * step - ((cx * layer.parallax) % step);
+          const firstRidge = Math.floor((cx * layer.parallax) / step) - 2;
+          const ridgeCount = Math.ceil(width / step) + 5;
+          for (let offset = 0; offset < ridgeCount; offset++) {
+            const i = firstRidge + offset;
+            const x = i * step - cx * layer.parallax;
             const ridge =
               0.55 +
               Math.sin(i * 1.73 + layer.rise) * 0.23 +
@@ -472,9 +535,9 @@ export function createMineScene(bindings: SceneBindings) {
           bg.fillPoints(points, true);
         }
         bg.fillStyle(0x171f2b, 0.9);
-        bg.fillRect(-cx, surfaceY - 7 * scale, WIDTH * tile, 9 * scale);
+        bg.fillRect(0, surfaceY - 7 * scale, width, 9 * scale);
         bg.fillStyle(0xe9b578, 0.85);
-        bg.fillRect(-cx, surfaceY, WIDTH * tile, 2 * scale);
+        bg.fillRect(0, surfaceY, width, 2 * scale);
         const nearby = nearbyStation(s);
         const signs = {
           exchange: ["ORE EXCHANGE", 0xf3bc71],
@@ -482,50 +545,68 @@ export function createMineScene(bindings: SceneBindings) {
           repair: ["REPAIR BAY", 0x69dae5],
           upgrades: ["WORKSHOP", 0xb6b0ff],
         } as const;
-        STATIONS.forEach((station, index) => {
-          const [title, color] = signs[station.id];
-          const sx = station.left * tile - cx,
-            sy = surfaceY - 2 * tile;
-          if (sx + 3 * tile < 0 || sx > width) return;
-          bg.fillStyle(0x050b14, 0.35);
-          bg.fillEllipse(
-            sx + 1.65 * tile,
-            surfaceY - 2,
-            3.1 * tile,
-            0.24 * tile,
-          );
-          this.buildings[index]
-            .setPosition(sx + 1.5 * tile, surfaceY + 3 * scale)
-            .setDisplaySize(3 * tile, 2 * tile)
-            .setVisible(true);
-          const active = nearby?.id === station.id;
-          g.fillStyle(color, active ? 0.45 : 0.12);
-          g.fillRoundedRect(
-            sx + 0.55 * tile,
-            surfaceY - 4 * scale,
-            1.9 * tile,
-            5 * scale,
-            2,
-          );
-          if (active) {
-            g.lineStyle(2, color, 0.85);
-            g.lineBetween(
-              sx + 0.45 * tile,
-              surfaceY + 2 * scale,
-              sx + 2.55 * tile,
-              surfaceY + 2 * scale,
+        let buildingIndex = 0;
+        const firstPeriod = Math.floor(cx / (WIDTH * tile)) - 1;
+        const lastPeriod = Math.floor((cx + width) / (WIDTH * tile)) + 1;
+        for (let period = firstPeriod; period <= lastPeriod; period++) {
+          STATIONS.forEach((station) => {
+            const [title, color] = signs[station.id];
+            const sx = (station.left + period * WIDTH) * tile - cx,
+              sy = surfaceY - 2 * tile;
+            if (sx + 3 * tile < 0 || sx > width) return;
+            bg.fillStyle(0x050b14, 0.35);
+            bg.fillEllipse(
+              sx + 1.65 * tile,
+              surfaceY - 2,
+              3.1 * tile,
+              0.24 * tile,
             );
-            g.fillStyle(color, 0.06);
-            g.fillRect(sx, sy, 3 * tile, 2 * tile);
-          }
-          text(
-            sx + 1.5 * tile,
-            sy + 0.1 * tile,
-            title,
-            active ? "#ffe2ae" : "#d6e0ee",
-            true,
-          );
-        });
+            let building = this.buildings[buildingIndex++];
+            if (!building) {
+              building = this.add
+                .image(0, 0, MODELS_TEXTURE)
+                .setOrigin(0.5, 1)
+                .setDepth(3);
+              this.buildings.push(building);
+            }
+            building
+              .setFrame(
+                this.textures.get(MODELS_TEXTURE).has(`building-${station.id}`)
+                  ? `building-${station.id}`
+                  : "rig-idle-0",
+              )
+              .setPosition(sx + 1.5 * tile, surfaceY + 3 * scale)
+              .setDisplaySize(3 * tile, 2 * tile)
+              .setVisible(true);
+            const active = nearby?.id === station.id;
+            g.fillStyle(color, active ? 0.45 : 0.12);
+            g.fillRoundedRect(
+              sx + 0.55 * tile,
+              surfaceY - 4 * scale,
+              1.9 * tile,
+              5 * scale,
+              2,
+            );
+            if (active) {
+              g.lineStyle(2, color, 0.85);
+              g.lineBetween(
+                sx + 0.45 * tile,
+                surfaceY + 2 * scale,
+                sx + 2.55 * tile,
+                surfaceY + 2 * scale,
+              );
+              g.fillStyle(color, 0.06);
+              g.fillRect(sx, sy, 3 * tile, 2 * tile);
+            }
+            text(
+              sx + 1.5 * tile,
+              sy + 0.1 * tile,
+              title,
+              active ? "#ffe2ae" : "#d6e0ee",
+              true,
+            );
+          });
+        }
         // Sparse surface dust catches the sunset without obscuring play.
         for (let i = 0; i < 18; i++) {
           const x =
@@ -542,8 +623,8 @@ export function createMineScene(bindings: SceneBindings) {
       }
       const firstRow = Math.max(SURFACE + 1, Math.floor(cy / tile));
       const lastRow = Math.min(rows - 1, Math.ceil((cy + height) / tile));
-      const firstCol = Math.max(0, Math.floor(cx / tile));
-      const lastCol = Math.min(WIDTH - 1, Math.ceil((cx + width) / tile));
+      const firstCol = Math.floor(cx / tile);
+      const lastCol = Math.ceil((cx + width) / tile);
       let visible = 0,
         obscured = 0;
       const knownAir = (x: number, y: number) =>
@@ -552,6 +633,7 @@ export function createMineScene(bindings: SceneBindings) {
         const terrainTint =
           STRATUM_TINTS[STRATA.indexOf(stratumAtDepth((y - SURFACE) * 10))];
         for (let x = firstCol; x <= lastCol; x++) {
+          const column = wrapColumn(x);
           const sx = x * tile - cx,
             sy = y * tile - cy;
           if (!mine.isKnown(x, y)) {
@@ -566,16 +648,18 @@ export function createMineScene(bindings: SceneBindings) {
             // Opaque, type-independent substrate also covers undiscovered air.
             // It sits above lights/effects so a cave cannot leak as a silhouette.
             cover
-              .setFrame(`unknown-${(x * 17 + y * 31) % 3}`)
+              .setFrame(`unknown-${(column * 17 + y * 31) % 3}`)
               .setPosition(sx, sy)
               .setDisplaySize(tile + 0.7, tile + 0.7)
               .setVisible(true);
             continue;
           }
           const type = mine.tile(x, y);
-          const lit = mine.isVisible(x, y);
           const distanceSquared =
-            (x - mine.renderX) ** 2 + (y - mine.renderY) ** 2;
+            (x - this.unwrappedX) ** 2 + (y - mine.renderY) ** 2;
+          const lit =
+            mine.isVisible(x, y) &&
+            distanceSquared <= DISCOVERY_RADIUS * DISCOVERY_RADIUS;
           const shade = lit
             ? Math.min(
                 0.42,
@@ -594,7 +678,7 @@ export function createMineScene(bindings: SceneBindings) {
             this.tiles.push(sprite);
           }
           sprite
-            .setFrame(`tile-${type}-${(x * 17 + y * 31) % 3}`)
+            .setFrame(`tile-${type}-${(column * 17 + y * 31) % 3}`)
             .setPosition(sx, sy)
             .setDisplaySize(tile + 0.3, tile + 0.3)
             .setTint(terrainTint)
@@ -624,11 +708,12 @@ export function createMineScene(bindings: SceneBindings) {
       for (let y = Math.ceil(firstRow / 10) * 10; y <= lastRow; y += 10) {
         g.lineStyle(1, 0xe1d8b4, 0.09);
         g.lineBetween(0, y * tile - cy, width, y * tile - cy);
-        text(7, y * tile - cy + 3, `${(y - SURFACE) * 10} m`, "#798caa");
       }
       const target = mine.drillTarget;
       if (target && mine.isVisible(target.x, target.y)) {
-        const x = target.x * tile - cx,
+        const x =
+            (this.unwrappedX + horizontalDelta(mine.renderX, target.x)) * tile -
+            cx,
           y = target.y * tile - cy;
         g.fillStyle(0xf8d88d, 0.08 + mine.progress * 0.1);
         g.fillRect(x, y, tile, tile);
@@ -752,27 +837,17 @@ export function createMineScene(bindings: SceneBindings) {
           1,
         );
       }
-      const dir = input.right ? 1 : input.left ? -1 : 0;
-      const wall =
-        dir &&
-        mine.tile(Math.floor(s.x + dir * 0.58 + 0.5), Math.round(s.y)) !== 0;
-      const status =
-        mine.progress > 0
-          ? `DRILLING ${mine.drillDirection?.toUpperCase()}`
-          : wall && !mine.grounded && !input.up
-            ? "LAND TO DRILL SIDEWAYS"
-            : mine.thrusting
-              ? "THRUST · STEER WITH ← →"
-              : mine.grounded || mine.docked
-                ? s.y <= SURFACE + 0.2
-                  ? "SURFACE OUTPOST"
-                  : "READY TO MINE"
-                : "IN FLIGHT";
-      text(8, 8, status, target ? "#ffdb96" : "#bad4c6");
       const nearby = nearbyStation(s);
       const station = bindings.getStation();
+      const contextRect = nearbyPromptRect(
+        width,
+        height,
+        this.hasDrivingTouchControls(),
+      );
+      let worldCallout = false;
       if (nearby && !paused && !station) {
-        const prompt = nearbyPromptRect(width, height);
+        worldCallout = true;
+        const prompt = contextRect;
         this.overlay.fillStyle(0x142334, 0.96);
         this.overlay.fillRoundedRect(
           prompt.x,
@@ -803,24 +878,45 @@ export function createMineScene(bindings: SceneBindings) {
         mine.isVisible(this.inspect.x, this.inspect.y)
       ) {
         const type = mine.tile(this.inspect.x, this.inspect.y);
-        if (isOre(type))
+        if (isOre(type)) {
+          worldCallout = true;
           text(
             width / 2,
-            height - 27,
+            contextRect.y + 12,
             `${ORES[type].name} · $${ORES[type].value.toLocaleString()} · mass ${ORES[type].mass}`,
             ORES[type].color,
             true,
           );
-        else if (type === 7 || type === 8)
+        } else if (type === 7 || type === 8) {
+          worldCallout = true;
           text(
             width / 2,
-            height - 27,
+            contextRect.y + 12,
             type === 7
               ? `MAGMA · ${magmaDamageAtDepth((this.inspect.y - SURFACE) * 10)} hull damage`
               : "BEDROCK · Cannot drill",
             "#efb78c",
             true,
           );
+        }
+      }
+      document.body.classList.toggle("world-callout", worldCallout);
+      if (this.warning && !station && !paused) {
+        const warningWidth = Math.min(410, width - 24);
+        const warningY = this.frontier ? 107 : 40;
+        const warningHeight = Math.max(
+          39,
+          18 + this.warning.text.split("\n").length * 17,
+        );
+        this.overlay.fillStyle(0x251914, 0.96);
+        this.overlay.fillRoundedRect(
+          (width - warningWidth) / 2,
+          warningY,
+          warningWidth,
+          warningHeight,
+          6,
+        );
+        text(width / 2, warningY + 12, this.warning.text, "#ffd29b", true);
       }
       if (this.frontier && !station && !paused) {
         const noticeWidth = Math.min(350, width - 24),

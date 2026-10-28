@@ -38,17 +38,26 @@ import "./style.css";
 const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
   document.getElementById(id) as T;
 $("app").innerHTML = `
-<header class="mission-header"><a class="wordmark" href="./" aria-label="Motherload: The Frontier"><span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 25V7h6l6 9 6-9h6v18h-6V16l-6 8-6-8v9Z"/></svg></span><span>MOTHERLOAD<small>THE FRONTIER</small></span></a><span class="mission-label"><i></i> MARS MINING OPERATIONS</span><div class="save-tools"><span id="save-status" role="status">LOCAL SAVE · READY</span><span class="signal" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div></header>
-<main>
-<div id="storage-notice" class="storage-notice" role="alert" hidden><span id="storage-copy"></span><button id="reload-external" hidden>Load newer save</button><button id="notice-tools">Save tools</button></div>
-<div class="dashboard"><section class="mission" aria-label="Mining expedition"><div class="instrument-deck"><div class="telemetry"><div><span>DEPTH</span><strong id="depth">0 <small>m</small></strong></div><div><span>CREDITS</span><strong id="money">$20</strong></div><div class="cargo-value"><span>CARGO VALUE</span><strong id="value">$0</strong></div><div class="location"><i></i><span id="location">SURFACE BASE</span></div></div>
-<div id="flight-hud" class="flight-hud" aria-label="Vehicle status"><div><span>FUEL</span><strong id="hud-fuel">6 / 10 L</strong><i><b id="hud-fuel-bar"></b></i></div><div><span>HULL</span><strong id="hud-hull">10 / 10</strong><i><b id="hud-hull-bar"></b></i></div><div><span>CARGO</span><strong id="hud-cargo">0 / 7</strong><i><b id="hud-cargo-bar"></b></i></div></div><div class="frontier-strip" aria-label="Exploration progress"><span class="frontier-region"><i aria-hidden="true"></i><span id="region-label">Surface</span></span><span id="frontier-goal">Next frontier · 300 m</span><span id="frontier-progress" class="frontier-track" role="progressbar" aria-label="Depth exploration" aria-valuemin="0" aria-valuemax="300" aria-valuenow="0"><b id="frontier-fill"></b></span></div></div>
-<div class="game-actions"><button id="pause" aria-pressed="false">Pause</button><button id="save">Save</button><button id="load">Load</button><button id="tools-toggle" aria-haspopup="dialog">Tools</button><button id="focus" aria-pressed="false" aria-label="Expand the game to fill the screen">Expand</button><button id="sound-toggle" aria-pressed="false" aria-label="Enable sound">♪ Off</button></div>
-<div id="game" role="application" tabindex="0" aria-label="Mining game. Arrows or WASD to drive and drill; Up to fly. Park at a surface building and press E or Enter to use it."></div><div class="message"><span aria-hidden="true">◈</span><p id="message" role="status"></p></div><div class="controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrows <b>Drive & drill</b></span><span><kbd>↑</kbd> + <kbd>←</kbd><kbd>→</kbd> Steer in flight <span class="dot">·</span> <kbd>E</kbd> Enter building <span class="dot">·</span> <kbd>P</kbd> Pause</span></div><div class="touch" aria-label="Touch driving controls"><button data-dir="left" aria-label="Move left"><span>←</span><small>LEFT</small></button><button data-dir="up" aria-label="Fly upward"><span>↑</span><small>THRUST</small></button><button data-dir="down" aria-label="Drill down"><span>↓</span><small>DRILL</small></button><button data-dir="right" aria-label="Move right"><span>→</span><small>RIGHT</small></button></div></section>
-</div>
-<footer><span>INDEPENDENT REMAKE · ORIGINAL ART & SOUND</span><div><span id="record">BEST DEPTH 0 m</span><button id="new-game">New expedition</button></div></footer></main>
-<dialog id="tools" aria-labelledby="tools-title"><div class="dialog-heading"><h2 id="tools-title">Expedition tools</h2><button id="close-tools" aria-label="Close expedition tools">×</button></div><p>Save files let you move an expedition between computers and phones. Browser saves stay on this device.</p><p id="world-note" class="small-copy" hidden>This expedition retains its original compact mine. New expedition starts the deeper frontier.</p><section class="equipment-summary" aria-label="Current rig"><div><strong id="rig-level"></strong><strong id="engine-level"></strong></div><dl><dt>Fuel</dt><dd id="fuel-label"></dd><dt>Hull</dt><dd id="hull-label"></dd><dt>Cargo</dt><dd id="cargo-label"></dd></dl><p id="cargo-detail"></p><small id="cargo-mass"></small></section><div class="save-file-actions"><button id="export-save">Export save ↓</button><label class="file-button" for="import-save">Import save ↑<input type="file" id="import-save" accept="application/json,.json" /></label><button id="restore-backup">Restore backup</button></div><p id="tools-status" role="status"></p><div class="audio-setting"><label for="sound-volume">Sound volume</label><input id="sound-volume" type="range" min="0" max="100" value="45" /><output id="volume-label" for="sound-volume">45%</output></div><p class="small-copy">Sound starts only after you enable it. Export before clearing browser data or changing devices.</p><div class="recovery-tools"><button id="recover">Request recovery</button><p class="small-copy">Returns to the surface with half fuel and hull. Costs your cargo and 20% of credits.</p><button id="tools-new-game">New expedition</button></div></dialog>
-<dialog id="confirm" aria-labelledby="confirm-title"><h2 id="confirm-title"></h2><p id="confirm-copy"></p><p id="confirm-error" role="alert"></p><div><button id="cancel">Cancel</button><button id="confirm-action" class="primary">Confirm</button></div></dialog>`;
+<main class="game-shell" aria-label="Motherload expedition">
+<div id="game" role="application" tabindex="0" aria-label="Mining game. Arrows or WASD to drive and drill; Up to fly. Park at a surface building and press E or Enter to use it. Escape opens the pause menu."></div>
+<button id="pause" class="menu-toggle" aria-haspopup="dialog" aria-controls="tools" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14"><path fill="currentColor" d="M3 2h3v12H3zm7 0h3v12h-3z"/></svg> Menu <kbd>Esc</kbd></button>
+<div class="message"><p id="message" role="status"></p></div>
+<div class="touch" aria-label="Touch driving controls"><button data-dir="left" aria-label="Move left"><span>←</span><small>LEFT</small></button><button data-dir="right" aria-label="Move right"><span>→</span><small>RIGHT</small></button><button data-dir="down" aria-label="Drill down"><span>↓</span><small>DRILL</small></button><button data-dir="up" aria-label="Fly upward"><span>↑</span><small>THRUST</small></button></div>
+</main>
+<dialog id="tools" class="pause-menu" aria-labelledby="tools-title"><div class="dialog-heading"><div><p class="eyebrow">MOTHERLOAD · THE FRONTIER</p><h1 id="tools-title">Expedition paused</h1></div><button id="close-tools" class="resume-button">Return to mine</button></div>
+<div id="storage-notice" class="storage-notice" role="alert" hidden><p id="storage-copy"></p><button id="reload-external" hidden>Load newer save</button><button id="notice-tools">Review save tools</button></div>
+<div class="menu-grid"><section class="menu-section status-section" aria-labelledby="status-title"><div class="section-heading"><h2 id="status-title">Vehicle & expedition</h2><span id="location">SURFACE</span></div>
+<div class="telemetry"><div><span>DEPTH</span><strong id="depth">0 <small>m</small></strong></div><div><span>CREDITS</span><strong id="money">$20</strong></div><div><span>CARGO VALUE</span><strong id="value">$0</strong></div></div>
+<div id="flight-hud" class="flight-hud" aria-label="Vehicle status"><div><span>FUEL</span><strong id="hud-fuel">6 / 10 L</strong><i><b id="hud-fuel-bar"></b></i></div><div><span>HULL</span><strong id="hud-hull">10 / 10</strong><i><b id="hud-hull-bar"></b></i></div><div><span>CARGO</span><strong id="hud-cargo">0 / 7</strong><i><b id="hud-cargo-bar"></b></i></div></div>
+<div class="frontier-strip" aria-label="Exploration progress"><span id="region-label">Surface</span><span id="frontier-goal">Next frontier · 300 m</span><span id="frontier-progress" class="frontier-track" role="progressbar" aria-label="Depth exploration" aria-valuemin="0" aria-valuemax="300" aria-valuenow="0"><b id="frontier-fill"></b></span></div><p id="record" class="small-copy">BEST DEPTH 0 m</p>
+<section class="equipment-summary" aria-label="Current rig"><div><strong id="rig-level"></strong><strong id="engine-level"></strong></div><dl><dt>Fuel</dt><dd id="fuel-label"></dd><dt>Hull</dt><dd id="hull-label"></dd><dt>Cargo</dt><dd id="cargo-label"></dd></dl><p id="cargo-detail"></p><small id="cargo-mass"></small></section><p id="world-note" class="small-copy" hidden>This expedition retains its original compact mine. New expedition starts the deeper frontier.</p>
+</section>
+<section class="menu-section" aria-labelledby="saves-title"><div class="section-heading"><h2 id="saves-title">Save & transfer</h2><span id="save-status" role="status">LOCAL SAVE · READY</span></div><p class="small-copy">Your expedition saves on this device. Export a file to continue on another computer or phone.</p><div class="save-actions"><button id="save">Save expedition</button><button id="load">Load saved expedition</button><button id="export-save">Export save ↓</button><label class="file-button" for="import-save">Import save ↑<input type="file" id="import-save" accept="application/json,.json" /></label><button id="restore-backup">Restore backup</button></div><p id="tools-status" role="status"></p></section>
+<section class="menu-section" aria-labelledby="settings-title"><h2 id="settings-title">Sound & display</h2><div class="settings-actions"><button id="sound-toggle" aria-pressed="false" aria-label="Enable sound">♪ Off</button><button id="focus" aria-pressed="false" aria-label="Enter fullscreen">Fullscreen</button></div><div class="audio-setting"><label for="sound-volume">Sound volume</label><input id="sound-volume" type="range" min="0" max="100" value="45" /><output id="volume-label" for="sound-volume">45%</output></div><p class="small-copy">Sound starts muted on each visit.</p></section>
+<section class="menu-section" aria-labelledby="controls-title"><h2 id="controls-title">Pilot controls</h2><dl class="controls-list"><dt>Arrows / WASD</dt><dd>Drive, drill and fly</dd><dt>Up + Left / Right</dt><dd>Steer in flight</dd><dt>E / Enter</dt><dd>Enter the nearby building</dd><dt>Escape / P</dt><dd>Pause menu</dd></dl><p class="small-copy">Side drilling needs a ledge. Return through your open shaft to sell, refuel, repair and upgrade. Explore beyond the lamp to reveal new terrain.</p></section>
+<section class="menu-section recovery-tools" aria-labelledby="recovery-title"><h2 id="recovery-title">Recovery & new expedition</h2><button id="recover">Request surface recovery</button><p class="small-copy">Recovery costs your cargo and 20% of credits, and restores half fuel and hull.</p><button id="new-game">New expedition</button><p class="small-copy">Export a save before starting a new mine if you want to keep a separate copy.</p></section></div>
+</dialog>
+<dialog id="confirm" aria-labelledby="confirm-title"><h2 id="confirm-title"></h2><p id="confirm-copy"></p><p id="confirm-error" role="alert"></p><div class="confirm-actions"><button id="cancel">Cancel</button><button id="confirm-action" class="primary">Confirm</button></div></dialog>`;
 
 const keys = new Set<string>();
 const touches = new Map<number, Direction>();
@@ -65,7 +74,8 @@ let stationWasPaused = false;
 let activeStation: StationId | undefined;
 type StationCommand = "up" | "down" | "left" | "right" | "confirm";
 const stationCommands: StationCommand[] = [];
-let toolsWasPaused = false;
+let transientMessage = "";
+let transientUntil = 0;
 let focusMode = false;
 let nativeFullscreen = false;
 let muted = true;
@@ -115,7 +125,7 @@ function setPaused(value: boolean) {
   if (externalConflict || activeStation) value = true;
   if (value) clearInput();
   paused = value;
-  $("pause").textContent = paused ? "Resume" : "Pause";
+  $("pause").setAttribute("aria-label", "Open pause menu");
   $("pause").setAttribute("aria-pressed", String(paused));
   audio.update(mine, paused);
   sync();
@@ -125,7 +135,7 @@ function setBusy(value: boolean) {
   persistenceBusy = value;
   document.body.dataset.saving = String(value);
   $<HTMLButtonElement>("save").disabled = value;
-  $("save").textContent = value ? "Saving…" : "Save";
+  $("save").textContent = value ? "Saving…" : "Save expedition";
   $<HTMLButtonElement>("load").disabled = value;
   $<HTMLButtonElement>("confirm-action").disabled = value;
   $<HTMLButtonElement>("cancel").disabled = value;
@@ -134,6 +144,8 @@ function showStorageNotice(message = "", conflict = false) {
   $("storage-notice").hidden = !message;
   $("storage-copy").textContent = message;
   $("reload-external").hidden = !conflict;
+  if (message && storageBlocked && !$<HTMLDialogElement>("tools").open)
+    openTools();
 }
 function showError(error: unknown) {
   const message =
@@ -362,7 +374,15 @@ function sync() {
       ? `${STATIONS.find((station) => station.id === activeStation)!.name} menu. Arrow keys or Tab select; Enter confirms; Escape closes. ${mine.message}`
       : "Mining game. Arrows or WASD to drive and drill; Up to fly. Park at a surface building and press E or Enter to use it.",
   );
-  $<HTMLButtonElement>("pause").disabled = Boolean(activeStation);
+  const messageChanged = transientMessage !== mine.message;
+  if (messageChanged) {
+    transientMessage = mine.message;
+    transientUntil = performance.now() + 4500;
+  }
+  $("message").parentElement!.classList.toggle(
+    "visible",
+    performance.now() < transientUntil,
+  );
   document
     .querySelectorAll<HTMLButtonElement>("[data-dir]")
     .forEach((button) => {
@@ -398,7 +418,7 @@ $("save").onclick = () => {
   void requestSave(true);
 };
 $("load").onclick = () => loadSaved(true);
-$("pause").onclick = () => setPaused(!paused);
+$("pause").onclick = toggleMenu;
 $("reload-external").onclick = () => {
   loadSaved(true);
   setPaused(true);
@@ -432,16 +452,26 @@ function closeStation(resume = true) {
 }
 function openTools() {
   if ($<HTMLDialogElement>("tools").open) return;
-  toolsWasPaused = activeStation ? stationWasPaused : paused;
   closeStation(false);
   setPaused(true);
   refreshBackupButton();
+  document.body.classList.add("menu-open");
   $<HTMLDialogElement>("tools").showModal();
 }
-$("tools-toggle").onclick = openTools;
 $("notice-tools").onclick = openTools;
 $("close-tools").onclick = () => $<HTMLDialogElement>("tools").close();
-$<HTMLDialogElement>("tools").onclose = () => setPaused(toolsWasPaused);
+$<HTMLDialogElement>("tools").onclose = () => {
+  document.body.classList.remove("menu-open");
+  // A closed pause menu means play; unresolved cross-tab conflicts still
+  // enforce their pause inside setPaused.
+  setPaused(false);
+  $("game").focus({ preventScroll: true });
+};
+function toggleMenu() {
+  const menu = $<HTMLDialogElement>("tools");
+  if (menu.open) menu.close();
+  else openTools();
+}
 
 let confirmWasPaused = false;
 let confirmOperation: () => void | Promise<void> = () => {};
@@ -493,7 +523,6 @@ const newExpedition = () =>
     () => replaceExpedition(createState(randomSeed())),
   );
 $("new-game").onclick = newExpedition;
-$("tools-new-game").onclick = newExpedition;
 $("restore-backup").onclick = () =>
   confirmAction(
     "Restore the backup expedition?",
@@ -572,6 +601,14 @@ const mapped: Record<string, Direction> = {
 const dialogOpen = () =>
   $<HTMLDialogElement>("confirm").open || $<HTMLDialogElement>("tools").open;
 window.addEventListener("keydown", (event) => {
+  const menuKey = event.key === "Escape" || event.key.toLowerCase() === "p";
+  if (menuKey && !event.repeat && !$<HTMLDialogElement>("confirm").open) {
+    if (event.target instanceof HTMLInputElement) return;
+    event.preventDefault();
+    if (activeStation && event.key === "Escape") closeStation();
+    else toggleMenu();
+    return;
+  }
   if (dialogOpen()) return;
   if (
     event.target instanceof HTMLInputElement ||
@@ -617,16 +654,11 @@ window.addEventListener("keydown", (event) => {
       return;
     }
   }
-  if (key === "Escape" && focusMode && !document.fullscreenElement) {
-    applyFocus(false);
-    return;
-  }
   if (mapped[key]) {
     event.preventDefault();
     keys.add(key);
     $("game").focus({ preventScroll: true });
   }
-  if (key.toLowerCase() === "p" && !event.repeat) setPaused(!paused);
   if (!muted) void audio.unlock();
 });
 window.addEventListener("keyup", (event) =>
@@ -634,7 +666,6 @@ window.addEventListener("keyup", (event) =>
 );
 function pauseForBackground() {
   stationWasPaused = true;
-  toolsWasPaused = true;
   confirmWasPaused = true;
   closeStation(false);
   setPaused(true);
@@ -708,13 +739,11 @@ $<HTMLInputElement>("sound-volume").oninput = (event) => {
 function applyFocus(value: boolean) {
   focusMode = value;
   document.body.classList.toggle("focus-mode", value);
-  $("focus").textContent = value ? "Window" : "Expand";
+  $("focus").textContent = value ? "Exit fullscreen" : "Fullscreen";
   $("focus").setAttribute("aria-pressed", String(value));
   $("focus").setAttribute(
     "aria-label",
-    value
-      ? "Return to normal game layout"
-      : "Expand the game to fill the screen",
+    value ? "Exit fullscreen" : "Enter fullscreen",
   );
   clearInput();
 }

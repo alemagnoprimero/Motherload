@@ -6,6 +6,7 @@ import { stationLayout, nearbyPromptRect } from "../src/station-layout.ts";
 export const SAVE_KEY = "motherload.frontier.v1";
 export const WIDTH = 24;
 export const HEIGHT = 600;
+const frozenPages = new WeakSet();
 const VALUES = {
   3: 30,
   4: 250,
@@ -128,14 +129,10 @@ export async function ready(page, base) {
   }
 }
 export async function pause(page, value = true) {
-  if (!value) {
-    await page.bringToFront();
-    await rendered(page);
-  }
-  await page.locator("#pause").evaluate((button, value) => {
-    if ((button.getAttribute("aria-pressed") === "true") !== value)
-      button.click();
-  }, value);
+  if (value) return openTools(page);
+  await page.bringToFront();
+  await closeTools(page);
+  if (!frozenPages.has(page)) await rendered(page);
 }
 export async function settled(page) {
   await page.waitForFunction(() => document.body.dataset.saving === "false");
@@ -154,18 +151,28 @@ export function readState(page) {
 export async function openTools(page) {
   await page.bringToFront();
   if (!(await page.locator("#tools").evaluate((dialog) => dialog.open)))
-    await page.locator("#tools-toggle").click();
+    await page.locator("#pause").evaluate((button) => button.click());
 }
 export async function closeTools(page) {
   if (await page.locator("#tools").evaluate((dialog) => dialog.open)) {
-    await page.locator("#close-tools").click();
-    await page.waitForFunction(() => !document.querySelector("#tools").open);
-    // Native dialog close events restore the prior pause state asynchronously.
-    // Let that finish before a following gameplay command resumes the rig.
-    await rendered(page);
+    await page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          const dialog = document.querySelector("#tools");
+          dialog.addEventListener("close", () => queueMicrotask(resolve), {
+            once: true,
+          });
+          document.querySelector("#close-tools").click();
+        }),
+    );
+    // Native dialog close events resume the simulation asynchronously. Let
+    // that finish before a following gameplay command controls the rig.
+    if (!frozenPages.has(page)) await rendered(page);
   }
 }
 export async function importRaw(page, raw, confirm = true) {
+  const wasPaused =
+    (await page.locator("#pause").getAttribute("aria-pressed")) === "true";
   await openTools(page);
   await page.locator("#import-save").setInputFiles({
     name: "expedition.json",
@@ -177,7 +184,9 @@ export async function importRaw(page, raw, confirm = true) {
     await page.locator("#confirm-action").click();
     await page.waitForFunction(() => !document.querySelector("#confirm").open);
     await settled(page);
-    await closeTools(page);
+    // Keep a paused caller in the same Menu session. Closing and reopening it
+    // would briefly resume real-time play and consume fuel during comparison.
+    if (!wasPaused) await closeTools(page);
   }
 }
 export const importState = (page, state) =>
@@ -232,6 +241,11 @@ export async function freezeFrames(page) {
     clockedPages.add(page);
   }
   await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  frozenPages.add(page);
+}
+export async function resumeFrames(page) {
+  await page.clock.resume();
+  frozenPages.delete(page);
 }
 export async function sampleClockedState(page) {
   await page.locator("#save").evaluate((button) => button.click());
@@ -257,7 +271,8 @@ export async function driveToStation(page, id) {
   try {
     for (let attempt = 0; attempt < 100; attempt++) {
       const state = await sampleClockedState(page);
-      const velocity = previous ? (state.x - previous.x) / 0.08 : 0;
+      const delta = (from, to) => ((to - from + 36) % WIDTH) - 12;
+      const velocity = previous ? delta(previous.x, state.x) / 0.08 : 0;
       trace.push({
         simulationMs,
         x: state.x,
@@ -267,7 +282,7 @@ export async function driveToStation(page, id) {
         held,
       });
       if (
-        Math.abs(state.x - target) <= 0.85 &&
+        Math.abs(delta(state.x, target)) <= 0.85 &&
         Math.abs(state.y - 3.15) < 0.19
       ) {
         if (held) {
@@ -284,7 +299,7 @@ export async function driveToStation(page, id) {
         }
       }
       // Position feedback plus counter-steering brakes before crossing the bay.
-      const desired = target - state.x - velocity * 0.3;
+      const desired = delta(state.x, target) - velocity * 0.3;
       const steering = desired >= 0 ? "ArrowRight" : "ArrowLeft";
       if (held !== steering) {
         if (held) await page.keyboard.up(held);
@@ -309,7 +324,7 @@ export async function driveToStation(page, id) {
     throw error;
   } finally {
     if (held) await page.keyboard.up(held);
-    await page.clock.resume();
+    await resumeFrames(page);
   }
 }
 export async function runReturnLedgeSmoke(
@@ -448,7 +463,7 @@ export async function runReturnLedgeSmoke(
     throw error;
   } finally {
     await controls([]);
-    await page.clock.resume();
+    await resumeFrames(page);
     await pause(page);
   }
 }
@@ -470,9 +485,15 @@ export async function canvasTap(page, cdp, rect) {
 }
 export async function canvasGeometry(page, id, selected = 0) {
   const box = await page.locator("canvas").boundingBox();
+  const touch = await page.evaluate(
+    () =>
+      matchMedia("(pointer: coarse)").matches ||
+      innerWidth <= 760 ||
+      document.body.classList.contains("compact-layout"),
+  );
   return {
     ...stationLayout(box.width, box.height, id, selected),
-    opener: nearbyPromptRect(box.width, box.height),
+    opener: nearbyPromptRect(box.width, box.height, touch),
   };
 }
 export async function runCoreSmoke(page, base) {
@@ -496,6 +517,8 @@ export async function runCoreSmoke(page, base) {
     untouched.discovered.includes(0),
     "a new expedition must leave the unexplored mine hidden",
   );
+  await pause(page, false);
+  await page.locator("#game").focus();
   await page.keyboard.press("Enter");
   assert.ok(
     !(await page.evaluate(() => document.body.dataset.station)),
@@ -588,10 +611,7 @@ export async function runCoreSmoke(page, base) {
 export async function assertMobileLayout(page) {
   const boxes = await page.evaluate(() => {
     const selectors = [
-      "#flight-hud",
-      "#hud-fuel",
-      "#hud-hull",
-      "#hud-cargo",
+      "#pause",
       "#game canvas",
       '[data-dir="left"]',
       '[data-dir="up"]',
@@ -657,7 +677,7 @@ export async function runMobileStationChecks(page, cdp, path) {
         // Entry deliberately ignores input while saving. Keep the native tap
         // within a bounded simulation interval so protocol/rendering latency
         // cannot start the next autosave between touchDown and touchUp.
-        await page.locator("#pause").evaluate((button) => button.click());
+        await pause(page, false);
         await page.clock.runFor(200);
         await assertMobileLayout(page);
         layout = await canvasGeometry(page, "upgrades");
@@ -688,7 +708,7 @@ export async function runMobileStationChecks(page, cdp, path) {
         await canvasTap(page, cdp, layout.opener);
         await page.clock.runFor(80);
       } finally {
-        await page.clock.resume();
+        await resumeFrames(page);
       }
       await page.waitForFunction(
         () => document.body.dataset.station === "upgrades",
@@ -700,7 +720,7 @@ export async function runMobileStationChecks(page, cdp, path) {
         10000,
         "opening a building by touch must not also purchase",
       );
-      assert.equal(await page.locator("#money").innerText(), "$10,000");
+      assert.equal(await page.locator("#money").textContent(), "$10,000");
       layout = await canvasGeometry(page, "upgrades");
       if (selected) {
         assert.ok(
@@ -734,8 +754,8 @@ export async function runMobileStationChecks(page, cdp, path) {
       await canvasTap(page, cdp, layout.close);
       await page.waitForFunction(() => !document.body.dataset.station);
       await rendered(page);
-      await pause(page);
       await assertMobileLayout(page);
+      await pause(page);
       const closed = await savedState(page);
       assert.equal(
         closed.x,
@@ -764,6 +784,85 @@ export async function runMobileStationChecks(page, cdp, path) {
     }
   }
 }
+export async function runMobileInspectionChecks(page, cdp, path) {
+  for (const [label, viewport] of [
+    ["portrait", { width: 393, height: 851 }],
+    ["landscape", { width: 568, height: 320 }],
+  ]) {
+    await page.setViewportSize(viewport);
+    const state = fixture({ x: 12, y: 20.15, deepest: 170 });
+    for (let row = 18; row <= 20; row++)
+      for (let x = 10; x <= 14; x++) state.tiles[row * WIDTH + x] = 0;
+    state.tiles[20 * WIDTH + 13] = 3;
+    await pause(page);
+    await importState(page, state);
+    await pause(page);
+    await freezeFrames(page);
+    try {
+      await pause(page, false);
+      await page.clock.runFor(80);
+      const box = await page.locator("canvas").boundingBox();
+      const tile = box.height < 280 ? 32 : 40;
+      const point = {
+        x: box.width / 2 + tile,
+        y: box.height * 0.42 - 0.15 * tile,
+        width: 1,
+        height: 1,
+      };
+      const callout = nearbyPromptRect(box.width, box.height, true);
+      const controlsTop = await page
+        .locator(".touch")
+        .evaluate((element) => element.getBoundingClientRect().top);
+      assert.ok(
+        box.y + callout.y + callout.height <= controlsTop,
+        "phone inspector and station prompt must sit above driving controls",
+      );
+      const clip = {
+        x: Math.round(box.x + callout.x),
+        y: Math.round(box.y + callout.y),
+        width: Math.round(callout.width),
+        height: Math.round(callout.height),
+      };
+      const before = await page.screenshot({
+        clip,
+        style: ".message { visibility: hidden !important; }",
+      });
+      await canvasTap(page, cdp, point);
+      await page.clock.runFor(240);
+      assert.equal(
+        await page
+          .locator("body")
+          .evaluate((body) => body.classList.contains("world-callout")),
+        true,
+        "a visible ore inspection is active",
+      );
+      const after = await page.screenshot({
+        clip,
+        style: ".message { visibility: hidden !important; }",
+      });
+      assert.ok(
+        !before.equals(after),
+        "native ore inspection draws a readable label in the clear phone callout area",
+      );
+      assert.equal(
+        await page
+          .locator("#message")
+          .evaluate(
+            (element) => getComputedStyle(element.closest(".message")).opacity,
+          ),
+        "0",
+        "generic status toast yields to the game callout",
+      );
+      await page.screenshot({
+        path: `${path}-inspector-${label}.png`,
+        fullPage: true,
+      });
+    } finally {
+      await resumeFrames(page);
+    }
+  }
+}
+
 export async function runMobileSmoke(browser, base, path) {
   const context = await browser.newContext({
     viewport: { width: 393, height: 851 },
@@ -776,6 +875,18 @@ export async function runMobileSmoke(browser, base, path) {
   page.on("pageerror", (error) => errors.push(error.message));
   await ready(page, base);
   await assertMobileLayout(page);
+  await openTools(page);
+  assert.equal(await page.locator("#hud-fuel").isVisible(), true);
+  const menuBounds = await page.locator("#tools").boundingBox();
+  assert.ok(
+    menuBounds.x >= 0 &&
+      menuBounds.y >= 0 &&
+      menuBounds.x + menuBounds.width <= 394 &&
+      menuBounds.y + menuBounds.height <= 852,
+    "the single phone menu remains inside the viewport",
+  );
+  await page.screenshot({ path: `${path}-pause-menu.png`, fullPage: true });
+  await closeTools(page);
   await pause(page, false);
   const cdp = await context.newCDPSession(page),
     box = await page.locator('[data-dir="down"]').boundingBox();
@@ -797,19 +908,24 @@ export async function runMobileSmoke(browser, base, path) {
   });
   const mined = await snapshot(page);
   assert.ok(mined.inventory.length >= 1);
+  await pause(page, false);
   await page.screenshot({ path: `${path}-portrait.png`, fullPage: true });
   await page.setViewportSize({ width: 851, height: 393 });
   await page.waitForTimeout(250);
   await assertMobileLayout(page);
   await page.screenshot({ path: `${path}-landscape.png`, fullPage: true });
+  await openTools(page);
   await page.locator("#focus").click();
   assert.ok(
     await page
       .locator("body")
       .evaluate((body) => body.classList.contains("focus-mode")),
   );
+  await closeTools(page);
   await assertMobileLayout(page);
+  await openTools(page);
   await page.locator("#focus").click();
+  await closeTools(page);
   await page.waitForFunction(
     () =>
       !document.fullscreenElement &&
@@ -817,6 +933,7 @@ export async function runMobileSmoke(browser, base, path) {
   );
   await rendered(page);
   await runMobileStationChecks(page, cdp, path);
+  await runMobileInspectionChecks(page, cdp, path);
   assert.deepEqual(errors, []);
   return { context, page, cdp };
 }
