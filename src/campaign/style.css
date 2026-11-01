@@ -1238,7 +1238,10 @@ body[data-campaign-overlay] .campaign-context {
 body[data-campaign-overlay] .campaign-hud {
   opacity: 0.24;
 }
-body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
+body[data-campaign-busy="true"]
+  [data-command]:not([data-command="export"]):not(
+    [data-command="release-volatile"]
+  ) {
   pointer-events: none;
   opacity: 0.45;
 }
@@ -2029,5 +2032,173 @@ body[data-campaign-disabled="true"]:not([data-campaign-overlay])
   }
   body[data-campaign-disabled="true"] #campaign-resume {
     grid-column: 1 / -1;
+  }
+}
+
+/* The comet's short extraction window stays in the game, above the tool rail. */
+.campaign-extraction {
+  position: fixed;
+  z-index: 14;
+  left: 50%;
+  bottom: 118px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(560px, calc(100vw - 28px));
+  padding: 10px 12px;
+  border: 1px solid #91dad466;
+  border-radius: 5px;
+  background: #0a2029e8;
+  color: #d7f3e8;
+  box-shadow: 0 6px 24px #06121966;
+}
+.campaign-extraction > div {
+  flex: 1;
+  min-width: 0;
+}
+.campaign-extraction strong {
+  font-size: 13px;
+}
+.campaign-extraction p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #b4c9c4;
+}
+#campaign-extraction-time {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #f4d69c;
+}
+#campaign-release-drill {
+  min-width: 102px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-color: #f2c783;
+  background: #e6b665;
+  color: #162b31;
+  font-size: 13px;
+  font-weight: 700;
+}
+.campaign-extraction[data-mode="release"] {
+  border-color: #f4c77b;
+  background: #18313aef;
+}
+.campaign-extraction[data-mode="cold-warning"],
+.campaign-extraction[data-mode="cold"] {
+  border-color: #8edce8;
+}
+.precision-slot {
+  min-width: 106px;
+}
+#campaign-precision-button[aria-pressed="true"] {
+  color: #c2f2e9;
+  background: #59c9bd22;
+}
+body[data-campaign-overlay] .campaign-extraction,
+body[data-campaign-disabled="true"] .campaign-extraction {
+  visibility: hidden;
+}
+body[data-campaign-volatile="release"] .campaign-message,
+body[data-campaign-volatile="cutting"] .campaign-message {
+  opacity: 0;
+}
+.world-w02 .planet-symbol {
+  background: radial-gradient(
+    circle at 32% 28%,
+    #c4f1f0,
+    #4c9aa8 45%,
+    #143a50 76%
+  );
+  box-shadow:
+    inset -9px -9px 20px #061d39aa,
+    0 0 22px #62c3d833;
+}
+.travel-reason {
+  display: block;
+  margin-top: 8px;
+}
+@media (max-width: 1100px) {
+  .utility-slot {
+    display: none;
+  }
+}
+@media (pointer: coarse), (max-width: 760px) {
+  .campaign-extraction {
+    bottom: 164px;
+    gap: 8px;
+    padding: 9px;
+  }
+  .campaign-extraction strong {
+    font-size: 12px;
+  }
+  .campaign-extraction[data-mode="release"] {
+    flex-wrap: wrap;
+  }
+  .campaign-extraction[data-mode="release"] > div {
+    flex: 1 1 calc(100% - 62px);
+  }
+  #campaign-release-drill {
+    flex: 1 1 100%;
+  }
+  .precision-slot {
+    min-width: 100px;
+    padding: 1px 2px;
+  }
+  body[data-campaign-precision="true"] .campaign-toolbar {
+    gap: 6px;
+  }
+  body[data-campaign-precision="true"] .mobility-slot {
+    min-width: 44px;
+    width: 44px;
+    justify-content: center;
+  }
+  body[data-campaign-precision="true"] .mobility-slot > div {
+    display: none;
+  }
+}
+@media (max-height: 420px) and (orientation: landscape) {
+  .campaign-extraction,
+  .campaign-extraction[data-mode="release"] {
+    top: 52px;
+    left: auto;
+    right: 12px;
+    bottom: auto;
+    transform: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 8px;
+    width: min(230px, calc(50vw - 48px));
+    padding: 6px 9px;
+  }
+  .campaign-extraction > div,
+  .campaign-extraction[data-mode="release"] > div {
+    grid-column: 1 / -1;
+  }
+  .campaign-extraction p {
+    display: none;
+  }
+  #campaign-extraction-time {
+    grid-column: 1;
+    font-size: 16px;
+  }
+  #campaign-release-drill {
+    grid-column: 2;
+  }
+  body[data-campaign-world="W02"] .campaign-objective {
+    width: calc(50vw + 16px);
+    max-width: calc(50vw + 16px);
+  }
+  .precision-slot {
+    min-width: 94px;
+  }
+  body[data-campaign-precision="true"] .campaign-toolbar {
+    gap: 4px;
+  }
+  body[data-campaign-precision="true"]:not(.campaign-direction-buttons)
+    .campaign-toolbar {
+    max-width: calc(100vw - 24px);
   }
 }

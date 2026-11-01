@@ -10,8 +10,6 @@ import {
   HARDWARE_KEYS,
   HARDWARE_LEVELS,
   HARDWARE_PRICES,
-  W01_GEAR,
-  W01_MILESTONES,
   WORLD_CATALOG,
   formatCredits,
 } from "./config";
@@ -26,6 +24,7 @@ import {
 import { CampaignAudio } from "./audio";
 import { campaignMission } from "./missions";
 import { campaignSignal } from "./poi";
+import { W02_ORES } from "./frontier";
 import { CAMPAIGN_ORE_LEGEND, CAMPAIGN_HAZARD_LEGEND } from "../mineral-legend";
 import type { CampaignState, HardwareKey } from "./types";
 import "./style.css";
@@ -94,6 +93,18 @@ const HUD_ART = {
     "../../assets/campaign/generated/icons/icon-hull-64.png",
     import.meta.url,
   ).href,
+  thermal: new URL(
+    "../../assets/campaign/generated/w02-icons/w02-r1-icon-64.png",
+    import.meta.url,
+  ).href,
+  condenser: new URL(
+    "../../assets/campaign/generated/w02-icons/w02-r2-icon-64.png",
+    import.meta.url,
+  ).href,
+  preservation: new URL(
+    "../../assets/campaign/generated/w02-icons/w02-r3-icon-64.png",
+    import.meta.url,
+  ).href,
   core: new URL(
     "../../assets/campaign/generated/icons/icon-core-64.png",
     import.meta.url,
@@ -129,6 +140,7 @@ let previousMessage = "",
 let confirmation: (() => Promise<void> | void) | undefined;
 let confirmBusy = false;
 let confirmReturn: Overlay;
+let dockAfterConfirmation = false;
 let launchUntil = 0;
 let lastMined = 0,
   lastHull = 10;
@@ -136,11 +148,13 @@ let energyWarningBand = 0;
 let previousObjective = "";
 let resumeRequired = false;
 let restoring = false;
-let restoredAfterConfirmation = false;
+let menuAfterConfirmation = false;
 let lastSavedAt: number | undefined;
 let lastSaveWasAutomatic = true;
 let signalCampaign: Campaign | undefined;
 let signalRecovery = -1;
+let signalWorld = "";
+let legendWorld = "";
 const announcedSignalBands = new Map<string, number>();
 
 $("app").innerHTML = `
@@ -161,12 +175,15 @@ $("app").innerHTML = `
   <button id="campaign-menu-toggle" class="campaign-menu-button" aria-haspopup="dialog" aria-controls="campaign-menu" aria-label="Pause menu" title="Pause menu"></button>
   <section class="campaign-objective" aria-label="Stage mission">${hudIcon("mission")}<div class="objective-copy"><div class="mission-heading"><span id="campaign-objective-step">01 / 03</span><strong id="campaign-objective-title">Survey the wreck</strong></div><ul id="campaign-objective-progress" aria-label="Mission goals"></ul><div id="campaign-mission-signal" class="mission-signal" role="group" aria-label="Mission locator" hidden><span id="campaign-signal-direction" class="signal-direction" aria-hidden="true"></span><span id="campaign-signal-direction-label" class="sr-only"></span><strong id="campaign-signal-target"></strong><span id="campaign-signal-distance"></span><span id="campaign-signal-proximity" class="signal-proximity"></span></div><p id="campaign-objective-next"></p><small id="campaign-objective-reward"></small></div></section>
   <div id="campaign-message" class="campaign-message" role="status"></div>
+  <section id="campaign-extraction" class="campaign-extraction" role="group" aria-label="Extraction and environment" hidden><div><strong id="campaign-extraction-title"></strong><p id="campaign-extraction-copy"></p></div><span id="campaign-extraction-time" aria-hidden="true"></span><button data-command="release-volatile" id="campaign-release-drill">Release drill</button></section>
   <div id="campaign-danger" class="campaign-danger" role="alert" aria-atomic="true" hidden></div>
   <section id="campaign-disabled" class="campaign-disabled" aria-labelledby="campaign-disabled-title" hidden><h2 id="campaign-disabled-title">Rig disabled</h2><p id="campaign-disabled-copy"></p><button id="campaign-disabled-recover" data-command="recover" class="primary">Request recovery</button><button id="campaign-disabled-dock" data-command="disabled-dock" hidden>Lander services</button><button id="campaign-disabled-menu" type="button">Pause / save</button></section>
   <button id="campaign-dock-toggle" class="campaign-context" hidden><span class="interaction-key" aria-hidden="true">E</span><strong>Dock and trade</strong></button>
   <div class="campaign-toolbar" aria-label="Equipped attachments">
     <div class="tool-slot drill-slot" title="Active drill">${hudIcon("drill")}<div><span>DRILL</span><strong id="campaign-drill-name">Salvaged auger</strong></div></div>
     <button id="campaign-feet-button" class="tool-slot mobility-slot" data-dir="mobility" aria-label="Hold to deploy anchoring feet">${hudIcon("feet")}<div><span>MOBILITY</span><strong id="campaign-mobility-name">No attachment</strong></div></button>
+    <button id="campaign-precision-button" class="tool-slot precision-slot" data-dir="primary" aria-label="Hold precision extraction" hidden>${hudIcon("preservation")}<div><span id="campaign-precision-key">HOLD Q</span><strong>Precision</strong></div></button>
+    <div class="tool-slot utility-slot" title="Automatic drilling energy recovery" hidden>${hudIcon("condenser")}<div><span>UTILITY</span><strong id="campaign-utility-name">Condenser active</strong></div></div>
     <div class="tool-slot processor-slot" title="Processor">${hudIcon("rack")}<div><span>PROCESSOR</span><strong id="campaign-processor-name">Open cargo bay</strong></div></div>
     <button id="campaign-map-toggle" class="map-slot" aria-label="Open star map" title="Star map">${hudIcon("map")}</button>
   </div>
@@ -174,9 +191,9 @@ $("app").innerHTML = `
   <div id="campaign-launch" class="campaign-launch" hidden><span class="eyebrow">FRONTIER CERTIFICATE SECURED</span><h1>Course charted.</h1><p>Ice comet / Fractured moon</p></div>
 </main>
 <dialog id="campaign-welcome" class="campaign-welcome" aria-labelledby="campaign-welcome-title"><div class="title-screen"><p class="eyebrow">THE FRONTIER</p><h1 id="campaign-welcome-title">MOTHERLOAD</h1><p class="title-location">BROKEN ASTEROID <span>600 m</span></p><p class="title-mission">Recover the core. Restore the lander.</p><button id="campaign-start" class="primary">Deploy rig <span aria-hidden="true">›</span></button><p class="welcome-hint">Touch: press to place your joystick, then drag.<br>Up flies · Down drills · Mouse or Arrows / WASD</p></div></dialog>
-<dialog id="campaign-menu" class="campaign-panel" aria-labelledby="campaign-menu-title"><header><div><p class="eyebrow">PILOT CONSOLE</p><h1 id="campaign-menu-title">Paused</h1></div><div class="menu-heading-actions"><button id="campaign-menu-recover" data-command="recover" class="primary" hidden>Request recovery</button><button id="campaign-menu-dock" data-command="disabled-dock" hidden>Lander services</button><button id="campaign-resume" data-close="menu" class="return-button">Resume expedition</button></div><p id="campaign-pause-conditions" class="campaign-pause-conditions" aria-label="Vehicle conditions"></p></header><p id="campaign-menu-recovery-preview" class="menu-recovery-preview" hidden></p><div id="campaign-storage-notice" class="campaign-notice" hidden role="alert"></div><div class="pause-grid"><section><h2>Checkpoint</h2><p id="campaign-save-status" role="status">Preparing checkpoint…</p><p id="campaign-autosave-status" role="status">Progress saves in this browser only.</p><p class="muted">Load replaces this session with the latest saved checkpoint, including autosaves. Restored expeditions wait for Resume.</p><div class="action-grid"><button data-command="save">Save checkpoint</button><button data-command="load">Load latest autosave</button><button data-command="export">Export campaign</button><button data-command="import">Import campaign</button><button data-command="restore">Restore backup</button></div><input id="campaign-import" type="file" accept="application/json,.json" hidden></section><section><h2>Flight record</h2><div id="campaign-record"></div><button data-command="map">Star map</button></section><section><h2>Systems</h2><button id="campaign-sound">Enable sound</button><label>Effects <input type="range" data-volume="effects" min="0" max="100"></label><label>Ambience <input type="range" data-volume="ambience" min="0" max="100"></label><label>Music <input type="range" data-volume="music" min="0" max="100"></label><label class="check"><input type="checkbox" data-setting="reducedMotion"> Reduced motion</label><label class="check"><input type="checkbox" data-setting="highContrast"> High-contrast edges</label><label class="check"><input type="checkbox" data-setting="largeText"> Larger text</label></section><section><h2>Pilot controls</h2><p class="muted">Touch: press the world to place your joystick center, then drag from it to steer. Up flies; down drills. Return to center for neutral; lift to release.</p><p class="muted">Mouse: hold or drag toward your direction of travel. Hold above the rig to fly; below it to drill. Release to stop steering. Short taps inspect minerals or enter the nearby lander.</p><p class="muted">Arrows / WASD drive and drill; Up flies. Side drilling needs a ledge. A started cut finishes before ascent.</p><label class="check"><input type="checkbox" data-setting="showDirectionButtons"> Show direction buttons (fallback)</label><label class="check"><input type="checkbox" data-setting="drillToggle"> Toggle downward drilling</label><label class="check"><input type="checkbox" data-setting="braceToggle"> Toggle anchoring feet</label><details><summary>Keyboard bindings</summary><div id="campaign-bindings"></div><p id="campaign-remap-status" role="status"></p></details><p class="muted">Controller: left stick / D-pad drive, A thrust, X mobility, B / Y utilities, LB interact, RB map, Start pause.</p></section><section class="recovery-section"><h2>Recovery</h2><button data-command="recover">Request recovery</button><p class="muted">Carried cargo and relics are lost. Mission objects return to their marked sources. The recovery fee never creates debt.</p><button data-command="new">Start a new campaign</button></section></div></dialog>
-<dialog id="campaign-dock" class="campaign-panel dock-panel" aria-labelledby="campaign-dock-title"><header><div><p class="eyebrow">LANDER TERMINAL / W01</p><h1 id="campaign-dock-title">The restored lander</h1></div><div class="dock-heading-right"><strong id="campaign-dock-credits">20 CR</strong><button data-close="dock" class="return-button">Undock</button></div></header><nav aria-label="Lander services"><button data-tab="service">Service</button><button data-tab="hardware">Hardware</button><button data-tab="tools">Attachments</button><button data-tab="lander">Lander</button><button data-tab="cargo">Cargo</button></nav><div id="campaign-dock-content"></div><p id="campaign-dock-message" class="dock-feedback" role="status"></p></dialog>
-<dialog id="campaign-map" class="campaign-panel map-panel" aria-labelledby="campaign-map-title"><header><div><p class="eyebrow">NAVIGATION ARCHIVE</p><h1 id="campaign-map-title">Navigation</h1></div><button data-close="map" class="return-button">Return to mine</button></header><p id="campaign-map-copy"></p><div id="campaign-map-worlds" class="world-cards"></div><p class="muted">Your rig, owned attachments, banked objectives and excavated routes persist. The next campaign chapter is under construction.</p></dialog>
+<dialog id="campaign-menu" class="campaign-panel" aria-labelledby="campaign-menu-title"><header><div><p class="eyebrow">PILOT CONSOLE</p><h1 id="campaign-menu-title">Paused</h1></div><div class="menu-heading-actions"><button id="campaign-menu-recover" data-command="recover" class="primary" hidden>Request recovery</button><button id="campaign-menu-dock" data-command="disabled-dock" hidden>Lander services</button><button id="campaign-resume" data-close="menu" class="return-button">Resume expedition</button></div><p id="campaign-pause-conditions" class="campaign-pause-conditions" aria-label="Vehicle conditions"></p></header><p id="campaign-menu-recovery-preview" class="menu-recovery-preview" hidden></p><div id="campaign-storage-notice" class="campaign-notice" hidden role="alert"></div><div class="pause-grid"><section><h2>Checkpoint</h2><p id="campaign-save-status" role="status">Preparing checkpoint…</p><p id="campaign-autosave-status" role="status">Progress saves in this browser only.</p><p class="muted">Load replaces this session with the latest saved checkpoint, including autosaves. Restored expeditions wait for Resume.</p><div class="action-grid"><button data-command="save">Save checkpoint</button><button data-command="load">Load latest autosave</button><button data-command="export">Export campaign</button><button data-command="import">Import campaign</button><button data-command="restore">Restore backup</button></div><input id="campaign-import" type="file" accept="application/json,.json" hidden></section><section><h2>Flight record</h2><div id="campaign-record"></div><button data-command="map">Star map</button></section><section><h2>Systems</h2><button id="campaign-sound">Enable sound</button><label>Effects <input type="range" data-volume="effects" min="0" max="100"></label><label>Ambience <input type="range" data-volume="ambience" min="0" max="100"></label><label>Music <input type="range" data-volume="music" min="0" max="100"></label><label class="check"><input type="checkbox" data-setting="reducedMotion"> Reduced motion</label><label class="check"><input type="checkbox" data-setting="highContrast"> High-contrast edges</label><label class="check"><input type="checkbox" data-setting="largeText"> Larger text</label></section><section><h2>Pilot controls</h2><p class="muted">Touch: press the world to place your joystick center, then drag from it to steer. Up flies; down drills. Return to center for neutral; lift to release.</p><p class="muted">Mouse: hold or drag toward your direction of travel. Hold above the rig to fly; below it to drill. Release to stop steering. Short taps inspect minerals or enter the nearby lander.</p><p class="muted">Arrows / WASD drive and drill; Up flies. Side drilling needs a ledge. A started cut finishes before ascent. On the Ice comet, release drilling when a volatile cut completes to preserve it. With drilling toggle, press Down again or use Release drill. Hold the primary utility action (Q by default) while beginning a cut to use an equipped preservation chamber.</p><label class="check"><input type="checkbox" data-setting="showDirectionButtons"> Show direction buttons (fallback)</label><label class="check"><input type="checkbox" data-setting="drillToggle"> Toggle downward drilling</label><label class="check"><input type="checkbox" data-setting="braceToggle"> Toggle anchoring feet</label><details><summary>Keyboard bindings</summary><div id="campaign-bindings"></div><p id="campaign-remap-status" role="status"></p></details><p class="muted">Controller: left stick / D-pad drive, A thrust, X mobility, B / Y utilities, LB interact, RB map, Start pause.</p></section><section class="recovery-section"><h2>Recovery</h2><button data-command="recover">Request recovery</button><p class="muted">Carried cargo and relics are lost. Mission objects return to their marked sources. The recovery fee never creates debt.</p><button data-command="new">Start a new campaign</button></section></div></dialog>
+<dialog id="campaign-dock" class="campaign-panel dock-panel" aria-labelledby="campaign-dock-title"><header><div><p id="campaign-dock-location" class="eyebrow">LANDER TERMINAL / W01</p><h1 id="campaign-dock-title">The restored lander</h1></div><div class="dock-heading-right"><strong id="campaign-dock-credits">20 CR</strong><button data-close="dock" class="return-button">Undock</button></div></header><nav aria-label="Lander services"><button data-tab="service">Service</button><button data-tab="hardware">Hardware</button><button data-tab="tools">Attachments</button><button data-tab="lander">Lander</button><button data-tab="cargo">Cargo</button><button id="campaign-dock-navigation" data-command="map" hidden>Navigation</button></nav><div id="campaign-dock-content"></div><p id="campaign-dock-message" class="dock-feedback" role="status"></p></dialog>
+<dialog id="campaign-map" class="campaign-panel map-panel" aria-labelledby="campaign-map-title"><header><div><p class="eyebrow">NAVIGATION ARCHIVE</p><h1 id="campaign-map-title">Navigation</h1></div><button data-close="map" class="return-button">Return to mine</button></header><p id="campaign-map-copy"></p><div id="campaign-map-worlds" class="world-cards"></div><p class="muted">Travel banks carried cargo and mission objects before departure. Your rig, credits, owned attachments and excavated routes persist. Travel does not refuel or repair.</p></dialog>
 <dialog id="campaign-confirm" class="campaign-confirm" aria-labelledby="campaign-confirm-title" aria-describedby="campaign-confirm-copy"><p class="eyebrow">EXPEDITION DECISION</p><h2 id="campaign-confirm-title"></h2><p id="campaign-confirm-copy"></p><p id="campaign-confirm-error" role="alert"></p><div><button id="campaign-confirm-cancel">Cancel</button><button id="campaign-confirm-accept" class="primary">Confirm</button></div></dialog>`;
 
 $("campaign-menu-toggle").innerHTML =
@@ -188,33 +205,75 @@ cargoSection.innerHTML =
 document.querySelector(".pause-grid")!.append(cargoSection);
 const legendSection = document.createElement("section");
 legendSection.innerHTML =
-  '<details id="campaign-legend"><summary>Ore and hazard legend</summary><ul class="campaign-legend-list">' +
-  CAMPAIGN_ORE_LEGEND.map(
-    (item) =>
-      '<li><span class="legend-glyph" aria-hidden="true">' +
-      item.glyph +
-      "</span><div><strong>" +
-      escape(item.name) +
-      "</strong><small>" +
-      escape(item.pattern) +
-      " · " +
-      money(item.value) +
-      " · " +
-      item.bulk +
-      " bulk</small></div></li>",
-  ).join("") +
-  CAMPAIGN_HAZARD_LEGEND.map(
-    (item) =>
-      '<li><span class="legend-glyph" aria-hidden="true">' +
-      item.glyph +
-      "</span><div><strong>" +
-      escape(item.name) +
-      "</strong><small>" +
-      escape(item.description) +
-      "</small></div></li>",
-  ).join("") +
-  "</ul></details>";
+  '<details id="campaign-legend"><summary>Ore and hazard legend</summary><ul id="campaign-legend-list" class="campaign-legend-list"></ul></details>';
 document.querySelector(".pause-grid")!.append(legendSection);
+function renderLegend() {
+  const comet = campaign.state.currentWorld === "W02";
+  const patterns = [
+    "Low chipped cluster",
+    "Paired elongated facets",
+    "Three-point radial crystal · volatile",
+    "Hollow geometric crown · volatile",
+  ];
+  const ores = comet
+    ? W02_ORES.map((item, index) => ({
+        ...item,
+        glyph: ["◒", "◈", "✦", "⬡"][index]!,
+        pattern: patterns[index]!,
+      }))
+    : CAMPAIGN_ORE_LEGEND;
+  const hazards = comet
+    ? [
+        {
+          glyph: "≈",
+          name: "Cold pocket",
+          description:
+            "Mist warns before a four-second acceleration reduction. Move clear during the warning.",
+        },
+        {
+          glyph: "↑",
+          name: "Ice vent",
+          description:
+            "A jet deals 6 hull on contact, at most once every three seconds. Keep a retreat route.",
+        },
+        {
+          glyph: "◇",
+          name: "Volatile extraction",
+          description:
+            "Release drilling within 0.75 seconds of completion to preserve the crystal. Continuing ruptures it. Mission samples have no sale value.",
+        },
+      ]
+    : CAMPAIGN_HAZARD_LEGEND;
+  $("campaign-legend-list").innerHTML =
+    ores
+      .map(
+        (item) =>
+          '<li><span class="legend-glyph" aria-hidden="true">' +
+          item.glyph +
+          "</span><div><strong>" +
+          escape(item.name) +
+          "</strong><small>" +
+          escape(item.pattern) +
+          " · " +
+          money(item.value) +
+          " · " +
+          item.bulk +
+          " bulk</small></div></li>",
+      )
+      .join("") +
+    hazards
+      .map(
+        (item) =>
+          '<li><span class="legend-glyph" aria-hidden="true">' +
+          item.glyph +
+          "</span><div><strong>" +
+          escape(item.name) +
+          "</strong><small>" +
+          escape(item.description) +
+          "</small></div></li>",
+      )
+      .join("");
+}
 function syncMenuHeaderInset() {
   const height = Math.ceil(
     document.querySelector("#campaign-menu > header")!.getBoundingClientRect()
@@ -378,10 +437,12 @@ function syncMissionSignal(objectiveNext: string) {
   const signal = campaignSignal(campaign);
   if (
     signalCampaign !== campaign ||
-    signalRecovery !== campaign.state.stats.recoveries
+    signalRecovery !== campaign.state.stats.recoveries ||
+    signalWorld !== campaign.state.currentWorld
   ) {
     signalCampaign = campaign;
     signalRecovery = campaign.state.stats.recoveries;
+    signalWorld = campaign.state.currentWorld;
     announcedSignalBands.clear();
   }
   setHidden("campaign-mission-signal", !signal);
@@ -552,12 +613,16 @@ function renderMenu() {
     "</dd><dt>Deepest discovery</dt><dd>" +
     s.stats.largestDepth +
     " m</dd><dt>Milestones</dt><dd>" +
-    s.progress.completed.length +
-    " / 3</dd><dt>Stored cargo</dt><dd>" +
+    campaign.completedMilestones.length +
+    " / 3</dd><dt>Destination</dt><dd>" +
+    escape(worldName(s.currentWorld)) +
+    "</dd><dt>Stored cargo</dt><dd>" +
     campaign.warehouse.length +
     " packages</dd><dt>Banked mission objects</dt><dd>" +
     campaign.world.missions.filter((item) => item.status === "banked").length +
-    " / 3</dd></dl>";
+    " / " +
+    campaign.world.missions.length +
+    "</dd></dl>";
   document
     .querySelectorAll<HTMLButtonElement>('[data-command="restore"]')
     .forEach((button) => {
@@ -565,18 +630,100 @@ function renderMenu() {
     });
   renderBindings();
 }
-function actionKey(action: "mobility" | "interact") {
+function actionKey(action: "mobility" | "interact" | "primary") {
   if (matchMedia("(pointer: coarse)").matches || innerWidth <= 760)
-    return action === "mobility" && !preferences.braceToggle ? "Hold" : "Tap";
+    return action === "primary" ||
+      (action === "mobility" && !preferences.braceToggle)
+      ? "Hold"
+      : "Tap";
   const controller = navigator.getGamepads?.().find((pad) => pad?.connected);
   if (controller)
     return controller.mapping === "standard"
       ? action === "mobility"
         ? "X"
-        : "LB"
+        : action === "primary"
+          ? "B"
+          : "LB"
       : "";
   const binding = preferences.keys[action][0];
   return binding ? keyLabel(binding) : "";
+}
+function worldName(id: string) {
+  return WORLD_CATALOG.find((world) => world.id === id)?.name ?? id;
+}
+function gearArt(id: string): keyof typeof HUD_ART {
+  const icons: Record<string, keyof typeof HUD_ART> = {
+    "W01-R1": "drill",
+    "W01-R2": "feet",
+    "W01-R3": "rack",
+    "W02-R1": "thermal",
+    "W02-R2": "condenser",
+    "W02-R3": "preservation",
+  };
+  return icons[id] ?? "core";
+}
+function syncExtractionCue() {
+  const pending = campaign.volatileWindow;
+  const target = campaign.drillTarget;
+  const cuttingVolatile =
+    target &&
+    campaign.world.packages.some(
+      (item) =>
+        item.status === "deposit" &&
+        item.tags.includes("volatile") &&
+        Math.floor(item.x) === target.x &&
+        Math.floor(item.y) === target.y,
+    );
+  const climate = campaign.coldStatus;
+  let title = "",
+    copy = "",
+    time = "",
+    mode = "";
+  if (pending) {
+    title = "Crystal complete · release drill now";
+    copy =
+      "Return the joystick to centre, lift, release the drill key or use Release drill.";
+    time = pending.remaining.toFixed(1) + " s";
+    mode = "release";
+  } else if (cuttingVolatile) {
+    title = campaign.precisionActive
+      ? "Precision cut · preserve the crystal"
+      : "Volatile ice · watch for completion";
+    copy =
+      "Release drilling when the cut completes. Continuing for 0.75 s ruptures the crystal.";
+    mode = "cutting";
+  } else if (
+    document.body.dataset.campaignDanger !== "true" &&
+    climate?.warning
+  ) {
+    title = "Cold mist · move clear";
+    copy = "A cold pocket is about to slow acceleration.";
+    time = climate.warning.toFixed(1) + " s";
+    mode = "cold-warning";
+  } else if (
+    document.body.dataset.campaignDanger !== "true" &&
+    climate &&
+    climate.coldRemaining > 0
+  ) {
+    title = "Cold-soaked · reduced acceleration";
+    copy = "Keep your return route clear while the rig warms up.";
+    time = climate.coldRemaining.toFixed(1) + " s";
+    mode = "cold";
+  }
+  const visible = Boolean(title) && !overlay && !confirmation && !rigDisabled();
+  setHidden("campaign-extraction", !visible);
+  setHidden("campaign-release-drill", !pending);
+  setText("campaign-extraction-title", title);
+  setText("campaign-extraction-copy", copy);
+  setText("campaign-extraction-time", time);
+  setHidden("campaign-extraction-time", !time);
+  const cue = $("campaign-extraction");
+  if (cue.dataset.mode !== mode) cue.dataset.mode = mode;
+  setBodyData("campaignExtraction", String(visible));
+  setBodyData(
+    "campaignVolatile",
+    pending ? "release" : cuttingVolatile ? "cutting" : "none",
+  );
 }
 function actionCaption(action: "mobility" | "interact") {
   const label = action === "mobility" ? "Mobility" : "Dock and trade";
@@ -587,6 +734,12 @@ function syncHUD() {
   syncSafety();
   const s = campaign.state,
     v = s.vehicle;
+  setBodyData("campaignWorld", s.currentWorld);
+  if (legendWorld !== s.currentWorld) {
+    legendWorld = s.currentWorld;
+    renderLegend();
+  }
+  syncExtractionCue();
   setText("campaign-energy", v.energy.toFixed(1) + " / " + campaign.maxEnergy);
   setText(
     "campaign-hull",
@@ -650,15 +803,24 @@ function syncHUD() {
   );
   setText(
     "campaign-dock-title",
-    s.progress.completed.includes(3) ? "The restored lander" : "Salvage lander",
+    s.currentWorld === "W02"
+      ? "Comet refuge"
+      : s.progress.completed.includes(3)
+        ? "The restored lander"
+        : "Salvage lander",
   );
+  setText("campaign-dock-location", "LANDER TERMINAL / " + s.currentWorld);
   setText(
     "campaign-drill-name",
     s.equipped.drill
-      ? (W01_GEAR.find((item) => item.id === s.equipped.drill)?.name ??
-          "Steel spindle")
+      ? (campaign.gearDefinitions.find((item) => item.id === s.equipped.drill)
+          ?.name ?? "Steel spindle")
       : "Steel spindle",
   );
+  const drillIcon =
+    document.querySelector<HTMLImageElement>(".drill-slot > img")!;
+  const drillArt = HUD_ART[gearArt(s.equipped.drill ?? "W01-R1")];
+  if (drillIcon.getAttribute("src") !== drillArt) drillIcon.src = drillArt;
   setText(
     "campaign-mobility-name",
     s.equipped.mobility
@@ -669,7 +831,11 @@ function syncHUD() {
   );
   setText(
     "campaign-processor-name",
-    s.equipped.processor ? "External cargo rack" : "Open cargo bay",
+    s.equipped.processor
+      ? (campaign.gearDefinitions.find(
+          (item) => item.id === s.equipped.processor,
+        )?.name ?? "Processor")
+      : "Open cargo bay",
   );
   $<HTMLButtonElement>("campaign-feet-button").disabled =
     !s.equipped.mobility || Boolean(overlay);
@@ -679,7 +845,26 @@ function syncHUD() {
   );
   $("campaign-feet-button").hidden = !s.equipped.mobility;
   document.querySelector<HTMLElement>(".processor-slot")!.hidden =
-    !s.equipped.processor;
+    !s.equipped.processor || s.equipped.processor === "W02-R3";
+  setHidden("campaign-precision-button", s.equipped.processor !== "W02-R3");
+  setBodyData("campaignPrecision", String(s.equipped.processor === "W02-R3"));
+  const precisionKey = actionKey("primary");
+  setText(
+    "campaign-precision-key",
+    precisionKey === "Hold" ? "HOLD" : "HOLD " + precisionKey,
+  );
+  $("campaign-precision-button").setAttribute(
+    "aria-pressed",
+    String(campaign.precisionActive),
+  );
+  $("campaign-precision-button").setAttribute(
+    "aria-label",
+    "Hold precision extraction · " + actionKey("primary"),
+  );
+  $<HTMLButtonElement>("campaign-precision-button").disabled = Boolean(overlay);
+  document.querySelector<HTMLElement>(".utility-slot")!.hidden =
+    !s.equipped.utilities.includes("W02-R2");
+  setHidden("campaign-dock-navigation", !s.progress.completed.includes(2));
   $<HTMLButtonElement>("campaign-map-toggle").disabled =
     !s.progress.completed.includes(2) || Boolean(overlay);
   document.body.dataset.campaignPaused = String(paused());
@@ -839,13 +1024,13 @@ function renderDock() {
         const rank = s.hardware[key],
           next = rank + 1,
           price = HARDWARE_PRICES[key][next],
-          unlocked = s.progress.completed.includes(1),
-          maxed = rank >= 1;
+          unlocked = campaign.hardwareUnlocked,
+          maxed = rank >= campaign.hardwareCap;
         const preview =
           HARDWARE_LEVELS[key][rank] +
           units[key] +
           (maxed
-            ? " · rank 1 installed"
+            ? " · rank " + rank + " installed"
             : " → " + HARDWARE_LEVELS[key][next] + units[key]);
         const afterService = s.credits - (price ?? 0) - serviceReserve(key);
         const reserve = Math.max(0, afterService);
@@ -874,7 +1059,7 @@ function renderDock() {
           '<span class="eyebrow">' +
           key.toUpperCase() +
           " · " +
-          (maxed ? "OWNED" : "RANK 1") +
+          (maxed ? "OWNED" : "RANK " + next) +
           "</span><h3>" +
           labels[key] +
           '</h3><p class="upgrade-preview">' +
@@ -889,7 +1074,9 @@ function renderDock() {
                 : "Cut faster and use less energy during each excavation.") +
           "</p><small>" +
           (maxed
-            ? "Next rank: land on the comet or moon."
+            ? campaign.hardwareCap === 1
+              ? "Next rank: land on the Ice comet."
+              : "Further hardware ranks open on later destinations."
             : !unlocked
               ? "Blueprint: complete Survey the wreck."
               : (s.credits < (price ?? 0)
@@ -910,111 +1097,142 @@ function renderDock() {
       "</div>";
   } else if (dockTab === "tools") {
     html =
-      '<h2>Attachment mounts</h2><p class="muted">Change loadout at dock. Owned modules stay yours.</p><div class="equipment-cards">' +
-      W01_GEAR.map((gear) => {
-        const owned = s.ownedGear.includes(gear.id),
-          equipped = Object.values(s.equipped).some(
-            (item) =>
-              item === gear.id ||
-              (Array.isArray(item) && item.includes(gear.id)),
-          ),
-          available =
-            !gear.milestone || s.progress.completed.includes(gear.milestone),
-          prerequisite = !gear.requires || s.ownedGear.includes(gear.requires);
-        return (
-          "<article>" +
-          hudIcon(
-            gear.id === "W01-R1"
-              ? "drill"
-              : gear.id === "W01-R2"
-                ? "feet"
-                : "rack",
-            "part-icon",
-          ) +
-          '<span class="eyebrow">' +
-          gear.slot.toUpperCase() +
-          " · " +
-          (owned ? (equipped ? "EQUIPPED" : "OWNED") : "LOCAL TECHNOLOGY") +
-          "</span><h3>" +
-          escape(gear.name) +
-          "</h3><p>" +
-          escape(gear.description) +
-          "</p><small>" +
-          (!available
-            ? "Unlock: complete M" + gear.milestone + "."
-            : !prerequisite
-              ? "Requires ownership of the preceding attachment."
-              : "Slot: " + gear.slot + ". Switching is free at dock.") +
-          "</small>" +
-          (owned
-            ? button(
-                "gear-toggle-" + gear.id,
-                equipped ? "Unequip" : "Equip",
-                false,
-                !equipped,
-              )
-            : button(
-                "gear-buy-" + gear.id,
-                "Purchase · " + money(gear.price),
-                !available || !prerequisite || s.credits < gear.price,
-                available && prerequisite && s.credits >= gear.price,
-              )) +
-          "</article>"
-        );
-      }).join("") +
+      '<h2>Attachment mounts</h2><p class="muted">Change loadout at dock. Owned modules stay yours.' +
+      (s.currentWorld === "W02"
+        ? " Utility mounts: " +
+          s.equipped.utilities.length +
+          "/2. The condenser works automatically; hold Precision while starting a volatile cut for preservation-chamber benefits."
+        : "") +
+      '</p><div class="equipment-cards">' +
+      campaign.gearDefinitions
+        .filter(
+          (gear) =>
+            gear.id.startsWith(s.currentWorld + "-") ||
+            s.ownedGear.includes(gear.id),
+        )
+        .map((gear) => {
+          const owned = s.ownedGear.includes(gear.id),
+            equipped = Object.values(s.equipped).some(
+              (item) =>
+                item === gear.id ||
+                (Array.isArray(item) && item.includes(gear.id)),
+            ),
+            available =
+              owned ||
+              !gear.milestone ||
+              campaign.completedMilestones.includes(gear.milestone),
+            prerequisite =
+              !gear.requires || s.ownedGear.includes(gear.requires);
+          return (
+            "<article>" +
+            hudIcon(gearArt(gear.id), "part-icon") +
+            '<span class="eyebrow">' +
+            gear.slot.toUpperCase() +
+            " · " +
+            (owned ? (equipped ? "EQUIPPED" : "OWNED") : "LOCAL TECHNOLOGY") +
+            "</span><h3>" +
+            escape(gear.name) +
+            "</h3><p>" +
+            escape(gear.description) +
+            "</p><small>" +
+            (!available
+              ? "Unlock: complete M" + gear.milestone + "."
+              : !prerequisite
+                ? "Requires ownership of the preceding attachment."
+                : "Slot: " +
+                  gear.slot +
+                  ". Switching is free at dock." +
+                  (!owned && s.credits < gear.price
+                    ? " Need " + money(gear.price - s.credits) + " more."
+                    : "")) +
+            "</small>" +
+            (gear.id === "W02-R3"
+              ? '<small class="precision-instruction">' +
+                (actionKey("primary") === "Hold"
+                  ? "Hold Precision"
+                  : "Hold " + escape(actionKey("primary")) + " / Precision") +
+                " while starting a volatile cut. Release drilling at completion to preserve it.</small>"
+              : "") +
+            (owned
+              ? button(
+                  "gear-toggle-" + gear.id,
+                  equipped ? "Unequip" : "Equip",
+                  false,
+                  !equipped,
+                )
+              : button(
+                  "gear-buy-" + gear.id,
+                  "Purchase · " + money(gear.price),
+                  !available || !prerequisite || s.credits < gear.price,
+                  available && prerequisite && s.credits >= gear.price,
+                )) +
+            "</article>"
+          );
+        })
+        .join("") +
       "</div>";
   } else if (dockTab === "lander") {
     html =
-      '<h2>Lander restoration</h2><div class="milestone-cards">' +
-      W01_MILESTONES.map((milestone) => {
-        const complete = s.progress.completed.includes(milestone.id),
-          current = campaign.currentMilestone?.id === milestone.id;
-        return (
-          '<article class="' +
-          (complete ? "complete" : current ? "current" : "locked") +
-          '"><span class="milestone-number">0' +
-          milestone.id +
-          '</span><div><span class="eyebrow">' +
-          (complete
-            ? "CONSTRUCTION COMPLETE"
-            : current
-              ? "CURRENT PROJECT"
-              : "NEXT PROJECT") +
-          "</span><h3>" +
-          milestone.name +
-          "</h3><p>" +
-          milestone.description +
-          "</p>" +
-          (complete
-            ? '<strong class="complete-label">✓ Installed and banked</strong>'
-            : current
-              ? "<p>" +
-                (campaign.missionReady
-                  ? "Objective discoveries are safely banked."
-                  : "Complete and bank the required discoveries first.") +
-                "</p>" +
-                button(
-                  "milestone",
-                  "Fund construction · " + money(milestone.fee),
-                  !campaign.missionReady || s.credits < milestone.fee,
-                  campaign.missionReady && s.credits >= milestone.fee,
-                )
-              : "<small>Complete the preceding project to begin.</small>") +
-          "</div></article>"
-        );
-      }).join("") +
+      "<h2>" +
+      (s.currentWorld === "W02"
+        ? "Comet condenser project"
+        : "Lander restoration") +
+      '</h2><div class="milestone-cards">' +
+      campaign.milestoneDefinitions
+        .map((milestone) => {
+          const complete = campaign.completedMilestones.includes(milestone.id),
+            current = campaign.currentMilestone?.id === milestone.id;
+          return (
+            '<article class="' +
+            (complete ? "complete" : current ? "current" : "locked") +
+            '"><span class="milestone-number">0' +
+            milestone.id +
+            '</span><div><span class="eyebrow">' +
+            (complete
+              ? "CONSTRUCTION COMPLETE"
+              : current
+                ? "CURRENT PROJECT"
+                : "NEXT PROJECT") +
+            "</span><h3>" +
+            milestone.name +
+            "</h3><p>" +
+            milestone.description +
+            "</p>" +
+            (complete
+              ? '<strong class="complete-label">✓ Installed and banked</strong>'
+              : current
+                ? "<p>" +
+                  (campaign.missionReady
+                    ? "Objective discoveries are safely banked."
+                    : "Complete and bank the required discoveries first.") +
+                  "</p>" +
+                  button(
+                    "milestone",
+                    "Fund construction · " + money(milestone.fee),
+                    !campaign.missionReady || s.credits < milestone.fee,
+                    campaign.missionReady && s.credits >= milestone.fee,
+                  )
+                : "<small>Complete the preceding project to begin.</small>") +
+            "</div></article>"
+          );
+        })
+        .join("") +
       "</div>" +
-      (s.progress.completed.includes(3)
-        ? '<div class="departure-card"><h3>The lander is ready.</h3><p>Your next destinations are the Ice comet and Fractured moon. Launch to bank your Frontier departure.</p>' +
-          button(
-            "depart",
-            s.progress.departed
-              ? "Departure recorded · view star map"
-              : "Launch the restored lander",
-            false,
-            true,
-          ) +
-          "</div>"
+      (campaign.completedMilestones.includes(3)
+        ? s.currentWorld === "W02"
+          ? '<div class="departure-card"><h3>Planetary certificate secured.</h3><p>The condenser is complete. Iron planet is charted for a later chapter; your established asteroid and comet routes remain available.</p>' +
+            button("map", "Open navigation", false, true) +
+            "</div>"
+          : '<div class="departure-card"><h3>The lander is ready.</h3><p>Record your Frontier departure to travel to the Ice comet. The Fractured moon is charted for a later chapter.</p>' +
+            button(
+              "depart",
+              s.progress.departed
+                ? "Departure recorded · view star map"
+                : "Launch the restored lander",
+              false,
+              true,
+            ) +
+            "</div>"
         : "");
   } else {
     const carriedMissions = campaign.world.missions.filter(
@@ -1070,39 +1288,84 @@ function renderDock() {
     presentationMessage(campaign.message) || "Lander uplink ready.";
 }
 function renderMap() {
-  const complete = campaign.state.progress.completed.includes(3);
-  $("campaign-map-copy").textContent = complete
-    ? "The Frontier certificate opens either route. These destinations are charted for the next campaign chapter."
-    : "Restore the navigation core and finish the lander to open either route.";
-  $("campaign-map-worlds").innerHTML = WORLD_CATALOG.slice(0, 3)
-    .map(
-      (world) =>
+  const state = campaign.state;
+  $("campaign-map-copy").textContent = state.progress.departed
+    ? "Choose an established destination or continue into the Ice comet. Travel starts at the lander and keeps every excavated route."
+    : "Restore the navigation core, finish construction and record the Frontier departure at the lander to reach the Ice comet.";
+  $("campaign-map-worlds").innerHTML = WORLD_CATALOG.slice(0, 4)
+    .map((world) => {
+      const current = world.id === state.currentWorld;
+      const visited = Boolean(state.worlds[world.id]);
+      const playable = world.id === "W01" || world.id === "W02";
+      const preview = campaign.travelPreview(world.id);
+      const charted = state.progress.unlockedWorlds.includes(world.id);
+      const status = current
+        ? "CURRENT DESTINATION"
+        : playable
+          ? visited
+            ? "RETURN ROUTE"
+            : state.progress.departed
+              ? "AVAILABLE"
+              : "LOCKED"
+          : charted
+            ? "CHARTED · IN DEVELOPMENT"
+            : "LOCKED · IN DEVELOPMENT";
+      const description =
+        world.id === "W01"
+          ? "Return to your established shafts, banked cargo and restored lander."
+          : world.id === "W02"
+            ? "Preserve volatile crystals, recover cryogenic samples and build a comet condenser."
+            : world.id === "W03"
+              ? "A future route through unstable stone, fault surveys and supported crossings."
+              : "A future planetary mine beyond the Planetary certificate.";
+      const progress = current
+        ? campaign.completedMilestones.length + "/3 milestones complete"
+        : world.id === "W01"
+          ? state.progress.completed.length + "/3 milestones complete"
+          : visited
+            ? "Established routes retained"
+            : "";
+      return (
         '<article class="world-card world-' +
         world.id.toLowerCase() +
+        '" data-world="' +
+        world.id +
         '"><div class="planet-symbol"></div><p class="eyebrow">' +
         world.id +
         " · " +
-        (world.id === "W01"
-          ? "CURRENT DESTINATION"
-          : complete
-            ? "CHARTED"
-            : "LOCKED") +
+        status +
         "</p><h2>" +
         world.name +
         "</h2><p>" +
-        (world.id === "W01"
-          ? "Mine, recover and return to your established routes."
-          : world.id === "W02"
-            ? "A frozen frontier of volatile crystals and careful extraction."
-            : "Read the faults. Secure a route through unstable stone.") +
+        description +
         "</p><small>" +
-        (world.id === "W01"
-          ? campaign.state.progress.completed.length + "/3 milestones complete"
-          : !complete
-            ? "Requires: restore the W01 lander"
-            : "Next campaign chapter · not yet available") +
-        "</small></article>",
-    )
+        escape(
+          progress ||
+            (playable
+              ? preview.reason
+              : world.id === "W04"
+                ? charted
+                  ? "Planetary certificate secured · not yet playable"
+                  : "Requires the Planetary certificate · not yet playable"
+                : "The moon branch is not yet playable"),
+        ) +
+        "</small>" +
+        (!current && playable
+          ? button(
+              "travel-" + world.id,
+              (visited ? "Return to " : "Travel to ") + world.name,
+              !preview.allowed,
+              preview.allowed,
+            ) +
+            (!preview.allowed && progress
+              ? '<small class="travel-reason">' +
+                escape(preview.reason) +
+                "</small>"
+              : "")
+          : "") +
+        "</article>"
+      );
+    })
     .join("");
 }
 async function persist(announce = false) {
@@ -1219,7 +1482,7 @@ async function replaceCampaign(state: CampaignState) {
     backupAvailable = true;
     saveTimer = 0;
     requireResumeAfterRestore();
-    restoredAfterConfirmation = true;
+    menuAfterConfirmation = true;
     lastSavedAt = Date.now();
     lastSaveWasAutomatic = false;
     setText(
@@ -1254,6 +1517,14 @@ async function command(name: string) {
     }
     return;
   }
+  if (name === "release-volatile") {
+    if (paused()) return;
+    input.clear();
+    if (campaign.releaseVolatile()) audio.event("pickup");
+    syncHUD();
+    $("campaign-game").focus({ preventScroll: true });
+    return;
+  }
   if (name === "export") {
     try {
       const raw = store.export(campaign.state),
@@ -1273,6 +1544,46 @@ async function command(name: string) {
     return;
   }
   if (busy) return;
+  if (name.startsWith("travel-")) {
+    const destination = name.slice(7);
+    const preview = campaign.travelPreview(destination);
+    if (!preview.allowed) {
+      showMessage(preview.reason);
+      if (overlay === "map") renderMap();
+      return;
+    }
+    ask(
+      "Travel to " + worldName(destination) + "?",
+      "Bank " +
+        preview.cargoCount +
+        " cargo packages and " +
+        preview.missionCount +
+        " mission objects at this lander before departure. Your credits, equipment, stored cargo and excavated routes remain yours. Arrive with energy " +
+        condition(campaign.state.vehicle.energy) +
+        "/" +
+        campaign.maxEnergy +
+        " and hull " +
+        condition(campaign.state.vehicle.hull) +
+        "/" +
+        campaign.maxHull +
+        ". Travel is free; refuel or repair before leaving if needed.",
+      async () => {
+        input.clear();
+        if (!campaign.travel(destination)) throw new Error(campaign.message);
+        saveTimer = 0;
+        lastMined = campaign.state.stats.mined;
+        lastHull = campaign.state.vehicle.hull;
+        previousObjective = "";
+        const saved = await persist();
+        dockAfterConfirmation = saved;
+        // A failed save keeps this valid in-memory arrival exportable. Close
+        // the confirmation into checkpoint recovery instead of trapping the
+        // player in a dock that a stale-tab conflict prevents them leaving.
+        if (!saved) menuAfterConfirmation = true;
+      },
+    );
+    return;
+  }
   if (name === "save") {
     await persist(true);
     return;
@@ -1297,7 +1608,7 @@ async function command(name: string) {
         const state = await store.restoreBackup();
         campaign = new Campaign(state);
         requireResumeAfterRestore();
-        restoredAfterConfirmation = true;
+        menuAfterConfirmation = true;
         lastSavedAt = Date.now();
         lastSaveWasAutomatic = false;
         blocked = false;
@@ -1335,7 +1646,7 @@ async function command(name: string) {
     ask("Call surface recovery?", recoveryCopy(), async () => {
       campaign.recover();
       requireResumeAfterRestore();
-      restoredAfterConfirmation = true;
+      menuAfterConfirmation = true;
       await persist();
     });
     return;
@@ -1375,7 +1686,7 @@ async function command(name: string) {
     }
     ask(
       "Launch the restored lander?",
-      "Your Frontier certificate and all progress remain permanent. Chart the comet and moon for the next campaign chapter.",
+      "Your Frontier certificate and all progress remain permanent. Record departure to unlock travel to the Ice comet. The Fractured moon remains charted for a later chapter.",
       async () => {
         if (!campaign.depart()) throw new Error(campaign.message);
         await persist();
@@ -1459,9 +1770,15 @@ $("campaign-confirm-accept").onclick = async () => {
     await operation();
     confirmation = undefined;
     $<HTMLDialogElement>("campaign-confirm").close();
-    if (restoredAfterConfirmation) {
-      restoredAfterConfirmation = false;
+    if (menuAfterConfirmation || conflict) {
+      menuAfterConfirmation = false;
+      dockAfterConfirmation = false;
       openOverlay("menu");
+    } else if (dockAfterConfirmation) {
+      dockAfterConfirmation = false;
+      resumeRequired = false;
+      dockTab = "service";
+      openOverlay("dock");
     }
     if (overlay === "dock") renderDock();
     if (overlay === "menu") renderMenu();
@@ -1504,7 +1821,9 @@ $<HTMLInputElement>("campaign-import").onchange = async (event) => {
         money(state.credits) +
         " and " +
         state.progress.completed.length +
-        " completed asteroid milestones? Your current valid save becomes the backup.",
+        " completed asteroid milestones and " +
+        Object.keys(state.worlds).length +
+        " visited destination(s)? Your current valid save becomes the backup.",
       () => replaceCampaign(state),
     );
   } catch (error) {

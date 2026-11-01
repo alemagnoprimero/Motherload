@@ -1976,10 +1976,12 @@ export async function runCampaignSmoke(
 }
 export {
   advance,
+  click,
   closeOverlay,
   command,
   exportCheckpoint,
   freeze,
+  idle,
   importCheckpoint,
   keys,
   menu,

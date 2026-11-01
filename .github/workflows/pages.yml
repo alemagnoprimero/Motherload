@@ -9,6 +9,7 @@ on:
       - "design/v0.1/**"
       - "scripts/check-campaign-data.mjs"
       - "scripts/check-campaign-assets.mjs"
+      - "scripts/check-frontier-assets.mjs"
       - "index.html"
       - "vite.config.ts"
       - "tsconfig.json"

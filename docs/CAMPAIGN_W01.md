@@ -1,6 +1,6 @@
 # W01 implementation notes
 
-This checkpoint implements the approved design-pack foundations and **Broken asteroid (W01)**. W02/W03 are unlocked in the navigation archive after completing W01, but their playable content belongs to the next slice. The other worlds have validated metadata, not implemented mechanics.
+This checkpoint implements the approved design-pack foundations and **Broken asteroid (W01)**. The subsequent [Ice comet expansion (W02)](CAMPAIGN_W02.md) is playable through Navigation after Frontier departure. W03 and later worlds have validated metadata, not playable mechanics.
 
 ## Play and progression
 
@@ -38,7 +38,7 @@ Checkpoints record schema, balance and generator versions. All current worlds, e
 
 Saved, imported and backup-restored runs require an explicit Resume expedition action before simulation can advance. Load waits for its asynchronous read to finish and retains the paused menu. Disabled restored rigs can request confirmed recovery directly from that menu's header. Save recency records actual successful saves in the current session, and Load clearly refers to the latest checkpoint including autosaves.
 
-The current W01 validator bounds state JSON to 2 MiB and the checkpoint transport to 16 MiB. Across the initial 100 generated seeds, the largest measured checkpoint was about 93 KiB. Those bounds are not a claim that every future campaign state fits; adding worlds requires a versioned format/size review and chunk-storage work. The present checkpoint is a transactionally saved W01 world record, not the finished fifteen-world persistence implementation.
+The validator bounds state JSON to 2 MiB and the checkpoint transport to 16 MiB. Across the initial 100 generated W01 seeds, the largest measured checkpoint was about 93 KiB. The W02 expansion adds a versioned two-world record, measured at most 240,777 bytes across 100 seeds. Those bounds are not a claim that every future campaign state fits; further expansion requires format/size review and chunk-storage work. See [W02 persistence](CAMPAIGN_W02.md).
 
 ## Visual and input scope
 

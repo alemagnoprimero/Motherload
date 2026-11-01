@@ -4,10 +4,12 @@ import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
 import { campaignSafeArea, campaignTileSize } from "./layout";
 import { CampaignPointer, TOUCH_JOYSTICK } from "./pointer";
 import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
+import { W02_HAZARDS } from "./frontier";
 import { campaignOreMarker, drawOreMarker } from "../mineral-legend";
 export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
+export const FRONTIER_TEXTURE = "campaign-w02";
 
 export interface CampaignSceneBindings {
   getCampaign: () => Campaign;
@@ -106,7 +108,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         .text(
           this.scale.width / 2,
           this.scale.height / 2,
-          "ARRIVING AT THE ASTEROID",
+          "PREPARING THE EXPEDITION",
           {
             fontFamily: "system-ui, sans-serif",
             fontSize: "15px",
@@ -126,6 +128,36 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         ).href,
         new URL(
           "../../assets/campaign/generated/w01-atlas.json",
+          import.meta.url,
+        ).href,
+      );
+      this.load.atlas(
+        FRONTIER_TEXTURE,
+        new URL(
+          "../../assets/campaign/generated/w02-atlas.png",
+          import.meta.url,
+        ).href,
+        new URL(
+          "../../assets/campaign/generated/w02-atlas.json",
+          import.meta.url,
+        ).href,
+      );
+      this.load.image(
+        "frontier-sky",
+        new URL("../../assets/campaign/generated/w02-sky.png", import.meta.url)
+          .href,
+      );
+      this.load.image(
+        "frontier-ridge-far",
+        new URL(
+          "../../assets/campaign/generated/w02-ridge-far.png",
+          import.meta.url,
+        ).href,
+      );
+      this.load.image(
+        "frontier-ridge-near",
+        new URL(
+          "../../assets/campaign/generated/w02-ridge-near.png",
           import.meta.url,
         ).href,
       );
@@ -168,6 +200,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.artFailed ||=
         !this.textures.exists(CAMPAIGN_TEXTURE) ||
         required.some((name) => !this.textures.get(CAMPAIGN_TEXTURE).has(name));
+      this.artFailed ||=
+        !this.textures.exists(FRONTIER_TEXTURE) ||
+        ["ice-0", "ore-o3", "mission-sample", "mission-catalyst"].some(
+          (name) => !this.textures.get(FRONTIER_TEXTURE).has(name),
+        );
       const host = document.getElementById("campaign-game");
       const status = this.artFailed ? "error" : "ready";
       if (host) host.dataset.campaignArt = status;
@@ -341,7 +378,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       const worldY = (screenY + this.cameraY) / this.tile;
       if (
         campaign.atDock &&
-        Math.abs(delta(worldX, 5.5, world.width)) < 2.6 &&
+        Math.abs(
+          delta(worldX, campaign.activeWorldDefinition.dockX, world.width),
+        ) < 2.6 &&
         worldY < 0.2
       ) {
         bindings.onInteract?.();
@@ -382,18 +421,34 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       flip = false,
       originY = 0.5,
     ) {
+      const icy = bindings.getCampaign().state.currentWorld === "W02";
+      const sharedUpgrade =
+        /^rig-(engine|energy|bay|hull)-2$/.test(frame) ||
+        /^rig-drill-collar-(left|right|down)-2$/.test(frame);
+      const worldFrame = icy
+        ? frame
+            .replace(/^soil-(\d+)$/, "ice-$1")
+            .replace(/^stone-(\d+)$/, "frozen-rock-$1")
+        : frame;
+      const texture =
+        (icy || frame.startsWith("tool-") || sharedUpgrade) &&
+        this.textures.exists(FRONTIER_TEXTURE) &&
+        this.textures.get(FRONTIER_TEXTURE).has(worldFrame)
+          ? FRONTIER_TEXTURE
+          : CAMPAIGN_TEXTURE;
+      const actualFrame = texture === FRONTIER_TEXTURE ? worldFrame : frame;
       if (
-        !this.textures.exists(CAMPAIGN_TEXTURE) ||
-        !this.textures.get(CAMPAIGN_TEXTURE).has(frame)
+        !this.textures.exists(texture) ||
+        !this.textures.get(texture).has(actualFrame)
       )
         return false;
       let image = this.images[this.imageIndex++];
       if (!image) {
-        image = this.add.image(0, 0, CAMPAIGN_TEXTURE);
+        image = this.add.image(0, 0, texture);
         this.images.push(image);
       }
       image
-        .setFrame(frame)
+        .setTexture(texture, actualFrame)
         .setPosition(x, y)
         .setOrigin(0.5, originY)
         .setDisplaySize(width, height)
@@ -474,6 +529,87 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         g.lineStyle(size, color, alpha);
         g.lineBetween(X(a), Y(b), X(c), Y(d));
       };
+      if (poi.kind === "sample") {
+        line(-0.34, 0.43, -0.34, -0.32, 0x92bfc9, 3);
+        line(0.34, 0.43, 0.34, -0.32, 0x92bfc9, 3);
+        plate(
+          [
+            [-0.39, -0.36],
+            [-0.24, -0.64],
+            [0.24, -0.64],
+            [0.39, -0.36],
+            [0.34, 0.32],
+            [-0.34, 0.32],
+          ],
+          0x386d82,
+        );
+        line(-0.23, -0.41, 0.23, -0.41, 0xf7c673, 3);
+        line(-0.23, 0.19, 0.23, 0.19, 0xaedce5, 3);
+        line(0.1, -0.63, 0.1, -1.27, 0x95c3cb, 2);
+        g.fillStyle(poi.status === "source" ? 0xf7c673 : 0x49d8c6, alpha);
+        g.fillCircle(X(0.1), Y(-1.27), tile * 0.065);
+        if (poi.status === "source") {
+          g.fillStyle(0x85e8e0, alpha);
+          g.fillEllipse(x, Y(-0.1), tile * 0.24, tile * 0.37);
+        }
+        return;
+      }
+      if (poi.kind === "cryo") {
+        for (const [offset, top] of [
+          [-0.44, -0.64],
+          [0, -0.98],
+          [0.42, -0.7],
+        ])
+          plate(
+            [
+              [offset! - 0.2, 0.3],
+              [offset! - 0.17, top! + 0.28],
+              [offset!, top!],
+              [offset! + 0.2, top! + 0.24],
+              [offset! + 0.14, 0.3],
+            ],
+            poi.status === "source" ? 0x80c6d1 : 0x355c6c,
+          );
+        line(-0.81, 0.42, 0.81, 0.42, 0xd9af70, 3);
+        line(-0.81, 0.42, -0.81, -0.36, 0xd9af70, 2);
+        line(0.81, 0.42, 0.81, -0.36, 0xd9af70, 2);
+        return;
+      }
+      if (poi.kind === "catalyst") {
+        plate(
+          [
+            [-1.1, -0.5],
+            [-0.77, -1.02],
+            [0.7, -1.02],
+            [1.08, -0.47],
+            [1.08, 0.51],
+            [-1.1, 0.51],
+          ],
+          0x315567,
+        );
+        plate(
+          [
+            [-0.65, -0.76],
+            [0.62, -0.76],
+            [0.83, -0.35],
+            [0.83, 0.31],
+            [-0.83, 0.31],
+            [-0.83, -0.35],
+          ],
+          0x102e40,
+        );
+        line(-1.1, 0.55, 1.1, 0.55, 0xcda66e, 4);
+        line(-0.9, -0.5, -0.9, -1.55, 0xb5dce3, 3);
+        g.lineStyle(2, 0xf7c673, alpha);
+        g.strokeCircle(X(-0.9), Y(-1.61), tile * 0.12);
+        if (poi.status === "source") {
+          g.fillStyle(0x93efe3, alpha * 0.7);
+          g.fillEllipse(x, Y(-0.22), tile * 0.5, tile * 0.79);
+          g.fillStyle(0xf7e9aa, alpha);
+          g.fillCircle(x, Y(-0.13), tile * 0.1);
+        }
+        return;
+      }
       // Torn ground plates and exposed cables make the whole footprint a salvage site.
       plate(
         [
@@ -678,7 +814,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         Math.min(height - safe.bottom - label.height - 8, label.y),
       );
       // The completed landmark label and a new survey toast can coexist.
-      for (const id of ["campaign-danger", "campaign-message"]) {
+      for (const id of [
+        "campaign-danger",
+        "campaign-message",
+        "campaign-extraction",
+      ]) {
         const overlay = document.getElementById(id);
         if (
           !overlay ||
@@ -768,6 +908,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.chips = this.chips.filter((chip) => chip.life > 0);
       }
       const world = campaign.world;
+      const icy = world.id === "W02";
+      const dockX = campaign.activeWorldDefinition.dockX;
+      if (changed) {
+        this.sky.setTexture(icy ? "frontier-sky" : "campaign-sky");
+        this.ridgeFar.setTexture(
+          icy ? "frontier-ridge-far" : "campaign-ridge-far",
+        );
+        this.ridgeNear.setTexture(
+          icy ? "frontier-ridge-near" : "campaign-ridge-near",
+        );
+      }
       const vehicle = campaign.state.vehicle;
       const jumped =
         Math.abs(campaign.renderY - this.previousY) > 8 ||
@@ -841,7 +992,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           ? height * 0.7
           : Math.max(tile * 3, dock.y - 20);
         targetX =
-          (this.unwrappedX + delta(campaign.renderX, 5.5, world.width)) * tile -
+          (this.unwrappedX + delta(campaign.renderX, dockX, world.width)) *
+            tile -
           screenX;
         targetY = -surface;
       }
@@ -875,7 +1027,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.imageIndex = 0;
       this.labelIndex = 0;
 
-      graphics.fillStyle(0x17232b);
+      graphics.fillStyle(icy ? 0x102b3d : 0x17232b);
       graphics.fillRect(0, 0, width, height);
       // Quiet broad plates give excavated air depth without marking hidden cells.
       for (let plane = 0; plane < 3; plane++) {
@@ -886,7 +1038,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           const x = i * stride - cx * speed;
           const y =
             surfaceY + tile * (2.5 + plane) - ((cy * speed) % (tile * 5));
-          graphics.fillStyle([0x1c2a32, 0x223039, 0x29383e][plane]!, 0.45);
+          graphics.fillStyle(
+            (icy
+              ? [0x133348, 0x193f52, 0x214a5a]
+              : [0x1c2a32, 0x223039, 0x29383e])[plane]!,
+            0.45,
+          );
           graphics.fillPoints(
             [
               { x: x - stride * 0.1, y: y - tile },
@@ -945,7 +1102,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           const y = (row + 0.5) * tile - cy;
           const known = row >= world.rows || campaign.isKnown(canonical, row);
           if (!known) {
-            edges.fillStyle(0x111c24);
+            edges.fillStyle(icy ? 0x0b2332 : 0x111c24);
             edges.fillRect(
               x - tile / 2 - 0.3,
               y - tile / 2 - 0.3,
@@ -985,7 +1142,16 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             );
             const frame = type === 1 ? `soil-${variant}` : `stone-${variant}`;
             if (!this.image(frame, x, y, tile + 0.5, tile + 0.5, 10, alpha)) {
-              edges.fillStyle(type === 1 ? 0x56616a : 0x3f4c54, alpha);
+              edges.fillStyle(
+                icy
+                  ? type === 1
+                    ? 0x80afbc
+                    : 0x426c80
+                  : type === 1
+                    ? 0x56616a
+                    : 0x3f4c54,
+                alpha,
+              );
               edges.fillRect(
                 x - tile / 2,
                 y - tile / 2,
@@ -994,7 +1160,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               );
             }
             if (type === 3) {
-              edges.fillStyle(0x17232b, 0.75);
+              edges.fillStyle(icy ? 0x102b3d : 0x17232b, 0.75);
               edges.fillRect(
                 x - tile / 2,
                 y - tile / 2,
@@ -1009,7 +1175,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             if (!solid(column - 1, row)) mask |= 8;
             if (mask)
               this.image(
-                `soil-edge-${mask}`,
+                icy
+                  ? `${type === 2 ? "frozen-rock" : "ice"}-edge-${mask}`
+                  : `soil-edge-${mask}`,
                 x,
                 y,
                 tile + 0.5,
@@ -1030,6 +1198,35 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
                 ? Math.sin(this.elapsed * 3 + row) * tile * 0.025
                 : 0;
             this.image(frame, x, y + bob, tile * 0.9, tile * 0.9, 13, alpha);
+            if (icy && item.tags.includes("volatile") && lit) {
+              const pending = campaign.volatileWindow?.packageIds.includes(
+                item.id,
+              );
+              const wave = bindings.reducedMotion?.()
+                ? 0
+                : Math.sin(this.elapsed * 1.8) * 0.025;
+              this.screen.lineStyle(
+                pending ? 2 : 1.3,
+                pending ? 0xf7c673 : 0x49d8c6,
+                alpha * 0.75,
+              );
+              this.screen.strokeCircle(x, y, tile * (0.43 + wave));
+              if (item.tags.includes("intact")) {
+                this.screen.lineStyle(2, 0xd4f9ef, alpha);
+                this.screen.lineBetween(
+                  x - tile * 0.1,
+                  y + tile * 0.08,
+                  x,
+                  y + tile * 0.17,
+                );
+                this.screen.lineBetween(
+                  x,
+                  y + tile * 0.17,
+                  x + tile * 0.17,
+                  y - tile * 0.09,
+                );
+              }
+            }
             if (number && lit)
               drawOreMarker(
                 this.screen,
@@ -1047,9 +1244,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       if (surfaceY > -tile * 3 && surfaceY < height + tile * 4) {
         const firstPeriod = Math.floor(cx / (world.width * tile)) - 1;
         const lastPeriod = Math.ceil((cx + width) / (world.width * tile)) + 1;
-        const stage = Math.min(3, campaign.state.progress.completed.length);
+        const stage = Math.min(3, campaign.completedMilestones.length);
         for (let period = firstPeriod; period <= lastPeriod; period++) {
-          const x = (5.5 + period * world.width) * tile - cx;
+          const x = (dockX + period * world.width) * tile - cx;
           if (x < -tile * 5 || x > width + tile * 5) continue;
           edges.fillStyle(0xf0a43c, 0.13);
           edges.fillEllipse(x, surfaceY, tile * 4, tile * 0.22);
@@ -1067,10 +1264,16 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           this.label(
             x,
             surfaceY - tile * 3.1,
-            stage === 3 ? "LANDER RESTORED" : "SALVAGE LANDER",
+            icy
+              ? stage === 3
+                ? "CONDENSER STABILIZED"
+                : "COMET REFUGE"
+              : stage === 3
+                ? "LANDER RESTORED"
+                : "SALVAGE LANDER",
             "#F6E1AF",
           );
-          if (stage >= 1)
+          if (stage >= 1 && !icy)
             this.image(
               `refuge-stage-${Math.min(2, stage)}`,
               x - tile * 4,
@@ -1082,7 +1285,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               false,
               1,
             );
-          if (stage >= 2)
+          if (stage >= 2 && !icy)
             this.image(
               `relay-stage-${Math.min(2, stage - 1)}`,
               x + tile * 3.5,
@@ -1095,12 +1298,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               1,
             );
         }
-        const dockOffset = delta(campaign.renderX, 5.5, world.width);
+        const dockOffset = delta(campaign.renderX, dockX, world.width);
         if (Math.abs(dockOffset * tile) > width / 2 - tile * 2) {
           this.label(
             dockOffset < 0 ? 18 : width - 18,
             Math.max(safe.top + 8, surfaceY - tile * 1.6),
-            `${dockOffset < 0 ? "← " : ""}LANDER · ${Math.round(Math.abs(dockOffset) * 10)} m${dockOffset > 0 ? " →" : ""}`,
+            `${dockOffset < 0 ? "← " : ""}${icy ? "REFUGE" : "LANDER"} · ${Math.round(Math.abs(dockOffset) * 10)} m${dockOffset > 0 ? " →" : ""}`,
             "#F6E1AF",
             dockOffset > 0 ? "right" : false,
           );
@@ -1118,6 +1321,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         lit: boolean;
       }[] = [];
       const sourceMarkers: string[] = [];
+      const labeledSites = new Set<string>();
       for (const poi of pois) {
         const x =
           (this.unwrappedX + delta(campaign.renderX, poi.x, world.width)) *
@@ -1180,7 +1384,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           delta(campaign.renderX, poi.x, world.width),
           poi.y - campaign.renderY,
         );
-        if (poi.visible && distance < 3.8 && poi.id !== signal?.targetId) {
+        const clustered = poi.kind === "sample" || poi.kind === "cryo";
+        if (
+          poi.visible &&
+          distance < 3.8 &&
+          poi.id !== signal?.targetId &&
+          !(
+            clustered &&
+            (signal?.poi.kind === poi.kind || labeledSites.has(poi.kind))
+          )
+        ) {
+          if (clustered) labeledSites.add(poi.kind);
           const suffix =
             poi.status === "surveyed"
               ? " · surveyed"
@@ -1194,7 +1408,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             py,
             tile,
             safe,
-            poi.title + suffix,
+            poi.title + (clustered ? "" : suffix),
             poi.status === "source" ? "#F6E1AF" : "#A7D8C5",
           );
         }
@@ -1248,7 +1462,18 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         if (onScreen) {
           const text = poi.known
             ? poi.title
-            : `${poi.kind === "beacon" ? "Wreck" : poi.kind === "valve" ? "Valve" : poi.kind === "antenna" ? "Antenna" : "Core"} signal`;
+            : `${
+                {
+                  beacon: "Wreck",
+                  valve: "Valve",
+                  antenna: "Antenna",
+                  core: "Core",
+                  sample: "Sample",
+                  cryo: "Crystal",
+                  catalyst: "Catalyst",
+                  lander: "Refuge",
+                }[poi.kind]
+              } signal`;
           this.missionLabel(
             markerX,
             markerY,
@@ -1259,6 +1484,109 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             `${text} · ${signal.distanceMeters} m`,
             "#F6D39B",
           );
+        }
+      }
+      if (icy) {
+        const cold = campaign.coldStatus;
+        for (const pocket of W02_HAZARDS.coldPockets) {
+          if (!campaign.isKnown(pocket.x, pocket.y)) continue;
+          const x =
+            (this.unwrappedX + delta(campaign.renderX, pocket.x, world.width)) *
+              tile -
+            cx;
+          const y = pocket.y * tile - cy;
+          if (
+            x < -tile * 2 ||
+            x > width + tile * 2 ||
+            y < -tile * 2 ||
+            y > height + tile * 2
+          )
+            continue;
+          const nearby =
+            Math.hypot(
+              delta(vehicle.x, pocket.x, world.width),
+              vehicle.y - pocket.y,
+            ) < 3;
+          const warning =
+            nearby && cold?.warning !== null && cold?.warning !== undefined;
+          this.wreckage.fillStyle(0x96e5e3, warning ? 0.18 : 0.07);
+          this.wreckage.fillEllipse(x, y, tile * 2.6, tile * 1.7);
+          this.image(
+            "cold-warning",
+            x,
+            y - tile * 0.4,
+            tile * 0.65,
+            tile * 0.65,
+            16,
+            0.85,
+          );
+          if (warning)
+            this.missionLabel(
+              x,
+              y,
+              px,
+              py,
+              tile,
+              safe,
+              "Cold mist forming · move clear",
+              "#BDEFF0",
+            );
+          if (
+            campaign.isVisible(pocket.x, pocket.y) &&
+            !bindings.reducedMotion?.()
+          ) {
+            this.wreckage.lineStyle(1.5, 0xb6e9eb, warning ? 0.55 : 0.2);
+            for (let wisp = 0; wisp < 4; wisp++) {
+              const drift = Math.sin(this.elapsed + wisp * 1.7) * tile * 0.15;
+              this.wreckage.lineBetween(
+                x - tile + wisp * tile * 0.45,
+                y + drift,
+                x - tile * 0.65 + wisp * tile * 0.45,
+                y - tile * 0.22 + drift,
+              );
+            }
+          }
+        }
+        for (const vent of W02_HAZARDS.vents) {
+          if (!campaign.isKnown(vent.x, vent.y)) continue;
+          const x =
+            (this.unwrappedX + delta(campaign.renderX, vent.x, world.width)) *
+              tile -
+            cx;
+          const y = vent.y * tile - cy;
+          if (
+            x < -tile * 2 ||
+            x > width + tile * 2 ||
+            y < -tile * 2 ||
+            y > height + tile * 2
+          )
+            continue;
+          this.image("ice-vent", x, y, tile, tile, 16, 0.9);
+          this.wreckage.lineStyle(2, 0xf7c673, 0.55);
+          this.wreckage.strokeTriangle(
+            x - tile * 0.4,
+            y + tile * 0.2,
+            x + tile * 0.4,
+            y + tile * 0.2,
+            x,
+            y - tile * 0.5,
+          );
+          if (
+            Math.hypot(
+              delta(vehicle.x, vent.x, world.width),
+              vehicle.y - vent.y,
+            ) < 2.8
+          )
+            this.missionLabel(
+              x,
+              y,
+              px,
+              py,
+              tile,
+              safe,
+              "Ice vent · keep clear",
+              "#F7D796",
+            );
         }
       }
       for (const shelf of world.shelves) {
@@ -1397,7 +1725,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         flip,
       );
       this.image(
-        `rig-engine-${Math.min(1, campaign.state.hardware.engine)}`,
+        `rig-engine-${Math.min(2, campaign.state.hardware.engine)}`,
         px,
         rigY,
         rigSize,
@@ -1407,7 +1735,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         flip,
       );
       this.image(
-        `rig-energy-${Math.min(1, campaign.state.hardware.energy)}`,
+        `rig-energy-${Math.min(2, campaign.state.hardware.energy)}`,
         px,
         rigY,
         rigSize,
@@ -1417,7 +1745,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         flip,
       );
       this.image(
-        `rig-bay-${Math.min(1, campaign.state.hardware.cargo)}`,
+        `rig-bay-${Math.min(2, campaign.state.hardware.cargo)}`,
         px,
         rigY,
         rigSize,
@@ -1428,7 +1756,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       );
       this.image("rig-cabin", px, rigY, rigSize, rigSize, 22, 1, flip);
       this.image(
-        `rig-hull-${Math.min(1, campaign.state.hardware.hull)}`,
+        `rig-hull-${Math.min(2, campaign.state.hardware.hull)}`,
         px,
         rigY,
         rigSize,
@@ -1450,6 +1778,21 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         );
       if (campaign.state.equipped.processor === "W01-R3")
         this.image("rig-rack", px, rigY, rigSize, rigSize, 23, 1, flip);
+      if (campaign.state.equipped.drill === "W02-R1")
+        this.image("tool-thermal", px, rigY, rigSize, rigSize, 23, 1, flip);
+      if (campaign.state.equipped.utilities.includes("W02-R2"))
+        this.image("tool-condenser", px, rigY, rigSize, rigSize, 23, 1, flip);
+      if (campaign.state.equipped.processor === "W02-R3")
+        this.image(
+          "tool-preservation",
+          px,
+          rigY,
+          rigSize,
+          rigSize,
+          23,
+          1,
+          flip,
+        );
       const drillFrame = campaign.drillDirection
         ? `rig-drill-${campaign.drillDirection}-${Math.floor(this.elapsed * 16) % 8}`
         : "rig-drill-idle";
@@ -1465,7 +1808,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       );
       if (campaign.state.hardware.drill >= 1)
         this.image(
-          `rig-drill-collar-${campaign.drillDirection || "right"}-1`,
+          `rig-drill-collar-${campaign.drillDirection || "right"}-${Math.min(2, campaign.state.hardware.drill)}`,
           px,
           rigY,
           rigSize,
@@ -1474,6 +1817,54 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           1,
           campaign.drillDirection ? false : flip,
         );
+      if (icy && campaign.precisionActive) {
+        this.screen.lineStyle(1.5, 0x84e9dc, 0.8);
+        this.screen.strokeCircle(px, py, tile * 0.66);
+      }
+      const volatile = campaign.volatileWindow;
+      if (icy && volatile) {
+        this.screen.lineStyle(4, 0x142c3a, 0.95);
+        this.screen.strokeCircle(px, py, tile * 0.72);
+        this.screen.lineStyle(3, 0xf7c673, 1);
+        this.screen.beginPath();
+        this.screen.arc(
+          px,
+          py,
+          tile * 0.72,
+          -Math.PI / 2,
+          -Math.PI / 2 +
+            Math.PI * 2 * Math.max(0, Math.min(1, volatile.remaining / 0.75)),
+        );
+        this.screen.strokePath();
+      }
+      if (
+        icy &&
+        campaign.state.equipped.drill === "W02-R1" &&
+        campaign.drillTarget
+      ) {
+        const contactX =
+          px +
+          (campaign.drillDirection === "left"
+            ? -0.48
+            : campaign.drillDirection === "right"
+              ? 0.48
+              : 0) *
+            tile;
+        const contactY =
+          py + (campaign.drillDirection === "down" ? 0.48 : 0.12) * tile;
+        fx.fillStyle(0xf7c673, 0.16);
+        fx.fillCircle(contactX, contactY, tile * 0.28);
+        if (!bindings.reducedMotion?.())
+          for (let plume = 0; plume < 3; plume++) {
+            const phase = (this.elapsed * 1.3 + plume / 3) % 1;
+            fx.fillStyle(0xc0e5e6, (1 - phase) * 0.18);
+            fx.fillCircle(
+              contactX + Math.sin(plume * 1.8) * tile * phase * 0.2,
+              contactY - phase * tile * 0.75,
+              tile * (0.08 + phase * 0.14),
+            );
+          }
+      }
       const hullFraction = vehicle.hull / campaign.maxHull;
       const damageStage =
         hullFraction <= 0.15
@@ -1578,6 +1969,16 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           joystickKnobY: joystick?.knobY.toFixed(2) ?? "",
           rigScreenX: px.toFixed(2),
           rigScreenY: py.toFixed(2),
+          rigWorldX: campaign.renderX.toFixed(4),
+          rigWorldY: campaign.renderY.toFixed(4),
+          campaignWorld: world.id,
+          worldWidth: String(world.width),
+          worldRows: String(world.rows),
+          worldTexture: icy ? FRONTIER_TEXTURE : CAMPAIGN_TEXTURE,
+          volatileCue: String(Boolean(volatile)),
+          volatileRemaining: volatile?.remaining.toFixed(3) ?? "",
+          precisionActive: String(Boolean(campaign.precisionActive)),
+          coldWarning: String(Boolean(campaign.coldStatus?.warning)),
           poiLandmarks: poiScreenTargets.map((poi) => poi.id).join(","),
           poiSourceMarkers: sourceMarkers.join(","),
           poiScreenTargets: JSON.stringify(poiScreenTargets),

@@ -1,0 +1,305 @@
+{
+  "version": "0.1",
+  "world": "W02",
+  "source": "Original layered SVGs; create-sources.mjs",
+  "completeManifest": false,
+  "assets": {
+    "W02": {
+      "category": "world",
+      "frames": [
+        "world-w02",
+        "ice-0",
+        "ice-1",
+        "ice-2",
+        "ice-3",
+        "ice-4",
+        "ice-5",
+        "ice-6",
+        "ice-7",
+        "ice-edge-0",
+        "ice-edge-1",
+        "ice-edge-2",
+        "ice-edge-3",
+        "ice-edge-4",
+        "ice-edge-5",
+        "ice-edge-6",
+        "ice-edge-7",
+        "ice-edge-8",
+        "ice-edge-9",
+        "ice-edge-10",
+        "ice-edge-11",
+        "ice-edge-12",
+        "ice-edge-13",
+        "ice-edge-14",
+        "ice-edge-15",
+        "frozen-rock-0",
+        "frozen-rock-1",
+        "frozen-rock-2",
+        "frozen-rock-3",
+        "frozen-rock-edge-0",
+        "frozen-rock-edge-1",
+        "frozen-rock-edge-2",
+        "frozen-rock-edge-3",
+        "frozen-rock-edge-4",
+        "frozen-rock-edge-5",
+        "frozen-rock-edge-6",
+        "frozen-rock-edge-7",
+        "frozen-rock-edge-8",
+        "frozen-rock-edge-9",
+        "frozen-rock-edge-10",
+        "frozen-rock-edge-11",
+        "frozen-rock-edge-12",
+        "frozen-rock-edge-13",
+        "frozen-rock-edge-14",
+        "frozen-rock-edge-15",
+        "ice-vent"
+      ],
+      "icon": "world-w02",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "World subset: terrain, hazards and three backgrounds; rig cabin remains shared W01 artwork."
+    },
+    "W02-R1": {
+      "category": "equipment",
+      "frames": [
+        "tool-thermal"
+      ],
+      "icon": "tool-thermal",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-R2": {
+      "category": "equipment",
+      "frames": [
+        "tool-condenser"
+      ],
+      "icon": "tool-condenser",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-R3": {
+      "category": "equipment",
+      "frames": [
+        "tool-preservation"
+      ],
+      "icon": "tool-preservation",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "CORE-2-DRILL": {
+      "category": "core_hardware",
+      "frames": [
+        "rig-drill-collar-right-2",
+        "rig-drill-collar-left-2",
+        "rig-drill-collar-down-2"
+      ],
+      "icon": "rig-drill-collar-right-2",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "Global rank-2 modules and icons, including earlier-world revisits. Existing shared rig damage overlays remain in use.",
+      "implementedOutputs": [
+        "installed module",
+        "64px icon",
+        "128px icon"
+      ],
+      "pendingOutputs": [
+        "rank-specific damage overlays"
+      ]
+    },
+    "CORE-2-ENERGY": {
+      "category": "core_hardware",
+      "frames": [
+        "rig-energy-2"
+      ],
+      "icon": "rig-energy-2",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "Global rank-2 modules and icons, including earlier-world revisits. Existing shared rig damage overlays remain in use.",
+      "implementedOutputs": [
+        "installed module",
+        "64px icon",
+        "128px icon"
+      ],
+      "pendingOutputs": [
+        "rank-specific damage overlays"
+      ]
+    },
+    "CORE-2-CARGO": {
+      "category": "core_hardware",
+      "frames": [
+        "rig-bay-2"
+      ],
+      "icon": "rig-bay-2",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "Global rank-2 modules and icons, including earlier-world revisits. Existing shared rig damage overlays remain in use.",
+      "implementedOutputs": [
+        "installed module",
+        "64px icon",
+        "128px icon"
+      ],
+      "pendingOutputs": [
+        "rank-specific damage overlays"
+      ]
+    },
+    "CORE-2-HULL": {
+      "category": "core_hardware",
+      "frames": [
+        "rig-hull-2"
+      ],
+      "icon": "rig-hull-2",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "Global rank-2 modules and icons, including earlier-world revisits. Existing shared rig damage overlays remain in use.",
+      "implementedOutputs": [
+        "installed module",
+        "64px icon",
+        "128px icon"
+      ],
+      "pendingOutputs": [
+        "rank-specific damage overlays"
+      ]
+    },
+    "CORE-2-ENGINE": {
+      "category": "core_hardware",
+      "frames": [
+        "rig-engine-2"
+      ],
+      "icon": "rig-engine-2",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "Global rank-2 modules and icons, including earlier-world revisits. Existing shared rig damage overlays remain in use.",
+      "implementedOutputs": [
+        "installed module",
+        "64px icon",
+        "128px icon"
+      ],
+      "pendingOutputs": [
+        "rank-specific damage overlays"
+      ]
+    },
+    "W02-O1": {
+      "category": "mineral",
+      "frames": [
+        "ore-o1",
+        "package-o1"
+      ],
+      "icon": "ore-o1",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-O2": {
+      "category": "mineral",
+      "frames": [
+        "ore-o2",
+        "package-o2"
+      ],
+      "icon": "ore-o2",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-O3": {
+      "category": "mineral",
+      "frames": [
+        "ore-o3",
+        "package-o3"
+      ],
+      "icon": "ore-o3",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-O4": {
+      "category": "mineral",
+      "frames": [
+        "ore-o4",
+        "package-o4"
+      ],
+      "icon": "ore-o4",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-J": {
+      "category": "relic",
+      "frames": [
+        "relic"
+      ],
+      "icon": "relic",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-Q": {
+      "category": "mission",
+      "frames": [
+        "mission-catalyst"
+      ],
+      "icon": "mission-catalyst",
+      "iconSizes": [
+        64,
+        128
+      ]
+    },
+    "W02-S1": {
+      "category": "structure",
+      "frames": [
+        "dock-stage-0",
+        "dock-stage-1"
+      ],
+      "icon": "dock-stage-0",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "Arrival service refuge and heated completed refuge."
+    },
+    "W02-S3": {
+      "category": "structure",
+      "frames": [
+        "dock-stage-2",
+        "dock-stage-3"
+      ],
+      "icon": "dock-stage-2",
+      "iconSizes": [
+        64,
+        128
+      ],
+      "note": "Condenser under construction and stabilized departure project."
+    }
+  },
+  "gameplayFrames": {
+    "sample": "mission-sample",
+    "cryovein": "mission-cryovein",
+    "cold": "cold-warning",
+    "vent": "ice-vent"
+  },
+  "pendingBriefs": [
+    "W02-S2"
+  ]
+}

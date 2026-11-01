@@ -1,0 +1,619 @@
+{
+  "version": "0.1",
+  "world": "W02",
+  "logicalTile": 48,
+  "authorScale": 2,
+  "rigPivot": [
+    64,
+    64
+  ],
+  "rigTreadBaseline": 100,
+  "frames": [
+    {
+      "name": "ice-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-5",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-6",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-7",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-5",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-6",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-7",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-8",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-9",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-10",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-11",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-12",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-13",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-14",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ice-edge-15",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-5",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-6",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-7",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-8",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-9",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-10",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-11",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-12",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-13",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-14",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "frozen-rock-edge-15",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ore-o1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "mineral"
+    },
+    {
+      "name": "package-o1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "package"
+    },
+    {
+      "name": "ore-o2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "mineral"
+    },
+    {
+      "name": "package-o2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "package"
+    },
+    {
+      "name": "ore-o3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "mineral"
+    },
+    {
+      "name": "package-o3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "package"
+    },
+    {
+      "name": "ore-o4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "mineral"
+    },
+    {
+      "name": "package-o4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "package"
+    },
+    {
+      "name": "mission-sample",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "mission"
+    },
+    {
+      "name": "mission-cryovein",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "mission"
+    },
+    {
+      "name": "mission-catalyst",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "mission"
+    },
+    {
+      "name": "relic",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "relic"
+    },
+    {
+      "name": "tool-thermal",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "equipment",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "tool-condenser",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "equipment",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "tool-preservation",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "equipment",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-engine-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "core_hardware",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-energy-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "core_hardware",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-bay-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "core_hardware",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-hull-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "core_hardware",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-drill-collar-left-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "core_hardware",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-drill-collar-right-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "core_hardware",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-drill-collar-down-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "core_hardware",
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "dock-stage-0",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "category": "structure"
+    },
+    {
+      "name": "dock-stage-1",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "category": "structure"
+    },
+    {
+      "name": "dock-stage-2",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "category": "structure"
+    },
+    {
+      "name": "dock-stage-3",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "category": "structure"
+    },
+    {
+      "name": "cold-warning",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "hazard"
+    },
+    {
+      "name": "ice-vent",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "hazard"
+    },
+    {
+      "name": "world-w02",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "world"
+    }
+  ],
+  "backgrounds": [
+    {
+      "name": "w02-sky",
+      "width": 1024,
+      "height": 512,
+      "logicalWidth": 512,
+      "logicalHeight": 256,
+      "background": true
+    },
+    {
+      "name": "w02-ridge-far",
+      "width": 1024,
+      "height": 384,
+      "logicalWidth": 512,
+      "logicalHeight": 192,
+      "background": true
+    },
+    {
+      "name": "w02-ridge-near",
+      "width": 1024,
+      "height": 384,
+      "logicalWidth": 512,
+      "logicalHeight": 192,
+      "background": true
+    }
+  ]
+}

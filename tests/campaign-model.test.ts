@@ -507,7 +507,7 @@ describe("campaign import boundaries", () => {
     [
       "future schema",
       (state: ReturnType<typeof createCampaign>) => {
-        state.schema = 2 as 1;
+        state.schema = 3 as 1;
       },
     ],
     [

@@ -10,6 +10,12 @@ import {
   W01_MILESTONES,
   W01_ORES,
 } from "../src/campaign/config.ts";
+import {
+  W02,
+  W02_GEAR,
+  W02_MILESTONES,
+  W02_ORES,
+} from "../src/campaign/frontier.ts";
 
 const source = (name) => new URL(`../design/v0.1/${name}`, import.meta.url);
 const near = (actual, expected, message) =>
@@ -60,7 +66,7 @@ export function auditCampaignDesign({ balance, manifest }) {
     recordIds.push(world.id);
     const runtime = WORLD_CATALOG.find((entry) => entry.id === world.id);
     assert.ok(runtime, `${world.id} has runtime metadata`);
-    assert.equal(runtime.implemented, world.id === "W01");
+    assert.equal(runtime.implemented, ["W01", "W02"].includes(world.id));
     assert.equal(runtime.width, world.size[0]);
     assert.equal(runtime.rows, world.size[1]);
     assert.equal(runtime.layers, world.size[2]);
@@ -212,6 +218,47 @@ export function auditCampaignDesign({ balance, manifest }) {
     W01_MILESTONES.map((milestone) => milestone.fee),
     w01.milestone_fees.map((fee) => fee * 10),
   );
+  const w02 = balance.worlds.find((world) => world.id === "W02");
+  assert.deepEqual([W02.width, W02.rows, 1], w02.size);
+  assert.equal(W02.depth, w02.depth);
+  assert.equal(W02.budget, w02.budget.budget * 10);
+  assert.equal(W02.minOrdinary, w02.budget.minimum_ordinary_value * 10);
+  assert.deepEqual(
+    W02_ORES.map(({ id, value, bulk, mass, weight, tags }) => ({
+      id,
+      value,
+      bulk,
+      mass,
+      weight,
+      tags,
+    })),
+    w02.ores.map(({ id, value, bulk, mass, weight, tags }) => ({
+      id,
+      value: value * 10,
+      bulk,
+      mass,
+      weight,
+      tags,
+    })),
+  );
+  assert.deepEqual(
+    W02_GEAR.map(({ id, price, slot, requires }) => ({
+      id,
+      price,
+      slot,
+      requires,
+    })),
+    w02.gear.map(({ id, price, slot, requires }) => ({
+      id,
+      price: price * 10,
+      slot,
+      requires,
+    })),
+  );
+  assert.deepEqual(
+    W02_MILESTONES.map((milestone) => milestone.fee),
+    w02.milestone_fees.map((fee) => fee * 10),
+  );
   return {
     worlds: worldIds.size,
     routes: seen.size,
@@ -229,6 +276,6 @@ if (
 ) {
   const result = auditCampaignDesign(await readCampaignDesign());
   console.log(
-    `Campaign source verified: ${result.worlds} worlds, ${result.routes} routes, ${result.assets} asset briefs, ${result.cells.toLocaleString("en-US")} cells. Only W01 is implemented.`,
+    `Campaign source verified: ${result.worlds} worlds, ${result.routes} routes, ${result.assets} asset briefs, ${result.cells.toLocaleString("en-US")} cells. W01 and W02 are implemented.`,
   );
 }

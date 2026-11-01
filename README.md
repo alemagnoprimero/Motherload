@@ -1,6 +1,6 @@
 # Motherload · The deep frontier
 
-A single-player 2D browser mining game in Phaser and TypeScript, inspired by Motherload's free edition. Rebuild a lander on a broken asteroid, recover its navigation core and prepare for the next destination. The campaign is the only playable game.
+A single-player 2D browser mining game in Phaser and TypeScript, inspired by Motherload's free edition. Restore an asteroid lander, then travel to an ice comet to preserve volatile crystals and build its condenser. The campaign is the only playable game.
 
 ## Play
 
@@ -20,7 +20,7 @@ Momentum and committed cuts can continue after release. Browser modifier shortcu
 3. **Unload & sell** banks mission cargo and sells ordinary packages. **Bank without sale** stores packages safely. Refuel, repair and compare upgrades in the terminal. Services preview total cost and resulting condition, including partial fills.
 4. Complete and fund the three stages: beacon/three banked ore packages plus **200 CR**; pressure valve at **250 m** and antenna at **400 m** plus **300 CR**; navigation core at **600 m** plus **500 CR**. The live checklist tracks discoveries, onboard/banked items, funds and the next action.
 5. Rank-1 hardware opens after M1. Anchoring feet cost **400 CR**; the **900 CR** cargo rack opens after M2 and requires ownership of the feet. Equipment shows current → next benefits and missing credits/prerequisites. Energy/hull purchases fill the new capacity.
-6. Restore the lander and launch. **W01 Broken asteroid is the playable chapter.** Ice comet and Fractured moon are charted next destinations, not yet playable.
+6. Restore the lander and launch. Open **Navigation** at the lander and travel to **W02 Ice comet**. W01 and W02 are playable; Fractured moon and Iron planet remain in development.
 
 The two opening veins retain their 380/480 CR gross rewards. Construction and services come out of that balance. A full hold leaves recoverable packages in the world; **Pause → Cargo manifest** allows ejection without duplicating package identities.
 
@@ -29,6 +29,14 @@ Low energy and critical hull warnings persist ahead of routine pickups. Disabled
 The world wraps horizontally. Wall-occluded discovery keeps unexplored ore hidden. Known minerals have distinct shape markers explained by the pause menu's ore/hazard legend.
 
 Mission sites have recognizable wreckage: a survey mast, pressure assembly, communications dish and navigation capsule. Follow the current objective's signal, then excavate the marked debris and approach the exposed part to recover it. Nearby signals gain a world marker and approach alert. The locator points back to the lander when cargo needs banking; surveyed and recovered sites leave wreckage behind. Signals do not expose undiscovered minerals.
+
+## Your comet expedition
+
+Travel previews and banks carried cargo before departure. Your credits, equipment and both excavated worlds persist; arrival waits in the destination's terminal. Conditions carry over, so service the rig before leaving when needed. Navigation also returns you to the asteroid.
+
+Bank five thermal samples at **150 m**, three intact cryosilicates from **450 m**, then the catalyst at **1000 m**. The HUD tracks each goal and its construction fee. Volatile cuts show a completion cue: **release drilling within 0.75 seconds** to preserve the package. Lift the joystick or return to neutral; keyboard toggle users can press Down again or use **Release drill**. Pause freezes the window.
+
+The thermal auger cuts ice faster, the condenser recovers part of actual drilling energy, and the preservation chamber adds a Precision hold action (**Q** by default). Rank-2 hardware becomes available on the comet. See [comet rules, prices and limits](docs/CAMPAIGN_W02.md).
 
 ## Saving
 
@@ -70,6 +78,7 @@ npm run build
 npm run test:browser       # campaign preview on port 5173
 npm run test:usability     # responsive HUD, safety, restore and input
 npm run test:poi           # mission landmarks, proximity and recovery guidance
+npm run test:frontier      # travel, comet extraction and stage progression
 npm run test:production    # compiled game, defaults to port 8080
 npm run test:campaign:storage
 ```

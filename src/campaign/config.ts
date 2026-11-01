@@ -89,7 +89,7 @@ export const WORLD_CATALOG: readonly WorldDefinition[] = [
     referenceBudget: 186000,
     ordinaryFloor: 558000,
     topology: "wrap",
-    implemented: false,
+    implemented: true,
     palette: ["102B3D", "3C8196", "B8E6EB", "49D8C6", "F7C673"],
   },
   {
@@ -342,6 +342,7 @@ export const WORLD_CATALOG: readonly WorldDefinition[] = [
 ];
 export const W01 = {
   id: "W01",
+  name: "Broken asteroid",
   width: 40,
   rows: 60,
   depth: 600,

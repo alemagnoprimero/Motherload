@@ -47,10 +47,24 @@ export interface CampaignWorld {
   packages: CampaignPackage[];
   missions: CampaignMission[];
   shelves: CampaignShelf[];
+  /** Local construction is independent of the restored W01 lander. */
+  completed?: number[];
+  /** A cut's release window freezes while paused or on an inactive world. */
+  volatile?: {
+    packageIds: string[];
+    remaining: number;
+    spent: number;
+    precision: boolean;
+  };
+  climate?: {
+    coldRemaining: number;
+    ventCooldown: number;
+    warning: number | null;
+  };
 }
 
 export interface CampaignState {
-  schema: 1;
+  schema: 1 | 2;
   balanceVersion: "0.1";
   generatorVersion: 1;
   id: string;
@@ -67,7 +81,7 @@ export interface CampaignState {
     utilities: string[];
   };
   vehicle: { x: number; y: number; energy: number; hull: number };
-  currentWorld: "W01";
+  currentWorld: "W01" | "W02";
   worlds: Record<string, CampaignWorld>;
   progress: {
     beacon: boolean;

@@ -9,7 +9,7 @@ COPY src ./src
 COPY tests ./tests
 COPY assets/campaign/generated ./assets/campaign/generated
 COPY design/v0.1 ./design/v0.1
-COPY scripts/check-campaign-data.mjs scripts/check-campaign-assets.mjs ./scripts/
+COPY scripts/check-campaign-data.mjs scripts/check-campaign-assets.mjs scripts/check-frontier-assets.mjs ./scripts/
 RUN npm run build
 
 FROM nginx:1.28-alpine AS runtime

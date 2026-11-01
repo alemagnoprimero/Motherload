@@ -1,7 +1,16 @@
 import type { Campaign } from "./model";
 import { W01 } from "./config";
+import { W02 } from "./frontier";
 
-export type MissionPoiKind = "beacon" | "valve" | "antenna" | "core" | "lander";
+export type MissionPoiKind =
+  | "beacon"
+  | "valve"
+  | "antenna"
+  | "core"
+  | "sample"
+  | "cryo"
+  | "catalyst"
+  | "lander";
 export type MissionPoiStatus =
   "source" | "surveyed" | "carried" | "banked" | "ready";
 export type MissionSignalBand = "distant" | "near" | "close" | "at";
@@ -51,7 +60,7 @@ export interface MissionSignal {
   alertKey: string;
 }
 
-/** Ranges use world cells; W01 maps each cell to ten displayed metres. */
+/** Ranges use world cells; implemented worlds map each cell to ten metres. */
 export const MISSION_SIGNAL_RANGES = {
   near: 8,
   close: 3,
@@ -97,6 +106,8 @@ export function campaignPois(campaign: Campaign): MissionPoi[] {
     buried: campaign.tile(poi.x, poi.y) !== 0,
     depthMeters: Math.max(0, (Math.floor(poi.y) + 1) * 10),
   });
+  if (campaign.state.currentWorld === "W02")
+    return cometPois(campaign, describe);
   const result: MissionPoi[] = [
     describe({
       id: "W01-BEACON",
@@ -128,22 +139,137 @@ export function campaignPois(campaign: Campaign): MissionPoi[] {
   return result;
 }
 
-type ReturnReason = "ore" | "mission" | "construction" | "launch";
+function cometPois(
+  campaign: Campaign,
+  describe: (
+    poi: Omit<MissionPoi, "known" | "visible" | "buried" | "depthMeters">,
+  ) => MissionPoi,
+): MissionPoi[] {
+  const missions = campaign.world.missions
+    .filter((item) => item.id.startsWith("W02-SAMPLE-") || item.id === "W02-Q")
+    .map((item) =>
+      describe({
+        id: item.id,
+        kind: item.id === "W02-Q" ? "catalyst" : "sample",
+        name: item.name,
+        title: item.id === "W02-Q" ? "Cryogenic capsule" : "Helion sample seam",
+        frame: item.id === "W02-Q" ? "mission-catalyst" : "mission-sample",
+        stage: item.id === "W02-Q" ? 3 : 1,
+        x: item.x,
+        y: item.y,
+        status: item.status,
+      }),
+    );
+  const crystals = campaign.world.packages.filter(
+    (item) =>
+      item.itemId === "W02-O3" &&
+      item.tags.includes("cryosample") &&
+      item.status !== "lost" &&
+      ((item.status !== "carried" &&
+        item.status !== "banked" &&
+        item.status !== "sold") ||
+        item.tags.includes("intact")),
+  );
+  const marked = crystals.filter((item) => {
+    const [, , row, column] = item.id.split(":");
+    return (
+      [W02.cryoRow, W02.cryoRow + 1].includes(Number(row)) &&
+      Number(column) >= 22 &&
+      Number(column) <= 25
+    );
+  });
+  // Retain the authored seam and one real replacement source if it is spent.
+  // Ordinary deposits remain ordinary ore rather than dozens of POI landmarks.
+  const nearest = crystals
+    .filter((item) => item.status === "deposit" || item.status === "exposed")
+    .sort((a, b) => distanceTo(campaign, a) - distanceTo(campaign, b))[0];
+  const relevant = new Map(marked.map((item) => [item.id, item]));
+  if (campaign.currentMilestone?.id === 2 && nearest)
+    relevant.set(nearest.id, nearest);
+  for (const id of campaign.volatileWindow?.packageIds ?? []) {
+    const item = crystals.find((crystal) => crystal.id === id);
+    if (item) relevant.set(item.id, item);
+  }
+  return [
+    ...missions,
+    ...Array.from(relevant.values(), (item) =>
+      describe({
+        id: item.id,
+        kind: "cryo",
+        name: "Intact cryosilicate",
+        title: "Crystal preservation seam",
+        frame: "mission-cryovein",
+        stage: 2,
+        x: item.x,
+        y: item.y,
+        status:
+          item.status === "banked" || item.status === "sold"
+            ? "banked"
+            : item.status === "carried"
+              ? "carried"
+              : "source",
+      }),
+    ),
+  ];
+}
+
+function distanceTo(campaign: Campaign, target: { x: number; y: number }) {
+  return Math.hypot(
+    wrapDelta(campaign.state.vehicle.x, target.x, campaign.world.width),
+    target.y - campaign.state.vehicle.y,
+  );
+}
+
+type ReturnReason =
+  | "ore"
+  | "mission"
+  | "samples"
+  | "intact"
+  | "space"
+  | "construction"
+  | "launch"
+  | "travel";
 
 /** Current-stage bearings are mission broadcasts, not a scanner for hidden ore. */
 export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
   const state = campaign.state;
-  if (state.progress.departed) return undefined;
+  const comet = state.currentWorld === "W02";
+  if (!comet && state.progress.departed) return undefined;
   const milestone = campaign.currentMilestone;
   const pois = campaignPois(campaign);
   let poi: MissionPoi | undefined;
   let returnReason: ReturnReason | undefined;
-  const distance = (target: MissionPoi) =>
-    Math.hypot(
-      wrapDelta(state.vehicle.x, target.x, campaign.world.width),
-      target.y - state.vehicle.y,
-    );
-  if (!milestone) returnReason = "launch";
+  const distance = (target: MissionPoi) => distanceTo(campaign, target);
+  if (comet) {
+    if (!milestone) returnReason = "travel";
+    else if (campaign.missionReady) returnReason = "construction";
+    else {
+      const required = pois.filter((item) => item.stage === milestone.id);
+      if (milestone.id === 1) {
+        const carried = required.filter(
+          (item) => item.status === "carried",
+        ).length;
+        if (carried + campaign.bankedSamples >= 5) returnReason = "samples";
+      } else if (milestone.id === 2) {
+        const carried = campaign.cargo.filter(
+          (item) =>
+            item.itemId === "W02-O3" &&
+            item.tags.includes("cryosample") &&
+            item.tags.includes("intact"),
+        ).length;
+        if (
+          carried + campaign.bankedIntact >= 3 ||
+          campaign.cargoBulk + 2 > campaign.capacity
+        )
+          returnReason = carried ? "intact" : "space";
+      } else if (required.some((item) => item.status === "carried"))
+        returnReason = "mission";
+      if (!returnReason)
+        poi = required
+          .filter((item) => item.status === "source")
+          .sort((a, b) => distance(a) - distance(b))[0];
+    }
+  } else if (!milestone) returnReason = "launch";
   else if (milestone.id === 1) {
     if (!state.progress.beacon)
       poi = pois.find((item) => item.kind === "beacon");
@@ -164,13 +290,13 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
   }
   if (returnReason)
     poi = {
-      id: "W01-LANDER",
+      id: `${state.currentWorld}-LANDER`,
       kind: "lander",
-      name: "Salvage lander",
+      name: comet ? "Comet lander" : "Salvage lander",
       title: "Surface lander",
-      x: W01.dockX,
-      y: -W01.bodyHalfY,
-      frame: "dock-stage-" + state.progress.completed.length,
+      x: campaign.activeWorldDefinition.dockX,
+      y: -campaign.activeWorldDefinition.bodyHalfY,
+      frame: "dock-stage-" + campaign.completedMilestones.length,
       stage: milestone?.id ?? 3,
       status: "ready",
       known: true,
@@ -227,6 +353,18 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
     action = campaign.atDock
       ? "Dock and bank your ore"
       : "Return to the lander to bank ore";
+  else if (returnReason === "samples")
+    action = campaign.atDock
+      ? "Dock and bank Helion samples"
+      : "Return to the lander to bank Helion samples";
+  else if (returnReason === "intact")
+    action = campaign.atDock
+      ? "Dock and bank intact cryosilicate"
+      : "Return to the lander to bank intact cryosilicate";
+  else if (returnReason === "space")
+    action = campaign.atDock
+      ? "Dock and bank cargo to make room"
+      : "Return to the lander and bank cargo to make room";
   else if (returnReason === "mission")
     action = campaign.atDock
       ? "Dock and bank mission cargo"
@@ -235,6 +373,10 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
     action = campaign.atDock
       ? "Dock and launch"
       : "Return to the lander to launch";
+  else if (returnReason === "travel")
+    action = campaign.atDock
+      ? "Dock to travel or continue mining this claim"
+      : "Return to the lander to travel";
   else if (returnReason === "construction")
     action =
       state.credits >= milestone!.fee
@@ -244,6 +386,18 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
         : "Sell ore at the lander to fund construction";
   else if (poi.kind === "beacon")
     action = "Approach the wreck beacon to survey";
+  else if (poi.kind === "sample")
+    action = poi.buried
+      ? "Excavate the marked Helion sample pods"
+      : "Approach to recover the Helion sample";
+  else if (poi.kind === "cryo")
+    action = poi.buried
+      ? "Cut the marked crystal, then release at the completion cue"
+      : "Approach to recover the preserved crystal";
+  else if (poi.kind === "catalyst")
+    action = poi.buried
+      ? "Excavate the cryogenic capsule"
+      : "Approach to recover the cryogenic catalyst";
   else
     action = poi.buried
       ? "Excavate the marked debris"
@@ -251,6 +405,8 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
 
   if (returnReason && !campaign.atDock && cells <= 3 && state.vehicle.y < 0)
     action = "Land in the illuminated bay to dock";
+  if (comet && campaign.volatileWindow)
+    action = "Release drilling now to preserve the crystal";
 
   return {
     targetId: poi.id,

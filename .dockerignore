@@ -20,5 +20,6 @@
 !scripts/
 !scripts/check-campaign-data.mjs
 !scripts/check-campaign-assets.mjs
+!scripts/check-frontier-assets.mjs
 !docker/
 !docker/nginx.conf

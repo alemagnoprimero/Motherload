@@ -37,7 +37,7 @@ describe("versioned campaign configuration", () => {
       WORLD_CATALOG.filter((world) => world.implemented).map(
         (world) => world.id,
       ),
-    ).toEqual(["W01"]);
+    ).toEqual(["W01", "W02"]);
   });
 
   it("matches W01 unlock prerequisites and construction fees", () => {

@@ -1,6 +1,6 @@
 # Campaign artwork: W01
 
-The game uses original, editable 2D artwork derived from the design pack's shape, palette and production rules. Its SVG sources, atlas, backgrounds and icons are the sole game artwork pipeline. The supplied concept boards are visual references; their images are not cropped into the playable atlas.
+The game uses original, editable 2D artwork derived from the design pack's shape, palette and production rules. W01's SVG sources, atlas, backgrounds and icons are described here; the separate [W02 pipeline](CAMPAIGN_W02.md) adds comet artwork and rank-2 modules. The supplied concept boards are visual references; their images are not cropped into the playable atlases.
 
 ## Build and validation
 
