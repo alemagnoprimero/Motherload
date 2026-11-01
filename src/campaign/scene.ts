@@ -3,6 +3,7 @@ import type { Campaign } from "./model";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
 import { campaignSafeArea, campaignTileSize } from "./layout";
 import { CampaignPointer, TOUCH_JOYSTICK } from "./pointer";
+import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
 import { campaignOreMarker, drawOreMarker } from "../mineral-legend";
 export { campaignSafeArea, campaignTileSize } from "./layout";
 
@@ -53,6 +54,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private edges!: Phaser.GameObjects.Graphics;
     private effects!: Phaser.GameObjects.Graphics;
     private screen!: Phaser.GameObjects.Graphics;
+    private wreckage!: Phaser.GameObjects.Graphics;
+    private wreckMaskShape!: Phaser.GameObjects.Graphics;
+    private wreckMask!: Phaser.Display.Masks.GeometryMask;
     private images: Phaser.GameObjects.Image[] = [];
     private labels: Phaser.GameObjects.Text[] = [];
     private sky!: Phaser.GameObjects.TileSprite;
@@ -179,6 +183,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.edges = this.add.graphics().setDepth(11);
       this.effects = this.add.graphics().setDepth(24);
       this.screen = this.add.graphics().setDepth(40);
+      this.wreckMaskShape = this.add.graphics().setVisible(false);
+      this.wreckMask = this.wreckMaskShape.createGeometryMask();
+      this.wreckage = this.add.graphics().setDepth(14).setMask(this.wreckMask);
       this.sky = this.add
         .tileSprite(0, 0, 1, 1, "campaign-sky")
         .setOrigin(0)
@@ -394,6 +401,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         .setAlpha(alpha)
         .setFlipX(flip)
         .clearTint()
+        .clearMask()
         .setVisible(true);
       return true;
     }
@@ -434,6 +442,263 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         .setAlign(centered === "right" ? "right" : centered ? "center" : "left")
         .setWordWrapWidth(Math.max(120, this.scale.width - 48), true)
         .setVisible(true);
+      return label;
+    }
+
+    /** Wrecks are scenery, not terrain: a shared known-cell mask hides buried pieces. */
+    private wreck(
+      poi: MissionPoi,
+      x: number,
+      y: number,
+      tile: number,
+      alpha: number,
+    ) {
+      const g = this.wreckage;
+      const X = (offset: number) => x + offset * tile;
+      const Y = (offset: number) => y + offset * tile;
+      const plate = (points: number[][], color = 0x334b55) => {
+        const shape = points.map(([a, b]) => ({ x: X(a!), y: Y(b!) }));
+        g.fillStyle(color, alpha);
+        g.fillPoints(shape, true);
+        g.lineStyle(1.4, 0x8da6ab, alpha * 0.8);
+        g.strokePoints(shape, true);
+      };
+      const line = (
+        a: number,
+        b: number,
+        c: number,
+        d: number,
+        color = 0x9bacb1,
+        size = 2,
+      ) => {
+        g.lineStyle(size, color, alpha);
+        g.lineBetween(X(a), Y(b), X(c), Y(d));
+      };
+      // Torn ground plates and exposed cables make the whole footprint a salvage site.
+      plate(
+        [
+          [-1.35, 0.38],
+          [-0.55, 0.15],
+          [0.55, 0.38],
+          [1.3, 0.64],
+          [0.4, 0.83],
+          [-1.1, 0.66],
+        ],
+        0x243943,
+      );
+      line(-1.25, 0.72, -0.55, 0.58, 0xc18c54);
+      line(-0.55, 0.58, 0.25, 0.76, 0xc18c54);
+      line(0.25, 0.76, 1.36, 0.48, 0xc18c54);
+
+      if (poi.kind === "beacon") {
+        plate([
+          [-1.35, -0.46],
+          [-0.84, -0.83],
+          [0.55, -0.62],
+          [1.2, 0.26],
+          [0.45, 0.54],
+          [-1.04, 0.34],
+        ]);
+        plate(
+          [
+            [-0.98, -0.43],
+            [-0.73, -0.64],
+            [-0.2, -0.55],
+            [-0.36, -0.16],
+          ],
+          0x172b34,
+        );
+        line(-1.06, 0.02, -0.34, 0.16);
+        line(0.44, -0.48, 0.88, 0.08);
+        // The transmitter projects up the approach shaft, left of the rig.
+        // Its mast and control panel can be recognised before the buried hull
+        // enters survey range; the same known-cell mask still clips every part.
+        line(-0.88, -0.28, -0.88, -2.02, 0xb4c6c5, 4);
+        line(-0.88, -1.93, -1.3, -1.8, 0xd2a66e, 3);
+        line(-0.88, -1.93, -0.46, -1.8, 0xd2a66e, 3);
+        line(-0.88, -0.32, -1.32, -0.07, 0xaababa, 3);
+        plate(
+          [
+            [-1.29, -1.9],
+            [-0.59, -1.9],
+            [-0.59, -1.23],
+            [-1.29, -1.23],
+          ],
+          0x38545d,
+        );
+        plate(
+          [
+            [-1.19, -1.79],
+            [-0.69, -1.79],
+            [-0.69, -1.47],
+            [-1.19, -1.47],
+          ],
+          0x122d37,
+        );
+        const signalColor = poi.status === "surveyed" ? 0x93d9c2 : 0xf0b86e;
+        line(-1.14, -1.69, -1.02, -1.69, signalColor, 2);
+        line(-1.02, -1.69, -0.95, -1.58, signalColor, 2);
+        line(-0.95, -1.58, -0.84, -1.72, signalColor, 2);
+        line(-0.84, -1.72, -0.73, -1.72, signalColor, 2);
+        line(-1.14, -1.36, -0.74, -1.36, 0xc6b17f, 3);
+        g.fillStyle(signalColor, alpha);
+        g.fillCircle(X(-0.88), Y(-2.04), tile * 0.08);
+      } else if (poi.kind === "valve") {
+        g.fillStyle(0x2d454f, alpha);
+        g.fillRoundedRect(
+          X(-1.05),
+          Y(-0.42),
+          tile * 2.1,
+          tile * 0.85,
+          tile * 0.24,
+        );
+        g.lineStyle(2, 0x92aaad, alpha);
+        g.strokeRoundedRect(
+          X(-1.05),
+          Y(-0.42),
+          tile * 2.1,
+          tile * 0.85,
+          tile * 0.24,
+        );
+        for (const offset of [-0.65, 0.65])
+          line(offset, -0.43, offset, 0.43, 0xbdc7bc, 3);
+        line(-1.04, -0.02, -1.48, -0.02, 0xc7ac7b, 4);
+        line(1.04, 0.12, 1.43, 0.12, 0xc7ac7b, 4);
+        line(0.1, -0.4, 0.1, -0.94, 0xc7ac7b, 4);
+        line(-0.15, -0.94, 0.35, -0.94, 0xc7ac7b, 3);
+        g.lineStyle(2, 0xe1b779, alpha);
+        g.strokeCircle(X(0), Y(0), tile * 0.34);
+      } else if (poi.kind === "antenna") {
+        line(-0.8, 0.55, 0.55, -0.96, 0xb7c7c9, 4);
+        line(-0.7, 0.5, 0.08, 0.43, 0x819ba3, 3);
+        line(0.08, 0.43, 0.55, -0.96, 0x819ba3, 3);
+        plate(
+          [
+            [0.08, -1.06],
+            [0.28, -0.65],
+            [0.98, -0.56],
+            [1.29, -0.89],
+            [0.63, -1.22],
+          ],
+          0x536b71,
+        );
+        line(0.27, -0.83, 0.94, -1.37, 0xe2bb83);
+        g.fillStyle(0xf0b86e, alpha);
+        g.fillCircle(X(0.96), Y(-1.39), tile * 0.055);
+        plate(
+          [
+            [-1.23, 0.08],
+            [-0.9, -0.16],
+            [-0.45, 0.05],
+            [-0.65, 0.36],
+          ],
+          0x50626a,
+        );
+      } else if (poi.kind === "core") {
+        plate(
+          [
+            [-1.2, -0.43],
+            [-0.8, -0.82],
+            [0.72, -0.82],
+            [1.18, -0.35],
+            [1.18, 0.39],
+            [0.72, 0.76],
+            [-0.8, 0.76],
+            [-1.2, 0.34],
+          ],
+          0x314b56,
+        );
+        plate(
+          [
+            [-0.79, -0.52],
+            [0.62, -0.52],
+            [0.89, -0.25],
+            [0.89, 0.27],
+            [0.57, 0.49],
+            [-0.78, 0.49],
+          ],
+          0x152b35,
+        );
+        line(-0.96, -0.3, -0.96, 0.28, 0xe3b574, 4);
+        line(0.98, -0.25, 0.98, 0.28, 0xe3b574, 4);
+        for (const offset of [-0.45, 0, 0.45])
+          line(offset, -0.68, offset, -0.52, 0x8ddbd6, 3);
+      }
+      if (poi.status === "carried" || poi.status === "banked") {
+        g.fillStyle(0x10252e, alpha);
+        g.fillCircle(x, y, tile * 0.25);
+        g.lineStyle(1.5, 0x8ba9ad, alpha);
+        g.strokeCircle(x, y, tile * 0.25);
+        line(-0.15, 0, 0.15, 0, 0x92c2b5);
+      }
+      for (const [a, b] of [
+        [-1.08, 0.45],
+        [1.01, 0.49],
+        [-0.44, 0.6],
+      ]) {
+        g.fillStyle(0xc6c9b9, alpha);
+        g.fillCircle(X(a!), Y(b!), Math.max(1.5, tile * 0.025));
+      }
+    }
+
+    private missionLabel(
+      x: number,
+      y: number,
+      rigX: number,
+      rigY: number,
+      tile: number,
+      safe: { top: number; bottom: number },
+      text: string,
+      color: string,
+    ) {
+      const width = this.scale.width,
+        height = this.scale.height;
+      const beside =
+        height <= 420 ||
+        (Math.abs(x - rigX) < tile * 0.8 &&
+          Math.abs(y - tile * 1.5 - rigY) < tile);
+      const left = x <= rigX;
+      const anchorX = beside
+        ? Math.max(20, Math.min(width - 20, x + (left ? -1 : 1) * tile * 0.85))
+        : Math.max(135, Math.min(width - 135, x));
+      const label = this.label(
+        anchorX,
+        y - tile * (beside ? 0.25 : 1.5),
+        text,
+        color,
+        beside ? (left ? "right" : false) : true,
+      );
+      if (beside)
+        label.setWordWrapWidth(
+          Math.max(75, left ? anchorX - 14 : width - anchorX - 14),
+          true,
+        );
+      let labelY = Math.max(
+        safe.top + 5,
+        Math.min(height - safe.bottom - label.height - 8, label.y),
+      );
+      // The completed landmark label and a new survey toast can coexist.
+      for (const id of ["campaign-danger", "campaign-message"]) {
+        const overlay = document.getElementById(id);
+        if (
+          !overlay ||
+          overlay.hidden ||
+          (id === "campaign-message"
+            ? !overlay.classList.contains("visible")
+            : Number(getComputedStyle(overlay).opacity) <= 0)
+        )
+          continue;
+        const box = overlay.getBoundingClientRect();
+        const bounds = label.getBounds();
+        if (
+          bounds.right > box.left &&
+          bounds.left < box.right &&
+          labelY < box.bottom &&
+          labelY + label.height > box.top
+        )
+          labelY = Math.max(safe.top + 5, box.top - label.height - 8);
+      }
+      label.setY(labelY);
     }
 
     private burst(x: number, y: number, color: number, count = 10) {
@@ -603,6 +868,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       edges.clear();
       fx.clear();
       this.screen.clear();
+      this.wreckage.clear();
+      this.wreckMaskShape.clear().fillStyle(0xffffff);
       for (const image of this.images) image.setVisible(false);
       for (const label of this.labels) label.setVisible(false);
       this.imageIndex = 0;
@@ -698,6 +965,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             );
             continue;
           }
+          if (row < world.rows)
+            this.wreckMaskShape.fillRect(
+              x - tile / 2,
+              y - tile / 2,
+              tile,
+              tile,
+            );
           const type = row >= world.rows ? 3 : world.tiles[index];
           const lit = row >= world.rows || campaign.isVisible(canonical, row);
           const distance = Math.hypot(
@@ -833,42 +1107,159 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         }
       }
 
-      // Objective markers only appear in geometry that has actually been seen.
-      if (!campaign.state.progress.beacon && campaign.isKnown(20, 9)) {
-        const x = this.unwrappedX + delta(campaign.renderX, 20.5, world.width);
-        this.image(
-          "mission-beacon",
-          x * tile - cx,
-          9.5 * tile - cy,
-          tile,
-          tile,
-          14,
-        );
-      }
-      for (const mission of world.missions) {
+      const pois = campaignPois(campaign);
+      const signal = campaignSignal(campaign);
+      const poiScreenTargets: {
+        id: string;
+        x: number;
+        y: number;
+        known: boolean;
+        status: string;
+        lit: boolean;
+      }[] = [];
+      const sourceMarkers: string[] = [];
+      for (const poi of pois) {
+        const x =
+          (this.unwrappedX + delta(campaign.renderX, poi.x, world.width)) *
+            tile -
+          cx;
+        const y = poi.y * tile - cy;
         if (
-          mission.status !== "source" ||
-          !campaign.isKnown(Math.floor(mission.x), Math.floor(mission.y))
+          x < -tile * 1.6 ||
+          x > width + tile * 1.6 ||
+          y < -tile * 2.15 ||
+          y > height + tile * 1.6
         )
           continue;
-        const frame = /valve/i.test(mission.id)
-          ? "mission-valve"
-          : /antenna/i.test(mission.id)
-            ? "mission-antenna"
-            : "mission-core";
-        const x =
-          this.unwrappedX + delta(campaign.renderX, mission.x, world.width);
-        this.image(
-          frame,
-          x * tile - cx,
-          mission.y * tile - cy,
-          tile * 0.86,
-          tile * 0.86,
-          14,
-          campaign.isVisible(Math.floor(mission.x), Math.floor(mission.y))
-            ? 1
-            : 0.42,
+        let knownFootprint = false;
+        let litFootprint = false;
+        for (
+          let row = Math.floor(poi.y - (poi.kind === "beacon" ? 2.1 : 1.5));
+          row <= Math.floor(poi.y + 0.9);
+          row++
+        )
+          for (
+            let column = Math.floor(poi.x - 1.5);
+            column <= Math.floor(poi.x + 1.5);
+            column++
+          ) {
+            if (row < 0 || row >= world.rows) continue;
+            knownFootprint ||= campaign.isKnown(wrap(column, world.width), row);
+            litFootprint ||= campaign.isVisible(wrap(column, world.width), row);
+          }
+        if (!knownFootprint) continue;
+        const alpha = litFootprint ? 0.95 : 0.42;
+        this.wreck(poi, x, y, tile, alpha);
+        poiScreenTargets.push({
+          id: poi.id,
+          x: Math.round(x),
+          y: Math.round(y),
+          known: poi.known,
+          status: poi.status,
+          lit: litFootprint,
+        });
+        if (
+          poi.known &&
+          (poi.status === "source" || poi.status === "surveyed")
+        ) {
+          if (
+            this.image(
+              poi.frame,
+              x,
+              y,
+              tile * 0.8,
+              tile * 0.8,
+              15,
+              poi.visible ? 1 : 0.42,
+            )
+          )
+            this.images[this.imageIndex - 1]!.setMask(this.wreckMask);
+          if (poi.status === "source") sourceMarkers.push(poi.id);
+        }
+        const distance = Math.hypot(
+          delta(campaign.renderX, poi.x, world.width),
+          poi.y - campaign.renderY,
         );
+        if (poi.visible && distance < 3.8 && poi.id !== signal?.targetId) {
+          const suffix =
+            poi.status === "surveyed"
+              ? " · surveyed"
+              : poi.status === "carried" || poi.status === "banked"
+                ? " · recovered"
+                : " · mission part";
+          this.missionLabel(
+            x,
+            y,
+            px,
+            py,
+            tile,
+            safe,
+            poi.title + suffix,
+            poi.status === "source" ? "#F6E1AF" : "#A7D8C5",
+          );
+        }
+      }
+      // A local mission radio pin may cross fog; it never draws terrain or ore.
+      // The broad physical wreck underneath remains clipped to discovered cells.
+      let poiMarkerX = "",
+        poiMarkerY = "",
+        poiMarkerVisible = false;
+      if (signal && signal.kind !== "lander" && signal.band !== "distant") {
+        const poi = signal.poi;
+        const x =
+          (this.unwrappedX + delta(campaign.renderX, poi.x, world.width)) *
+            tile -
+          cx;
+        const y = poi.y * tile - cy;
+        const minY = safe.top + 22,
+          maxY = Math.max(minY, height - safe.bottom - 22);
+        const markerX = Math.max(26, Math.min(width - 26, x));
+        const markerY = Math.max(minY, Math.min(maxY, y));
+        const onScreen = x >= 26 && x <= width - 26 && y >= minY && y <= maxY;
+        const pulse = bindings.reducedMotion?.()
+          ? 0
+          : Math.sin(this.elapsed * 3) * 2;
+        const radius = poi.known ? tile * 0.53 + pulse : 15 + pulse;
+        this.screen.lineStyle(1.6, 0xf6cb85, 0.9);
+        if (onScreen) {
+          this.screen.strokeCircle(markerX, markerY, radius);
+          for (const side of [-1, 1]) {
+            const a = markerX + side * (radius + 5);
+            this.screen.lineBetween(a, markerY - 5, a, markerY + 5);
+          }
+        } else {
+          const angle = Math.atan2(y - markerY, x - markerX);
+          this.screen.strokeCircle(markerX, markerY, 10);
+          this.screen.fillStyle(0xf6cb85, 0.95);
+          const ax = markerX + Math.cos(angle) * 17,
+            ay = markerY + Math.sin(angle) * 17;
+          this.screen.fillTriangle(
+            ax,
+            ay,
+            markerX + Math.cos(angle + 1.6) * 6,
+            markerY + Math.sin(angle + 1.6) * 6,
+            markerX + Math.cos(angle - 1.6) * 6,
+            markerY + Math.sin(angle - 1.6) * 6,
+          );
+        }
+        poiMarkerX = markerX.toFixed(2);
+        poiMarkerY = markerY.toFixed(2);
+        poiMarkerVisible = true;
+        if (onScreen) {
+          const text = poi.known
+            ? poi.title
+            : `${poi.kind === "beacon" ? "Wreck" : poi.kind === "valve" ? "Valve" : poi.kind === "antenna" ? "Antenna" : "Core"} signal`;
+          this.missionLabel(
+            markerX,
+            markerY,
+            px,
+            py,
+            tile,
+            safe,
+            `${text} · ${signal.distanceMeters} m`,
+            "#F6D39B",
+          );
+        }
       }
       for (const shelf of world.shelves) {
         if (
@@ -1187,6 +1578,16 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           joystickKnobY: joystick?.knobY.toFixed(2) ?? "",
           rigScreenX: px.toFixed(2),
           rigScreenY: py.toFixed(2),
+          poiLandmarks: poiScreenTargets.map((poi) => poi.id).join(","),
+          poiSourceMarkers: sourceMarkers.join(","),
+          poiScreenTargets: JSON.stringify(poiScreenTargets),
+          poiSignalTarget: signal?.targetId ?? "",
+          poiSignalBand: signal?.band ?? "",
+          poiTargetKnown: String(Boolean(signal?.poi.known)),
+          poiTargetVisible: String(Boolean(signal?.poi.visible)),
+          poiMarkerVisible: String(poiMarkerVisible),
+          poiMarkerX,
+          poiMarkerY,
           worldCallout: String(Boolean(callout)),
           inspection: this.inspection && callout ? callout : "",
         }))

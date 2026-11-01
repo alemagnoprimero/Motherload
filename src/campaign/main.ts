@@ -25,6 +25,7 @@ import {
 } from "./input";
 import { CampaignAudio } from "./audio";
 import { campaignMission } from "./missions";
+import { campaignSignal } from "./poi";
 import { CAMPAIGN_ORE_LEGEND, CAMPAIGN_HAZARD_LEGEND } from "../mineral-legend";
 import type { CampaignState, HardwareKey } from "./types";
 import "./style.css";
@@ -138,6 +139,9 @@ let restoring = false;
 let restoredAfterConfirmation = false;
 let lastSavedAt: number | undefined;
 let lastSaveWasAutomatic = true;
+let signalCampaign: Campaign | undefined;
+let signalRecovery = -1;
+const announcedSignalBands = new Map<string, number>();
 
 $("app").innerHTML = `
 <main class="campaign-shell" aria-label="Motherload campaign">
@@ -155,7 +159,7 @@ $("app").innerHTML = `
     </section>
   </div>
   <button id="campaign-menu-toggle" class="campaign-menu-button" aria-haspopup="dialog" aria-controls="campaign-menu" aria-label="Pause menu" title="Pause menu"></button>
-  <section class="campaign-objective" aria-label="Stage mission">${hudIcon("mission")}<div class="objective-copy"><div class="mission-heading"><span id="campaign-objective-step">01 / 03</span><strong id="campaign-objective-title">Survey the wreck</strong></div><ul id="campaign-objective-progress" aria-label="Mission goals"></ul><p id="campaign-objective-next"></p><small id="campaign-objective-reward"></small></div></section>
+  <section class="campaign-objective" aria-label="Stage mission">${hudIcon("mission")}<div class="objective-copy"><div class="mission-heading"><span id="campaign-objective-step">01 / 03</span><strong id="campaign-objective-title">Survey the wreck</strong></div><ul id="campaign-objective-progress" aria-label="Mission goals"></ul><div id="campaign-mission-signal" class="mission-signal" role="group" aria-label="Mission locator" hidden><span id="campaign-signal-direction" class="signal-direction" aria-hidden="true"></span><span id="campaign-signal-direction-label" class="sr-only"></span><strong id="campaign-signal-target"></strong><span id="campaign-signal-distance"></span><span id="campaign-signal-proximity" class="signal-proximity"></span></div><p id="campaign-objective-next"></p><small id="campaign-objective-reward"></small></div></section>
   <div id="campaign-message" class="campaign-message" role="status"></div>
   <div id="campaign-danger" class="campaign-danger" role="alert" aria-atomic="true" hidden></div>
   <section id="campaign-disabled" class="campaign-disabled" aria-labelledby="campaign-disabled-title" hidden><h2 id="campaign-disabled-title">Rig disabled</h2><p id="campaign-disabled-copy"></p><button id="campaign-disabled-recover" data-command="recover" class="primary">Request recovery</button><button id="campaign-disabled-dock" data-command="disabled-dock" hidden>Lander services</button><button id="campaign-disabled-menu" type="button">Pause / save</button></section>
@@ -369,6 +373,58 @@ function showMessage(message: string) {
   setText("campaign-message", concise);
   messageUntil = performance.now() + 4000;
   $("campaign-message").classList.add("visible");
+}
+function syncMissionSignal(objectiveNext: string) {
+  const signal = campaignSignal(campaign);
+  if (
+    signalCampaign !== campaign ||
+    signalRecovery !== campaign.state.stats.recoveries
+  ) {
+    signalCampaign = campaign;
+    signalRecovery = campaign.state.stats.recoveries;
+    announcedSignalBands.clear();
+  }
+  setHidden("campaign-mission-signal", !signal);
+  const element = $("campaign-mission-signal");
+  const target = signal?.targetId ?? "";
+  if (element.dataset.target !== target) element.dataset.target = target;
+  const band = signal?.band ?? "";
+  if (element.dataset.band !== band) element.dataset.band = band;
+  setText(
+    "campaign-objective-next",
+    signal && !signal.returning ? signal.action : objectiveNext,
+  );
+  if (!signal) return;
+  const proximity = {
+    distant: "Tracking",
+    near: "Signal nearby",
+    close: "Very close",
+    at: signal.returning ? "Dock available" : "At target",
+  }[signal.band];
+  setText("campaign-signal-direction", signal.arrow);
+  setText(
+    "campaign-signal-direction-label",
+    signal.direction === "here"
+      ? "At your position"
+      : signal.direction.replace("-", " and "),
+  );
+  setText("campaign-signal-target", signal.name);
+  setText("campaign-signal-distance", signal.distanceMeters + " m");
+  setText("campaign-signal-proximity", proximity);
+
+  // Range ticks are readouts, not announcements. A closer signal band alerts
+  // once per target; drifting around a boundary cannot repeat the same alert.
+  const rank = { distant: 0, near: 1, close: 2, at: 3 }[signal.band];
+  if (
+    rank > (announcedSignalBands.get(signal.targetId) ?? 0) &&
+    !paused() &&
+    !document.hidden &&
+    document.body.dataset.campaignDanger !== "true"
+  ) {
+    announcedSignalBands.set(signal.targetId, rank);
+    const message = `${signal.name} · ${proximity}. ${signal.action}.`;
+    showMessage(message);
+  }
 }
 function openOverlay(kind: Exclude<typeof overlay, undefined>) {
   if (kind === "dock" && !campaign.atDock) {
@@ -646,6 +702,7 @@ function syncHUD() {
     audio.event("warning");
   }
   energyWarningBand = nextWarning;
+  syncMissionSignal(objective.next);
   if (performance.now() >= messageUntil)
     $("campaign-message").classList.remove("visible");
   if (overlay === "dock")

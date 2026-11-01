@@ -1974,6 +1974,20 @@ export async function runCampaignSmoke(
     );
   return checks;
 }
+export {
+  advance,
+  closeOverlay,
+  command,
+  exportCheckpoint,
+  freeze,
+  importCheckpoint,
+  keys,
+  menu,
+  noErrors,
+  ready,
+  tab,
+};
+
 if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href

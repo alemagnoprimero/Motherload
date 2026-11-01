@@ -352,6 +352,43 @@ strong {
   color: #a8bcb0;
   margin-top: 3px;
 }
+.mission-signal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 3px 7px;
+  margin-top: 7px;
+  color: #c5d8ca;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.signal-direction {
+  align-self: center;
+  flex: 0 0 16px;
+  color: #edc18a;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
+}
+#campaign-signal-target {
+  font-size: 12px;
+}
+#campaign-signal-distance {
+  white-space: nowrap;
+  color: #afc3b7;
+  font-variant-numeric: tabular-nums;
+}
+.signal-proximity {
+  color: #a1b8aa;
+}
+.mission-signal[data-band="near"] .signal-proximity {
+  color: #f0cc8d;
+}
+.mission-signal[data-band="close"] .signal-proximity,
+.mission-signal[data-band="at"] .signal-proximity {
+  color: #c2eada;
+  font-weight: 700;
+}
 .campaign-message {
   position: fixed;
   z-index: 11;
@@ -1596,6 +1633,10 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
   }
   #campaign-objective-reward {
     display: none;
+  }
+  .mission-signal {
+    margin-top: 4px;
+    gap: 2px 7px;
   }
   .campaign-touch {
     bottom: 8px;

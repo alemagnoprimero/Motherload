@@ -14,6 +14,8 @@ Saved, imported and backup-restored runs wait for explicit Resume. Disabled rigs
 
 Known ores have distinct shape markers and a pause legend. Wall-occluded discovery keeps unexplored minerals hidden. The palette, panels and visible keyboard focus are preserved.
 
+Mission objectives have distinct wreck landmarks, a persistent bearing/range readout, nearby world markers and proximity alerts. Guidance follows actual saved source positions, accounts for horizontal wrapping and switches to the lander for banking/construction. Physical wreckage follows discovered terrain and remains after survey/recovery; radio markers do not reveal ores. See [mission guidance](MISSION_POIS.md).
+
 ## Source, persistence and art
 
 `src/campaign/` owns the simulator, renderer, interface, audio, input, configuration and IndexedDB persistence. `src/main.ts` loads that game directly. Design JSON remains pinned unchanged in `design/v0.1/`; typed handlers implement W01 rules rather than executing prose.

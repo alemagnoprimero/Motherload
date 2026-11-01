@@ -54,6 +54,8 @@ Touch controls use a floating joystick centered at the first screen position of 
 
 The live mission tracker names each current-stage requirement, distinguishes objects still at their source from carried and banked objects, and tracks the construction fee against available credits. It directs the player to the next discovery, return/banking, earning or construction action, then advances after actual construction payment. The departure stage points to launching from the lander. These instructions reflect existing model/configuration rules; they do not change rewards, prices or saved progression.
 
+The survey beacon and three mission parts now have recognizable wreck landmarks and a live direction/range locator. Nearby radio pins identify the current source without exposing hidden ore; physical wreckage is clipped to discovered cells. Surveyed/recovered sites retain their remnants. Guidance uses each saved object's actual position and the shortest wrapped bearing, then points to the lander when banking or construction is needed. See [MISSION_POIS.md](MISSION_POIS.md) for ranges and verification.
+
 Persistent HTML energy/hull warnings take priority over routine messages. Disabled rigs have a responsive recovery overlay with exact fee, consequences and resulting conditions before confirmation. Normal lander services remain accessible to disabled rigs already in its bay. Services use model-shared total/partial previews; known ores have shape inlays explained by the pause legend. Browser modifier shortcuts and focused toolbar/form keys do not become pilot commands. See [USABILITY_REVIEW.md](USABILITY_REVIEW.md).
 
 ## Verification and remaining work

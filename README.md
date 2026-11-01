@@ -15,7 +15,7 @@ Momentum and committed cuts can continue after release. Browser modifier shortcu
 
 ## Your first expedition
 
-1. Drill the starter vein, collect packages and survey the beacon at **100 m**. Watch the persistent conditions and mission HUD.
+1. Drill the starter vein, collect packages and survey the wreck beacon at **100 m**. The mission locator gives its bearing, distance and proximity; approach the wreck's survey mast to complete the survey.
 2. Fly back through your shaft and follow the lander marker. Park in its illuminated bay, then press **E / Enter**, click/tap the lander or use **Dock**.
 3. **Unload & sell** banks mission cargo and sells ordinary packages. **Bank without sale** stores packages safely. Refuel, repair and compare upgrades in the terminal. Services preview total cost and resulting condition, including partial fills.
 4. Complete and fund the three stages: beacon/three banked ore packages plus **200 CR**; pressure valve at **250 m** and antenna at **400 m** plus **300 CR**; navigation core at **600 m** plus **500 CR**. The live checklist tracks discoveries, onboard/banked items, funds and the next action.
@@ -27,6 +27,8 @@ The two opening veins retain their 380/480 CR gross rewards. Construction and se
 Low energy and critical hull warnings persist ahead of routine pickups. Disabled rigs have **Request recovery**, also available beside Resume in Pause. Recovery previews the fee, cargo consequences and resulting conditions before confirmation, then returns paused. It raises energy/hull to at least 50%, preserving healthier conditions. If already at the lander, **Lander services** remains available to repair/refuel normally.
 
 The world wraps horizontally. Wall-occluded discovery keeps unexplored ore hidden. Known minerals have distinct shape markers explained by the pause menu's ore/hazard legend.
+
+Mission sites have recognizable wreckage: a survey mast, pressure assembly, communications dish and navigation capsule. Follow the current objective's signal, then excavate the marked debris and approach the exposed part to recover it. Nearby signals gain a world marker and approach alert. The locator points back to the lander when cargo needs banking; surveyed and recovered sites leave wreckage behind. Signals do not expose undiscovered minerals.
 
 ## Saving
 
@@ -67,6 +69,7 @@ npm run format:check
 npm run build
 npm run test:browser       # campaign preview on port 5173
 npm run test:usability     # responsive HUD, safety, restore and input
+npm run test:poi           # mission landmarks, proximity and recovery guidance
 npm run test:production    # compiled game, defaults to port 8080
 npm run test:campaign:storage
 ```
