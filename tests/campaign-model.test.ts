@@ -56,6 +56,76 @@ function trip(game: Campaign, column: number, depth: number) {
 }
 
 describe("W01 campaign expedition and economic transactions", () => {
+  it("announces a full cargo hold immediately when the last package fits", () => {
+    const game = new Campaign(createCampaign(4));
+    until(game, { down: true }, () => game.cargoBulk === game.capacity);
+    expect(game.cargoBulk).toBe(7);
+    expect(game.message).toContain("Hold full: 7/7 bulk");
+  });
+
+  it("previews exact affordable service results before charging fractional condition", () => {
+    const game = new Campaign(createCampaign());
+    game.state.vehicle.x = W01.dockX;
+    game.state.vehicle.energy = 1.05;
+    game.state.credits = 3;
+    const before = JSON.stringify(game.state);
+    const energy = game.servicePreview("refuel");
+    expect(JSON.stringify(game.state)).toBe(before);
+    expect(energy).toMatchObject({
+      cost: 3,
+      fullCost: 90,
+      remaining: 0,
+      partial: true,
+    });
+    expect(game.refuel()).toBe(true);
+    expect(game.state.vehicle.energy).toBe(energy.result);
+    expect(game.state.credits).toBe(energy.remaining);
+
+    game.state.vehicle.hull = 9.75;
+    game.state.credits = 100;
+    const repair = game.servicePreview("repair");
+    expect(repair).toMatchObject({
+      cost: 38,
+      fullCost: 38,
+      result: 10,
+      remaining: 62,
+      partial: false,
+    });
+    expect(game.repair()).toBe(true);
+    expect(game.state.vehicle.hull).toBe(repair.result);
+    expect(game.state.credits).toBe(repair.remaining);
+  });
+
+  it("preserves healthy campaign resources on recovery and shares its exact quoted fee", () => {
+    const game = new Campaign(createCampaign());
+    game.state.vehicle.energy = 9;
+    game.state.vehicle.hull = 8;
+    game.state.credits = 5000;
+    game.state.purchases.push({
+      id: "CORE-1-ENGINE",
+      paid: 5000,
+      balanceVersion: "0.1",
+    });
+    const preview = game.recoveryPreview;
+    expect(preview).toEqual({
+      cost: 1050,
+      remaining: 3950,
+      energy: 9,
+      hull: 8,
+    });
+    expect(game.recover()).toBe(true);
+    expect(game.state.credits).toBe(preview.remaining);
+    expect(game.state.vehicle.energy).toBe(preview.energy);
+    expect(game.state.vehicle.hull).toBe(preview.hull);
+    game.state.credits = 0;
+    game.state.vehicle.energy = 0;
+    game.state.vehicle.hull = 1;
+    expect(game.recover()).toBe(true);
+    expect(game.state.vehicle.energy).toBe(5);
+    expect(game.state.vehicle.hull).toBe(5);
+    expect(game.state.credits).toBe(0);
+  });
+
   it("finishes two native opening trips, funds M1 and a useful purchase after a shelf hit", () => {
     const game = new Campaign(createCampaign(10));
     until(game, { down: true }, () => game.depth >= 100, 30);
@@ -212,7 +282,7 @@ describe("W01 campaign expedition and economic transactions", () => {
     expect(game.recover()).toBe(true);
     expect(game.state.credits).toBe(3950);
     expect(game.state.vehicle.energy).toBe(5);
-    expect(game.state.vehicle.hull).toBe(5);
+    expect(game.state.vehicle.hull).toBe(10);
     expect(mission.status).toBe("source");
     expect(game.world.missions[1]!.status).toBe("banked");
     expect(game.world.packages[0]!.status).toBe("lost");

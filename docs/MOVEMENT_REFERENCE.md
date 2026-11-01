@@ -1,5 +1,7 @@
 # Movement and drilling reference measurements
 
+Historical measurements below refer to the retired prototype at Git checkpoint `4dd367b`; its source and capture scripts are no longer part of the application. Current gameplay is the campaign in [CAMPAIGN_W01.md](CAMPAIGN_W01.md). Original SWF research tools remain separate under `reference/`.
+
 This document records the movement calibration checkpoint. The later economy, equipment, world and save changes are documented in [PROJECT.md](PROJECT.md).
 
 Measured on 2026-10-26 against the free Miniclip **0.934 (MC)** build identified in [RESEARCH.md](RESEARCH.md). This is a reference for the focused movement/drilling pass, not a claim of complete original-game parity.

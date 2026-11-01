@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { pathToFileURL } from "node:url";
-import { launchBrowser } from "./browser-helpers.mjs";
+import { launchBrowser } from "./browser-launch.mjs";
 
 /** Native IndexedDB contract probe against Vite source modules, not a UI test. */
 export async function runCampaignStorageSmoke(browser, base) {

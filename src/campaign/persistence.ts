@@ -177,7 +177,7 @@ function decodeCheckpoint(raw: string): CampaignCheckpoint {
   )
     throw new CampaignSaveError(
       "invalid",
-      "This is not a supported campaign checkpoint. Legacy saves belong in Legacy mode.",
+      "This is not a supported campaign checkpoint. Import a Motherload campaign export.",
     );
   try {
     const state = decodeCampaign(JSON.stringify(envelope.state));
@@ -201,7 +201,7 @@ function validCheckpoint(raw: string | null): CampaignCheckpoint | undefined {
   }
 }
 
-/** Campaign snapshots never read or write the Legacy localStorage keys. */
+/** Campaign snapshots do not read, convert or delete retired browser save data. */
 export class CampaignStore {
   private expected: string | null | undefined;
   private protected = true;

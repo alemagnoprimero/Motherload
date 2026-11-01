@@ -111,9 +111,29 @@ export function keyLabel(key: string) {
     )[key] || (key.length === 1 ? key.toUpperCase() : key)
   );
 }
+function editableTarget(target: EventTarget | null) {
+  return (
+    target instanceof Element &&
+    Boolean(
+      target.closest(
+        'input, select, textarea, [contenteditable]:not([contenteditable="false"])',
+      ),
+    )
+  );
+}
+function gameplayTarget(target: EventTarget | null) {
+  return (
+    target instanceof Element &&
+    !editableTarget(target) &&
+    (target === document.body ||
+      target === document.documentElement ||
+      Boolean(target.closest("#campaign-game"))) &&
+    !target.closest("button, a, summary")
+  );
+}
 export class CampaignInput {
   private held = new Map<string, PilotAction>();
-  private latched = new Set<PilotAction>();
+  private latched = new Map<PilotAction, string>();
   private gamepadButtons = new Set<number>();
   private remapping?: PilotAction;
   onRemapped?: (message: string) => void;
@@ -128,8 +148,15 @@ export class CampaignInput {
     },
   ) {
     window.addEventListener("keydown", (event) => {
+      // Browser shortcuts and IME composition never become pilot commands,
+      // including while the user is choosing a replacement key binding.
+      if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) {
+        this.clearKeyboard();
+        return;
+      }
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       if (this.remapping) {
+        if (editableTarget(event.target) && key !== "Escape") return;
         event.preventDefault();
         if (key === "Escape") {
           this.remapping = undefined;
@@ -165,17 +192,20 @@ export class CampaignInput {
         (candidate) => this.preferences.keys[candidate].includes(key),
       );
       if (!action) return;
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLSelectElement ||
-        event.target instanceof HTMLTextAreaElement
-      )
-        return;
+      const gameplay = gameplayTarget(event.target);
       if (action === "pause") {
+        // Escape keeps its dialog-close behavior; focused toolbar buttons do
+        // not turn ordinary letter keys into gameplay shortcuts.
+        if (!gameplay && !(key === "Escape" && this.callbacks.blocked()))
+          return;
         if (!event.repeat) {
           event.preventDefault();
           this.callbacks.pause();
         }
+        return;
+      }
+      if (!gameplay) {
+        this.clearKeyboard();
         return;
       }
       if (this.callbacks.blocked()) return;
@@ -193,6 +223,9 @@ export class CampaignInput {
       ),
     );
     window.addEventListener("blur", () => this.clear());
+    document.addEventListener("focusin", (event) => {
+      if (!gameplayTarget(event.target)) this.clearKeyboard();
+    });
     document
       .querySelectorAll<HTMLButtonElement>("[data-dir]")
       .forEach((button) => {
@@ -227,8 +260,14 @@ export class CampaignInput {
       (action === "mobility" && this.preferences.braceToggle)
     ) {
       if (this.latched.has(action)) this.latched.delete(action);
-      else this.latched.add(action);
+      else this.latched.set(action, source);
     } else this.held.set(source, action);
+  }
+  private clearKeyboard() {
+    for (const source of this.held.keys())
+      if (source.startsWith("key:")) this.held.delete(source);
+    for (const [action, source] of this.latched)
+      if (source.startsWith("key:")) this.latched.delete(action);
   }
   remap(action: PilotAction) {
     this.clear();
@@ -269,8 +308,9 @@ export class CampaignInput {
   }
   getControls(): CampaignControls {
     if (this.callbacks.blocked()) return {};
+    if (!gameplayTarget(document.activeElement)) this.clearKeyboard();
     const controls: CampaignControls = {};
-    for (const action of [...this.held.values(), ...this.latched])
+    for (const action of [...this.held.values(), ...this.latched.keys()])
       if (
         action in DEFAULT_KEYS &&
         !["interact", "map", "pause"].includes(action)

@@ -3,6 +3,7 @@ import type { Campaign } from "./model";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
 import { campaignSafeArea, campaignTileSize } from "./layout";
 import { CampaignPointer, TOUCH_JOYSTICK } from "./pointer";
+import { campaignOreMarker, drawOreMarker } from "../mineral-legend";
 export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
@@ -242,6 +243,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             )
           )
             return;
+          document
+            .getElementById("campaign-game")
+            ?.focus({ preventScroll: true });
           event.preventDefault();
           canvas.setPointerCapture(event.pointerId);
           bindings.onPilotGesture?.();
@@ -752,6 +756,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
                 ? Math.sin(this.elapsed * 3 + row) * tile * 0.025
                 : 0;
             this.image(frame, x, y + bob, tile * 0.9, tile * 0.9, 13, alpha);
+            if (number && lit)
+              drawOreMarker(
+                this.screen,
+                campaignOreMarker(number).marker,
+                x + tile * 0.27,
+                y + tile * 0.27,
+                Math.max(10, tile * 0.2),
+                alpha,
+              );
           }
         }
       }
@@ -1152,37 +1165,40 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         else if (mission?.status === "source")
           callout = `${mission.name} · Mission item · Return to bank`;
       }
-      if (callout)
-        this.label(
-          width / 2,
-          Math.max(safe.top + 12, height - safe.bottom - 44),
-          callout,
-          "#F6E1AF",
-        );
+      if (callout) {
+        let labelY = Math.max(safe.top + 12, height - safe.bottom - 44);
+        const danger = document.getElementById("campaign-danger");
+        if (danger && !danger.hidden) {
+          const bounds = danger.getBoundingClientRect();
+          if (bounds.top < labelY + 28 && bounds.bottom > labelY)
+            labelY = Math.max(safe.top + 12, bounds.top - 36);
+        }
+        this.label(width / 2, labelY, callout, "#F6E1AF");
+      }
       const host = document.getElementById("campaign-game");
       if (host) {
-        host.dataset.pointerActive = String(
-          Boolean(pointer?.active && !paused),
-        );
-        host.dataset.pointerDirections = Object.keys(pointerControls).join(",");
-        host.dataset.joystickVisible = String(Boolean(joystick && !paused));
-        host.dataset.joystickCenterX = joystick?.centerX.toFixed(2) ?? "";
-        host.dataset.joystickCenterY = joystick?.centerY.toFixed(2) ?? "";
-        host.dataset.joystickKnobX = joystick?.knobX.toFixed(2) ?? "";
-        host.dataset.joystickKnobY = joystick?.knobY.toFixed(2) ?? "";
-        host.dataset.rigScreenX = px.toFixed(2);
-        host.dataset.rigScreenY = py.toFixed(2);
-        host.dataset.worldCallout = String(Boolean(callout));
-        host.dataset.inspection = this.inspection && callout ? callout : "";
+        for (const [key, value] of Object.entries({
+          pointerActive: String(Boolean(pointer?.active && !paused)),
+          pointerDirections: Object.keys(pointerControls).join(","),
+          joystickVisible: String(Boolean(joystick && !paused)),
+          joystickCenterX: joystick?.centerX.toFixed(2) ?? "",
+          joystickCenterY: joystick?.centerY.toFixed(2) ?? "",
+          joystickKnobX: joystick?.knobX.toFixed(2) ?? "",
+          joystickKnobY: joystick?.knobY.toFixed(2) ?? "",
+          rigScreenX: px.toFixed(2),
+          rigScreenY: py.toFixed(2),
+          worldCallout: String(Boolean(callout)),
+          inspection: this.inspection && callout ? callout : "",
+        }))
+          if (host.dataset[key] !== value) host.dataset[key] = value;
         const shell = host.parentElement;
-        shell?.style.setProperty(
-          "--dock-prompt-x",
-          `${Math.round(Math.max(90, Math.min(width - 90, px)))}px`,
-        );
-        shell?.style.setProperty(
-          "--dock-prompt-y",
-          `${Math.round(Math.max(safe.top + 50, py - tile * 0.72))}px`,
-        );
+        if (shell)
+          for (const [key, value] of Object.entries({
+            "--dock-prompt-x": `${Math.round(Math.max(90, Math.min(width - 90, px)))}px`,
+            "--dock-prompt-y": `${Math.round(Math.max(safe.top + 50, py - tile * 0.72))}px`,
+          }))
+            if (shell.style.getPropertyValue(key) !== value)
+              shell.style.setProperty(key, value);
       }
       if (this.artFailed) this.loading.setPosition(width / 2, safe.top + 18);
       bindings.onUpdate(dt);

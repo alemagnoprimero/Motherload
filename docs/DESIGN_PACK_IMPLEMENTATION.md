@@ -1,6 +1,6 @@
 # Design pack v0.1 — implementation strategy and review plan
 
-Date: 2026-11-01. Status: **approved; first implementation batch is Phase 0 and W01**.
+Date: 2026-11-01. Status: **approved; W01 implemented, later worlds pending**. The user subsequently requested removal of the alternate prototype mode; this plan now describes a single campaign application.
 
 This plan maps the supplied campaign and visual design onto the Phaser/TypeScript baseline at checkpoint `a03079b`. The user approved beginning implementation after reviewing this document. Current first-slice behavior and remaining work are recorded in [CAMPAIGN_W01.md](CAMPAIGN_W01.md).
 
@@ -11,7 +11,7 @@ This plan maps the supplied campaign and visual design onto the Phaser/TypeScrip
 - Follow the pack's topology: W01–W06 may wrap when their seams are navigable; W07–W15 have visible boundaries and their specified fragment, chamber or layer layouts. Horizontal boundaries do not regenerate ore.
 - Use the pack's crisp illustrated 2D art direction, flat side view and compact modular rig. The concept boards guide production drawings; they are not sprite atlases.
 - Preserve permanent progression without a compulsory reset. Combat progression, a global ore-price market and required offline income remain outside this version's design.
-- Preserve the current single-mine game and existing saves as a clearly labelled Legacy mode. Start the campaign explicitly in a separate save domain. Do not automatically convert or regenerate old mines.
+- Publish one campaign application. Keep its checkpoint namespace stable, and leave retired browser save bytes untouched without selecting, converting or deleting them.
 - Keep Phaser, TypeScript, static browser hosting, Docker and GitHub Pages. Node.js remains build/asset/test tooling; this design does not require an account or a game server.
 
 The HUD and boundary choices above were explicitly confirmed during this planning review and supersede the earlier campaign preferences for pause-only conditions and universal wrapping.
@@ -41,7 +41,7 @@ The arithmetic is verified. Campaign length, earnings, movement feel, difficulty
 
 Build one complete destination before expanding the campaign. Complete both alternatives at each branch before declaring that branch finished. Develop mechanics, final-scale artwork, sound and mobile controls together so an attractive screen and a working simulation do not diverge.
 
-Use the current collision substeps, committed-cut behavior, discovery rules, station interactions and save-failure experience as proven references. Give the campaign its own state model and rules instead of adding fifteen-world conditionals to the current single-mine model. Extract shared pieces only when a concrete campaign requirement needs them, with Legacy regressions protecting their behavior.
+Use the collision substeps, committed-cut behavior, discovery rules and save-failure experience as references. The campaign owns its state model and rules. Keep abstractions tied to concrete requirements and protect implemented behavior with campaign regressions.
 
 ### Proposed system boundaries
 
@@ -69,15 +69,15 @@ Maintain stable IDs and a traceable mapping back to each source record. Check al
 - Replace slot-only cargo with identified packages that retain origin, balance version, value, bulk, mass and tags. Apply qualified processing once and retain its identity, preventing repeated compaction or sale amplification through ejection/recollection.
 - Track a deposit/package lifecycle independently of terrain: unextracted, exposed, carried, safely banked, sold or lost. One authoritative location/owner prevents duplication through portals, storage, recovery, time changes and layers.
 - Keep ordinary stored cargo distinct from credits. W11's relay banks without selling. Mission objects have a protected compartment and separate banked/unbanked progress.
-- A full hold leaves a recoverable exposed package. Provide readable bulk requirements and an explicit eject choice; do not carry the Legacy discard rule into the campaign.
+- A full hold leaves a recoverable exposed package. Provide readable bulk requirements and an explicit eject choice; capacity must not silently discard mined packages.
 - Separate objective counters, banked proof, construction payments and certificate grants. Apply rewards/payments once even if a button repeats or saving is interrupted.
 - Keep ownership prerequisites separate from equipped slots: one drill, one mobility, one processor and two utilities; integrated/mission equipment follows the pack's exceptions.
 
 ### Save and world handling
 
-Use a separate, versioned campaign store backed by IndexedDB transactions. The existing localStorage snapshot and 256 KiB import cap are unsuitable for all fifteen maps. Keep the Legacy key, decoder, snapshots and export behavior intact.
+Use the versioned campaign store backed by IndexedDB transactions. Retired browser save keys are not read, converted or deleted; there is no alternate runtime or decoder.
 
-Persist campaign metadata and changed world chunks atomically where a transaction crosses boundaries. Include cargo/mission ownership, depletion identity, construction, purchased-price versions, current-world condition and persistent support/relay/layer changes. Use explicit revisions and conflict protection across tabs, validated backups, bounded imports and clear quota/error recovery. Measure the campaign export format and size limit rather than copying the Legacy limit or choosing an arbitrary large cap.
+Persist campaign metadata and changed world chunks atomically where a transaction crosses boundaries. Include cargo/mission ownership, depletion identity, construction, purchased-price versions, current-world condition and persistent support/relay/layer changes. Use explicit revisions and conflict protection across tabs, validated backups, bounded imports and clear quota/error recovery. Measure campaign export sizes before expanding limits.
 
 Only the active world simulates. Pause, backgrounding and travel freeze hazard/tool timers; inactive worlds do not advance using wall-clock time. Load visited worlds from their saved instances without regenerating them when balance changes. Choose and test per-world exploration origins/arrival padding so every listed terminal objective is actually in bounds; only W04 includes five arrival rows inside its specified 600 rows.
 
@@ -91,12 +91,12 @@ One campaign motion system handles gravity, mass, current, wind, bracing, tether
 
 ## Delivery phases and review gates
 
-Each playable phase produces runnable source, a repeatable seed/save, focused tests, desktop/phone captures, notes, a Git checkpoint and a browser preview. Publish campaign progress only after its gate passes; keep Legacy mode available. Later destinations may be shown as locked silhouettes, without presenting unfinished mechanics as playable content.
+Each playable phase produces runnable source, a repeatable seed/save, focused tests, desktop/phone captures, notes, a Git checkpoint and a browser preview. Publish progress only after its gate passes. Later destinations may be shown as locked silhouettes without presenting unfinished mechanics as playable content.
 
 | Phase | Delivered scope | Exit gate |
 | --- | --- | --- |
 | 0 — contracts and art proof | Pin source data; build typed definitions/validation; define campaign save, package and action contracts. Produce one W01 scene at gameplay scale with rig, cutting, ore, a hazard cue, dock, HUD and shop preview. | Route/data checks agree with the pack; no silent defaults for missing effects; desktop/phone art is readable; confirm the small set of rule clarifications below. |
-| 1 — complete W01 | Campaign entry/save/load, bulk cargo and exposed packages, basic bank/trade/service, rank 0–1 hardware, all three local tools, brittle shelves, three objectives/payments, visible construction and restored-lander departure. | Two novice opening trips fund a useful purchase with service reserve, including one minor impact. Complete M1–M3, recover and reload without losing or duplicating progress. Existing Legacy saves remain intact. |
+| 1 — complete W01 | Campaign entry/save/load, bulk cargo and exposed packages, basic bank/trade/service, rank 0–1 hardware, all three local tools, brittle shelves, three objectives/payments, visible construction and restored-lander departure. | Two novice opening trips fund a useful purchase with service reserve, including one minor impact. Complete M1–M3, recover and reload without losing or duplicating progress. Unrelated browser save bytes remain intact. |
 | 2 — complete Frontier slice | W02 and W03, rank 2 hardware, travel/returns and persistent ownership. W02 adds ice/volatile extraction, preservation and energy recovery. W03 adds scanning, collapse, supports and the winch. | Both branches independently open W04. Each tool has a visible next-trip effect. At least 100 seeds per world pass reachability and economic checks. Review the first complete campaign choice. |
 | 3 — planetary engineering | Regenerated W04 campaign mine and ranks 3–4, relays/prepared-shaft transit, then W05 pressure/buoyancy/currents and W06 heat/storage/bursts. | W04's infrastructure reduces measured return effort. Both planetary branches support safe entry and reach the stellar choices. Playtest the intended first 4–5 hours; do not claim parity after implementing only one branch. |
 | 4 — stellar industry | W07 reef flight/wind/lightning capture, W09 dense extraction/bracing, then W08 containment and flare cycles; ranks 5–6. | Both paths reach W08. Hazards teach a cue/refuge/retreat; pause freezes them. Captured/recovered energy cannot recursively generate more energy. |
@@ -116,7 +116,7 @@ W01's full production subset covers 29 manifest briefs; the complete W01–W03 s
 
 ### Campaign asset contract
 
-- Use editable layered 2D sources and original production art. Node exports, checks and packs the results. Keep the existing Blender/rendered artwork for Legacy mode; Blender may help block out shapes, but its existing material treatment is not the campaign style target.
+- Use editable layered 2D sources and original production art. Node exports, checks and packs the results. Blender may help block out shapes, but the illustrated campaign style remains the production target.
 - Use 48 px logical tiles, 96 px terrain authoring, a nominal 22 × 14-cell desktop view, a 42 × 36 px rig body and separate 0.78 × 0.72-cell collision. Show fewer cells on small screens instead of shrinking labels. Limit the drill extension to the specified 12 px.
 - Define cabin pivots, mount points, tread baseline, attachment anchors and layer ordering. Composite independently ranked hardware and equipped modules; avoid generating a full rig for every possible loadout combination.
 - Supply the pack's idle/drive/drill/thrust/dock animation timing and tool anticipation/active/recovery states. Damage overlays remain functional rather than recoloring the whole rig.
@@ -135,7 +135,7 @@ Target 14–16 CSS px body text, supporting text at least 12 px and touch target
 
 ## Economy changes to make deliberately
 
-| Rule | Existing Legacy game | Campaign v0.1 |
+| Rule | Retired prototype (historical comparison) | Campaign v0.1 |
 | --- | --- | --- |
 | First hardware tier | Shared 750-credit price | Drill 750; energy 650; cargo 700; hull 450; engine 500 CR |
 | First-tier capability | Drill 2.8; energy 15; 15 slots; hull 17; power 160 | Drill 2.8; energy 16; 12 bulk; hull 18; power 185 |
@@ -157,14 +157,14 @@ These resolve incomplete details in the source; they are not additional campaign
 4. **Recovery spending:** interpret cumulative equipment spending as actual hardware plus local-gear purchases, excluding services and construction. Use the pack's capped fee and zero-debt rule.
 5. **Banking:** keep stored ordinary packages in a destination warehouse ledger with explicit sale/retrieval at docks. Remote banking moves package ownership without creating credits. Reset per-expedition quotas/charges on a real dock return, without granting duplicate deposits or mission progress.
 6. **Specialist inputs:** preserve committed cuts while defining W02's post-completion release/preservation window. Define W06 R2's usable heat-spend behavior before R3 exists, so M2 can be completed without circular unlocking. Record the exact pocket-cycle timing for W14 before that phase.
-7. **Coordinates:** define arrival padding, exploration rows and terminal-object placement per world, instead of applying the Legacy surface/depth formula to all maps.
+7. **Coordinates:** define arrival padding, exploration rows and terminal-object placement per world; a single surface/depth formula cannot describe all maps.
 
 ## Validation and tuning gates
 
 - **Data and progression:** enumerate all 32 routes, validate source/manifest references and blueprint chains, and verify that optional branches/tools are never required by the next mandatory gate. W15 must work after either W13 or W14.
 - **Generation:** test at least 100 seeds per implemented world. Mission routes survive carving; ordinary reachable value is at least three times the local reference spend, with the pack's entry/M1–M2/M3 distribution. Baseline entry equipment can obtain R1 income and return. Include hazards/energy constraints in input-driven checks, beyond structural path checks.
 - **Tools and economy:** verify every implemented multiplier, tag, range, cooldown, slot, charge and rounding rule, including use on older worlds. Include a novice two-trip opening with one minor impact and service reserve.
-- **Persistence:** exercise travel, reload, imports, full holds, exposed/ejected/warehouse packages, construction, protected mission objects, concurrent tabs, quota failures and interrupted writes. Keep Legacy tests passing and its save domain unchanged.
+- **Persistence:** exercise travel, reload, imports, full holds, exposed/ejected/warehouse packages, construction, protected mission objects, concurrent tabs, quota failures and interrupted writes. Keep campaign checkpoints stable and unrelated browser data untouched.
 - **Spatial/temporal safety:** test one-owner package identity, permanent depletion, free invalid shifts, bounded construction, portal return guarantees and safe mission restoration.
 - **Presentation:** test real atlas loading, actual pixels/animation anchors, grayscale identification, fonts, touch targets, reduced motion and hazards without sound. Use desktop plus portrait/short-landscape browser checks for each playable slice.
 - **Performance:** target 60 fps desktop and a measured 30 fps floor on a selected physical Android device, including large cargo, many supports and two-layer terrain. Browser emulation verifies layout/input but cannot establish that device result.

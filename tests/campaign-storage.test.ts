@@ -252,7 +252,7 @@ describe("campaign checkpoint transactions", () => {
     expect(store.inspectImport(raw)).toEqual(state(7000));
     expect(() => store.inspectImport("{broken")).toThrow(/JSON/);
     expect(() => store.inspectImport('{"version":4,"tiles":[]}')).toThrow(
-      /Legacy/,
+      /campaign checkpoint/,
     );
     const future = JSON.parse(raw);
     future.version = 2;

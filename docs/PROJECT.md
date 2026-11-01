@@ -1,102 +1,29 @@
 # Project status — 2026-11-01
 
-## Current campaign milestone
+Motherload has one playable campaign. W01 Broken asteroid includes mining, flight, discovery, package collection/banking/sale, services, rank-1 hardware, three local attachments, three construction milestones, recovery, full checkpoints and Frontier departure. W02/W03 are charted after W01 but remain future playable content.
 
-The approved design-pack rollout begins with a separate campaign mode and the complete W01 Broken asteroid chapter. It includes original illustrated 2D art, a persistent HUD, bulk packages and protected mission objects, three local attachments, rank-1 hardware, three construction milestones, recovery, campaign checkpoints and Frontier departure. W02/W03 are charted but not yet playable.
+The retired prototype's alternate mode, routing, runtime source, artwork pipeline and tests were removed. The root address and old bookmarked mode URLs open the campaign. Retired localStorage data is left untouched; no automatic conversion/deletion occurs. Campaign IndexedDB checkpoints retain their current format.
 
-The campaign HUD projects compact gauges, values and active-tool icons directly over gameplay. Docking opens an icon-led lander console with the rig and world still visible; its camera framing moves independently of paused simulation.
+## Interface and controls
 
-Touch driving uses a floating joystick with a new screen-space center at each press; dragging controls direction relative to that center. Mouse world aiming and keyboard controls accompany optional direction buttons. A persistent mission checklist follows discovery, carrying, banking and construction payment through each W01 stage.
+The canvas fills desktop and phone viewports. Compact condition gauges, live stage missions and priority safety warnings overlay the world. Surface services appear beside the lander while simulation pauses. Prices, current → next equipment benefits, prerequisites, total service charges and resulting conditions are visible before purchases.
 
-Use `?mode=campaign` for the new chapter and `?mode=legacy` for the preserved single mine. The unqualified address continues to select Legacy mode for browsers with a Legacy save. Mode entry does not convert or overwrite the other mode's save domain.
+Touch uses a floating joystick centered at each initial press. Dragging controls direction relative to that screen position; returning to its dead zone gives neutral input. Mouse aiming, keyboard controls and optional direction buttons accompany it. Browser shortcuts and focused form/toolbar keys do not become pilot actions.
 
-See [CAMPAIGN_W01.md](CAMPAIGN_W01.md) for actual implemented rules, tests and limitations; [DESIGN_PACK_IMPLEMENTATION.md](DESIGN_PACK_IMPLEMENTATION.md) for the approved full campaign plan; and [CAMPAIGN_ASSETS.md](CAMPAIGN_ASSETS.md) for the new source/atlas pipeline. The design's 45-minute opening and 16-hour campaign remain playtest targets. Physical-device performance and complete controller accessibility remain follow-up work.
+Saved, imported and backup-restored runs wait for explicit Resume. Disabled rigs can request confirmed recovery directly, including from the paused header; rigs already at the lander can use normal services. Recovery retains fees/cargo consequences while preserving resources above half capacity. Warnings take priority over routine pickups.
 
-## Preserved Legacy milestone
+Known ores have distinct shape markers and a pause legend. Wall-occluded discovery keeps unexplored minerals hidden. The palette, panels and visible keyboard focus are preserved.
 
-The planned first-expedition milestone now includes reference-calibrated movement, caves and route planning, original art and sound, mobile gameplay layout, reference economy/equipment, and resilient local saves.
+## Source, persistence and art
 
-- Continuous movement, simultaneous thrust/steering, supported lateral drilling, committed cuts and collision-safe ledge alignment. Returning to an earlier ore shelf remains drillable with a full bay; excess ore is discarded with a warning, matching the original collection rule.
-- New seeded 24 × 600 destructible worlds with six geological regions, progressively scarcer and richer deposits, more resistant rock and stronger magma. Old 100-row worlds remain intact. New expeditions choose a new seed; saves preserve their exact excavated map.
-- Local, wall-occluded discovery with remembered explored terrain. Hidden caverns and minerals are indistinguishable from unexplored ground, including through the inspector. A compact frontier goal and first-crossing notices mark progress without exposing mineral locations.
-- Fuel in liters, weighted cargo, selling/refueling/repair, and drill/engine/tank/cargo/hull upgrade paths using the verified free-edition tables.
-- Original Blender-authored vehicle, building and mineral models, rendered into a browser atlas through a Node.js asset pipeline. Larger world art, textured strata, atmospheric depth, vehicle lighting, animated tools, collection/damage feedback and synthesized sound.
-- An immersive canvas fills the desktop/phone viewport. A single pause menu contains vehicle conditions, progression, saving, settings, fullscreen and help. Touch controls overlay the playfield; brief warnings flag low resources. Each surface building retains an interface rendered inside the game, with proximity-gated keyboard and touch transactions.
-- Horizontal wrapping covers motion, collision, drilling, exploration and continuous camera travel. Terrain and surface buildings repeat around the same circumference; deposits do not regenerate when crossed.
-- Complete local saves, schema migration, file export/import, validated backup restoration, quota/error protection and cross-tab conflict handling.
-- Docker background hosting and automatic GitHub Pages deployment. Public address: https://alemagnoprimero.github.io/Motherload/ .
+`src/campaign/` owns the simulator, renderer, interface, audio, input, configuration and IndexedDB persistence. `src/main.ts` loads that game directly. Design JSON remains pinned unchanged in `design/v0.1/`; typed handlers implement W01 rules rather than executing prose.
 
-Source remains independent TypeScript/Phaser code. No original SWF, decompiled scripts, artwork or audio is tracked or included in production.
+Checkpoints preserve exact terrain/discovery, packages, missions, equipment, paid prices, conditions and money. Transactions rotate current/backup records together and reject stale writers. Corrupt/future data remains protected. Export/import provides manual device transfer; no server account or automatic synchronization is required.
 
-## Confirmed reference behavior and deliberate remake choices
+Campaign art uses layered SVG sources and a committed atlas, backgrounds and icons. Normal builds need no browser/Blender/Python authoring tools. The original SWF/reference research lab remains separate and never ships in `dist/`.
 
-The verified research build is free Miniclip version `0.934 (MC)`. JPEXS inspection, unchanged-SWF play and separately instrumented Ruffle measurements are recorded in RESEARCH.md and MOVEMENT_REFERENCE.md. Publisher-hosted byte equality with the 2004 release remains unverified.
+## Validation and next work
 
-Adopted static reference facts include the ten mineral names/values/masses, starting $20 / 6 L / 10 HP / seven cargo slots, equipment prices and capacities, engine power, drill-speed ratios, $1/L fuel and $15/HP repair. Ordinary drilling no longer applies blanket hull wear. Up cannot begin an upward cut; side drilling requires local ground support. A started cut finishes before held Up launches the rig.
+Current verification is recorded in [USABILITY_REVIEW.md](USABILITY_REVIEW.md) and [CAMPAIGN_W01.md](CAMPAIGN_W01.md). Launch, Docker, test and export instructions are in the root README.
 
-Full cargo no longer prevents excavation of ore. Like the original's inspected `doneDigging` routine, the tile clears even when its mineral cannot fit in the bay; the extra mineral is discarded. This fixes the reproduced Down-only failure after returning from deeper dirt to an upper ore shelf. Down takes priority over horizontal drilling when both directions are held, while steering remains available in the air.
-
-These parts remain deliberate approximations or usability choices:
-
-| Area | Current choice |
-| --- | --- |
-| World | New maps use 24 × 600 cells instead of 36 × 600. Six original depth bands control mineral weights, stone and magma. Caverns become less frequent in deeper strata. Old 100-row maps remain unchanged. |
-| Discovery | Nearby air and exposed wall faces are revealed within 4.5 cells; solid rock blocks sight. Previously seen terrain stays remembered and saved. This is an explicit remake exploration rule, not a confirmed original SWF behavior. |
-| Early progression | Two assisted starter veins make two ordinary return trips sufficient for a $750 upgrade. Each generated world retains at least one of every mineral at an appropriate depth. |
-| Movement | Continuous bounded substeps calibrated from a 42 fps reference; launch/landing animation timing and collision shape are not exact Flash equivalents. |
-| Heavy cargo | A minimum lift reserve keeps every valid load flyable. Engine upgrades affect acceleration, thrust, speed limits and fuel use; the reserve is a forgiving departure from the original. |
-| Drill time | Approximate 1.0 s down / 0.75 s side baseline, row-based depth multiplier and original drill ratios. Stone remains drillable with added resistance. |
-| Fuel | Source per-frame values converted using nominal 42 fps: about 0.063 L/s recurring use, 0.126 L/s per movement axis and 0.252 L/s additional drilling use, scaled by engine power. Real-time fuel parity has not been established. Docked idle does not consume fuel. |
-| Damage and recovery | Magma damage rises from three to twelve HP across deeper strata; impact damage uses a tuned threshold/coefficient. Recovery loses cargo and 20% of credits and restores half fuel/hull. |
-| Surface | Drive to the matching building's bay, then press E / Enter or tap to enter its canvas interface. The original automatically enters its shop frames at specific ground tiles; explicit entry avoids opening a shop while merely passing it. Docking prevents falling down a shaft while using services. |
-| Saving | Full excavated terrain and position persist, as requested, although the original's inspected save routine does not preserve them. |
-| Visual rendering | Actual 3D meshes are authored offline; the crawler and buildings use level orthographic renders aligned with the flat 2D terrain. Node.js runs the asset tooling; the published game remains static browser content. |
-| Horizontal topology | A periodic 24-column mine replaces hard left/right edges. Canonical saved positions preserve the existing terrain and schema; views may show repeated copies of the same buildings and cells. |
-
-The deeper world, discovery, reward distribution and equipment feasibility are described in [PROGRESSION.md](PROGRESSION.md), including aggregate results across 40 seeds and input-driven excursion checks. [ECONOMY.md](ECONOMY.md) records all economic tables, formulas, purchase comparisons and source tuning controls. Complete human campaign pacing remains a playtest target; original prices alone do not establish original pacing.
-
-## Save behavior and compatibility
-
-The storage key remains `motherload.frontier.v1`; its payload is now schema 4 with a validated 0/1 discovery mask. Schema-1/schema-2/schema-3 imports preserve their entire 100-row terrain, money, inventory, position and expedition statistics. Schema-3 equipment and condition stay unchanged. Earlier equipment maps to a tier that preserves capability, and fuel/hull keep their percentages of capacity. For example, an old eight-slot bay maps to an adequate new bay rather than dropping its eighth mineral.
-
-Existing worlds are not regenerated or expanded during migration. Their old deposits are retained under the stable mineral tile IDs; only discovery around the current vehicle is initialized because older saves did not record sight history. Schema-4 supports both 100-row and 600-row worlds. Use New expedition to enter the deeper world; export first to keep a separate copy of an old run. A fully explored 600-row export remains below the shared 256 KiB import limit, including the normal human-readable formatting.
-
-SaveStore validates every snapshot and import. Ordinary saves rotate the previous valid primary into a backup before replacing it. Backup restoration uses a recovery journal so either a primary-write or backup-rotation failure leaves the preceding and requested expeditions recoverable. Corrupt/future saves are kept intact; a valid backup may be reviewed in memory while saving is blocked until an explicit restore or replacement. Import/New/Restore require confirmation.
-
-On HTTPS/localhost, Web Locks serialize writes, and each write checks its last-loaded raw value to reject stale tabs. A conflicting tab pauses and cannot resume until it loads the newer save or explicitly replaces it. A raw-value check remains on browsers without Web Locks, but it is not a fully atomic cross-tab transaction there. Explicit confirmed replacement intentionally backs up the latest valid primary.
-
-Autosave runs every five active seconds. Visibility/page-exit saving is best effort because browsers may suspend asynchronous work; Save is the reliable user-visible checkpoint. Velocity, partial cuts and animation state are transient. Local saves do not synchronize automatically across devices; export/import provides manual transfer. If browser storage is inaccessible, the current in-memory expedition can still be played and exported.
-
-## Validation
-
-At the preceding Legacy checkpoint, **122 simulation/storage/layout tests and 23 browser scenarios passed**. TypeScript, formatting, generated-asset validation and production builds passed. Its rebuilt Docker service passed the four focused immersive/wrapping scenarios against the production bundle. The Legacy browser regression covers hidden terrain/inspection, discovery/deep-world saves, gameplay, import, services, upgrades and portrait/landscape touch layout. Current campaign verification is recorded separately in CAMPAIGN_W01.md.
-
-Simulation and storage regressions cover the complete progression loop, movement/ledge/impact behavior, all minerals and equipment, fuel, cave generation, save compatibility, corrupt data, quota failures, concurrent writers, repeated purchases during pending saves, and interrupted backup restoration. Current progression tests also cover sight occlusion, exact discovery persistence, old/new world boundaries, portable large saves, 40-seed scarcity/value curves, stronger magma and actual shallow/deep equipment excursions. Earlier checkpoint explorations validated 18,000 save snapshots across 30 seeded movement runs, all minerals across 100 generated worlds, and 2,048 combinations of legacy equipment and condition values.
-
-Station layout checks cover nine canvas sizes, including short landscape and narrow portrait windows. Navigation, purchase and exit targets must stay inside the canvas, retain usable touch dimensions and never overlap. The canvas fills the viewport in play and menu modes; driving controls hide during menus and building interactions. Station entry prompts reserve space above touch controls.
-
-Browser scenarios cover natural mining and physical travel to the exchange, a complete descent/return/landing/Down-only cut on an earlier ore shelf with a full bay, canvas service menus, correct building access, service and upgrade persistence, export/import including cancellation and invalid files, backups and corrupt-primary recovery, legacy migration, actual two-tab conflicts, committed cuts, independent touch release/cancellation, pause clearing held input, portrait/landscape pause-menu status, fullscreen and sound preferences. Asset checks require the actual PNG/JSON atlas to load and contain every expected rig, building and mineral frame; fallback artwork cannot pass. Station checks include opening without buying, rapid purchase input during a pending save, touch navigation and closing, and in-memory trade/export while a damaged primary save remains protected. Synthesized audio was also checked with Chromium audio analysers for active output and silence during mute/backgrounding.
-
-Four immersive/wrapping scenarios check viewport-filling play, a single menu and paused simulation, opposite-edge ore rendering/inspection, native seam drilling and flight with save/reload, and physical station access after wrapping. Twelve model regressions cover repeated laps, airborne steering, wrapped collision and cuts, sight/occlusion, and canonical saves.
-
-Four discovery browser scenarios compare actual pixels for hidden ore versus hidden soil and caves, check the inspector cannot reveal them, verify positive mineral rendering/inspection after native drilling, preserve discovered terrain through retreat/export/reload, and exercise mining/flight below the old 100-row boundary. HUD checks cover first-frontier goals, legacy floor limits and in-game notices that do not replay on reload.
-
-The art specimen and desktop/mobile screenshots are under ignored `artifacts/`. Browser emulation establishes layout and event behavior, not physical Android GPU performance or tactile feel. The build now splits the mode entry, campaign and Legacy scripts around a shared Phaser chunk; exact output is reported by `npm run build`. Legacy uses a roughly 656 KiB lossless atlas, while W01 loads its own roughly 258 KiB atlas and three background planes. The editable GLB/SVG collection stays out of the playable download.
-
-## Development and delivery
-
-See README.md for launch, Docker, testing and save-transfer instructions. The dev preview uses port 5173, Docker uses 8080, and Pages deploys only `dist/` after tests/build succeed for gameplay changes on `main`. The original reference lab stays separate from production.
-
-Normal builds validate the committed PNG/JSON atlas and hash both files into the production output. Editable GLB models and their original generators are tracked separately. Regenerating art requires Blender/Pillow; ordinary browser builds and hosting do not. See ASSET_PIPELINE.md for authoring commands.
-
-Cloud Docker builds use the existing environment proxy and its trusted CA through a temporary BuildKit secret. TLS verification remains enabled. Live HTTPS browser verification may require the same already-trusted proxy CA in Chromium's trust store. These cloud-specific steps are unnecessary on a normal Docker Desktop installation with registry access.
-
-The container health probe connects directly to its loopback Nginx endpoint, bypassing configured outbound proxies.
-
-## Remaining work after this milestone
-
-- Physical Android playtesting, especially thumb comfort, small-screen legibility, interruptions and sustained performance.
-- Controlled original loaded-versus-empty flight comparisons, deeper/upgraded drilling timings and fuel calibration. Preserve observed/source-confirmed versus provisional distinctions.
-- Longer human progression playtests, temperature/radiator systems, consumables, artifacts, story and endgame encounters. The 600-row exploration and depth-progression foundation is implemented; these additional campaign systems remain follow-on work.
-- Optional offline installation, cloud synchronization and broader accessibility work after gameplay feedback. No account or server is currently needed.
-- Repository licensing remains a project-owner decision.
+Next work includes W02/W03, later destinations/tools, chunked multiworld persistence, complete controller menu accessibility, human full-run pacing and physical Android testing. The pack's 45-minute opening and 16-hour campaign are targets, not demonstrated completion times. W01 and original research do not establish complete fifteen-world gameplay or exact Flash timing parity.

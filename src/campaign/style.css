@@ -676,16 +676,6 @@ button.tool-slot:hover {
   margin: 0;
   font-weight: 700;
 }
-.quiet-link {
-  display: inline-block;
-  padding: 11px 0;
-  color: #b6c9bd;
-  font-size: 12px;
-  text-decoration: none;
-}
-.quiet-link:hover {
-  color: #e6d2a3;
-}
 .recovery-section > button {
   margin: 0 0 8px;
 }
@@ -1126,10 +1116,6 @@ button.tool-slot:hover {
   margin: 15px 0 0;
   color: #a0b5a7;
   font-size: 12px;
-}
-.title-screen .quiet-link {
-  margin-top: 3px;
-  color: #98ada6;
 }
 
 .map-panel {
@@ -1748,8 +1734,259 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
   .welcome-hint {
     display: none;
   }
-  .title-screen .quiet-link {
+}
+
+/* Safety messages stay in screen space and remain legible at phone sizes. */
+.campaign-danger {
+  position: fixed;
+  z-index: 18;
+  top: max(60px, calc(48px + env(safe-area-inset-top)));
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(440px, calc(100vw - 24px));
+  padding: 7px 12px;
+  border-left: 2px solid #e6a17e;
+  background: #142127df;
+  color: #ffd5af;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  white-space: pre-line;
+  text-shadow: var(--hud-shadow);
+  pointer-events: none;
+}
+body[data-campaign-danger="true"] .campaign-message {
+  visibility: hidden;
+}
+.hull-vital.critical .hull-meter i {
+  background: #ed957f;
+}
+body[data-campaign-disabled="true"] .campaign-touch,
+body[data-campaign-disabled="true"] .campaign-context,
+body[data-campaign-disabled="true"] .campaign-toolbar {
+  visibility: hidden;
+}
+.campaign-disabled {
+  position: fixed;
+  z-index: 24;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: min(390px, calc(100vw - 24px));
+  max-height: calc(100dvh - 108px);
+  padding: 18px;
+  border: 1px solid var(--console-edge);
+  background: #101e25f2;
+  box-shadow: 0 10px 45px #0008;
+  color: #e9efdf;
+}
+/* The recovery card already presents the disabled warning and its next action. */
+body[data-campaign-disabled="true"]:not([data-campaign-overlay])
+  .campaign-danger {
+  opacity: 0;
+}
+.campaign-disabled h2,
+.campaign-disabled p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.campaign-disabled h2 {
+  color: #f1c58a;
+  font-size: 20px;
+}
+.campaign-disabled p {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.campaign-disabled button {
+  min-height: 44px;
+  min-width: 0;
+  padding: 9px 8px;
+}
+.menu-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.menu-heading-actions button {
+  min-height: 44px;
+}
+.menu-recovery-preview {
+  margin: 0;
+  padding: 12px 20px;
+  border-bottom: 1px solid #52695f80;
+  color: #f1d0a3;
+  font-size: 13px;
+  line-height: 1.45;
+}
+#campaign-autosave-status {
+  min-height: 18px;
+  color: #b6cabd;
+  font-size: 12px;
+}
+.campaign-legend-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.campaign-legend-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+}
+.campaign-legend-list strong,
+.campaign-legend-list small {
+  display: block;
+}
+.campaign-legend-list small {
+  color: #a9bdb3;
+  margin-top: 2px;
+}
+.legend-glyph {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  height: 28px;
+  color: #f0d6a0;
+  background: #26363c;
+  border: 1px solid #4a6267;
+  font-size: 20px;
+}
+.pause-grid summary,
+.pause-grid .check {
+  min-height: 44px;
+}
+.campaign-confirm {
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+}
+.campaign-confirm button {
+  min-height: 44px;
+}
+@media (pointer: coarse), (max-width: 760px) {
+  .campaign-danger {
+    top: auto;
+    bottom: max(126px, calc(114px + env(safe-area-inset-bottom)));
+  }
+  .menu-heading-actions {
+    flex-direction: column;
+    min-width: 135px;
+  }
+  .campaign-panel > header h1 {
+    overflow-wrap: anywhere;
+  }
+  .menu-recovery-preview {
+    padding: 10px 16px;
+  }
+}
+@media (max-width: 360px) {
+  .campaign-hud {
+    gap: 8px;
+    right: 52px;
+  }
+  .instrument-left {
+    flex-basis: 121px;
+  }
+  .vital {
+    width: 121px;
+  }
+  .campaign-disabled {
+    padding: 13px;
+    gap: 8px;
+  }
+  .campaign-disabled button {
     font-size: 12px;
-    padding: 8px 0;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .campaign-danger {
+    top: auto;
+    bottom: 68px;
+    left: auto;
+    right: 9px;
+    transform: none;
+    max-width: 245px;
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+  .campaign-disabled {
+    top: 55%;
+    padding: 12px;
+    gap: 7px;
+  }
+  .campaign-disabled h2 {
+    font-size: 18px;
+  }
+  .campaign-disabled p {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .menu-heading-actions {
+    flex-direction: row;
+    min-width: 0;
+  }
+  .menu-heading-actions button {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .campaign-confirm {
+    padding: 16px;
+  }
+  .campaign-confirm h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .campaign-confirm p {
+    font-size: 12px;
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+}
+
+#campaign-menu > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+}
+#campaign-menu > header .campaign-pause-conditions {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0;
+  color: #d6e5d6;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+#campaign-menu {
+  scroll-padding-block-start: calc(
+    var(--campaign-menu-header-height, 100px) + 12px
+  );
+  scroll-padding-block-end: 16px;
+}
+#campaign-menu .pause-grid button,
+#campaign-menu .pause-grid input,
+#campaign-menu .pause-grid summary {
+  scroll-margin-block: 12px;
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  body[data-campaign-disabled="true"] .menu-heading-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 282px;
+    gap: 6px;
+  }
+  body[data-campaign-disabled="true"] #campaign-resume {
+    grid-column: 1 / -1;
   }
 }

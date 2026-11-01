@@ -7,10 +7,8 @@ RUN --mount=type=secret,id=proxy_ca,target=/tmp/proxy-ca.pem \
 COPY index.html tsconfig.json vite.config.ts ./
 COPY src ./src
 COPY tests ./tests
-COPY assets/generated ./assets/generated
 COPY assets/campaign/generated ./assets/campaign/generated
 COPY design/v0.1 ./design/v0.1
-COPY scripts/check-assets.mjs ./scripts/check-assets.mjs
 COPY scripts/check-campaign-data.mjs scripts/check-campaign-assets.mjs ./scripts/
 RUN npm run build
 

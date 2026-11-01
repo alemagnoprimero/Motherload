@@ -9,6 +9,7 @@ import {
   W01_GEAR,
   W01_MILESTONES,
   W01_ORES,
+  formatCredits,
 } from "./config";
 import { createW01 } from "./world";
 import type {
@@ -503,7 +504,10 @@ export class Campaign {
         continue;
       if (this.cargoBulk + item.bulk <= this.capacity) {
         item.status = "carried";
-        this.message = `${item.name} secured. ${this.cargoBulk}/${this.capacity} bulk.`;
+        this.message =
+          this.cargoBulk === this.capacity
+            ? `Hold full: ${this.cargoBulk}/${this.capacity} bulk. Return to the lander to bank your haul.`
+            : `${item.name} secured. ${this.cargoBulk}/${this.capacity} bulk.`;
       } else {
         this.message = `Hold full: ${item.name} remains here (${item.bulk} bulk). Return or eject a package.`;
       }
@@ -602,48 +606,56 @@ export class Campaign {
     this.message = `Sold stored cargo for ${(value / 10).toLocaleString("en-US")} CR.`;
     return true;
   }
+  /** Costs are integer tenths of CR, exactly as charged by surface services. */
+  servicePreview(action: "refuel" | "repair") {
+    const resource: "energy" | "hull" = action === "refuel" ? "energy" : "hull";
+    const current = this.state.vehicle[resource],
+      maximum = resource === "energy" ? this.maxEnergy : this.maxHull,
+      rate = resource === "energy" ? 10 : 150,
+      needed = Math.max(0, maximum - current),
+      fullCost = Math.max(0, Math.ceil(needed * rate - 1e-8)),
+      cost = Math.min(this.state.credits, fullCost),
+      result = Math.min(maximum, current + cost / rate);
+    return {
+      resource,
+      current,
+      maximum,
+      amount: result - current,
+      cost,
+      fullCost,
+      result,
+      remaining: this.state.credits - cost,
+      partial: result < maximum - 1e-8,
+    };
+  }
   refuel() {
     if (!this.requireDock()) return false;
-    const needed = this.maxEnergy - this.state.vehicle.energy,
-      cost = Math.min(
-        this.state.credits,
-        Math.ceil(Math.max(0, needed) * 10 - 1e-8),
-      );
-    if (cost <= 0) {
+    const preview = this.servicePreview("refuel");
+    if (preview.cost <= 0) {
       this.message =
-        needed <= 1e-8
+        preview.current >= preview.maximum - 1e-8
           ? "Energy reservoir is full."
           : "No credits available for energy.";
       return false;
     }
-    this.state.credits -= cost;
-    this.state.vehicle.energy = Math.min(
-      this.maxEnergy,
-      this.state.vehicle.energy + cost / 10,
-    );
-    this.message = `Energy replenished for ${(cost / 10).toFixed(1)} CR.`;
+    this.state.credits = preview.remaining;
+    this.state.vehicle.energy = preview.result;
+    this.message = `Energy replenished for ${(preview.cost / 10).toFixed(1)} CR.`;
     return true;
   }
   repair() {
     if (!this.requireDock()) return false;
-    const needed = this.maxHull - this.state.vehicle.hull,
-      cost = Math.min(
-        this.state.credits,
-        Math.ceil(Math.max(0, needed) * 150 - 1e-8),
-      );
-    if (cost <= 0) {
+    const preview = this.servicePreview("repair");
+    if (preview.cost <= 0) {
       this.message =
-        needed <= 1e-8
+        preview.current >= preview.maximum - 1e-8
           ? "Hull is fully repaired."
           : "No credits available for repairs.";
       return false;
     }
-    this.state.credits -= cost;
-    this.state.vehicle.hull = Math.min(
-      this.maxHull,
-      this.state.vehicle.hull + cost / 150,
-    );
-    this.message = `Hull repaired for ${(cost / 10).toFixed(1)} CR.`;
+    this.state.credits = preview.remaining;
+    this.state.vehicle.hull = preview.result;
+    this.message = `Hull repaired for ${(preview.cost / 10).toFixed(1)} CR.`;
     return true;
   }
   buyHardware(key: HardwareKey) {
@@ -659,7 +671,7 @@ export class Campaign {
     }
     const price = HARDWARE_PRICES[key][1]!;
     if (this.state.credits < price) {
-      this.message = `Need ${(price / 10).toLocaleString("en-US")} CR for this component.`;
+      this.message = `Need ${formatCredits(price - this.state.credits)} CR more for this component (${formatCredits(price)} CR total).`;
       return false;
     }
     this.state.credits -= price;
@@ -692,7 +704,7 @@ export class Campaign {
       return false;
     }
     if (this.state.credits < gear.price) {
-      this.message = `Need ${(gear.price / 10).toLocaleString("en-US")} CR for ${gear.name}.`;
+      this.message = `Need ${formatCredits(gear.price - this.state.credits)} CR more for ${gear.name} (${formatCredits(gear.price)} CR total).`;
       return false;
     }
     this.state.credits -= gear.price;
@@ -781,26 +793,39 @@ export class Campaign {
     this.message = `${item.name} ejected intact. Return to collect it later.`;
     return true;
   }
-  recover() {
-    const state = this.state,
-      spend = state.purchases.reduce(
+  get recoveryPreview() {
+    const spend = this.state.purchases.reduce(
         (total, purchase) => total + purchase.paid,
         0,
       ),
-      fee = Math.min(
-        state.credits,
+      cost = Math.min(
+        this.state.credits,
         250000,
         (100 + Math.floor(spend / 1000)) * 10,
       );
+    return {
+      cost,
+      remaining: this.state.credits - cost,
+      energy: clamp(
+        this.state.vehicle.energy,
+        this.maxEnergy * 0.5,
+        this.maxEnergy,
+      ),
+      hull: clamp(this.state.vehicle.hull, this.maxHull * 0.5, this.maxHull),
+    };
+  }
+  recover() {
+    const state = this.state,
+      preview = this.recoveryPreview;
     for (const item of this.cargo) item.status = "lost";
     for (const mission of this.world.missions)
       if (mission.status === "carried") mission.status = "source";
-    state.credits -= fee;
+    state.credits = preview.remaining;
     state.vehicle = {
       x: W01.dockX,
       y: SURFACE_Y,
-      energy: this.maxEnergy * 0.5,
-      hull: this.maxHull * 0.5,
+      energy: preview.energy,
+      hull: preview.hull,
     };
     state.stats.recoveries++;
     this.stop();
@@ -837,7 +862,7 @@ export class Campaign {
         processedBy: [],
       });
     }
-    this.message = `Recovered for ${(fee / 10).toLocaleString("en-US")} CR. Carried cargo lost; unbanked mission objects returned to their sources.`;
+    this.message = `Recovered for ${formatCredits(preview.cost)} CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%.`;
     this.refreshVisibility();
     return true;
   }

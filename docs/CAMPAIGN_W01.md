@@ -4,7 +4,7 @@ This checkpoint implements the approved design-pack foundations and **Broken ast
 
 ## Play and progression
 
-Use `?mode=campaign` to enter the campaign explicitly. A fresh browser opens the campaign; a browser with an existing Legacy save continues opening that mode at the unqualified address. Both modes have links to the other. No automatic terrain, inventory or equipment conversion occurs.
+The root address opens the campaign directly, including older bookmarked mode URLs. There is one playable game. Retired browser save data is neither selected nor converted/deleted; campaign checkpoints retain their existing IndexedDB namespace.
 
 The 40-column, 60-exploration-row asteroid wraps horizontally and reaches 600 m. Arrival air uses negative vertical coordinates, so the design's exploration rows do not lose depth to surface padding. The camera follows the rig and the map stays hidden behind wall-occluded discovery.
 
@@ -24,17 +24,19 @@ Packages preserve identity, origin, value, bulk, mass, tags and balance version.
 
 A full hold leaves an exposed package in cleared terrain. Ejection places an intact carried package in nearby open space. Collection, banking and sale move that same identity instead of copying it. Equipping/stowing the rack cannot create an invalid over-capacity save.
 
-Recovery loses carried ordinary cargo/relics and returns unbanked mission objects to their marked sources. Its fee is `min(cash, 25,000, 100 + floor(0.01 × actual equipment spending))` in CR. Equipment spending includes hardware and local tools, excluding construction/services. Half maximum hull/energy is restored. An emergency ordinary salvage package is provided when nearby safe income is depleted; it supplies no story items or blueprints.
+Recovery loses carried ordinary cargo/relics and returns unbanked mission objects to their marked sources. Its fee is `min(cash, 25,000, 100 + floor(0.01 × actual equipment spending))` in CR. Equipment spending includes hardware and local tools, excluding construction/services. Hull/energy rise to at least half maximum; healthier resources are preserved. An emergency ordinary salvage package is provided when nearby safe income is depleted; it supplies no story items or blueprints.
 
 The two starter hauls plus initial cash produce 880 CR before costs. M1 leaves at most 680 CR before services. The opening check therefore targets a useful affordable purchase with a reserve rather than promising a 750 CR drill.
 
 ## Simulation and persistence
 
-The campaign has its own model, world generation, validation and save namespace. Legacy `src/model.ts` and `src/storage.ts` are retained. The former main module moved to `src/legacy-main.ts`; the new entry chooses a mode before loading its interface and artwork.
+The campaign owns its model, world generation, validation and save namespace under `src/campaign/`. The entry loads it directly. The retired prototype's runtime, assets, routing and tests have been removed.
 
 IndexedDB database `motherload.campaign.v1` keeps current/backup checkpoints in one transaction, with compare-and-swap revision protection. A failed/aborted write rolls back both records. BroadcastChannel notifies other campaign tabs; revision comparison still guards writes without that notification. Corrupt/future records are protected; a valid backup can be reviewed before explicit restoration/replacement.
 
 Checkpoints record schema, balance and generator versions. All current worlds, excavation/discovery, packages, mission state, equipment, paid prices, conditions and construction are included. Velocity, animation and partial cuts are transient. Pausing/backgrounding freezes simulation; background saving is best effort, so explicit Save/Export remains available.
+
+Saved, imported and backup-restored runs require an explicit Resume expedition action before simulation can advance. Load waits for its asynchronous read to finish and retains the paused menu. Disabled restored rigs can request confirmed recovery directly from that menu's header. Save recency records actual successful saves in the current session, and Load clearly refers to the latest checkpoint including autosaves.
 
 The current W01 validator bounds state JSON to 2 MiB and the checkpoint transport to 16 MiB. Across the initial 100 generated seeds, the largest measured checkpoint was about 93 KiB. Those bounds are not a claim that every future campaign state fits; adding worlds requires a versioned format/size review and chunk-storage work. The present checkpoint is a transactionally saved W01 world record, not the finished fifteen-world persistence implementation.
 
@@ -52,13 +54,15 @@ Touch controls use a floating joystick centered at the first screen position of 
 
 The live mission tracker names each current-stage requirement, distinguishes objects still at their source from carried and banked objects, and tracks the construction fee against available credits. It directs the player to the next discovery, return/banking, earning or construction action, then advances after actual construction payment. The departure stage points to launching from the lander. These instructions reflect existing model/configuration rules; they do not change rewards, prices or saved progression.
 
+Persistent HTML energy/hull warnings take priority over routine messages. Disabled rigs have a responsive recovery overlay with exact fee, consequences and resulting conditions before confirmation. Normal lander services remain accessible to disabled rigs already in its bay. Services use model-shared total/partial previews; known ores have shape inlays explained by the pause legend. Browser modifier shortcuts and focused toolbar/form keys do not become pilot commands. See [USABILITY_REVIEW.md](USABILITY_REVIEW.md).
+
 ## Verification and remaining work
 
 The model checks include 100-seed mission/resource generation, source-budget arithmetic, duplicate-safe package handling, save validation, fog occlusion and varied-input snapshots. One input-driven opening includes two physical trips, a shelf hit, repairs, M1 and a hull purchase with reserve. A separate pre-funded route test isolates excavation/flight/tool feasibility to all mission depths and departure; it does not prove complete human earning pace.
 
-At this checkpoint, **182 simulation/storage/configuration/input/mission tests pass**. The W01 baseline passed ten campaign browser scenarios across focused runs: the native opening, fixture-assisted late mission/departure loop, cargo identity and reload, reserve previews/capacity fills, invalid/cancelled imports, two-tab conflict handling, portrait/landscape multitouch, and phone mineral inspection. The late mission fixture deliberately provides credits and an opened shaft; it is not an earnings or campaign-duration measurement.
+Final campaign-only test results are recorded in [USABILITY_REVIEW.md](USABILITY_REVIEW.md). The W01 baseline passed ten campaign browser scenarios across focused runs: the native opening, fixture-assisted late mission/departure loop, cargo identity and reload, reserve previews/capacity fills, invalid/cancelled imports, two-tab conflict handling, portrait/landscape multitouch, and phone mineral inspection. The late mission fixture deliberately provides credits and an opened shaft; it is not an earnings or campaign-duration measurement.
 
-The native IndexedDB probe passed actual browser transactions, stale tabs, notifications, rollback, protected data, backup restoration, export/import and unchanged Legacy bytes. Focused Legacy regression passed mining, physical trading, services/upgrades, reload and portrait/landscape stations/controls after mode routing changed. The healthy rebuilt Docker service passed four campaign phone/inspection scenarios against its compiled assets. TypeScript, formatting, source/asset checks and production builds pass. Screenshots and detailed traces remain in ignored `artifacts/`.
+The native IndexedDB probe passed actual browser transactions, stale tabs, notifications, rollback, protected data, backup restoration, export/import and untouched unrelated browser save bytes. The earlier rebuilt Docker service passed four campaign phone/inspection scenarios against its compiled assets. Screenshots and detailed traces remain in ignored `artifacts/`; current build/safety verification is recorded in the usability notes.
 
 The subsequent transparent-HUD iteration passed nine focused browser scenarios: live readouts and pointer passthrough, cargo identity/reload, service reserves and capacity fills, invalid/cancelled imports, two-tab conflicts, portrait/landscape touch controls and hardware purchases, and mineral inspection. Its rebuilt Docker service passed five focused desktop/phone HUD, purchase and inspection scenarios against the production bundle. Dock presentation moves while the expedition state stays paused. Phone purchase fixtures provide credits and unlock M1 to isolate interface behavior; they do not measure earnings.
 

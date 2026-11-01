@@ -1,6 +1,6 @@
 # Campaign artwork: W01
 
-The campaign uses original, editable 2D artwork derived from the design pack's shape, palette and production rules. Its SVG sources are separate from the Blender artwork retained for Legacy mode. The supplied concept boards are visual references; their images are not cropped into the playable atlas.
+The game uses original, editable 2D artwork derived from the design pack's shape, palette and production rules. Its SVG sources, atlas, backgrounds and icons are the sole game artwork pipeline. The supplied concept boards are visual references; their images are not cropped into the playable atlas.
 
 ## Build and validation
 

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
-import { launchBrowser } from "./browser-helpers.mjs";
+import { launchBrowser } from "./browser-launch.mjs";
 import { campaignSafeArea, campaignTileSize } from "../src/campaign/layout.ts";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

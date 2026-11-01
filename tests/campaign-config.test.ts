@@ -12,7 +12,7 @@ import {
 const balance = JSON.parse(balanceSource);
 
 describe("versioned campaign configuration", () => {
-  it("pins independent prices and capabilities instead of Legacy shared tiers", () => {
+  it("pins the design pack's prices and capabilities", () => {
     expect(HARDWARE_LEVELS.energy[1]).toBe(16);
     expect(HARDWARE_LEVELS.engine[1]).toBe(185);
     expect(HARDWARE_PRICES.hull[1]).toBe(4500);

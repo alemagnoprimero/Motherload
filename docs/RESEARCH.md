@@ -1,5 +1,7 @@
 # Original reference investigation
 
+This is a historical research record. The earlier prototype and its source paths were retired; its experiments can be inspected at Git checkpoint `4dd367b`. The original Flash reference lab remains separate and available. Current campaign behavior is documented in [CAMPAIGN_W01.md](CAMPAIGN_W01.md).
+
 Initial inspection 2026-10-24; subsequent work is recorded below and in [current project status](PROJECT.md). Findings describe **this identified syndicated build**, not every release of Motherload. No original scripts, artwork, audio, or SWF are committed or bundled in the remake.
 
 ## Provenance and verification
@@ -130,4 +132,4 @@ Down also selects downward excavation when combined with horizontal steering aft
 
 The earlier 100-row prototype exposed too much terrain and compressed valuable deposits into a short descent. New expeditions now use 600 rows, six geological bands, local wall-occluded sight, persistent exploration memory and rarer but more valuable deep deposits. Stone frequency and magma damage rise with depth; the existing depth-scaled drill time now spans the larger world. Original mineral values, masses and upgrade tables are retained.
 
-These visibility rules, strata, deposit weights, hazard scaling, frontier notices and camera choices are deliberate remake design, not newly confirmed original behavior. [PROGRESSION.md](PROGRESSION.md) records aggregate generation results and controlled excursion evidence. Existing compact saved worlds remain intact under schema 4; their earlier viewing history cannot be reconstructed, so initial discovery is limited to the current vicinity rather than revealing natural caves.
+These visibility rules, strata, deposit weights, hazard scaling, frontier notices and camera choices are deliberate remake design, not newly confirmed original behavior. The [historical progression notes](https://github.com/alemagnoprimero/Motherload/blob/4dd367b/docs/PROGRESSION.md) record aggregate generation results and controlled excursion evidence for that retired prototype. Its compact saved worlds remained intact under schema 4; earlier viewing history could not be reconstructed, so initial discovery was limited to the current vicinity rather than revealing natural caves.
