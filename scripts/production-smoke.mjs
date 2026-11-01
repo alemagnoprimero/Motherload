@@ -8,10 +8,17 @@ import {
 } from "./browser-helpers.mjs";
 import { runDiscoverySmoke } from "./discovery-smoke.mjs";
 import { runImmersiveWrapSmoke } from "./immersive-wrap-smoke.mjs";
+import { runCampaignSmoke } from "./campaign-smoke.mjs";
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:8080/";
 await mkdir("artifacts", { recursive: true });
 const browser = await launchBrowser();
 try {
+  await runCampaignSmoke(
+    browser,
+    base,
+    "artifacts/production-campaign",
+    "mobile",
+  );
   await runImmersiveWrapSmoke(
     browser,
     base,
@@ -33,7 +40,7 @@ try {
   await runMobileSmoke(browser, base, "artifacts/production-mobile");
   assert.deepEqual(errors, []);
   console.log(
-    `Production smoke passed at ${base}: immersive pause menu, seamless wrapping and seam drilling/stations, hidden terrain and inspection, discovery/deep-world saves, mining and physical travel to exchange, returned-ledge drilling, canvas services/upgrades, portrait/small-landscape native touch station menus; no page errors.`,
+    `Production smoke passed at ${base}: campaign HUD/assets and portrait/landscape controls; Legacy immersive pause menu, seamless wrapping and seam drilling/stations, hidden terrain and inspection, discovery/deep-world saves, mining and physical travel to exchange, returned-ledge drilling, canvas services/upgrades, portrait/small-landscape native touch station menus; no page errors.`,
   );
 } finally {
   await browser.close();

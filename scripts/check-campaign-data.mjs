@@ -1,0 +1,234 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
+import {
+  HARDWARE_KEYS,
+  HARDWARE_LEVELS,
+  HARDWARE_PRICES,
+  WORLD_CATALOG,
+  W01_GEAR,
+  W01_MILESTONES,
+  W01_ORES,
+} from "../src/campaign/config.ts";
+
+const source = (name) => new URL(`../design/v0.1/${name}`, import.meta.url);
+const near = (actual, expected, message) =>
+  assert.ok(Math.abs(actual - expected) < 1e-6, message);
+
+export async function readCampaignDesign() {
+  return {
+    balance: JSON.parse(
+      await readFile(source("motherload-balance-v01.json"), "utf8"),
+    ),
+    manifest: JSON.parse(
+      await readFile(source("motherload-asset-manifest.json"), "utf8"),
+    ),
+  };
+}
+
+/** Validate the source and curated numeric/runtime records without executing prose. */
+export function auditCampaignDesign({ balance, manifest }) {
+  assert.equal(balance.version, "0.1");
+  assert.equal(balance.worlds.length, 15);
+  assert.equal(balance.routes.length, 32);
+  assert.equal(balance.core.length, 10);
+  assert.equal(manifest.length, 251);
+  const manifestIds = new Set(manifest.map((asset) => asset.id));
+  assert.equal(manifestIds.size, manifest.length, "asset IDs must be unique");
+  const worldIds = new Set(balance.worlds.map((world) => world.id));
+  assert.equal(
+    worldIds.size,
+    balance.worlds.length,
+    "world IDs must be unique",
+  );
+  const recordIds = [];
+  for (const [rank, row] of balance.core.entries()) {
+    assert.equal(row[0], rank);
+    assert.equal(row[7].length, 5);
+    for (const [column, key] of HARDWARE_KEYS.entries()) {
+      assert.equal(HARDWARE_LEVELS[key][rank], row[column + 2]);
+      assert.equal(HARDWARE_PRICES[key][rank], row[7][column] * 10);
+      if (rank) {
+        assert.ok(row[column + 2] > balance.core[rank - 1][column + 2]);
+        assert.ok(row[7][column] > 0);
+        assert.ok(manifestIds.has(`CORE-${rank}-${key.toUpperCase()}`));
+      }
+    }
+  }
+
+  for (const world of balance.worlds) {
+    recordIds.push(world.id);
+    const runtime = WORLD_CATALOG.find((entry) => entry.id === world.id);
+    assert.ok(runtime, `${world.id} has runtime metadata`);
+    assert.equal(runtime.implemented, world.id === "W01");
+    assert.equal(runtime.width, world.size[0]);
+    assert.equal(runtime.rows, world.size[1]);
+    assert.equal(runtime.layers, world.size[2]);
+    assert.equal(runtime.depth, world.depth);
+    assert.deepEqual(runtime.parents, world.parents);
+    assert.equal(
+      runtime.topology,
+      Number(world.id.slice(1)) <= 6 ? "wrap" : "bounded",
+    );
+    assert.ok(world.parents.every((id) => worldIds.has(id)));
+    assert.equal(world.gear.length, 3);
+    assert.equal(world.milestones.length, 3);
+    assert.equal(
+      world.milestone_fees.reduce((sum, fee) => sum + fee, 0),
+      world.project,
+    );
+    assert.deepEqual(
+      world.gear.map((gear) => gear.price),
+      world.prices,
+    );
+    assert.equal(world.ores.length, 4);
+    assert.deepEqual(
+      world.ores.map((ore) => ore.weight),
+      [60, 30, 9, 1],
+    );
+    assert.ok(
+      world.palette.length === 5 &&
+        world.palette.every((colour) => /^[0-9A-F]{6}$/i.test(colour)),
+    );
+    for (const [index, gear] of world.gear.entries()) {
+      assert.equal(gear.id, `${world.id}-R${index + 1}`);
+      assert.equal(gear.requires, index ? world.gear[index - 1].id : null);
+      recordIds.push(gear.id);
+    }
+    for (const ore of world.ores) {
+      assert.ok(ore.value > 0 && ore.bulk > 0 && ore.mass > 0);
+      assert.ok(ore.tags.includes("ordinary"));
+      recordIds.push(ore.id);
+    }
+    recordIds.push(world.jackpot_item.id, world.quest_item.id);
+    near(
+      world.ores.reduce((sum, ore) => sum + (ore.value * ore.weight) / 100, 0),
+      world.ore_mean,
+      `${world.id} weighted mean`,
+    );
+    const budget = world.budget;
+    assert.equal(
+      budget.local_gear,
+      world.gear.reduce((sum, gear) => sum + gear.price, 0),
+    );
+    assert.equal(budget.project, world.project);
+    assert.equal(
+      budget.budget,
+      budget.new_core + budget.local_gear + budget.project,
+    );
+    assert.equal(budget.minimum_ordinary_value, budget.budget * 3);
+    near(
+      budget.target_net_per_minute,
+      budget.budget / world.minutes,
+      `${world.id} target income`,
+    );
+    near(
+      budget.required_deposits_per_minute,
+      budget.budget / world.minutes / (world.ore_mean * 0.95),
+      `${world.id} package target`,
+    );
+    assert.equal(runtime.referenceBudget, budget.budget * 10);
+    assert.equal(runtime.ordinaryFloor, budget.minimum_ordinary_value * 10);
+  }
+  assert.equal(
+    new Set(recordIds).size,
+    recordIds.length,
+    "balance IDs must be unique",
+  );
+  assert.ok(
+    recordIds.every((id) => manifestIds.has(id)),
+    "every balance ID needs an asset brief",
+  );
+
+  const stages = Array.from({ length: 10 }, (_, step) =>
+    balance.worlds.filter((world) => world.step === step),
+  );
+  const enumerate = (step, prefix = []) =>
+    step === stages.length
+      ? [prefix]
+      : stages[step].flatMap((world) => {
+          assert.ok(
+            !world.parents.length ||
+              world.parents.some((id) => prefix.includes(id)),
+            `${world.id} gate must be reachable`,
+          );
+          return enumerate(step + 1, [...prefix, world.id]);
+        });
+  const expectedRoutes = new Set(enumerate(0).map((route) => route.join(",")));
+  assert.equal(expectedRoutes.size, 32);
+  const seen = new Set();
+  for (const route of balance.routes) {
+    const key = route.worlds.join(",");
+    assert.ok(
+      expectedRoutes.has(key) && !seen.has(key),
+      `${route.id} unique valid route`,
+    );
+    seen.add(key);
+    let highestRank = 0,
+      spend = 0,
+      minutes = 0;
+    for (const [index, id] of route.worlds.entries()) {
+      const world = balance.worlds.find((entry) => entry.id === id);
+      const hardwareCost = balance.core
+        .slice(highestRank + 1, world.core_cap + 1)
+        .reduce(
+          (sum, row) => sum + row[7].reduce((total, price) => total + price, 0),
+          0,
+        );
+      assert.equal(world.budget.new_core, hardwareCost);
+      assert.deepEqual(route.rows[index], world.budget);
+      highestRank = Math.max(highestRank, world.core_cap);
+      spend += world.budget.budget;
+      minutes += world.minutes;
+    }
+    assert.equal(route.minutes, minutes);
+    assert.equal(route.budget, spend);
+    assert.equal(minutes, 960);
+    assert.equal(spend, 80083950);
+  }
+  assert.equal(seen.size, expectedRoutes.size);
+  const w01 = balance.worlds[0];
+  assert.deepEqual(
+    W01_ORES.map(({ id, value, bulk, mass, weight }) => ({
+      id,
+      value,
+      bulk,
+      mass,
+      weight,
+    })),
+    w01.ores.map(({ id, value, bulk, mass, weight }) => ({
+      id,
+      value: value * 10,
+      bulk,
+      mass,
+      weight,
+    })),
+  );
+  assert.deepEqual(
+    W01_GEAR.map((gear) => gear.price),
+    w01.prices.map((price) => price * 10),
+  );
+  assert.deepEqual(
+    W01_MILESTONES.map((milestone) => milestone.fee),
+    w01.milestone_fees.map((fee) => fee * 10),
+  );
+  return {
+    worlds: worldIds.size,
+    routes: seen.size,
+    assets: manifestIds.size,
+    cells: balance.worlds.reduce(
+      (sum, world) => sum + world.size.reduce((a, b) => a * b, 1),
+      0,
+    ),
+  };
+}
+
+if (
+  process.argv[1] &&
+  pathToFileURL(process.argv[1]).href === import.meta.url
+) {
+  const result = auditCampaignDesign(await readCampaignDesign());
+  console.log(
+    `Campaign source verified: ${result.worlds} worlds, ${result.routes} routes, ${result.assets} asset briefs, ${result.cells.toLocaleString("en-US")} cells. Only W01 is implemented.`,
+  );
+}

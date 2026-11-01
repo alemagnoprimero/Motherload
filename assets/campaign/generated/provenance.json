@@ -1,0 +1,11 @@
+{
+  "version": "0.1",
+  "world": "W01",
+  "source": "Original layered SVG artwork; source/create-w01-sources.mjs and individual editable SVGs",
+  "conceptReference": "User-supplied campaign v0.1 boards; no board pixels included",
+  "renderer": "Chromium SVG rasterizer",
+  "packing": "Node.js orchestrates Pillow lossless RGBA packing",
+  "logicalTile": 48,
+  "authorScale": 2,
+  "frameCount": 131
+}

@@ -1,0 +1,299 @@
+{
+  "version": "0.1",
+  "world": "W01",
+  "description": "Stable design-pack IDs mapped to editable/rendered W01 frame outputs.",
+  "assets": {
+    "RIG-CABIN": {
+      "frames": [
+        "rig-cabin",
+        "rig-body-0",
+        "rig-body-1",
+        "rig-body-2",
+        "rig-body-3",
+        "rig-body-4",
+        "rig-body-5",
+        "rig-body-6",
+        "rig-body-7"
+      ]
+    },
+    "CORE-1-DRILL": {
+      "frames": [
+        "rig-drill-collar-right-1",
+        "rig-drill-collar-down-1",
+        "rig-drill-collar-left-1"
+      ],
+      "icon": "icon-drill"
+    },
+    "CORE-1-ENERGY": {
+      "frames": [
+        "rig-energy-1"
+      ],
+      "icon": "icon-energy"
+    },
+    "CORE-1-CARGO": {
+      "frames": [
+        "rig-bay-1"
+      ],
+      "icon": "icon-cargo"
+    },
+    "CORE-1-HULL": {
+      "frames": [
+        "rig-hull-1"
+      ],
+      "icon": "icon-hull"
+    },
+    "CORE-1-ENGINE": {
+      "frames": [
+        "rig-engine-1"
+      ],
+      "icon": "icon-engine"
+    },
+    "W01": {
+      "frames": [
+        "soil-0",
+        "soil-1",
+        "soil-2",
+        "soil-3",
+        "soil-4",
+        "soil-5",
+        "soil-6",
+        "soil-7",
+        "soil-edge-0",
+        "soil-edge-1",
+        "soil-edge-2",
+        "soil-edge-3",
+        "soil-edge-4",
+        "soil-edge-5",
+        "soil-edge-6",
+        "soil-edge-7",
+        "soil-edge-8",
+        "soil-edge-9",
+        "soil-edge-10",
+        "soil-edge-11",
+        "soil-edge-12",
+        "soil-edge-13",
+        "soil-edge-14",
+        "soil-edge-15",
+        "stone-0",
+        "stone-1",
+        "stone-2",
+        "stone-3",
+        "crack-1",
+        "crack-2",
+        "crack-3",
+        "world-w01"
+      ],
+      "backgrounds": [
+        "w01-sky",
+        "w01-ridge-far",
+        "w01-ridge-near"
+      ],
+      "icon": "world-w01"
+    },
+    "W01-R1": {
+      "frames": [
+        "rig-drill-idle",
+        "rig-drill-right-0",
+        "rig-drill-right-1",
+        "rig-drill-right-2",
+        "rig-drill-right-3",
+        "rig-drill-right-4",
+        "rig-drill-right-5",
+        "rig-drill-right-6",
+        "rig-drill-right-7",
+        "rig-drill-down-0",
+        "rig-drill-down-1",
+        "rig-drill-down-2",
+        "rig-drill-down-3",
+        "rig-drill-down-4",
+        "rig-drill-down-5",
+        "rig-drill-down-6",
+        "rig-drill-down-7",
+        "rig-drill-left-0",
+        "rig-drill-left-1",
+        "rig-drill-left-2",
+        "rig-drill-left-3",
+        "rig-drill-left-4",
+        "rig-drill-left-5",
+        "rig-drill-left-6",
+        "rig-drill-left-7"
+      ],
+      "icon": "icon-drill"
+    },
+    "W01-R2": {
+      "frames": [
+        "rig-feet-stowed",
+        "rig-feet-deployed"
+      ],
+      "icon": "icon-feet"
+    },
+    "W01-R3": {
+      "frames": [
+        "rig-rack"
+      ],
+      "icon": "icon-rack"
+    },
+    "W01-O1": {
+      "frames": [
+        "ore-o1",
+        "package-o1"
+      ],
+      "icon": "ore-o1"
+    },
+    "W01-O2": {
+      "frames": [
+        "ore-o2",
+        "package-o2"
+      ],
+      "icon": "ore-o2"
+    },
+    "W01-O3": {
+      "frames": [
+        "ore-o3",
+        "package-o3"
+      ],
+      "icon": "ore-o3"
+    },
+    "W01-O4": {
+      "frames": [
+        "ore-o4",
+        "package-o4"
+      ],
+      "icon": "ore-o4"
+    },
+    "W01-J": {
+      "frames": [
+        "relic"
+      ],
+      "icon": "relic"
+    },
+    "W01-Q": {
+      "frames": [
+        "mission-core"
+      ],
+      "icon": "mission-core"
+    },
+    "W01-S1": {
+      "frames": [
+        "refuge-stage-0",
+        "refuge-stage-1",
+        "refuge-stage-2"
+      ]
+    },
+    "W01-S2": {
+      "frames": [
+        "relay-stage-0",
+        "relay-stage-1",
+        "relay-stage-2"
+      ]
+    },
+    "W01-S3": {
+      "frames": [
+        "dock-stage-0",
+        "dock-stage-1",
+        "dock-stage-2",
+        "dock-stage-3"
+      ]
+    },
+    "UI-ENERGY": {
+      "frames": [
+        "ui-energy"
+      ],
+      "icon": "ui-energy",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-HULL": {
+      "frames": [
+        "ui-hull"
+      ],
+      "icon": "ui-hull",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-CARGO": {
+      "frames": [
+        "ui-cargo"
+      ],
+      "icon": "ui-cargo",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-DEPTH": {
+      "frames": [
+        "ui-depth"
+      ],
+      "icon": "ui-depth",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-MISSION": {
+      "frames": [
+        "ui-mission"
+      ],
+      "icon": "ui-mission",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-RELIC": {
+      "frames": [
+        "ui-relic"
+      ],
+      "icon": "ui-relic",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-MAP": {
+      "frames": [
+        "ui-map"
+      ],
+      "icon": "ui-map",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-SHOP": {
+      "frames": [
+        "ui-shop"
+      ],
+      "icon": "ui-shop",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-WARNING": {
+      "frames": [
+        "ui-warning"
+      ],
+      "icon": "ui-warning",
+      "iconSizes": [
+        24,
+        48
+      ]
+    },
+    "UI-COOLDOWN": {
+      "frames": [
+        "ui-cooldown"
+      ],
+      "icon": "ui-cooldown",
+      "iconSizes": [
+        24,
+        48
+      ]
+    }
+  }
+}

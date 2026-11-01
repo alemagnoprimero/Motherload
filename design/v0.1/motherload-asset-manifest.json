@@ -1,0 +1,4111 @@
+[
+  {
+    "id": "CORE-1-DRILL",
+    "category": "core_hardware",
+    "rank": 1,
+    "name": "Salvaged assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Scratched steel and orange repair plates",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-1-ENERGY",
+    "category": "core_hardware",
+    "rank": 1,
+    "name": "Salvaged assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Scratched steel and orange repair plates",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-1-CARGO",
+    "category": "core_hardware",
+    "rank": 1,
+    "name": "Salvaged assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Scratched steel and orange repair plates",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-1-HULL",
+    "category": "core_hardware",
+    "rank": 1,
+    "name": "Salvaged assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Scratched steel and orange repair plates",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-1-ENGINE",
+    "category": "core_hardware",
+    "rank": 1,
+    "name": "Salvaged assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Scratched steel and orange repair plates",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-2-DRILL",
+    "category": "core_hardware",
+    "rank": 2,
+    "name": "Survey assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Survey steel with pale collar",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-2-ENERGY",
+    "category": "core_hardware",
+    "rank": 2,
+    "name": "Survey assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Survey steel with pale collar",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-2-CARGO",
+    "category": "core_hardware",
+    "rank": 2,
+    "name": "Survey assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Survey steel with pale collar",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-2-HULL",
+    "category": "core_hardware",
+    "rank": 2,
+    "name": "Survey assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Survey steel with pale collar",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-2-ENGINE",
+    "category": "core_hardware",
+    "rank": 2,
+    "name": "Survey assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Survey steel with pale collar",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-3-DRILL",
+    "category": "core_hardware",
+    "rank": 3,
+    "name": "Hydraulic assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Hydraulic steel and ivory panels",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-3-ENERGY",
+    "category": "core_hardware",
+    "rank": 3,
+    "name": "Hydraulic assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Hydraulic steel and ivory panels",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-3-CARGO",
+    "category": "core_hardware",
+    "rank": 3,
+    "name": "Hydraulic assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Hydraulic steel and ivory panels",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-3-HULL",
+    "category": "core_hardware",
+    "rank": 3,
+    "name": "Hydraulic assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Hydraulic steel and ivory panels",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-3-ENGINE",
+    "category": "core_hardware",
+    "rank": 3,
+    "name": "Hydraulic assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Hydraulic steel and ivory panels",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-4-DRILL",
+    "category": "core_hardware",
+    "rank": 4,
+    "name": "Sealed assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Sealed ivory shell and dark gaskets",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-4-ENERGY",
+    "category": "core_hardware",
+    "rank": 4,
+    "name": "Sealed assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Sealed ivory shell and dark gaskets",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-4-CARGO",
+    "category": "core_hardware",
+    "rank": 4,
+    "name": "Sealed assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Sealed ivory shell and dark gaskets",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-4-HULL",
+    "category": "core_hardware",
+    "rank": 4,
+    "name": "Sealed assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Sealed ivory shell and dark gaskets",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-4-ENGINE",
+    "category": "core_hardware",
+    "rank": 4,
+    "name": "Sealed assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Sealed ivory shell and dark gaskets",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-5-DRILL",
+    "category": "core_hardware",
+    "rank": 5,
+    "name": "Field assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Navy field ceramic and bronze bands",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-5-ENERGY",
+    "category": "core_hardware",
+    "rank": 5,
+    "name": "Field assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Navy field ceramic and bronze bands",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-5-CARGO",
+    "category": "core_hardware",
+    "rank": 5,
+    "name": "Field assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Navy field ceramic and bronze bands",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-5-HULL",
+    "category": "core_hardware",
+    "rank": 5,
+    "name": "Field assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Navy field ceramic and bronze bands",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-5-ENGINE",
+    "category": "core_hardware",
+    "rank": 5,
+    "name": "Field assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Navy field ceramic and bronze bands",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-6-DRILL",
+    "category": "core_hardware",
+    "rank": 6,
+    "name": "Stellar assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Navy ceramic and thick gold rings",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-6-ENERGY",
+    "category": "core_hardware",
+    "rank": 6,
+    "name": "Stellar assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Navy ceramic and thick gold rings",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-6-CARGO",
+    "category": "core_hardware",
+    "rank": 6,
+    "name": "Stellar assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Navy ceramic and thick gold rings",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-6-HULL",
+    "category": "core_hardware",
+    "rank": 6,
+    "name": "Stellar assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Navy ceramic and thick gold rings",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-6-ENGINE",
+    "category": "core_hardware",
+    "rank": 6,
+    "name": "Stellar assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Navy ceramic and thick gold rings",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-7-DRILL",
+    "category": "core_hardware",
+    "rank": 7,
+    "name": "Inertial assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Offset violet frame and cyan anchors",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-7-ENERGY",
+    "category": "core_hardware",
+    "rank": 7,
+    "name": "Inertial assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Offset violet frame and cyan anchors",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-7-CARGO",
+    "category": "core_hardware",
+    "rank": 7,
+    "name": "Inertial assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Offset violet frame and cyan anchors",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-7-HULL",
+    "category": "core_hardware",
+    "rank": 7,
+    "name": "Inertial assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Offset violet frame and cyan anchors",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-7-ENGINE",
+    "category": "core_hardware",
+    "rank": 7,
+    "name": "Inertial assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Offset violet frame and cyan anchors",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-8-DRILL",
+    "category": "core_hardware",
+    "rank": 8,
+    "name": "Phase assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Paired pale frame and phase apertures",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-8-ENERGY",
+    "category": "core_hardware",
+    "rank": 8,
+    "name": "Phase assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Paired pale frame and phase apertures",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-8-CARGO",
+    "category": "core_hardware",
+    "rank": 8,
+    "name": "Phase assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Paired pale frame and phase apertures",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-8-HULL",
+    "category": "core_hardware",
+    "rank": 8,
+    "name": "Phase assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Paired pale frame and phase apertures",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-8-ENGINE",
+    "category": "core_hardware",
+    "rank": 8,
+    "name": "Phase assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Paired pale frame and phase apertures",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-9-DRILL",
+    "category": "core_hardware",
+    "rank": 9,
+    "name": "Causal assembly drill",
+    "brief": "Front spindle with broad cutting teeth; add one major collar or piston at each rank",
+    "materials": "Pale mineral ceramic with teal and rose accents",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-9-ENERGY",
+    "category": "core_hardware",
+    "rank": 9,
+    "name": "Causal assembly energy",
+    "brief": "Rear vessel with visible fill bands; evolve from cylinder to contained field chamber",
+    "materials": "Pale mineral ceramic with teal and rose accents",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-9-CARGO",
+    "category": "core_hardware",
+    "rank": 9,
+    "name": "Causal assembly cargo",
+    "brief": "Rear bay with a visible open door or latch; evolve racks into sealed and paired storage",
+    "materials": "Pale mineral ceramic with teal and rose accents",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-9-HULL",
+    "category": "core_hardware",
+    "rank": 9,
+    "name": "Causal assembly hull",
+    "brief": "Outer shell plates around the unchanged cabin; show protection through overlapping geometry",
+    "materials": "Pale mineral ceramic with teal and rose accents",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "CORE-9-ENGINE",
+    "category": "core_hardware",
+    "rank": 9,
+    "name": "Causal assembly engine",
+    "brief": "Underside or rear drive with readable nozzles; evolve pistons into field rings",
+    "materials": "Pale mineral ceramic with teal and rose accents",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "three damage overlays"
+    ]
+  },
+  {
+    "id": "RIG-CABIN",
+    "category": "shared_rig",
+    "brief": "Rounded compact cabin with dark teal glass orange stripe and fixed headlamp; body footprint defined in guide",
+    "outputs": [
+      "layered source",
+      "idle",
+      "drive",
+      "drill",
+      "thrust",
+      "dock",
+      "damage"
+    ]
+  },
+  {
+    "id": "UI-ENERGY",
+    "category": "ui",
+    "brief": "Shared energy symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-HULL",
+    "category": "ui",
+    "brief": "Shared hull symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-CARGO",
+    "category": "ui",
+    "brief": "Shared cargo symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-DEPTH",
+    "category": "ui",
+    "brief": "Shared depth symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-MISSION",
+    "category": "ui",
+    "brief": "Shared mission symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-RELIC",
+    "category": "ui",
+    "brief": "Shared relic symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-MAP",
+    "category": "ui",
+    "brief": "Shared map symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-SHOP",
+    "category": "ui",
+    "brief": "Shared shop symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-WARNING",
+    "category": "ui",
+    "brief": "Shared warning symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "UI-COOLDOWN",
+    "category": "ui",
+    "brief": "Shared cooldown symbol; distinct silhouette and labelled numeric state; shared UI palette",
+    "outputs": [
+      "24px glyph",
+      "48px glyph",
+      "normal",
+      "selected",
+      "disabled"
+    ]
+  },
+  {
+    "id": "W01",
+    "category": "world",
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ],
+    "environment": "Angular broken plates, large quiet cavities and rectangular salvage. Ore silhouettes use chips and short crystal teeth.",
+    "rig": "Orange battered cabin, exposed bolts and mismatched plates; R1 front auger, R2 folding feet, R3 rear rack.",
+    "lighting": "Warm headlamp is the brightest moving object. Cool distant stars remain subordinate to the traversable foreground.",
+    "fx": "Short grey chips on cuts; two visible dust puffs before shelf failure. No constant full-screen dust.",
+    "audio": "Dry pneumatic knock, ticking fuel pump, restrained metallic percussion. Cargo pickup has a short rising two-note cue."
+  },
+  {
+    "id": "W01-R1",
+    "category": "equipment",
+    "name": "Salvaged auger",
+    "slot": "drill",
+    "brief": "Three broad steel flutes, chipped orange collar, one white tooth marker.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W01-R2",
+    "category": "equipment",
+    "name": "Anchoring feet",
+    "slot": "mobility",
+    "brief": "Two hinged rectangular feet; deployed feet gain a striped mechanical contact indicator.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W01-R3",
+    "category": "equipment",
+    "name": "External cargo rack",
+    "slot": "processor",
+    "brief": "Two open rear cages; fill from bottom upward with visible crate silhouettes.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W01-O1",
+    "category": "mineral",
+    "name": "Ironium",
+    "brief": "low chipped cluster",
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W01-O2",
+    "category": "mineral",
+    "name": "Bronzium",
+    "brief": "paired elongated facets",
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W01-O3",
+    "category": "mineral",
+    "name": "Silverium",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W01-O4",
+    "category": "mineral",
+    "name": "Goldium",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W01-J",
+    "category": "relic",
+    "name": "Broken asteroid relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W01-Q",
+    "category": "mission",
+    "name": "Navigation core",
+    "brief": "Square avionics block with two unequal antenna stubs and a white navigation cross",
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W01-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Broken asteroid",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ]
+  },
+  {
+    "id": "W01-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Broken asteroid",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ]
+  },
+  {
+    "id": "W01-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Broken asteroid",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "17232B",
+      "56616A",
+      "A8B0B4",
+      "F0A43C",
+      "F6E1AF"
+    ]
+  },
+  {
+    "id": "W02",
+    "category": "world",
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ],
+    "environment": "Long ice facets, smooth melt channels and round trapped bubbles. Preserve crisp dark outlines at ice boundaries.",
+    "rig": "Insulated pale panels around the orange cabin; transparent condenser tubes and a hooded warm drill tip.",
+    "lighting": "Blue ambient light with warm drill contact. Volatiles pulse slowly in a steady turquoise halo.",
+    "fx": "Steam travels upward, frost fragments fall, intact pickup uses a clean ring rather than an explosion.",
+    "audio": "Glass ticks, damped motor, descending breath for vent warnings; a bell confirms intact extraction."
+  },
+  {
+    "id": "W02-R1",
+    "category": "equipment",
+    "name": "Thermal auger",
+    "slot": "drill",
+    "brief": "Copper annulus around three white ceramic teeth; warm internal slit.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W02-R2",
+    "category": "equipment",
+    "name": "Vapour condenser",
+    "slot": "utility",
+    "brief": "Twin transparent tubes with readable rising bubbles; intake faces the drill.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W02-R3",
+    "category": "equipment",
+    "name": "Preservation chamber",
+    "slot": "processor",
+    "brief": "Small hexagonal insulated chest with a visible suspended crystal and a slow status light.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W02-O1",
+    "category": "mineral",
+    "name": "Frost iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W02-O2",
+    "category": "mineral",
+    "name": "Blue nickel",
+    "brief": "paired elongated facets",
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W02-O3",
+    "category": "mineral",
+    "name": "Cryosilicate",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W02-O4",
+    "category": "mineral",
+    "name": "Helion ice",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W02-J",
+    "category": "relic",
+    "name": "Ice comet relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W02-Q",
+    "category": "mission",
+    "name": "Cryogenic catalyst",
+    "brief": "Teardrop ice capsule with one copper loop and a suspended bright seed",
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W02-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Ice comet",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ]
+  },
+  {
+    "id": "W02-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Ice comet",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ]
+  },
+  {
+    "id": "W02-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Ice comet",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "102B3D",
+      "3C8196",
+      "B8E6EB",
+      "49D8C6",
+      "F7C673"
+    ]
+  },
+  {
+    "id": "W03",
+    "category": "world",
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ],
+    "environment": "Horizontal strata interrupted by large diagonal fractures. Use broken arches and off-centre rock columns.",
+    "rig": "Tall sensor mast and vertical supports; broad feet maintain a low centre of mass around the same cabin.",
+    "lighting": "Cold diffuse surface light, warm pocket lamps. Unstable edges gain a patterned amber outline only when scanned.",
+    "fx": "Dust trails precede moving blocks. Scanner rings stop on geometry and never obscure ore edges.",
+    "audio": "Low stone strain, distinct two-stage crack warning, soft sonar ping with directional stereo."
+  },
+  {
+    "id": "W03-R1",
+    "category": "equipment",
+    "name": "Seismic scanner",
+    "slot": "utility",
+    "brief": "Forked mast with a single broad dish; three concentric scan marks on its icon.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W03-R2",
+    "category": "equipment",
+    "name": "Shaft supports",
+    "slot": "utility",
+    "brief": "Telescoping I-beam with diagonal foot and black-yellow edge pattern.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W03-R3",
+    "category": "equipment",
+    "name": "Tether winch",
+    "slot": "mobility",
+    "brief": "Large open spool with thick cable and triangular hook; cable remains visible against rock.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W03-O1",
+    "category": "mineral",
+    "name": "Lunar iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W03-O2",
+    "category": "mineral",
+    "name": "Pale nickel",
+    "brief": "paired elongated facets",
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W03-O3",
+    "category": "mineral",
+    "name": "Resonance quartz",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W03-O4",
+    "category": "mineral",
+    "name": "Selenite",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W03-J",
+    "category": "relic",
+    "name": "Fractured moon relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W03-Q",
+    "category": "mission",
+    "name": "Seismic archive",
+    "brief": "Stack of three engraved stone discs clamped inside a survey bracket",
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W03-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Fractured moon",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ]
+  },
+  {
+    "id": "W03-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Fractured moon",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ]
+  },
+  {
+    "id": "W03-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Fractured moon",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "1C2334",
+      "696A85",
+      "A8A7BD",
+      "AE9BD9",
+      "E4C680"
+    ]
+  },
+  {
+    "id": "W04",
+    "category": "world",
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ],
+    "environment": "Thick horizontal iron bands, cut metal-like faces and compact industrial ruins. Maintain large low-detail rock masses.",
+    "rig": "Hydraulic pistons, square compression bay and magnetic separators; ivory pressure shell retains orange identification stripe.",
+    "lighting": "Rust ambient tones, neutral steel highlights, white mineral glints. Magma edges remain clearly bounded.",
+    "fx": "Heavy chips travel a short distance. Hydraulic recoil is confined to the tool and never shakes the entire screen by default.",
+    "audio": "Slow heavy piston rhythm, cargo clamp thunk, lower motor pitch under high load."
+  },
+  {
+    "id": "W04-R1",
+    "category": "equipment",
+    "name": "Hydraulic crown",
+    "slot": "drill",
+    "brief": "Four large blunt teeth, exposed piston pair and a rectangular pressure gauge.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W04-R2",
+    "category": "equipment",
+    "name": "Magnetic separator",
+    "slot": "processor",
+    "brief": "Twin horseshoe poles beside the cargo intake; three metallic chips visibly separate.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W04-R3",
+    "category": "equipment",
+    "name": "Ore compactor",
+    "slot": "processor",
+    "brief": "Opposed square press jaws with one broad crush arrow; four-stage press animation.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W04-O1",
+    "category": "mineral",
+    "name": "Iron bloom",
+    "brief": "low chipped cluster",
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W04-O2",
+    "category": "mineral",
+    "name": "Copperite",
+    "brief": "paired elongated facets",
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W04-O3",
+    "category": "mineral",
+    "name": "Dense silver",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W04-O4",
+    "category": "mineral",
+    "name": "Ferric gold",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W04-J",
+    "category": "relic",
+    "name": "Iron planet relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W04-Q",
+    "category": "mission",
+    "name": "Geothermal core",
+    "brief": "Heavy six-sided basalt vessel with an enclosed orange core",
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W04-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Iron planet",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ]
+  },
+  {
+    "id": "W04-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Iron planet",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ]
+  },
+  {
+    "id": "W04-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Iron planet",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "25252A",
+      "8D4938",
+      "B88365",
+      "C7CACE",
+      "F2B047"
+    ]
+  },
+  {
+    "id": "W05",
+    "category": "world",
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ],
+    "environment": "Rounded pressure-smoothed shelves, tubular vents and sweeping current lines. Silhouettes stay opaque against water.",
+    "rig": "Sealed cabin gasket, twin cyan ballast pods, protected front cutter and bright top rescue lamp.",
+    "lighting": "Petrol blue background, clear turquoise task lights and amber hazard strips. Avoid glowing every organism or mineral.",
+    "fx": "Bubble motion indicates current direction. Pressure warnings add hull bands and a gauge tick, never blur.",
+    "audio": "Low-pass ambience, sonar pulses, rising pressure creak; all critical cues have visible counterparts."
+  },
+  {
+    "id": "W05-R1",
+    "category": "equipment",
+    "name": "Pressure hull",
+    "slot": "integrated",
+    "brief": "Ivory overlapping shell rings with dark gasket seams and circular inspection ports.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W05-R2",
+    "category": "equipment",
+    "name": "Ballast control",
+    "slot": "mobility",
+    "brief": "Two readable translucent side tanks with a moving waterline and opposing arrows.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W05-R3",
+    "category": "equipment",
+    "name": "Cavitation cutter",
+    "slot": "drill",
+    "brief": "Three-ring nozzle with a hollow central cutting aperture; bubble ring stays local.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W05-O1",
+    "category": "mineral",
+    "name": "Seabed copper",
+    "brief": "low chipped cluster",
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W05-O2",
+    "category": "mineral",
+    "name": "Pearl cobalt",
+    "brief": "paired elongated facets",
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W05-O3",
+    "category": "mineral",
+    "name": "Abyssal opal",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W05-O4",
+    "category": "mineral",
+    "name": "Pelagic prism",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W05-J",
+    "category": "relic",
+    "name": "Ocean moon relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W05-Q",
+    "category": "mission",
+    "name": "Abyssal pressure seal",
+    "brief": "Round ivory pressure seal with four large clamps and a turquoise centre",
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W05-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Ocean moon",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ]
+  },
+  {
+    "id": "W05-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Ocean moon",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ]
+  },
+  {
+    "id": "W05-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Ocean moon",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "0B2634",
+      "18576B",
+      "4B97A1",
+      "72E0D0",
+      "F3BA71"
+    ]
+  },
+  {
+    "id": "W06",
+    "category": "world",
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ],
+    "environment": "Dark basalt shelves, thick glowing fissures and solid ceramic ruins. Magma uses striped hot edges and flowing interiors.",
+    "rig": "Ivory ceramic segments, broad radiator fins and a visible thermal vessel behind the cabin.",
+    "lighting": "Glows occupy less than 15% of the visible field; terrain edges remain darker than the player lamp.",
+    "fx": "Heat shimmer is confined to background and can be disabled. Vent direction is visible before eruption.",
+    "audio": "Thermal ticking, intermittent low roars and a three-beat overheat warning."
+  },
+  {
+    "id": "W06-R1",
+    "category": "equipment",
+    "name": "Ceramic crown",
+    "slot": "drill",
+    "brief": "Broad pale ceramic teeth with a dark outer ring and minimal orange wear.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W06-R2",
+    "category": "equipment",
+    "name": "Heat exchanger",
+    "slot": "utility",
+    "brief": "Six large radiator fins feeding an amber glass reservoir with a clear fill line.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W06-R3",
+    "category": "equipment",
+    "name": "Thermal burst",
+    "slot": "utility",
+    "brief": "Open radiator iris and a three-step orange light bar; short outward vent on activation.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W06-O1",
+    "category": "mineral",
+    "name": "Basalt iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W06-O2",
+    "category": "mineral",
+    "name": "Sulphur gold",
+    "brief": "paired elongated facets",
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W06-O3",
+    "category": "mineral",
+    "name": "Fire opal",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W06-O4",
+    "category": "mineral",
+    "name": "Volcanic spinel",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W06-J",
+    "category": "relic",
+    "name": "Volcanic world relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W06-Q",
+    "category": "mission",
+    "name": "Thermal regulator",
+    "brief": "Ceramic regulator shaped like a broad tuning fork around an amber vessel",
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W06-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Volcanic world",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ]
+  },
+  {
+    "id": "W06-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Volcanic world",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ]
+  },
+  {
+    "id": "W06-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Volcanic world",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "211E24",
+      "6D3838",
+      "AD6651",
+      "FFB345",
+      "FFE1A1"
+    ]
+  },
+  {
+    "id": "W07",
+    "category": "world",
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ],
+    "environment": "Floating flat-bottom mineral shelves, broad cloud bands and downward hanging growths. Keep landing silhouettes readable.",
+    "rig": "Vector jets under each corner, folded storm rods and a capacitive drum with broad gold bands.",
+    "lighting": "Clouds are low contrast; reefs and the rig stay opaque. Lightning flashes use bounded local illumination.",
+    "fx": "Wind ribbons curve around shelters. Capacitor arcs connect only clearly visible nodes.",
+    "audio": "Directional wind, clear rising electrical warning, short capacitor charging tone."
+  },
+  {
+    "id": "W07-R1",
+    "category": "equipment",
+    "name": "Vector thrusters",
+    "slot": "mobility",
+    "brief": "Four short nozzles, each with a broad swivel joint; clear direction during thrust.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W07-R2",
+    "category": "equipment",
+    "name": "Storm capacitor",
+    "slot": "utility",
+    "brief": "Two vertical rods and a central dark-blue cylinder with three gold charge bands.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W07-R3",
+    "category": "equipment",
+    "name": "Electrostatic collector",
+    "slot": "processor",
+    "brief": "Open fork above the intake with two short attracting arcs and an opaque cargo silhouette.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W07-O1",
+    "category": "mineral",
+    "name": "Cloud nickel",
+    "brief": "low chipped cluster",
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W07-O2",
+    "category": "mineral",
+    "name": "Storm cobalt",
+    "brief": "paired elongated facets",
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W07-O3",
+    "category": "mineral",
+    "name": "Fulgar crystal",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W07-O4",
+    "category": "mineral",
+    "name": "Aether prism",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W07-J",
+    "category": "relic",
+    "name": "Gas giant reefs relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W07-Q",
+    "category": "mission",
+    "name": "Storm capacitor core",
+    "brief": "Short navy cylinder capped by two lightning rods and three gold charge bands",
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W07-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Gas giant reefs",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ]
+  },
+  {
+    "id": "W07-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Gas giant reefs",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ]
+  },
+  {
+    "id": "W07-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Gas giant reefs",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "18313F",
+      "567C8E",
+      "AFC8CE",
+      "E8D57D",
+      "F6F0C9"
+    ]
+  },
+  {
+    "id": "W08",
+    "category": "world",
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ],
+    "environment": "Concentric magnetic ribs, heavy mineral lattices and sharply cut safe chambers. The star is background, never a solid ordinary planet.",
+    "rig": "Gold containment rings around dark-blue ceramic plating. The original cabin and orange stripe remain visible.",
+    "lighting": "Brightest plasma is outside the playable silhouette band. Safe chambers have steady pale-blue edge lamps.",
+    "fx": "Magnetic arcs bend around the rig, cuts release contained ribbons. Flare warning uses expanding patterned bands.",
+    "audio": "Sustained reactor harmonic, rising flare cue and a clear quiet-window downbeat."
+  },
+  {
+    "id": "W08-R1",
+    "category": "equipment",
+    "name": "Magnetic containment",
+    "slot": "integrated",
+    "brief": "Two thick gold rings, navy mounts and four bright field nodes.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W08-R2",
+    "category": "equipment",
+    "name": "Plasma lance",
+    "slot": "drill",
+    "brief": "Long tapered aperture with a narrow bright core and dark outer shroud.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W08-R3",
+    "category": "equipment",
+    "name": "Radiation recuperator",
+    "slot": "utility",
+    "brief": "Shield collar with three reflective panels and a small inward-flowing light sequence.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W08-O1",
+    "category": "mineral",
+    "name": "Solar iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W08-O2",
+    "category": "mineral",
+    "name": "Corona gold",
+    "brief": "paired elongated facets",
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W08-O3",
+    "category": "mineral",
+    "name": "Plasma lattice",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W08-O4",
+    "category": "mineral",
+    "name": "Helio diamond",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W08-J",
+    "category": "relic",
+    "name": "Stellar corona relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W08-Q",
+    "category": "mission",
+    "name": "Stellar drive seed",
+    "brief": "Small tetrahedral luminous seed held inside a thick gold containment ring",
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W08-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Stellar corona",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ]
+  },
+  {
+    "id": "W08-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Stellar corona",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ]
+  },
+  {
+    "id": "W08-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Stellar corona",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "171F35",
+      "655029",
+      "D19A38",
+      "FFD778",
+      "FFF0C7"
+    ]
+  },
+  {
+    "id": "W09",
+    "category": "world",
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ],
+    "environment": "Compressed diamond faces, vertical ribs and narrow supported cavities. Pale faces contrast against deep navy void.",
+    "rig": "Wide deployed legs, heavy steel collar and a compact cubic cargo chamber.",
+    "lighting": "Cool specular rim light is restrained to edges. Stress lines are amber with a chevron pattern.",
+    "fx": "Short radial pressure ripples and dense chips. Fault direction is indicated by converging lines.",
+    "audio": "Low mechanical strain, slow compression beat and a firm anchor-lock click."
+  },
+  {
+    "id": "W09-R1",
+    "category": "equipment",
+    "name": "Gravitic braces",
+    "slot": "mobility",
+    "brief": "Four thick spread legs with large triangular feet and a locked ring above the cabin.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W09-R2",
+    "category": "equipment",
+    "name": "Lattice cutter",
+    "slot": "drill",
+    "brief": "Six blunt geometric teeth around a central square void.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W09-R3",
+    "category": "equipment",
+    "name": "Compression containers",
+    "slot": "processor",
+    "brief": "Nested metal cubes with a clear inward arrow and an illuminated central latch.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W09-O1",
+    "category": "mineral",
+    "name": "Dwarf iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W09-O2",
+    "category": "mineral",
+    "name": "Dense iridium",
+    "brief": "paired elongated facets",
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W09-O3",
+    "category": "mineral",
+    "name": "Lattice sapphire",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W09-O4",
+    "category": "mineral",
+    "name": "Degenerate pearl",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W09-J",
+    "category": "relic",
+    "name": "White dwarf remnant relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W09-Q",
+    "category": "mission",
+    "name": "Gravitic stabilizer core",
+    "brief": "Dense dark cube suspended between four pale triangular gravitic braces",
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W09-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "White dwarf remnant",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ]
+  },
+  {
+    "id": "W09-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "White dwarf remnant",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ]
+  },
+  {
+    "id": "W09-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "White dwarf remnant",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "111C33",
+      "586F94",
+      "B4CBE0",
+      "BCDFFF",
+      "E6CB8F"
+    ]
+  },
+  {
+    "id": "W10",
+    "category": "world",
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ],
+    "environment": "Long torn rock wedges and offset orbit arcs. A dark distant disk communicates scale without dominating the map.",
+    "rig": "Offset inertial frame, external tether spool and thick cross braces; slight counter-rotation inside the frame only.",
+    "lighting": "Burgundy shadows, warm mineral edges and pale cyan tether lines. Safe anchors use solid square lamps.",
+    "fx": "Debris indicates tidal direction. Extraction tethers never disappear behind decorative particles.",
+    "audio": "Deep periodic pulls, cable tension and a two-tone shear warning."
+  },
+  {
+    "id": "W10-R1",
+    "category": "equipment",
+    "name": "Inertial stabilizer",
+    "slot": "mobility",
+    "brief": "Two offset hoops on a stout rectangular frame with a central counterweight.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W10-R2",
+    "category": "equipment",
+    "name": "Extraction tether",
+    "slot": "utility",
+    "brief": "Large cyan-lit spool with a heavy triangular hook and striped cable.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W10-R3",
+    "category": "equipment",
+    "name": "Tidal brace",
+    "slot": "mobility",
+    "brief": "Two broad clamps close around the chassis; icon shows converging chevrons.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W10-O1",
+    "category": "mineral",
+    "name": "Tidal iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W10-O2",
+    "category": "mineral",
+    "name": "Orbit palladium",
+    "brief": "paired elongated facets",
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W10-O3",
+    "category": "mineral",
+    "name": "Accretion ruby",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W10-O4",
+    "category": "mineral",
+    "name": "Singularity amber",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W10-J",
+    "category": "relic",
+    "name": "Accretion belt relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W10-Q",
+    "category": "mission",
+    "name": "Inertial anchor core",
+    "brief": "Paired unequal hoops holding a solid rust-red core",
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W10-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Accretion belt",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ]
+  },
+  {
+    "id": "W10-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Accretion belt",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ]
+  },
+  {
+    "id": "W10-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Accretion belt",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "211D2E",
+      "714552",
+      "B27883",
+      "F0B487",
+      "B3DAE1"
+    ]
+  },
+  {
+    "id": "W11",
+    "category": "world",
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ],
+    "environment": "Rock chambers end in clean oval apertures. Linked portals share a number and border pattern, not just a colour.",
+    "rig": "Compact rig with paired anchor rings and a rear cargo relay housing; silhouette remains solid during travel.",
+    "lighting": "Cyan portals have dark central openings; destinations are previewed with a small terrain silhouette.",
+    "fx": "Cargo and rig cross in discrete readable steps. Avoid disorienting full-screen warps.",
+    "audio": "Paired portal tones, short arrival confirmation and a steady instability tick."
+  },
+  {
+    "id": "W11-R1",
+    "category": "equipment",
+    "name": "Spatial anchors",
+    "slot": "utility",
+    "brief": "Two oval frames with matching notches and a small numerical label plate.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W11-R2",
+    "category": "equipment",
+    "name": "Entangled cargo relay",
+    "slot": "processor",
+    "brief": "Split cargo box joined by a short luminous bar; transfer fills a four-segment indicator.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W11-R3",
+    "category": "equipment",
+    "name": "Portal winch",
+    "slot": "utility",
+    "brief": "Open spool with paired cyan end caps and an oval hook.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W11-O1",
+    "category": "mineral",
+    "name": "Rift copper",
+    "brief": "low chipped cluster",
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W11-O2",
+    "category": "mineral",
+    "name": "Portal silver",
+    "brief": "paired elongated facets",
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W11-O3",
+    "category": "mineral",
+    "name": "Fold crystal",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W11-O4",
+    "category": "mineral",
+    "name": "Entangled opal",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W11-J",
+    "category": "relic",
+    "name": "Wormhole junction relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W11-Q",
+    "category": "mission",
+    "name": "Junction coordinate",
+    "brief": "Two numbered portal plates connected by a short cyan bar",
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W11-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Wormhole junction",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ]
+  },
+  {
+    "id": "W11-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Wormhole junction",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ]
+  },
+  {
+    "id": "W11-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Wormhole junction",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "122A35",
+      "356A7C",
+      "94BBC5",
+      "67DFEF",
+      "E5B5F4"
+    ]
+  },
+  {
+    "id": "W12",
+    "category": "world",
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ],
+    "environment": "Translucent faceted faces over opaque collision outlines; large quiet negative spaces between reefs.",
+    "rig": "Forked scanner antenna, a floating but visibly attached cutter ring and a broad frequency dial.",
+    "lighting": "Violet ambient glow stays below the rig headlamp. Matched seams become opaque and gain a patterned outline.",
+    "fx": "Resonance pulses stop at their useful radius; no random screen noise or seizure-like flicker.",
+    "audio": "Three distinct musical intervals encode frequencies, paired with the same three visual shapes."
+  },
+  {
+    "id": "W12-R1",
+    "category": "equipment",
+    "name": "Resonance probe",
+    "slot": "utility",
+    "brief": "Forked probe with three large frequency shapes on its collar.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W12-R2",
+    "category": "equipment",
+    "name": "Frequency tuner",
+    "slot": "utility",
+    "brief": "Three-position mechanical dial with circle, triangle and square marks.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W12-R3",
+    "category": "equipment",
+    "name": "Phase cutter",
+    "slot": "drill",
+    "brief": "Open triangular cutter with a solid inner blade that appears only when matched.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W12-O1",
+    "category": "mineral",
+    "name": "Shadow nickel",
+    "brief": "low chipped cluster",
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W12-O2",
+    "category": "mineral",
+    "name": "Resonant silver",
+    "brief": "paired elongated facets",
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W12-O3",
+    "category": "mineral",
+    "name": "Phase amethyst",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W12-O4",
+    "category": "mineral",
+    "name": "Null crystal",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W12-J",
+    "category": "relic",
+    "name": "Dark matter reef relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W12-Q",
+    "category": "mission",
+    "name": "Resonance key",
+    "brief": "Three interlocked circle triangle and square plates surrounding a violet shard",
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W12-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Dark matter reef",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ]
+  },
+  {
+    "id": "W12-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Dark matter reef",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ]
+  },
+  {
+    "id": "W12-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Dark matter reef",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "1D1730",
+      "514077",
+      "8F7CB7",
+      "C4A4F4",
+      "6AE0CE"
+    ]
+  },
+  {
+    "id": "W13",
+    "category": "world",
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ],
+    "environment": "Paired terraces with mirrored offsets. The inactive layer uses outlines and hatching rather than transparency alone.",
+    "rig": "Paired teal and rose fins with one solid central cabin. Layer state changes fins and a clear A or B marker.",
+    "lighting": "Active layer has full contrast; inactive layer remains faint and patterned. Hazards retain the shared warning treatment.",
+    "fx": "Short cross-layer echo at the rig only. Linked terrain changes animate over 0.5 s so the cause stays visible.",
+    "audio": "Two variations of one musical phrase and a distinct safe-shift confirmation."
+  },
+  {
+    "id": "W13-R1",
+    "category": "equipment",
+    "name": "Paired scanner",
+    "slot": "utility",
+    "brief": "Two offset dishes with alternating solid and hatched faces.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W13-R2",
+    "category": "equipment",
+    "name": "Dual phase drive",
+    "slot": "mobility",
+    "brief": "Two swept fins around the cabin with a large A/B status disc.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W13-R3",
+    "category": "equipment",
+    "name": "Cross layer anchor",
+    "slot": "utility",
+    "brief": "Symmetric twin prongs joined by an ivory central block and paired floor pads.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W13-O1",
+    "category": "mineral",
+    "name": "Mirror iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W13-O2",
+    "category": "mineral",
+    "name": "Twin cobalt",
+    "brief": "paired elongated facets",
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W13-O3",
+    "category": "mineral",
+    "name": "Parallax quartz",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W13-O4",
+    "category": "mineral",
+    "name": "Reflection gem",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W13-J",
+    "category": "relic",
+    "name": "Mirror dimension relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W13-Q",
+    "category": "mission",
+    "name": "Paired coordinate",
+    "brief": "Two interlocking half-discs one hatched and one solid in a single mission frame",
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W13-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Mirror dimension",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ]
+  },
+  {
+    "id": "W13-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Mirror dimension",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ]
+  },
+  {
+    "id": "W13-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Mirror dimension",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "132B32",
+      "367F86",
+      "A1D6D5",
+      "70E1D5",
+      "D98EBE"
+    ]
+  },
+  {
+    "id": "W14",
+    "category": "world",
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ],
+    "environment": "Large sediment rings, embedded fossils and repeated silhouettes frozen in sequence. Keep the play layer crisp.",
+    "rig": "Brass clamps, ivory preservation chamber and a broad clock-like ring with three discrete positions.",
+    "lighting": "Amber local light and cool stable refuges. State changes alter texture and a shape badge, not brightness alone.",
+    "fx": "Three discrete terrain transitions; no full-screen reversing motion. Ore ownership state stays visually marked.",
+    "audio": "Clock-like clicks without constant ticking, reversed dust sound only during a state change."
+  },
+  {
+    "id": "W14-R1",
+    "category": "equipment",
+    "name": "Temporal clamp",
+    "slot": "utility",
+    "brief": "Two brass jaws around a three-position timing ring.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W14-R2",
+    "category": "equipment",
+    "name": "State selector",
+    "slot": "utility",
+    "brief": "Three clear state plates showing liquid, block and fractured block.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W14-R3",
+    "category": "equipment",
+    "name": "Preservation chamber",
+    "slot": "processor",
+    "brief": "Ivory capsule holding an amber fragment between three static rings.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W14-O1",
+    "category": "mineral",
+    "name": "Fossil copper",
+    "brief": "low chipped cluster",
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W14-O2",
+    "category": "mineral",
+    "name": "Epoch amber",
+    "brief": "paired elongated facets",
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W14-O3",
+    "category": "mineral",
+    "name": "Chronal jade",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W14-O4",
+    "category": "mineral",
+    "name": "Aeon sapphire",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W14-J",
+    "category": "relic",
+    "name": "Fossilized time world relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W14-Q",
+    "category": "mission",
+    "name": "Chronal coordinate",
+    "brief": "Three amber fossil plates with one clearly preserved clock-like spiral",
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W14-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Fossilized time world",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ]
+  },
+  {
+    "id": "W14-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Fossilized time world",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ]
+  },
+  {
+    "id": "W14-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Fossilized time world",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "302522",
+      "8B6545",
+      "CCAA72",
+      "E8CB8C",
+      "80C9C4"
+    ]
+  },
+  {
+    "id": "W15",
+    "category": "world",
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ],
+    "environment": "Pale mineral architecture, large geometric cavities and pearl tetrahedra. Preserve heavy stone weight beneath the unusual geometry.",
+    "rig": "Pale ceramic panels, bifurcated cutter and subtle paired phase fins; the original orange stripe is preserved.",
+    "lighting": "Pearl highlights are sparse. Teal energy seams guide the eye to machinery, and the finale avoids a whiteout.",
+    "fx": "Matter assembles in three readable steps. Causal links draw briefly from the tool to the affected cell.",
+    "audio": "Earlier motor motifs return inside a wider harmonic texture; final completion leaves a quiet mining ambience."
+  },
+  {
+    "id": "W15-R1",
+    "category": "equipment",
+    "name": "Causality cutter",
+    "slot": "drill",
+    "brief": "Bifurcated pale blade with teal and rose tips and a solid central mounting bar.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W15-R2",
+    "category": "equipment",
+    "name": "Matter assembler",
+    "slot": "utility",
+    "brief": "Two opposed ivory jaws with a visible cubic construction volume.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W15-R3",
+    "category": "equipment",
+    "name": "World seed chamber",
+    "slot": "mission",
+    "brief": "A pearl tetrahedron floating inside a heavy brass-and-ivory frame; slow stable glow.",
+    "outputs": [
+      "installed module",
+      "64px icon",
+      "128px icon",
+      "activation states"
+    ]
+  },
+  {
+    "id": "W15-O1",
+    "category": "mineral",
+    "name": "Seed iron",
+    "brief": "low chipped cluster",
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W15-O2",
+    "category": "mineral",
+    "name": "Genesis alloy",
+    "brief": "paired elongated facets",
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W15-O3",
+    "category": "mineral",
+    "name": "Origin opal",
+    "brief": "three-point radial crystal",
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W15-O4",
+    "category": "mineral",
+    "name": "Creation diamond",
+    "brief": "hollow geometric crown",
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ],
+    "outputs": [
+      "deposit",
+      "cargo package",
+      "24px inventory test",
+      "64px icon",
+      "128px icon"
+    ]
+  },
+  {
+    "id": "W15-J",
+    "category": "relic",
+    "name": "Reality foundry relic",
+    "brief": "five-point broken ring enclosing a solid core",
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W15-Q",
+    "category": "mission",
+    "name": "World seed",
+    "brief": "Pearl tetrahedron inside an ivory cage with one orange maker stripe",
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ],
+    "outputs": [
+      "in-world object",
+      "cargo or mission icon"
+    ]
+  },
+  {
+    "id": "W15-S1",
+    "category": "structure",
+    "name": "Service refuge",
+    "world": "Reality foundry",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ]
+  },
+  {
+    "id": "W15-S2",
+    "category": "structure",
+    "name": "Route fixture",
+    "world": "Reality foundry",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ]
+  },
+  {
+    "id": "W15-S3",
+    "category": "structure",
+    "name": "Departure project",
+    "world": "Reality foundry",
+    "states": [
+      "planned",
+      "building",
+      "complete"
+    ],
+    "palette": [
+      "25333B",
+      "7E9994",
+      "D5DDD1",
+      "9CE5CF",
+      "E7B8D2"
+    ]
+  }
+]

@@ -1,0 +1,1037 @@
+{
+  "version": 1,
+  "tile": 48,
+  "authorScale": 2,
+  "rigPivot": [
+    64,
+    64
+  ],
+  "rigTreadBaseline": 100,
+  "frames": [
+    {
+      "name": "soil-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-5",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-6",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-7",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-5",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-6",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-7",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-8",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-9",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-10",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-11",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-12",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-13",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-14",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "soil-edge-15",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "crack-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "crack-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "crack-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ore-o1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "package-o1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ore-o2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "package-o2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ore-o3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "package-o3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "ore-o4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "package-o4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "rig-body-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-body-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-body-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-body-3",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-body-4",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-body-5",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-body-6",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-body-7",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "name": "rig-cabin",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-engine-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-energy-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-bay-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-hull-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-engine-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-energy-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-bay-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-hull-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-idle",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-3",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-4",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-5",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-6",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-right-7",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-3",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-4",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-5",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-6",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-down-7",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-3",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-4",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-5",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-6",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-left-7",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-feet-stowed",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-feet-deployed",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-rack",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "thrust-0",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "thrust-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "thrust-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "thrust-3",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "thrust-4",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "thrust-5",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "mission-beacon",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "mission-valve",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "mission-antenna",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "mission-core",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "relic",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "warning-shelf",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "dock-stage-0",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "dock-stage-1",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "dock-stage-2",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "dock-stage-3",
+      "width": 384,
+      "height": 288,
+      "logicalWidth": 192,
+      "logicalHeight": 144,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "refuge-stage-0",
+      "width": 288,
+      "height": 192,
+      "logicalWidth": 144,
+      "logicalHeight": 96,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "relay-stage-0",
+      "width": 192,
+      "height": 192,
+      "logicalWidth": 96,
+      "logicalHeight": 96,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "refuge-stage-1",
+      "width": 288,
+      "height": 192,
+      "logicalWidth": 144,
+      "logicalHeight": 96,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "relay-stage-1",
+      "width": 192,
+      "height": 192,
+      "logicalWidth": 96,
+      "logicalHeight": 96,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "refuge-stage-2",
+      "width": 288,
+      "height": 192,
+      "logicalWidth": 144,
+      "logicalHeight": 96,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "relay-stage-2",
+      "width": 192,
+      "height": 192,
+      "logicalWidth": 96,
+      "logicalHeight": 96,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    {
+      "name": "icon-drill",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "icon-energy",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "icon-cargo",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "icon-hull",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "icon-engine",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "icon-feet",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "icon-rack",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "icon-core",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64,
+      "category": "icon"
+    },
+    {
+      "name": "rig-damage-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-damage-2",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-damage-3",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-collar-right-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-collar-down-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "rig-drill-collar-left-1",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
+      "name": "world-w01",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "icon"
+    },
+    {
+      "name": "ui-energy",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-hull",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-cargo",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-depth",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-mission",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-relic",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-map",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-shop",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-warning",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    },
+    {
+      "name": "ui-cooldown",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph"
+    }
+  ],
+  "backgrounds": [
+    {
+      "name": "w01-sky",
+      "width": 1024,
+      "height": 512
+    },
+    {
+      "name": "w01-ridge-far",
+      "width": 1024,
+      "height": 384
+    },
+    {
+      "name": "w01-ridge-near",
+      "width": 1024,
+      "height": 384
+    }
+  ]
+}

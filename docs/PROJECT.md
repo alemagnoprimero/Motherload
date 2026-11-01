@@ -1,6 +1,14 @@
-# Project status — 2026-10-28
+# Project status — 2026-11-01
 
-## Current milestone
+## Current campaign milestone
+
+The approved design-pack rollout begins with a separate campaign mode and the complete W01 Broken asteroid chapter. It includes original illustrated 2D art, a persistent HUD, bulk packages and protected mission objects, three local attachments, rank-1 hardware, three construction milestones, recovery, campaign checkpoints and Frontier departure. W02/W03 are charted but not yet playable.
+
+Use `?mode=campaign` for the new chapter and `?mode=legacy` for the preserved single mine. The unqualified address continues to select Legacy mode for browsers with a Legacy save. Mode entry does not convert or overwrite the other mode's save domain.
+
+See [CAMPAIGN_W01.md](CAMPAIGN_W01.md) for actual implemented rules, tests and limitations; [DESIGN_PACK_IMPLEMENTATION.md](DESIGN_PACK_IMPLEMENTATION.md) for the approved full campaign plan; and [CAMPAIGN_ASSETS.md](CAMPAIGN_ASSETS.md) for the new source/atlas pipeline. The design's 45-minute opening and 16-hour campaign remain playtest targets. Physical-device performance and complete controller accessibility remain follow-up work.
+
+## Preserved Legacy milestone
 
 The planned first-expedition milestone now includes reference-calibrated movement, caves and route planning, original art and sound, mobile gameplay layout, reference economy/equipment, and resilient local saves.
 
@@ -57,7 +65,7 @@ Autosave runs every five active seconds. Visibility/page-exit saving is best eff
 
 ## Validation
 
-At this checkpoint, **122 simulation/storage/layout tests and 23 browser scenarios pass**. TypeScript, formatting, generated-asset validation and production builds pass. The rebuilt Docker service is healthy and passes the four focused immersive/wrapping scenarios against the production bundle. The browser regression also covers hidden terrain/inspection, discovery/deep-world saves, gameplay, import, services, upgrades and portrait/landscape touch layout.
+At the preceding Legacy checkpoint, **122 simulation/storage/layout tests and 23 browser scenarios passed**. TypeScript, formatting, generated-asset validation and production builds passed. Its rebuilt Docker service passed the four focused immersive/wrapping scenarios against the production bundle. The Legacy browser regression covers hidden terrain/inspection, discovery/deep-world saves, gameplay, import, services, upgrades and portrait/landscape touch layout. Current campaign verification is recorded separately in CAMPAIGN_W01.md.
 
 Simulation and storage regressions cover the complete progression loop, movement/ledge/impact behavior, all minerals and equipment, fuel, cave generation, save compatibility, corrupt data, quota failures, concurrent writers, repeated purchases during pending saves, and interrupted backup restoration. Current progression tests also cover sight occlusion, exact discovery persistence, old/new world boundaries, portable large saves, 40-seed scarcity/value curves, stronger magma and actual shallow/deep equipment excursions. Earlier checkpoint explorations validated 18,000 save snapshots across 30 seeded movement runs, all minerals across 100 generated worlds, and 2,048 combinations of legacy equipment and condition values.
 
@@ -69,7 +77,7 @@ Four immersive/wrapping scenarios check viewport-filling play, a single menu and
 
 Four discovery browser scenarios compare actual pixels for hidden ore versus hidden soil and caves, check the inspector cannot reveal them, verify positive mineral rendering/inspection after native drilling, preserve discovered terrain through retreat/export/reload, and exercise mining/flight below the old 100-row boundary. HUD checks cover first-frontier goals, legacy floor limits and in-game notices that do not replay on reload.
 
-The art specimen and desktop/mobile screenshots are under ignored `artifacts/`. Browser emulation establishes layout and event behavior, not physical Android GPU performance or tactile feel. Production JavaScript remains around 1.27 MB before gzip (about 346 kB compressed), plus a roughly 656 KiB lossless atlas and small frame metadata; exact build output is reported by `npm run build`. The 5.2 MB editable GLB collection stays out of the playable download.
+The art specimen and desktop/mobile screenshots are under ignored `artifacts/`. Browser emulation establishes layout and event behavior, not physical Android GPU performance or tactile feel. The build now splits the mode entry, campaign and Legacy scripts around a shared Phaser chunk; exact output is reported by `npm run build`. Legacy uses a roughly 656 KiB lossless atlas, while W01 loads its own roughly 258 KiB atlas and three background planes. The editable GLB/SVG collection stays out of the playable download.
 
 ## Development and delivery
 
@@ -78,6 +86,8 @@ See README.md for launch, Docker, testing and save-transfer instructions. The de
 Normal builds validate the committed PNG/JSON atlas and hash both files into the production output. Editable GLB models and their original generators are tracked separately. Regenerating art requires Blender/Pillow; ordinary browser builds and hosting do not. See ASSET_PIPELINE.md for authoring commands.
 
 Cloud Docker builds use the existing environment proxy and its trusted CA through a temporary BuildKit secret. TLS verification remains enabled. Live HTTPS browser verification may require the same already-trusted proxy CA in Chromium's trust store. These cloud-specific steps are unnecessary on a normal Docker Desktop installation with registry access.
+
+The container health probe connects directly to its loopback Nginx endpoint, bypassing configured outbound proxies.
 
 ## Remaining work after this milestone
 

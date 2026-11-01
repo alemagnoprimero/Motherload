@@ -86,7 +86,9 @@ export async function ready(page, base) {
   };
   page.on("response", collect);
   try {
-    const response = await page.goto(base);
+    const legacyUrl = new URL(base);
+    legacyUrl.searchParams.set("mode", "legacy");
+    const response = await page.goto(legacyUrl.href);
     assert.equal(response.status(), 200);
     await page.locator("canvas").waitFor();
     await page.waitForFunction(

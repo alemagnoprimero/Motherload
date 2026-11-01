@@ -13,7 +13,15 @@
 !assets/
 !assets/generated/
 !assets/generated/**
+!assets/campaign/
+!assets/campaign/generated/
+!assets/campaign/generated/**
+!design/
+!design/v0.1/
+!design/v0.1/**
 !scripts/
 !scripts/check-assets.mjs
+!scripts/check-campaign-data.mjs
+!scripts/check-campaign-assets.mjs
 !docker/
 !docker/nginx.conf

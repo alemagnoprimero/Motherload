@@ -1,0 +1,1078 @@
+import assert from "node:assert/strict";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
+import { launchBrowser } from "./browser-helpers.mjs";
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const destination = (base) => {
+  const url = new URL(base);
+  url.searchParams.set("mode", "campaign");
+  return url.href;
+};
+const held = new WeakMap();
+const clocked = new WeakSet();
+const errors = new WeakMap();
+const legacySentinel = "campaign-browser-qa-preserves-these-legacy-bytes";
+async function click(page, selector) {
+  const target = page.locator(selector);
+  await target.evaluate((element) =>
+    element.scrollIntoView({
+      block: "center",
+      inline: "nearest",
+      behavior: "instant",
+    }),
+  );
+  const hit = await target.evaluate((element) => {
+    const r = element.getBoundingClientRect();
+    const top = document.elementFromPoint(
+      r.x + r.width / 2,
+      r.y + r.height / 2,
+    );
+    return top === element || element.contains(top);
+  });
+  assert.equal(hit, true, selector + " receives native pointer input");
+  await target.click({ force: clocked.has(page) });
+}
+async function idle(page) {
+  for (let n = 0; n < 100; n++) {
+    if (
+      await page.evaluate(() => document.body.dataset.campaignBusy !== "true")
+    )
+      return;
+    await delay(20);
+  }
+  throw new Error("Campaign persistence did not settle");
+}
+async function closeOverlay(page) {
+  if (await page.locator("#campaign-confirm").evaluate((d) => d.open))
+    throw new Error("Unexpected confirmation must be resolved explicitly");
+  const open = await page.evaluate(() => document.body.dataset.campaignOverlay);
+  if (open && open !== "welcome")
+    await click(page, "#campaign-" + open + ' [data-close="' + open + '"]');
+}
+async function menu(page) {
+  const open = await page.evaluate(() => document.body.dataset.campaignOverlay);
+  if (open === "menu") return;
+  if (open) await closeOverlay(page);
+  await click(page, "#campaign-menu-toggle");
+}
+async function exportCheckpoint(page, resume = false) {
+  await menu(page);
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    click(page, '#campaign-menu [data-command="export"]'),
+  ]);
+  const checkpoint = JSON.parse(await readFile(await download.path(), "utf8"));
+  assert.equal(checkpoint.format, "motherload-campaign");
+  if (resume) await closeOverlay(page);
+  return checkpoint;
+}
+async function importCheckpoint(page, checkpoint) {
+  await menu(page);
+  await page.locator("#campaign-import").setInputFiles({
+    name: "qa-campaign.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(checkpoint)),
+  });
+  await page.locator("#campaign-confirm").waitFor({ state: "visible" });
+  await click(page, "#campaign-confirm-accept");
+  for (
+    let n = 0;
+    n < 150 &&
+    (await page.locator("#campaign-confirm").evaluate((d) => d.open));
+    n++
+  ) {
+    const failure = await page.locator("#campaign-confirm-error").textContent();
+    if (failure) throw new Error(failure);
+    await delay(20);
+  }
+  await idle(page);
+  assert.equal(
+    await page.locator("#campaign-confirm").evaluate((d) => d.open),
+    false,
+    await page.locator("#campaign-confirm-error").textContent(),
+  );
+}
+async function keys(page, next) {
+  const previous = held.get(page) || [];
+  for (const key of previous)
+    if (!next.includes(key)) await page.keyboard.up(key);
+  for (const key of next)
+    if (!previous.includes(key)) await page.keyboard.down(key);
+  held.set(page, next);
+}
+async function advance(page, ms) {
+  for (let elapsed = 0; elapsed < ms; elapsed += 50)
+    await page.clock.fastForward(Math.min(50, ms - elapsed));
+}
+async function freeze(page) {
+  await page.clock.install();
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 300));
+  clocked.add(page);
+}
+async function sample(page) {
+  await keys(page, []);
+  const checkpoint = await exportCheckpoint(page, true);
+  held.set(page, []);
+  return checkpoint.state;
+}
+async function until(page, controls, predicate, options = {}) {
+  console.log(
+    "Native motion target: " +
+      (options.label || controls.join("+"))
+        .replace(/^Unable to /i, "")
+        .replace(/ failed$/i, ""),
+  );
+  const max = options.max || 40000,
+    step = options.step || 500;
+  let last;
+  for (let elapsed = 0; elapsed <= max; elapsed += step) {
+    last = await sample(page);
+    if (predicate(last)) return last;
+    await keys(page, controls);
+    await advance(page, step);
+  }
+  throw new Error(
+    (options.label || "Native motion condition failed") +
+      ": " +
+      JSON.stringify({
+        vehicle: last.vehicle,
+        progress: last.progress,
+        cargo: last.worlds.W01.packages.filter((i) => i.status === "carried")
+          .length,
+      }),
+  );
+}
+function delta(from, to) {
+  return ((to - from + 60) % 40) - 20;
+}
+async function toColumn(page, column) {
+  let previous;
+  for (let n = 0; n < 180; n++) {
+    const state = await sample(page),
+      x = state.vehicle.x,
+      d = delta(x, column + 0.5);
+    const interval = previous ? state.elapsed - previous.elapsed : 0;
+    const velocity = interval > 0 ? delta(previous.vehicle.x, x) / interval : 0;
+    if (Math.abs(d) < 0.1 && Math.abs(velocity) < 0.45) return state;
+    const desired = Math.max(-4, Math.min(4, d * 2.5));
+    const correction = desired - velocity;
+    await keys(
+      page,
+      correction < -0.2
+        ? ["ArrowLeft"]
+        : correction > 0.2
+          ? ["ArrowRight"]
+          : [],
+    );
+    previous = state;
+    await advance(page, Math.abs(d) > 5 ? 300 : Math.abs(d) > 2 ? 100 : 25);
+  }
+  throw new Error("Unable to brake and align with starter column " + column);
+}
+async function dock(page) {
+  await until(page, ["ArrowUp"], (s) => s.vehicle.y <= -0.36, {
+    step: 250,
+    max: 25000,
+    label: "Unable to ascend through opened shaft",
+  });
+  for (let n = 0; n < 100; n++) {
+    const state = await sample(page),
+      d = delta(state.vehicle.x, 5.5);
+    if (Math.abs(d) <= 1.15 && Math.abs(state.vehicle.y + 0.36) < 0.05) {
+      await page.keyboard.press("e");
+      assert.equal(
+        await page.locator("#campaign-dock").evaluate((d) => d.open),
+        true,
+        "Native E opens the nearby lander",
+      );
+      await tab(page, "service");
+      return state;
+    }
+    await keys(page, [d < 0 ? "ArrowLeft" : "ArrowRight"]);
+    await advance(page, Math.abs(d) > 4 ? 500 : 100);
+  }
+  throw new Error("Unable to physically return and dock at the lander");
+}
+async function command(page, name) {
+  const overlay = await page.evaluate(
+    () => document.body.dataset.campaignOverlay,
+  );
+  const selector =
+    (overlay ? "#campaign-" + overlay + " " : "") +
+    '[data-command="' +
+    name +
+    '"]';
+  assert.equal(
+    await page.locator(selector).isEnabled(),
+    true,
+    name + " is an available UI action",
+  );
+  await click(page, selector);
+  await idle(page);
+  if (name === "load")
+    await page.waitForFunction(() =>
+      /loaded/i.test(
+        document.querySelector("#campaign-save-status").textContent,
+      ),
+    );
+}
+async function tab(page, name) {
+  await click(page, '#campaign-dock [data-tab="' + name + '"]');
+}
+async function ready(browser, base, options = {}) {
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    ...options,
+  });
+  await context.addInitScript(
+    (sentinel) => localStorage.setItem("motherload.frontier.v1", sentinel),
+    legacySentinel,
+  );
+  const page = await context.newPage(),
+    faults = [],
+    assets = new Map();
+  errors.set(page, faults);
+  page.on("pageerror", (error) => faults.push(error.message));
+  page.on("response", (response) => {
+    const path = new URL(response.url()).pathname;
+    if (/w01-atlas.*\.(png|json)$/.test(path))
+      assets.set(path.endsWith(".png") ? "png" : "json", response);
+  });
+  await page.goto(destination(base));
+  await page.waitForFunction(
+    () =>
+      document.querySelector("#campaign-game")?.dataset.campaignArt === "ready",
+  );
+  if (await page.locator("#campaign-start").isVisible())
+    await click(page, "#campaign-start");
+  await idle(page);
+  assert.equal(
+    await page
+      .locator("#campaign-game canvas")
+      .getAttribute("data-campaign-art"),
+    "ready",
+  );
+  for (const ext of ["png", "json"])
+    assert.ok(
+      assets.get(ext)?.ok(),
+      "Actual campaign " + ext + " atlas response must load",
+    );
+  const atlas = await assets.get("json").json();
+  for (const frame of [
+    "rig-cabin",
+    "rig-body-0",
+    "ore-o1",
+    "dock-stage-0",
+    "crack-1",
+    "mission-core",
+  ])
+    assert.ok(atlas.frames[frame], frame + " exists in delivered atlas");
+  return { context, page, assets };
+}
+function noErrors(page) {
+  assert.deepEqual(errors.get(page), [], "No uncaught browser errors");
+}
+function carried(state) {
+  return state.worlds.W01.packages.filter((item) => item.status === "carried");
+}
+async function assertGeometry(page, viewport) {
+  const canvas = await page.locator("#campaign-game canvas").boundingBox();
+  assert.deepEqual(
+    { x: canvas.x, y: canvas.y, width: canvas.width, height: canvas.height },
+    { x: 0, y: 0, ...viewport },
+    "The campaign fills the viewport",
+  );
+  for (const id of [
+    "campaign-energy",
+    "campaign-hull",
+    "campaign-cargo",
+    "campaign-credits",
+    "campaign-depth",
+    "campaign-haul",
+    "campaign-drill-name",
+  ])
+    assert.equal(
+      await page.locator("#" + id).isVisible(),
+      true,
+      id + " remains visible",
+    );
+  const sizes = await page
+    .locator(
+      "#campaign-haul, #campaign-drill-name, #campaign-energy, #campaign-hull, #campaign-cargo",
+    )
+    .evaluateAll((elements) =>
+      elements.map((e) => ({
+        id: e.id,
+        size: parseFloat(getComputedStyle(e).fontSize),
+      })),
+    );
+  for (const item of sizes)
+    assert.ok(item.size >= 12, item.id + " retains readable 12px text");
+  const buttons = await page
+    .locator(".campaign-touch button")
+    .evaluateAll((elements) =>
+      elements.map((e) => {
+        const r = e.getBoundingClientRect();
+        return { width: r.width, height: r.height, x: r.x, y: r.y };
+      }),
+    );
+  for (const b of buttons)
+    assert.ok(
+      b.width >= 44 &&
+        b.height >= 44 &&
+        b.x >= 0 &&
+        b.y >= 0 &&
+        b.x + b.width <= viewport.width + 1 &&
+        b.y + b.height <= viewport.height + 1,
+      "Touch targets remain usable and within the viewport",
+    );
+}
+
+export async function runCampaignInspectionSmoke(
+  browser,
+  base,
+  path = "artifacts/campaign-inspection",
+) {
+  await mkdir("artifacts", { recursive: true });
+  const checks = [];
+  for (const [label, viewport] of [
+    ["portrait", { width: 393, height: 851 }],
+    ["landscape", { width: 568, height: 320 }],
+  ]) {
+    const { context, page } = await ready(browser, base, {
+      viewport,
+      isMobile: true,
+      hasTouch: true,
+      deviceScaleFactor: 1,
+    });
+    try {
+      const fixture = await exportCheckpoint(page);
+      fixture.state.vehicle = { ...fixture.state.vehicle, x: 20.5, y: -0.36 };
+      await importCheckpoint(page, fixture);
+      await closeOverlay(page);
+      await freeze(page);
+      await advance(page, 100);
+      const session = await context.newCDPSession(page);
+      const top = viewport.height <= 420 ? 115 : 170,
+        bottom = viewport.height <= 420 ? 90 : 140;
+      const rigY = top + Math.max(100, viewport.height - top - bottom) * 0.46;
+      const tap = async (x, y) => {
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchStart",
+          touchPoints: [{ id: 8, x, y }],
+        });
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchEnd",
+          touchPoints: [],
+        });
+        await advance(page, 50);
+      };
+      // The cell behind the first wall must not become a mineral detector.
+      await tap(viewport.width / 2 - 3 * 48, rigY + (1.5 + 0.36) * 48);
+      assert.equal(
+        await page.locator("#campaign-game").getAttribute("data-inspection"),
+        "",
+      );
+      await tap(viewport.width / 2 + 48, rigY + (0.5 + 0.36) * 48);
+      assert.match(
+        await page.locator("#campaign-game").getAttribute("data-inspection"),
+        /Ironium.*30.*1 bulk/,
+      );
+      assert.equal(
+        await page.locator("#campaign-game").getAttribute("data-world-callout"),
+        "true",
+      );
+      // Let the actual 160ms CSS toast fade settle before its static inspection check.
+      await advance(page, 250);
+      await delay(200);
+      assert.equal(
+        await page
+          .locator("#campaign-message")
+          .evaluate((e) => getComputedStyle(e).opacity),
+        "0",
+        "Inspection suppresses the overlapping toast",
+      );
+      const toolbar = await page.locator(".campaign-toolbar").boundingBox();
+      const labelBottom =
+        Math.max(top + 12, viewport.height - bottom - 44) + 28;
+      assert.ok(
+        labelBottom < toolbar.y,
+        "The native mineral label stays above attachment controls",
+      );
+      await page.screenshot({ path: path + "-" + label + ".png" });
+      noErrors(page);
+      const name =
+        "native " +
+        label +
+        " inspection reveals only visible minerals and stays clear of touch UI";
+      checks.push(name);
+      console.log("Passed: " + name);
+    } finally {
+      await context.close();
+    }
+  }
+  return checks;
+}
+
+export async function runCampaignSmoke(
+  browser,
+  base,
+  path = "artifacts/campaign-smoke",
+  selection = process.env.CAMPAIGN_CHECKS || "all",
+) {
+  await mkdir("artifacts", { recursive: true });
+  const checks = [];
+  const check = (name) => {
+    checks.push(name);
+    console.log("Passed: " + name);
+  };
+  const chosen = (name) =>
+    selection === "all" || selection.split(",").includes(name);
+  let baseline;
+  if (chosen("opening")) {
+    const { context, page } = await ready(browser, base);
+    try {
+      await page.screenshot({ path: path + "-desktop.png" });
+      await freeze(page);
+      await page.keyboard.press("e");
+      assert.equal(
+        await page.locator("#campaign-dock").evaluate((d) => d.open),
+        false,
+        "Remote E cannot enter a dock",
+      );
+      const first = await until(page, ["ArrowDown"], (s) => s.progress.beacon, {
+        step: 1000,
+        max: 25000,
+        label: "Opening beacon was not reached",
+      });
+      assert.equal(carried(first).length, 7);
+      assert.equal(
+        carried(first).reduce((v, p) => v + p.value, 0),
+        3800,
+      );
+      await dock(page);
+      await command(page, "bank-sell");
+      await tab(page, "lander");
+      await command(page, "milestone");
+      await tab(page, "service");
+      await command(page, "refuel");
+      await closeOverlay(page);
+      await toColumn(page, 21);
+      const second = await until(
+        page,
+        ["ArrowDown"],
+        (s) => s.stats.largestDepth >= 70 && carried(s).length === 7,
+        {
+          step: 1000,
+          max: 20000,
+          label: "Second starter vein did not fill the bay",
+        },
+      );
+      assert.equal(
+        carried(second).reduce((v, p) => v + p.value, 0),
+        4800,
+      );
+      await dock(page);
+      await command(page, "bank-sell");
+      await tab(page, "hardware");
+      await command(page, "hardware-hull");
+      await page.screenshot({ path: path + "-hardware.png" });
+      baseline = await exportCheckpoint(page);
+      await writeFile(
+        path + "-opening.json",
+        JSON.stringify(baseline, null, 2),
+      );
+      assert.equal(baseline.state.stats.ordinaryIncome, 8600);
+      assert.deepEqual(baseline.state.progress.completed, [1]);
+      assert.equal(baseline.state.hardware.hull, 1);
+      assert.equal(baseline.state.vehicle.hull, 18);
+      assert.ok(
+        baseline.state.credits > 500,
+        "Useful opening purchase retains a service reserve",
+      );
+      assert.equal(baseline.state.stats.recoveries, 0);
+      assert.equal(
+        await page.evaluate(() =>
+          localStorage.getItem("motherload.frontier.v1"),
+        ),
+        legacySentinel,
+      );
+      check(
+        "two native starter trips survey, physically return, trade, build M1 and purchase an upgrade with reserve",
+      );
+
+      noErrors(page);
+    } finally {
+      await context.close();
+    }
+  }
+  if (chosen("progression")) {
+    const { context, page } = await ready(browser, base);
+    try {
+      const fixture = baseline
+        ? structuredClone(baseline)
+        : await exportCheckpoint(page);
+      const s = fixture.state,
+        w = s.worlds.W01;
+      s.credits = 80000;
+      s.vehicle = { x: 5.5, y: -0.36, energy: 10, hull: 10 };
+      s.hardware.hull = 0;
+      s.progress.beacon = true;
+      s.progress.bankedOre = Math.max(3, s.progress.bankedOre);
+      s.progress.completed = [1];
+      s.purchases = s.purchases.filter((p) => p.id !== "CORE-1-HULL");
+      // This fixture isolates later geometry, tools and objective transactions.
+      // It does not establish normal earnings or campaign duration.
+      for (let row = 0; row < 60; row++)
+        for (const col of [20, 21]) w.tiles[row * 40 + col] = 0;
+      for (const item of w.packages)
+        if (item.status === "deposit" && [20, 21].includes(Math.floor(item.x)))
+          item.status = "exposed";
+      w.discovered.fill(1);
+      await importCheckpoint(page, fixture);
+      await closeOverlay(page);
+      await page.keyboard.press("e");
+      await tab(page, "hardware");
+      for (const key of ["drill", "energy", "cargo", "hull", "engine"])
+        await command(page, "hardware-" + key);
+      await tab(page, "tools");
+      await command(page, "gear-buy-W01-R2");
+      await closeOverlay(page);
+      await freeze(page);
+      await toColumn(page, 20);
+      await until(
+        page,
+        ["ArrowDown"],
+        (s) =>
+          s.worlds.W01.missions.some(
+            (m) => m.id === "W01-VALVE" && m.status === "carried",
+          ),
+        {
+          step: 1000,
+          max: 25000,
+          label: "Valve pickup in opened shaft failed",
+        },
+      );
+      await dock(page);
+      await command(page, "bank");
+      await tab(page, "service");
+      await command(page, "refuel");
+      await closeOverlay(page);
+      await toColumn(page, 21);
+      await until(
+        page,
+        ["ArrowDown"],
+        (s) =>
+          s.worlds.W01.missions.some(
+            (m) => m.id === "W01-ANTENNA" && m.status === "carried",
+          ),
+        { step: 1000, max: 25000, label: "Antenna pickup failed" },
+      );
+      await dock(page);
+      await command(page, "bank");
+      await tab(page, "lander");
+      await command(page, "milestone");
+      await tab(page, "tools");
+      await command(page, "gear-buy-W01-R3");
+      await tab(page, "service");
+      await command(page, "refuel");
+      await closeOverlay(page);
+      await toColumn(page, 20);
+      await until(
+        page,
+        ["ArrowDown"],
+        (s) =>
+          s.worlds.W01.missions.some(
+            (m) => m.id === "W01-Q" && m.status === "carried",
+          ),
+        { step: 1000, max: 25000, label: "Navigation core pickup failed" },
+      );
+      await dock(page);
+      await command(page, "bank");
+      await tab(page, "lander");
+      await command(page, "milestone");
+      await command(page, "depart");
+      await click(page, "#campaign-confirm-accept");
+      await idle(page);
+      await advance(page, 2600);
+      const completed = await exportCheckpoint(page);
+      assert.deepEqual(completed.state.progress.completed, [1, 2, 3]);
+      assert.equal(completed.state.progress.departed, true);
+      assert.deepEqual(completed.state.progress.unlockedWorlds, [
+        "W01",
+        "W02",
+        "W03",
+      ]);
+      assert.ok(completed.state.ownedGear.includes("W01-R3"));
+      assert.equal(completed.state.equipped.processor, "W01-R3");
+      assert.ok(
+        completed.state.worlds.W01.missions.every((m) => m.status === "banked"),
+      );
+      const ids = completed.state.worlds.W01.packages.map((p) => p.id);
+      assert.equal(new Set(ids).size, ids.length);
+      await command(page, "save");
+      await page.clock.resume();
+      clocked.delete(page);
+      await page.reload();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#campaign-game")?.dataset.campaignArt ===
+          "ready",
+      );
+      await menu(page);
+      await command(page, "load");
+      const reloaded = await exportCheckpoint(page);
+      assert.deepEqual(reloaded.state, completed.state);
+      await page.screenshot({ path: path + "-completed.png" });
+      noErrors(page);
+      check(
+        "imported opened-shaft fixture supports actual mission pickups, banked M2/M3, local tools, departure and exact reload",
+      );
+    } catch (error) {
+      try {
+        await writeFile(
+          path + "-progression-failure.json",
+          JSON.stringify(await exportCheckpoint(page), null, 2),
+        );
+      } catch {}
+      throw error;
+    } finally {
+      await context.close();
+    }
+  }
+  if (chosen("cargo")) {
+    const { context, page } = await ready(browser, base);
+    try {
+      const fixture = await exportCheckpoint(page);
+      const s = fixture.state,
+        w = s.worlds.W01;
+      const seam = w.packages
+        .filter((item) => Math.floor(item.x) === 20 && item.y < 7)
+        .sort((a, b) => a.y - b.y);
+      assert.equal(seam.length, 7);
+      for (let row = 0; row < 10; row++) w.tiles[row * 40 + 20] = 0;
+      for (const item of w.packages)
+        if (
+          item.status === "deposit" &&
+          Math.floor(item.x) === 20 &&
+          item.y < 10
+        )
+          item.status = "exposed";
+      for (const item of seam) item.status = "carried";
+      const overflow =
+        w.packages.find(
+          (item) =>
+            item.status === "deposit" &&
+            Math.floor(item.x) === 20 &&
+            Math.floor(item.y) === 10,
+        ) ||
+        w.packages.find(
+          (item) => item.status === "deposit" && item.tags.includes("ordinary"),
+        );
+      overflow.x = 20.5;
+      overflow.y = 10.5;
+      w.tiles[10 * 40 + 20] = 1;
+      s.vehicle = { x: 20.5, y: 9.64, energy: 10, hull: 10 };
+      w.discovered.fill(1);
+      const total = w.packages.reduce((n, p) => n + p.value, 0),
+        count = w.packages.length;
+      await importCheckpoint(page, fixture);
+      await closeOverlay(page);
+      await freeze(page);
+      const exposed = await until(
+        page,
+        ["ArrowDown"],
+        (state) =>
+          state.worlds.W01.packages.find((p) => p.id === overflow.id).status ===
+          "exposed",
+        {
+          step: 200,
+          max: 5000,
+          label: "Full bay should leave overflow package exposed",
+        },
+      );
+      assert.equal(carried(exposed).length, 7);
+      await menu(page);
+      await command(page, "eject:" + seam[0].id);
+      assert.equal(
+        await page.locator("#campaign-menu-cargo .cargo-row").count(),
+        6,
+        "Pause cargo list updates immediately after ejection",
+      );
+      const ejected = (await exportCheckpoint(page)).state;
+      assert.equal(
+        ejected.worlds.W01.packages.find((p) => p.id === seam[0].id).status,
+        "exposed",
+      );
+      await closeOverlay(page);
+      await advance(page, 100);
+      const picked = await sample(page);
+      assert.equal(
+        picked.worlds.W01.packages.find((p) => p.id === overflow.id).status,
+        "carried",
+      );
+      assert.equal(carried(picked).length, 7);
+      assert.equal(picked.worlds.W01.packages.length, count);
+      assert.equal(
+        new Set(picked.worlds.W01.packages.map((p) => p.id)).size,
+        count,
+      );
+      assert.equal(
+        picked.worlds.W01.packages.reduce((n, p) => n + p.value, 0),
+        total,
+      );
+      await menu(page);
+      await command(page, "save");
+      const saved = await exportCheckpoint(page);
+      await page.clock.resume();
+      clocked.delete(page);
+      await page.reload();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#campaign-game")?.dataset.campaignArt ===
+          "ready",
+      );
+      await menu(page);
+      await command(page, "load");
+      assert.deepEqual((await exportCheckpoint(page)).state, saved.state);
+      noErrors(page);
+      check(
+        "full bay leaves a saved exposed package; menu ejection permits one pickup without duplicated identity or value",
+      );
+    } finally {
+      await context.close();
+    }
+  }
+  if (chosen("economy")) {
+    const { context, page } = await ready(browser, base);
+    try {
+      const fixture = await exportCheckpoint(page),
+        s = fixture.state;
+      s.vehicle = { x: 5.5, y: -0.36, energy: 6, hull: 7 };
+      s.credits = 10000;
+      s.progress.beacon = true;
+      s.progress.bankedOre = 3;
+      s.progress.completed = [1];
+      await importCheckpoint(page, fixture);
+      await closeOverlay(page);
+      await page.keyboard.press("e");
+      await tab(page, "hardware");
+      const cards = page.locator(
+        "#campaign-dock-content .equipment-cards article",
+      );
+      assert.match(
+        await cards.nth(1).innerText(),
+        /305 CR/,
+        "Energy purchase still reserves repair cost",
+      );
+      assert.match(
+        await cards.nth(3).innerText(),
+        /546 CR/,
+        "Hull purchase still reserves refuel cost",
+      );
+      await command(page, "hardware-energy");
+      const bought = (await exportCheckpoint(page)).state;
+      assert.equal(bought.hardware.energy, 1);
+      assert.equal(bought.vehicle.energy, 16);
+      assert.equal(bought.vehicle.hull, 7);
+      assert.equal(bought.credits, 3500);
+      noErrors(page);
+      check(
+        "hardware preview reserves the unfilled condition and capacity purchase fills only its own condition",
+      );
+    } finally {
+      await context.close();
+    }
+  }
+  if (chosen("storage")) {
+    const { context, page } = await ready(browser, base);
+    try {
+      const first = await exportCheckpoint(page);
+      const rawCurrent = () =>
+        page.evaluate(
+          () =>
+            new Promise((resolve, reject) => {
+              const request = indexedDB.open("motherload.campaign.v1", 1);
+              request.onerror = () => reject(request.error);
+              request.onsuccess = () => {
+                const db = request.result,
+                  tx = db.transaction("checkpoints", "readonly"),
+                  read = tx.objectStore("checkpoints").get("current");
+                tx.oncomplete = () => {
+                  db.close();
+                  resolve(read.result);
+                };
+                tx.onerror = () => reject(tx.error);
+              };
+            }),
+        );
+      const original = await rawCurrent();
+      await page.locator("#campaign-import").setInputFiles({
+        name: "damaged.json",
+        mimeType: "application/json",
+        buffer: Buffer.from("{damaged"),
+      });
+      await page.waitForFunction(() =>
+        /not valid/i.test(
+          document.querySelector("#campaign-save-status").textContent,
+        ),
+      );
+      assert.equal(
+        await page.locator("#campaign-confirm").evaluate((d) => d.open),
+        false,
+      );
+      assert.equal(await rawCurrent(), original);
+      const candidate = structuredClone(first);
+      candidate.state.credits += 999;
+      await page.locator("#campaign-import").setInputFiles({
+        name: "cancelled.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(candidate)),
+      });
+      await page.locator("#campaign-confirm").waitFor({ state: "visible" });
+      await click(page, "#campaign-confirm-cancel");
+      assert.equal(await rawCurrent(), original);
+      assert.deepEqual((await exportCheckpoint(page)).state, first.state);
+      await page.locator("#campaign-import").setInputFiles({
+        name: "escape-cancel.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(candidate)),
+      });
+      await page.locator("#campaign-confirm").waitFor({ state: "visible" });
+      await page.keyboard.press("Escape");
+      assert.equal(
+        await page.locator("#campaign-confirm").evaluate((d) => d.open),
+        false,
+        "Escape cancels import confirmation",
+      );
+      assert.equal(await rawCurrent(), original);
+      await command(page, "recover");
+      await page.keyboard.press("Escape");
+      assert.equal(
+        await page.locator("#campaign-confirm").evaluate((d) => d.open),
+        false,
+        "Escape cancels recovery confirmation",
+      );
+      assert.equal(await rawCurrent(), original);
+      assert.deepEqual((await exportCheckpoint(page)).state, first.state);
+      check(
+        "invalid and cancelled campaign imports preserve the exact stored checkpoint and current run",
+      );
+      const second = await context.newPage(),
+        faults = [];
+      errors.set(second, faults);
+      second.on("pageerror", (e) => faults.push(e.message));
+      await second.goto(destination(base));
+      await second.waitForFunction(
+        () =>
+          document.querySelector("#campaign-game")?.dataset.campaignArt ===
+          "ready",
+      );
+      await second.bringToFront();
+      const newer = await exportCheckpoint(second);
+      newer.state.credits += 3210;
+      await importCheckpoint(second, newer);
+      await page.waitForFunction(
+        () =>
+          document.body.dataset.campaignOverlay === "menu" &&
+          document.body.dataset.campaignPaused === "true",
+      );
+      await page.bringToFront();
+      await click(page, '#campaign-menu [data-close="menu"]');
+      assert.equal(
+        await page.locator("#campaign-menu").evaluate((d) => d.open),
+        true,
+        "Return cannot bypass an unresolved cross-tab conflict",
+      );
+      assert.equal(
+        await page.evaluate(() => document.body.dataset.campaignPaused),
+        "true",
+      );
+      noErrors(second);
+      await second.close();
+      await delay(120);
+      await command(page, "load");
+      assert.equal(
+        (await exportCheckpoint(page)).state.credits,
+        newer.state.credits,
+      );
+      await closeOverlay(page);
+      assert.equal(
+        await page.evaluate(() => document.body.dataset.campaignPaused),
+        "false",
+      );
+      assert.equal(
+        await page.evaluate(() =>
+          localStorage.getItem("motherload.frontier.v1"),
+        ),
+        legacySentinel,
+      );
+      noErrors(page);
+      check(
+        "another tab pauses stale campaign play; UI load resolves the conflict and resumes without touching Legacy",
+      );
+    } finally {
+      await context.close();
+    }
+  }
+  if (chosen("mobile")) {
+    for (const [label, viewport] of [
+      ["portrait", { width: 393, height: 851 }],
+      ["landscape", { width: 568, height: 320 }],
+    ]) {
+      const { context, page } = await ready(browser, base, {
+        viewport,
+        isMobile: true,
+        hasTouch: true,
+        deviceScaleFactor: 1,
+      });
+      try {
+        await assertGeometry(page, viewport);
+        await page.screenshot({ path: path + "-" + label + ".png" });
+        const session = await context.newCDPSession(page);
+        const down = await page
+          .locator('.campaign-touch [data-dir="down"]')
+          .boundingBox();
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchStart",
+          touchPoints: [
+            { id: 1, x: down.x + down.width / 2, y: down.y + down.height / 2 },
+          ],
+        });
+        await page.waitForFunction(
+          () =>
+            Number(
+              document
+                .querySelector("#campaign-cargo")
+                .textContent.match(/\d+/)[0],
+            ) >= 1,
+        );
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchCancel",
+          touchPoints: [],
+        });
+        await menu(page);
+        const paused = await exportCheckpoint(page);
+        await page.waitForTimeout(350);
+        const still = await exportCheckpoint(page);
+        assert.deepEqual(
+          still.state,
+          paused.state,
+          "Menu pauses simulation and clears touch input",
+        );
+        await page.screenshot({ path: path + "-" + label + "-menu.png" });
+        await closeOverlay(page);
+        await freeze(page);
+        const left = await page
+          .locator('.campaign-touch [data-dir="left"]')
+          .boundingBox();
+        const up = await page
+          .locator('.campaign-touch [data-dir="up"]')
+          .boundingBox();
+        const upPoint = {
+          id: 2,
+          x: up.x + up.width / 2,
+          y: up.y + up.height / 2,
+        };
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchStart",
+          touchPoints: [
+            { id: 1, x: left.x + left.width / 2, y: left.y + left.height / 2 },
+            upPoint,
+          ],
+        });
+        await advance(page, 1500);
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchEnd",
+          // CDP names the changed point to end; the other finger stays down.
+          touchPoints: [
+            { id: 1, x: left.x + left.width / 2, y: left.y + left.height / 2 },
+          ],
+        });
+        assert.equal(
+          await page
+            .locator('.campaign-touch [data-dir="left"]')
+            .evaluate((e) => e.classList.contains("held")),
+          false,
+        );
+        assert.equal(
+          await page
+            .locator('.campaign-touch [data-dir="up"]')
+            .evaluate((e) => e.classList.contains("held")),
+          true,
+          "Releasing steering retains independent thrust finger",
+        );
+        await advance(page, 200);
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchCancel",
+          touchPoints: [],
+        });
+        assert.equal(
+          await page
+            .locator('.campaign-touch [data-dir="up"]')
+            .evaluate((e) => e.classList.contains("held")),
+          false,
+        );
+        const flown = await exportCheckpoint(page);
+        assert.ok(
+          flown.state.vehicle.y < paused.state.vehicle.y,
+          "Two-finger native thrust moves the rig upward",
+        );
+        const docked = structuredClone(flown);
+        docked.state.vehicle = { ...docked.state.vehicle, x: 5.5, y: -0.36 };
+        await importCheckpoint(page, docked);
+        await closeOverlay(page);
+        await advance(page, 100);
+        await page.locator("#campaign-dock-toggle").tap({ force: true });
+        assert.equal(
+          await page.locator("#campaign-dock").evaluate((d) => d.open),
+          true,
+        );
+        await tab(page, "hardware");
+        const bounds = await page.locator("#campaign-dock").boundingBox();
+        assert.ok(
+          bounds.x >= 0 &&
+            bounds.y >= 0 &&
+            bounds.x + bounds.width <= viewport.width + 1 &&
+            bounds.y + bounds.height <= viewport.height + 1,
+          "Phone dock stays inside viewport",
+        );
+        await page.screenshot({ path: path + "-" + label + "-dock.png" });
+        await closeOverlay(page);
+        noErrors(page);
+        check(
+          "native " +
+            label +
+            " touch mining, cancellation, pause and visible HUD layout",
+        );
+      } finally {
+        await context.close();
+      }
+    }
+  }
+  if (chosen("inspection"))
+    checks.push(
+      ...(await runCampaignInspectionSmoke(
+        browser,
+        base,
+        path + "-inspection",
+      )),
+    );
+  return checks;
+}
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  const browser = await launchBrowser();
+  try {
+    const checks = await runCampaignSmoke(
+      browser,
+      process.env.PREVIEW_URL || "http://127.0.0.1:5173/",
+    );
+    console.log("Campaign browser checks passed: " + checks.length);
+  } finally {
+    await browser.close();
+  }
+}

@@ -1,0 +1,2 @@
+# Preserve uploaded reference bytes and their published SHA-256 hashes.
+design/v0.1/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

@@ -1,14 +1,37 @@
 # Motherload · The deep frontier
 
-A single-player browser mining game in Phaser and TypeScript, inspired by Motherload's free edition. Mine destructible terrain, explore caves, collect ten minerals, return to sell and service the rig, and buy drill, engine, tank, cargo and hull upgrades. Original 3D models supply the vehicle, buildings and minerals; their rendered sprites keep the browser game lightweight. Sound is newly synthesized.
+A single-player browser mining game in Phaser and TypeScript, inspired by Motherload's free edition. The new campaign begins on W01, a broken asteroid with a lander to rebuild, persistent equipment and original illustrated 2D artwork. Legacy mode preserves the earlier single-mine game and its saves.
 
 ## Play
 
 Open **https://alemagnoprimero.github.io/Motherload/** on a computer or Android phone. No installation or local server is required. Gameplay changes pushed to `main` are tested, built and deployed automatically.
 
+### Campaign: Broken asteroid
+
+Open **https://alemagnoprimero.github.io/Motherload/?mode=campaign** and choose **Start expedition**. Existing Legacy players can also choose **Menu → Open the new campaign**. The campaign uses a separate save and never converts an existing mine.
+
+1. Hold **Down / S** to mine the starter vein. Hold **Up / W** to fly back; steer with **Left/Right or A/D**. A committed cut finishes before ascent. Side drilling needs a local ledge.
+2. The HUD tracks energy, hull, cargo bulk, haul value, credits and the current objective. Survey the beacon at **100 m**, then follow the surface lander marker. Park in its illuminated bay and press **E / Enter** or tap **Dock and trade**.
+3. **Unload and sell** banks the haul and sells its ordinary packages. **Store haul** keeps packages safely without selling. Refuel, repair, compare hardware and equip owned attachments inside the dock interface.
+4. Fund each construction stage after banking its objective discoveries: beacon/three ore packages, valve at **250 m** plus antenna at **400 m**, then navigation core at **600 m**. The lander changes visibly as it is rebuilt.
+5. Rank-1 hardware opens after M1. Anchoring feet cost **400 CR** and deploy while holding **Space**; the **900 CR** cargo rack opens after M2 and requires ownership of the feet. Tank/hull purchases fill their new capacity.
+6. Restore the lander and launch to record the Frontier departure. **W01 is the playable campaign chapter in this checkpoint.** The comet and fractured moon are charted as the next chapter and are not yet playable.
+
+The two opening veins retain their 380/480 CR gross rewards. Construction and services come out of that balance; an affordable hull/engine/energy purchase is the early target. A full hold leaves a recoverable package in the world. **Menu → Carried cargo** allows ejection rather than silently destroying extra ore.
+
+**Escape / P** opens pause/settings, checkpoint transfer, recovery and keyboard remapping. **Tab** opens the star map after M2. Touch controls support independent simultaneous holds. Sound starts muted; separate effects, ambience and music settings are available. Controller defaults are shown in Menu; controller remapping/menu navigation and physical-device validation remain follow-up work.
+
+Campaign autosaves run every five active seconds and after transactions. **Menu → Save checkpoint / Export campaign** provides an explicit checkpoint or portable JSON file. IndexedDB stores the campaign separately from Legacy localStorage, with atomic backups and stale-tab protection. Pausing, backgrounding and dock interfaces freeze the simulation. Browser saves do not synchronize between devices automatically.
+
+See [the W01 implementation notes](docs/CAMPAIGN_W01.md), [the approved rollout plan](docs/DESIGN_PACK_IMPLEMENTATION.md), and [campaign artwork](docs/CAMPAIGN_ASSETS.md).
+
+### Legacy mine
+
+Open **https://alemagnoprimero.github.io/Motherload/?mode=legacy**. The default address continues opening Legacy mode when that browser already has a Legacy save. Its ten minerals, original rendered artwork, economy, controls and save format are preserved.
+
 Existing expeditions retain their excavated maps and receive the new discovery system. **New expeditions** use a 600-row mine, reaching roughly 6,000 metres through six geological regions. To explore that deeper world and its revised mineral distribution, choose **Menu → New expedition**. Export your existing expedition first if you want to keep a separate copy; starting over requires confirmation.
 
-### Controls and first expeditions
+### Legacy controls and first expeditions
 
 1. Hold **Down / S** to drill the starter vein below the rig. The stock bay holds seven minerals. The neighboring vein to the right provides a second early expedition. A full bay does **not** block excavation: additional ore is discarded, so sell your load before collecting more valuables.
 2. Hold **Up / W** to return through your shaft. Combine Up with **Left/Right or A/D** to steer. Counter-steer to brake momentum. Side drilling requires a ledge under the rig, at any depth; you cannot drill upward.
@@ -29,7 +52,7 @@ The pause menu and building interfaces suspend the expedition; leaving the brows
 
 **Menu → Request recovery** returns the rig to the surface with half its fuel and hull, at the cost of cargo and 20% of credits. It remains available without money and requires confirmation.
 
-### Saves and transfer between devices
+### Legacy saves and transfer between devices
 
 **Save** records terrain, discoveries, position, money, inventory, vehicle condition and upgrades. Autosave runs every five active seconds; background/exit saves are best effort, so use Save before closing after an important purchase or discovery. Loading resets transient velocity and unfinished cut animation, not completed excavation.
 
@@ -74,6 +97,9 @@ Behind an HTTPS proxy, pass its trusted CA as the optional BuildKit secret `--se
 npm test
 npm run build
 npm run format:check
+npm run campaign:check      # pinned design data and committed W01 artwork
+npm run test:campaign:browser # new campaign, dev preview on port 5173
+node scripts/campaign-storage-smoke.mjs # native IndexedDB contract checks
 npm run test:browser       # dev preview on port 5173
 npm run test:production    # Docker/site; defaults to port 8080
 node scripts/discovery-smoke.mjs # focused hidden-terrain and deep-world checks
@@ -82,7 +108,16 @@ node scripts/immersive-wrap-smoke.mjs # focused pause-menu and wrapping checks
 
 Browser checks use `/usr/bin/chromium`; set `CHROMIUM_PATH` if needed. `PREVIEW_URL` selects another preview or the public site. The checks cover gameplay, equipment effects, save migration/transfer/recovery, tab conflicts, touch release/cancellation, sound controls, and portrait/landscape layout. Screenshots are written to ignored `artifacts/`. Emulated phones do not establish physical Android performance.
 
-See [PROGRESSION.md](docs/PROGRESSION.md) for exploration and depth bands, and [ECONOMY.md](docs/ECONOMY.md) for every mineral value, upgrade tier, service cost, generation weight, fuel/drill formula and tuning control.
+See [PROGRESSION.md](docs/PROGRESSION.md) and [ECONOMY.md](docs/ECONOMY.md) for Legacy exploration and balance. Campaign source records and provenance are pinned under [design/v0.1](design/v0.1/README.md); its curated runtime definitions are in `src/campaign/config.ts`.
+
+## Create or modify campaign artwork
+
+The campaign uses editable layered SVG sources, a committed atlas and separate background planes. Node coordinates the authoring export; ordinary builds validate committed files without requiring Chromium or Python. See [CAMPAIGN_ASSETS.md](docs/CAMPAIGN_ASSETS.md).
+
+```sh
+npm run campaign:assets
+npm run campaign:check
+```
 
 ## Create or modify the 3D artwork
 
@@ -113,9 +148,13 @@ The reference is identified as version `0.934 (MC)`; it has not been proven byte
 
 ## Source layout
 
-- `src/model.ts`: world generation, simulation, economy, upgrades and save validation/migration.
+- `src/main.ts`: mode routing; `src/legacy-main.ts` preserves the single-mine interface.
+- `src/campaign/`: campaign definitions, simulation, generation, persistence, input, sound, interface and scene.
+- `design/v0.1/`: pinned design JSON and source provenance, excluded from browser imports.
+- `assets/campaign/`: editable illustrated sources and committed W01 output.
+- `src/model.ts`: Legacy world generation, simulation, economy, upgrades and save validation/migration.
 - `src/storage.ts`: validated persistence, backups, import/export and conflict protection.
-- `src/main.ts`, `src/style.css`: controls, immersive playfield and pause menu.
+- `src/legacy-main.ts`, `src/style.css`: Legacy controls, immersive playfield and pause menu.
 - `src/scene.ts`, `src/station-ui.ts`, `src/art.ts`, `src/audio.ts`: camera, in-game building interfaces, original artwork, animation, feedback and synthesized sound.
 - `assets/source/`, `assets/models/`, `assets/generated/`: original 3D model generators, editable models and browser-ready renders.
 - `tests/`: simulation and storage regressions.
