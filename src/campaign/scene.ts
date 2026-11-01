@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { Campaign } from "./model";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
 import { campaignSafeArea, campaignTileSize } from "./layout";
+import { CampaignPointer } from "./pointer";
 export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
@@ -12,6 +13,7 @@ export interface CampaignSceneBindings {
   getControls: () => CampaignControls;
   onUpdate: (dt: number) => void;
   onInteract?: () => void;
+  onPilotGesture?: () => void;
   onEvent?: (kind: "cut" | "pickup" | "damage" | "thrust" | "idle") => void;
   reducedMotion?: () => boolean;
   getInterfaceMode?: () => "welcome" | "menu" | "dock" | "map" | undefined;
@@ -78,6 +80,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private lastHull = 0;
     private damageLife = 0;
     private chips: Chip[] = [];
+    private pointerPilot = new CampaignPointer();
     private inspection:
       | {
           x: number;
@@ -206,44 +209,137 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         glow.refresh();
       }
       this.lamp = this.add.image(0, 0, "campaign-lamp").setDepth(5);
-      this.input.on("pointerup", (pointer: Phaser.Input.Pointer) => {
-        if (bindings.isPaused()) return;
-        const campaign = bindings.getCampaign();
-        const world = campaign.world;
-        const worldX = (pointer.x + this.cameraX) / this.tile;
-        const worldY = (pointer.y + this.cameraY) / this.tile;
-        if (
-          campaign.atDock &&
-          Math.abs(delta(worldX, 5.5, world.width)) < 2.6 &&
-          worldY < 0.2
-        ) {
-          bindings.onInteract?.();
-          return;
-        }
-        const x = wrap(Math.floor(worldX), world.width);
-        const y = Math.floor(worldY);
-        if (!campaign.isVisible(x, y)) {
-          this.inspection = undefined;
-          return;
-        }
-        const item = world.packages.find(
-          (item) =>
-            (item.status === "deposit" || item.status === "exposed") &&
-            Math.floor(item.x) === x &&
-            Math.floor(item.y) === y,
+      const canvas = this.game.canvas;
+      const events = new AbortController();
+      const eventOptions = { signal: events.signal };
+      const point = (event: PointerEvent) => {
+        const bounds = canvas.getBoundingClientRect();
+        return {
+          x: ((event.clientX - bounds.left) / bounds.width) * this.scale.width,
+          y: ((event.clientY - bounds.top) / bounds.height) * this.scale.height,
+        };
+      };
+      const clearPointer = () => {
+        const id = this.pointerPilot.current?.id;
+        this.pointerPilot.clear();
+        canvas.style.cursor = "crosshair";
+        if (id !== undefined && canvas.hasPointerCapture(id))
+          canvas.releasePointerCapture(id);
+      };
+      canvas.style.cursor = "crosshair";
+      canvas.addEventListener(
+        "pointerdown",
+        (event) => {
+          if (bindings.isPaused() || document.hidden || event.button !== 0)
+            return;
+          const position = point(event);
+          if (!this.pointerPilot.begin(event.pointerId, position.x, position.y))
+            return;
+          event.preventDefault();
+          canvas.setPointerCapture(event.pointerId);
+          bindings.onPilotGesture?.();
+        },
+        eventOptions,
+      );
+      canvas.addEventListener(
+        "pointermove",
+        (event) => {
+          if (this.pointerPilot.current?.id !== event.pointerId) return;
+          if (
+            bindings.isPaused() ||
+            (event.pointerType === "mouse" && !(event.buttons & 1))
+          ) {
+            clearPointer();
+            return;
+          }
+          const position = point(event);
+          this.pointerPilot.move(event.pointerId, position.x, position.y);
+        },
+        eventOptions,
+      );
+      canvas.addEventListener(
+        "pointerup",
+        (event) => {
+          if (this.pointerPilot.current?.id !== event.pointerId) return;
+          const position = point(event);
+          this.pointerPilot.move(event.pointerId, position.x, position.y);
+          const tap = this.pointerPilot.end(event.pointerId);
+          clearPointer();
+          if (
+            tap &&
+            !bindings.isPaused() &&
+            tap.x >= 0 &&
+            tap.x < this.scale.width &&
+            tap.y >= 0 &&
+            tap.y < this.scale.height
+          )
+            this.inspectAt(tap.x, tap.y);
+        },
+        eventOptions,
+      );
+      for (const eventName of ["pointercancel", "lostpointercapture"] as const)
+        canvas.addEventListener(
+          eventName,
+          (event) => {
+            if (this.pointerPilot.current?.id === event.pointerId)
+              clearPointer();
+          },
+          eventOptions,
         );
-        const mission = world.missions.find(
-          (mission) =>
-            mission.status === "source" &&
-            Math.floor(mission.x) === x &&
-            Math.floor(mission.y) === y,
-        );
-        this.inspection =
-          item || mission
-            ? { x, y, packageId: item?.id, missionId: mission?.id, life: 4.5 }
-            : undefined;
+      window.addEventListener("blur", clearPointer, eventOptions);
+      document.addEventListener("visibilitychange", clearPointer, eventOptions);
+      document.addEventListener(
+        "focusin",
+        (event) => {
+          if ((event.target as Element | null)?.closest("dialog"))
+            clearPointer();
+        },
+        eventOptions,
+      );
+      this.scale.on("resize", clearPointer);
+      this.events.once("shutdown", () => {
+        clearPointer();
+        events.abort();
+        this.scale.off("resize", clearPointer);
       });
       bindings.onUpdate(0);
+    }
+
+    private inspectAt(screenX: number, screenY: number) {
+      const campaign = bindings.getCampaign();
+      const world = campaign.world;
+      const worldX = (screenX + this.cameraX) / this.tile;
+      const worldY = (screenY + this.cameraY) / this.tile;
+      if (
+        campaign.atDock &&
+        Math.abs(delta(worldX, 5.5, world.width)) < 2.6 &&
+        worldY < 0.2
+      ) {
+        bindings.onInteract?.();
+        return;
+      }
+      const x = wrap(Math.floor(worldX), world.width);
+      const y = Math.floor(worldY);
+      if (!campaign.isVisible(x, y)) {
+        this.inspection = undefined;
+        return;
+      }
+      const item = world.packages.find(
+        (item) =>
+          (item.status === "deposit" || item.status === "exposed") &&
+          Math.floor(item.x) === x &&
+          Math.floor(item.y) === y,
+      );
+      const mission = world.missions.find(
+        (mission) =>
+          mission.status === "source" &&
+          Math.floor(mission.x) === x &&
+          Math.floor(mission.y) === y,
+      );
+      this.inspection =
+        item || mission
+          ? { x, y, packageId: item?.id, missionId: mission?.id, life: 4.5 }
+          : undefined;
     }
 
     private image(
@@ -343,6 +439,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         campaign !== this.previousCampaign ||
         campaign.world !== this.previousWorld;
       if (changed) {
+        this.pointerPilot.clear();
         this.previousCampaign = campaign;
         this.previousWorld = campaign.world;
         this.previousX = campaign.renderX;
@@ -357,9 +454,19 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.chips = [];
         this.damageLife = 0;
       }
+      if (paused) this.pointerPilot.clear();
+      const pointerControls = this.pointerPilot.controls(
+        this.unwrappedX * this.tile - this.cameraX,
+        campaign.renderY * this.tile - this.cameraY,
+      );
       const oldTarget = campaign.drillTarget;
       if (!paused) {
-        campaign.tick(dt, bindings.getControls());
+        const controls = bindings.getControls();
+        for (const action of Object.keys(
+          pointerControls,
+        ) as (keyof CampaignControls)[])
+          if (pointerControls[action]) controls[action] = true;
+        campaign.tick(dt, controls);
         this.elapsed += dt;
         this.damageLife = Math.max(0, this.damageLife - dt);
         if (this.inspection && (this.inspection.life -= dt) <= 0)
@@ -775,6 +882,26 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           tile * 0.88,
         );
       }
+      const pointer = this.pointerPilot.current;
+      this.game.canvas.style.cursor = pointer?.active
+        ? "grabbing"
+        : "crosshair";
+      if (pointer?.active && !paused) {
+        const dx = pointer.x - px,
+          dy = pointer.y - py,
+          distance = Math.hypot(dx, dy),
+          length = Math.min(distance, this.tile * 1.1),
+          targetX = px + (distance ? (dx / distance) * length : 0),
+          targetY = py + (distance ? (dy / distance) * length : 0);
+        this.screen.lineStyle(1.5, 0xbce7d4, 0.65);
+        this.screen.strokeCircle(pointer.x, pointer.y, 11);
+        if (distance > 20) {
+          this.screen.lineBetween(px, py, targetX, targetY);
+          this.screen.fillStyle(0xbce7d4, 0.9);
+          this.screen.fillCircle(targetX, targetY, 3);
+        } else this.screen.strokeCircle(px, py, 20);
+        this.inspection = undefined;
+      }
 
       const rigSize = (tile * 64) / 48;
       const rigY = py - tile * 0.015;
@@ -976,6 +1103,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         );
       const host = document.getElementById("campaign-game");
       if (host) {
+        host.dataset.pointerActive = String(
+          Boolean(pointer?.active && !paused),
+        );
+        host.dataset.pointerDirections = Object.keys(pointerControls).join(",");
+        host.dataset.rigScreenX = px.toFixed(2);
+        host.dataset.rigScreenY = py.toFixed(2);
         host.dataset.worldCallout = String(Boolean(callout));
         host.dataset.inspection = this.inspection && callout ? callout : "";
         const shell = host.parentElement;

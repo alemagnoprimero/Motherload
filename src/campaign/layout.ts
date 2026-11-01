@@ -10,6 +10,6 @@ export function campaignSafeArea(
   coarsePointer = false,
 ) {
   if (width < 760 || coarsePointer)
-    return height <= 420 ? { top: 64, bottom: 64 } : { top: 96, bottom: 100 };
+    return height <= 420 ? { top: 152, bottom: 64 } : { top: 210, bottom: 100 };
   return { top: 56, bottom: 48 };
 }

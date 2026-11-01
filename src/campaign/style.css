@@ -291,7 +291,11 @@ strong {
   height: 26px;
   opacity: 0.8;
 }
-.objective-copy > div {
+.objective-copy {
+  min-width: 0;
+  flex: 1;
+}
+.mission-heading {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -305,10 +309,42 @@ strong {
   font-size: 13px;
 }
 #campaign-objective-progress {
-  margin: 0;
-  color: #e1e8da;
+  display: grid;
+  gap: 3px;
+  margin: 5px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #dce7db;
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.35;
+}
+#campaign-objective-progress li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+.mission-status {
+  flex: 0 0 12px;
+  color: #a6bcb1;
+  text-align: center;
+  font-weight: 700;
+}
+#campaign-objective-progress [data-status="complete"] {
+  color: #a4beb0;
+}
+#campaign-objective-progress [data-status="complete"] .mission-status {
+  color: #9cdec6;
+}
+#campaign-objective-progress [data-status="carried"] .mission-status,
+#campaign-objective-progress [data-status="ready"] .mission-status {
+  color: #f0c584;
+}
+#campaign-objective-next {
+  margin: 5px 0 0;
+  color: #f0d099;
+  font-size: 12px;
+  line-height: 1.35;
 }
 #campaign-objective-reward {
   display: block;
@@ -440,7 +476,51 @@ button.tool-slot:hover {
   background: #bce7d414;
 }
 .campaign-touch {
+  position: fixed;
+  z-index: 14;
+  left: max(10px, env(safe-area-inset-left));
+  right: max(10px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
   display: none;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.campaign-touch > div {
+  display: flex;
+  gap: 9px;
+}
+.campaign-touch button {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  min-height: 52px;
+  padding: 12px;
+  border-radius: 50%;
+  background: #b7e4d408;
+  border: 1px solid #d0e4d44d;
+  color: #d4e5d2;
+  pointer-events: auto;
+  backdrop-filter: none;
+  touch-action: none;
+}
+.campaign-touch button svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.campaign-touch button.held {
+  color: #d9ffff;
+  background: #7fdfcb2b;
+  border-color: #a4dfd4;
+}
+
+.campaign-direction-buttons .campaign-touch {
+  display: flex;
 }
 
 /* Screens belong to the ship: a narrow terminal, not a second webpage. */
@@ -1162,6 +1242,14 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
   font-size: 15px;
 }
 
+@media (pointer: fine) and (min-width: 761px) and (min-height: 501px) {
+  .campaign-direction-buttons .campaign-objective {
+    bottom: max(82px, calc(70px + env(safe-area-inset-bottom)));
+  }
+  .campaign-direction-buttons .campaign-toolbar {
+    bottom: max(76px, calc(64px + env(safe-area-inset-bottom)));
+  }
+}
 @media (max-width: 1100px) {
   .instrument-left {
     gap: 13px;
@@ -1251,7 +1339,7 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
     width: 21px;
     height: 21px;
   }
-  .objective-copy > div {
+  .mission-heading {
     gap: 3px 8px;
   }
   #campaign-objective-title {
@@ -1299,47 +1387,7 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
     font-size: 12px;
   }
   .campaign-touch {
-    position: fixed;
-    z-index: 14;
-    left: max(10px, env(safe-area-inset-left));
-    right: max(10px, env(safe-area-inset-right));
-    bottom: max(12px, env(safe-area-inset-bottom));
     display: flex;
-    justify-content: space-between;
-    pointer-events: none;
-  }
-  .campaign-touch > div {
-    display: flex;
-    gap: 9px;
-  }
-  .campaign-touch button {
-    display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    min-height: 52px;
-    padding: 12px;
-    border-radius: 50%;
-    background: #b7e4d408;
-    border: 1px solid #d0e4d44d;
-    color: #d4e5d2;
-    pointer-events: auto;
-    backdrop-filter: none;
-    touch-action: none;
-  }
-  .campaign-touch button svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .campaign-touch button.held {
-    color: #d9ffff;
-    background: #7fdfcb2b;
-    border-color: #a4dfd4;
   }
   .campaign-panel {
     width: calc(100vw - 20px);
@@ -1544,7 +1592,7 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
     width: 18px;
     height: 18px;
   }
-  .objective-copy > div {
+  .mission-heading {
     gap: 4px 8px;
   }
   #campaign-objective-step {
@@ -1555,8 +1603,16 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
   #campaign-objective-reward {
     font-size: 12px;
   }
+  #campaign-objective-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px 12px;
+    margin-top: 3px;
+  }
+  #campaign-objective-next {
+    margin-top: 3px;
+  }
   #campaign-objective-reward {
-    margin-top: 1px;
+    display: none;
   }
   .campaign-touch {
     bottom: 8px;

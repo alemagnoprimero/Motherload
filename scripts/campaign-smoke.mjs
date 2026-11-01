@@ -343,6 +343,83 @@ async function assertGeometry(page, viewport, touch = true) {
     );
 }
 
+async function rigPoint(page) {
+  const point = await page.locator("#campaign-game").evaluate((element) => ({
+    x: Number(element.dataset.rigScreenX),
+    y: Number(element.dataset.rigScreenY),
+  }));
+  assert.ok(Number.isFinite(point.x) && Number.isFinite(point.y));
+  return point;
+}
+async function pointerState(page) {
+  return page.locator("#campaign-game").evaluate((element) => ({
+    active: element.dataset.pointerActive === "true",
+    directions: (element.dataset.pointerDirections || "")
+      .split(",")
+      .filter(Boolean),
+  }));
+}
+async function assertMissionGeometry(page, viewport) {
+  assert.equal(await page.locator(".campaign-objective").isVisible(), true);
+  const layout = await page.evaluate(() => {
+    const mission = document.querySelector(".campaign-objective");
+    const box = (element) => {
+      const r = element.getBoundingClientRect();
+      return { x: r.x, y: r.y, width: r.width, height: r.height };
+    };
+    return {
+      mission: box(mission),
+      controls: Array.from(
+        document.querySelectorAll(
+          ".campaign-hud, #campaign-menu-toggle, .campaign-toolbar, .campaign-touch button",
+        ),
+      )
+        .filter((element) => element.checkVisibility())
+        .map(box),
+      tasks: Array.from(mission.querySelectorAll("[data-task]")).map(
+        (element) => ({
+          box: box(element),
+          size: parseFloat(getComputedStyle(element).fontSize),
+        }),
+      ),
+    };
+  });
+  const m = layout.mission;
+  assert.ok(
+    m.x >= 0 &&
+      m.y >= 0 &&
+      m.x + m.width <= viewport.width + 1 &&
+      m.y + m.height <= viewport.height + 1,
+    "Persistent mission stays inside viewport",
+  );
+  for (const control of layout.controls)
+    assert.ok(
+      m.x + m.width <= control.x + 1 ||
+        control.x + control.width <= m.x + 1 ||
+        m.y + m.height <= control.y + 1 ||
+        control.y + control.height <= m.y + 1,
+      "Mission checklist does not cover gauges or input controls",
+    );
+  for (const task of layout.tasks) {
+    assert.ok(task.size >= 12, "Mission tasks retain readable 12px text");
+    assert.ok(
+      task.box.y + task.box.height <= m.y + m.height + 1,
+      "Every task stays within the mission tracker",
+    );
+  }
+}
+async function missionStatus(page, task, status) {
+  const row = page.locator(
+    '#campaign-objective-progress [data-task="' + task + '"]',
+  );
+  assert.equal(
+    await row.getAttribute("data-status"),
+    status,
+    task + " mission status",
+  );
+  return row.innerText();
+}
+
 export async function runCampaignInspectionSmoke(
   browser,
   base,
@@ -448,6 +525,518 @@ export async function runCampaignSmoke(
   const chosen = (name) =>
     selection === "all" || selection.split(",").includes(name);
   let baseline;
+  if (chosen("pointer")) {
+    for (const [label, viewport, touch] of [
+      ["desktop", { width: 1440, height: 900 }, false],
+      ["portrait", { width: 393, height: 851 }, true],
+      ["landscape", { width: 568, height: 320 }, true],
+    ]) {
+      const { context, page } = await ready(browser, base, {
+        viewport,
+        isMobile: touch,
+        hasTouch: touch,
+        deviceScaleFactor: 1,
+      });
+      try {
+        await freeze(page);
+        const initial = await exportCheckpoint(page, true);
+        await advance(page, 200);
+        const session = touch ? await context.newCDPSession(page) : undefined;
+        const start = async (point, button = "left") => {
+          if (touch)
+            await session.send("Input.dispatchTouchEvent", {
+              type: "touchStart",
+              touchPoints: [{ id: 1, ...point }],
+            });
+          else {
+            await page.mouse.move(point.x, point.y);
+            await page.mouse.down({ button });
+          }
+        };
+        const end = async (button = "left") => {
+          if (touch)
+            await session.send("Input.dispatchTouchEvent", {
+              type: "touchEnd",
+              touchPoints: [],
+            });
+          else await page.mouse.up({ button });
+          await advance(page, 50);
+        };
+        const target = async (dx, dy) => {
+          const rig = await rigPoint(page);
+          return {
+            x: Math.max(20, Math.min(viewport.width - 20, rig.x + dx)),
+            y: Math.max(140, Math.min(viewport.height - 80, rig.y + dy)),
+          };
+        };
+        await assertGeometry(page, viewport, touch);
+        await assertMissionGeometry(page, viewport);
+        const down = await target(0, touch && viewport.height < 420 ? 55 : 110);
+        await start(down);
+        await advance(page, 100);
+        assert.equal(
+          (await pointerState(page)).active,
+          false,
+          "Short press remains a tap",
+        );
+        await advance(page, 200);
+        assert.equal((await pointerState(page)).active, true);
+        assert.ok((await pointerState(page)).directions.includes("down"));
+        await advance(page, 2400);
+        await page.screenshot({ path: path + "-pointer-" + label + ".png" });
+        await end();
+        assert.equal((await pointerState(page)).active, false);
+        assert.deepEqual((await pointerState(page)).directions, []);
+        const mined = await sample(page);
+        assert.ok(
+          mined.stats.mined > initial.state.stats.mined,
+          "Holding the world drills actual terrain without keyboard input",
+        );
+        assert.ok(
+          carried(mined).length > 0,
+          "World pointer drilling collects cargo",
+        );
+        const up = await target(110, -100);
+        await start(up);
+        await advance(page, 350);
+        const diagonal = await pointerState(page);
+        assert.ok(
+          diagonal.directions.includes("up") &&
+            diagonal.directions.includes("right"),
+          "World pointer supports simultaneous thrust and steering",
+        );
+        await advance(page, 1800);
+        await end();
+        const flown = await sample(page);
+        assert.ok(
+          flown.vehicle.y < mined.vehicle.y,
+          "Pointer thrust lifts the rig through the mined shaft",
+        );
+        assert.ok(
+          delta(mined.vehicle.x, flown.vehicle.x) > 0.03,
+          "Diagonal pointer thrust also steers the rig",
+        );
+
+        if (touch) {
+          const worldPoint = { id: 1, ...(await target(0, 80)) };
+          const left = await page
+            .locator('.campaign-touch [data-dir="left"]')
+            .boundingBox();
+          const padPoint = {
+            id: 2,
+            x: left.x + left.width / 2,
+            y: left.y + left.height / 2,
+          };
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchStart",
+            touchPoints: [worldPoint],
+          });
+          await advance(page, 300);
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchStart",
+            touchPoints: [worldPoint, padPoint],
+          });
+          await advance(page, 100);
+          assert.equal((await pointerState(page)).active, true);
+          assert.equal(
+            await page
+              .locator('.campaign-touch [data-dir="left"]')
+              .evaluate((e) => e.classList.contains("held")),
+            true,
+            "A pad finger remains independent from the world gesture",
+          );
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchEnd",
+            touchPoints: [padPoint],
+          });
+          await advance(page, 50);
+          assert.equal(
+            await page
+              .locator('.campaign-touch [data-dir="left"]')
+              .evaluate((e) => e.classList.contains("held")),
+            false,
+          );
+          assert.equal(
+            (await pointerState(page)).active,
+            true,
+            "Releasing the pad finger keeps world steering active",
+          );
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchCancel",
+            touchPoints: [],
+          });
+          await advance(page, 100);
+          assert.deepEqual(await pointerState(page), {
+            active: false,
+            directions: [],
+          });
+          assert.equal(await page.locator(".campaign-touch .held").count(), 0);
+        } else {
+          for (const button of ["right", "middle"]) {
+            await start(await target(0, -90), button);
+            await advance(page, 300);
+            assert.deepEqual(
+              await pointerState(page),
+              { active: false, directions: [] },
+              button + " mouse button cannot move the rig",
+            );
+            await end(button);
+          }
+          await page.keyboard.press("Escape");
+          if (await page.locator("#campaign-menu").evaluate((e) => e.open))
+            await closeOverlay(page);
+          await start(await target(0, -100));
+          await advance(page, 300);
+          assert.equal((await pointerState(page)).active, true);
+          await page.keyboard.press("Escape");
+          await advance(page, 100);
+          assert.equal(
+            await page.evaluate(() => document.body.dataset.campaignPaused),
+            "true",
+          );
+          assert.deepEqual(await pointerState(page), {
+            active: false,
+            directions: [],
+          });
+          await page.keyboard.press("Escape");
+          await advance(page, 400);
+          assert.deepEqual(
+            await pointerState(page),
+            { active: false, directions: [] },
+            "Resuming while the mouse is still down cannot restart a cleared gesture",
+          );
+          await end();
+          await start(await target(0, -100));
+          await advance(page, 300);
+          // Headless Chromium keeps all tabs focused/visible when switching.
+          // Deliver the browser lifecycle event explicitly to test this handler.
+          await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+          await advance(page, 100);
+          assert.deepEqual(
+            await pointerState(page),
+            { active: false, directions: [] },
+            "Window blur clears pointer motion",
+          );
+          await end();
+        }
+
+        // Tap inspection still reads only the visible surface deposit; no hold time elapses.
+        await importCheckpoint(page, initial);
+        await closeOverlay(page);
+        await advance(page, 200);
+        const rig = await rigPoint(page);
+        const tile = campaignTileSize(viewport.width, viewport.height);
+        const orePoint = { x: rig.x + tile, y: rig.y + 0.86 * tile };
+        await start(orePoint);
+        await end();
+        assert.match(
+          await page.locator("#campaign-game").getAttribute("data-inspection"),
+          /Ironium.*30.*1 bulk/,
+          "A short world tap still inspects a visible mineral",
+        );
+
+        if (!touch) {
+          await menu(page);
+          await page
+            .locator('[data-setting="showDirectionButtons"]')
+            .check({ force: true });
+          await closeOverlay(page);
+          const pad = page.locator('.campaign-touch [data-dir="down"]');
+          assert.equal(
+            await pad.isVisible(),
+            true,
+            "Mouse players can show direction buttons from the pilot console",
+          );
+          await assertGeometry(page, viewport, true);
+          await assertMissionGeometry(page, viewport);
+          const button = await pad.boundingBox();
+          await page.mouse.move(
+            button.x + button.width / 2,
+            button.y + button.height / 2,
+          );
+          for (const nonprimary of ["right", "middle"]) {
+            await page.mouse.down({ button: nonprimary });
+            await advance(page, 350);
+            assert.equal(
+              await pad.evaluate((e) => e.classList.contains("held")),
+              false,
+              nonprimary + " mouse button cannot press the direction pad",
+            );
+            assert.equal((await pointerState(page)).active, false);
+            await page.mouse.up({ button: nonprimary });
+          }
+          await page.keyboard.press("Escape");
+          if (await page.locator("#campaign-menu").evaluate((e) => e.open))
+            await closeOverlay(page);
+          await page.mouse.move(
+            button.x + button.width / 2,
+            button.y + button.height / 2,
+          );
+          await page.mouse.down();
+          await advance(page, 1600);
+          assert.equal(
+            await pad.evaluate((e) => e.classList.contains("held")),
+            true,
+          );
+          await page.mouse.up();
+          await advance(page, 100);
+          assert.equal(
+            await pad.evaluate((e) => e.classList.contains("held")),
+            false,
+          );
+          const padDrilled = await sample(page);
+          assert.ok(
+            padDrilled.stats.mined > initial.state.stats.mined,
+            "Holding a desktop direction button drills without keyboard input",
+          );
+          await keys(page, ["ArrowUp"]);
+          await advance(page, 1800);
+          await keys(page, []);
+          const keyboardFlight = await sample(page);
+          assert.ok(
+            keyboardFlight.vehicle.y < padDrilled.vehicle.y,
+            "Native keyboard thrust remains usable alongside pointer controls",
+          );
+          await menu(page);
+          await page
+            .locator('[data-setting="showDirectionButtons"]')
+            .uncheck({ force: true });
+          await page
+            .locator('[data-setting="drillToggle"]')
+            .check({ force: true });
+          await closeOverlay(page);
+          await importCheckpoint(page, initial);
+          await closeOverlay(page);
+          await advance(page, 200);
+          await start(await target(0, 110));
+          await advance(page, 1600);
+          await end();
+          await advance(page, 1400);
+          const released = await sample(page);
+          await advance(page, 1500);
+          const settled = await sample(page);
+          assert.equal(
+            settled.stats.mined,
+            released.stats.mined,
+            "World hold releases even when keyboard drilling uses toggle mode",
+          );
+          await menu(page);
+          await page
+            .locator('[data-setting="drillToggle"]')
+            .uncheck({ force: true });
+          await closeOverlay(page);
+        }
+
+        const stageTwo = structuredClone(initial);
+        stageTwo.state.progress.beacon = true;
+        stageTwo.state.progress.bankedOre = 3;
+        stageTwo.state.progress.completed = [1];
+        stageTwo.state.credits = 2000;
+        await importCheckpoint(page, stageTwo);
+        await closeOverlay(page);
+        await advance(page, 500);
+        await assertMissionGeometry(page, viewport);
+        await missionStatus(page, "W01-VALVE", "pending");
+        await missionStatus(page, "W01-ANTENNA", "pending");
+        await page.screenshot({ path: path + "-missions-" + label + ".png" });
+        for (const mission of stageTwo.state.worlds.W01.missions)
+          if (["W01-VALVE", "W01-ANTENNA"].includes(mission.id))
+            mission.status = "carried";
+        await importCheckpoint(page, stageTwo);
+        await closeOverlay(page);
+        await advance(page, 250);
+        await assertMissionGeometry(page, viewport);
+        await missionStatus(page, "W01-VALVE", "carried");
+        await missionStatus(page, "W01-ANTENNA", "carried");
+        await page.screenshot({
+          path: path + "-missions-carried-" + label + ".png",
+        });
+        stageTwo.state.vehicle.x = 5.5;
+        await importCheckpoint(page, stageTwo);
+        await closeOverlay(page);
+        await advance(page, 250);
+        const lander = await rigPoint(page);
+        await start({ x: lander.x, y: lander.y - 20 });
+        await end();
+        assert.equal(
+          await page
+            .locator("#campaign-dock")
+            .evaluate((element) => element.open),
+          true,
+          "A short tap on the nearby lander still opens its console",
+        );
+        noErrors(page);
+        check(
+          "native " +
+            label +
+            " world pointer mining, diagonal flight, cancellation and persistent mission layout",
+        );
+      } finally {
+        await context.close();
+      }
+    }
+  }
+  if (chosen("missions")) {
+    const { context, page } = await ready(browser, base);
+    try {
+      await freeze(page);
+      await missionStatus(page, "beacon", "pending");
+      await missionStatus(page, "ore", "pending");
+      assert.match(
+        await page.locator("#campaign-objective-next").innerText(),
+        /100\s*m|beacon/i,
+      );
+      const fixture = await exportCheckpoint(page);
+      fixture.state.vehicle = { ...fixture.state.vehicle, x: 5.5, y: -0.36 };
+      fixture.state.progress.beacon = true;
+      fixture.state.credits = 4000;
+      const ore = fixture.state.worlds.W01.packages
+        .filter((item) => item.tags.includes("ordinary"))
+        .slice(0, 3);
+      assert.equal(ore.length, 3);
+      for (const item of ore) {
+        item.status = "carried";
+        fixture.state.worlds.W01.tiles[
+          Math.floor(item.y) * 40 + Math.floor(item.x)
+        ] = 0;
+      }
+      await importCheckpoint(page, fixture);
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "beacon", "complete");
+      await missionStatus(page, "ore", "carried");
+      assert.match(
+        await page.locator("#campaign-objective-next").innerText(),
+        /bank|lander/i,
+      );
+      await click(page, "#campaign-dock-toggle");
+      await command(page, "bank");
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "ore", "complete");
+      await missionStatus(page, "construction", "ready");
+      assert.match(
+        await page.locator("#campaign-objective-next").innerText(),
+        /fund|construction|200/i,
+      );
+      await click(page, "#campaign-dock-toggle");
+      await tab(page, "lander");
+      await command(page, "milestone");
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "W01-VALVE", "pending");
+      await missionStatus(page, "W01-ANTENNA", "pending");
+      assert.match(
+        await page.locator("#campaign-objective-step").innerText(),
+        /02/,
+      );
+      assert.match(
+        await page
+          .locator('#campaign-objective-progress [data-task="construction"]')
+          .innerText(),
+        /300/,
+      );
+
+      const stageTwo = await exportCheckpoint(page);
+      stageTwo.state.credits = 5000;
+      for (const mission of stageTwo.state.worlds.W01.missions)
+        if (["W01-VALVE", "W01-ANTENNA"].includes(mission.id))
+          mission.status = "carried";
+      await importCheckpoint(page, stageTwo);
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "W01-VALVE", "carried");
+      await missionStatus(page, "W01-ANTENNA", "carried");
+      assert.match(
+        await page.locator("#campaign-objective-next").innerText(),
+        /bank|lander/i,
+      );
+      await click(page, "#campaign-dock-toggle");
+      await tab(page, "service");
+      await command(page, "bank");
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "W01-VALVE", "complete");
+      await missionStatus(page, "W01-ANTENNA", "complete");
+      await missionStatus(page, "construction", "ready");
+      await click(page, "#campaign-dock-toggle");
+      await tab(page, "lander");
+      await command(page, "milestone");
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "W01-Q", "pending");
+      assert.match(
+        await page.locator("#campaign-objective-step").innerText(),
+        /03/,
+      );
+      assert.match(
+        await page
+          .locator('#campaign-objective-progress [data-task="W01-Q"]')
+          .innerText(),
+        /600/,
+      );
+      assert.match(
+        await page
+          .locator('#campaign-objective-progress [data-task="construction"]')
+          .innerText(),
+        /500/,
+      );
+      const stageThree = await exportCheckpoint(page);
+      stageThree.state.credits = 6000;
+      stageThree.state.worlds.W01.missions.find(
+        (mission) => mission.id === "W01-Q",
+      ).status = "carried";
+      await importCheckpoint(page, stageThree);
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "W01-Q", "carried");
+      await click(page, "#campaign-dock-toggle");
+      await tab(page, "service");
+      await command(page, "bank");
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "W01-Q", "complete");
+      await missionStatus(page, "construction", "ready");
+      await click(page, "#campaign-dock-toggle");
+      await tab(page, "lander");
+      await command(page, "milestone");
+      await closeOverlay(page);
+      await advance(page, 150);
+      await missionStatus(page, "launch", "ready");
+      assert.match(
+        await page.locator("#campaign-objective-next").innerText(),
+        /launch|lander/i,
+      );
+      await advance(page, 6500);
+      assert.equal(
+        await page.locator(".campaign-objective").isVisible(),
+        true,
+        "Mission guidance persists instead of timing out like a toast",
+      );
+      await menu(page);
+      await command(page, "save");
+      const saved = await exportCheckpoint(page);
+      await page.clock.resume();
+      clocked.delete(page);
+      await page.reload();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#campaign-game")?.dataset.campaignArt ===
+          "ready",
+      );
+      await menu(page);
+      await command(page, "load");
+      assert.deepEqual((await exportCheckpoint(page)).state, saved.state);
+      await closeOverlay(page);
+      await missionStatus(page, "launch", "ready");
+      noErrors(page);
+      check(
+        "persistent missions follow carried/banked cargo, actual M1–M3 payments, launch readiness and reload",
+      );
+    } finally {
+      await context.close();
+    }
+  }
   if (chosen("hud")) {
     const viewport = { width: 1440, height: 900 };
     const { context, page } = await ready(browser, base, { viewport });

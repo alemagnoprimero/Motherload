@@ -42,6 +42,7 @@ export interface PilotPreferences {
   reducedMotion: boolean;
   highContrast: boolean;
   largeText: boolean;
+  showDirectionButtons: boolean;
   effects: number;
   ambience: number;
   music: number;
@@ -55,6 +56,7 @@ export function loadPilotPreferences(): PilotPreferences {
     reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
     highContrast: false,
     largeText: false,
+    showDirectionButtons: false,
     effects: 0.5,
     ambience: 0.3,
     music: 0.15,
@@ -68,6 +70,7 @@ export function loadPilotPreferences(): PilotPreferences {
       "reducedMotion",
       "highContrast",
       "largeText",
+      "showDirectionButtons",
     ] as const)
       if (typeof raw[k] === "boolean") defaults[k] = raw[k];
     for (const k of ["effects", "ambience", "music"] as const)
@@ -194,7 +197,7 @@ export class CampaignInput {
       .querySelectorAll<HTMLButtonElement>("[data-dir]")
       .forEach((button) => {
         button.onpointerdown = (event) => {
-          if (this.callbacks.blocked()) return;
+          if (event.button !== 0 || this.callbacks.blocked()) return;
           event.preventDefault();
           button.setPointerCapture(event.pointerId);
           this.callbacks.unlockAudio();

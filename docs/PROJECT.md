@@ -6,6 +6,8 @@ The approved design-pack rollout begins with a separate campaign mode and the co
 
 The campaign HUD projects compact gauges, values and active-tool icons directly over gameplay. Docking opens an icon-led lander console with the rig and world still visible; its camera framing moves independently of paused simulation.
 
+World holds and drags provide mouse/touch driving, drilling and flight alongside the keyboard and phone buttons. A persistent mission checklist follows discovery, carrying, banking and construction payment through each W01 stage.
+
 Use `?mode=campaign` for the new chapter and `?mode=legacy` for the preserved single mine. The unqualified address continues to select Legacy mode for browsers with a Legacy save. Mode entry does not convert or overwrite the other mode's save domain.
 
 See [CAMPAIGN_W01.md](CAMPAIGN_W01.md) for actual implemented rules, tests and limitations; [DESIGN_PACK_IMPLEMENTATION.md](DESIGN_PACK_IMPLEMENTATION.md) for the approved full campaign plan; and [CAMPAIGN_ASSETS.md](CAMPAIGN_ASSETS.md) for the new source/atlas pipeline. The design's 45-minute opening and 16-hour campaign remain playtest targets. Physical-device performance and complete controller accessibility remain follow-up work.

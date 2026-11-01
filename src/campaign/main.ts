@@ -24,6 +24,7 @@ import {
   type PilotAction,
 } from "./input";
 import { CampaignAudio } from "./audio";
+import { campaignMission } from "./missions";
 import type { CampaignState, HardwareKey } from "./types";
 import "./style.css";
 
@@ -130,10 +131,11 @@ let launchUntil = 0;
 let lastMined = 0,
   lastHull = 10;
 let energyWarningBand = 0;
+let previousObjective = "";
 
 $("app").innerHTML = `
 <main class="campaign-shell" aria-label="Motherload campaign">
-  <div id="campaign-game" tabindex="0" role="application" aria-label="Mining expedition. Arrows or WASD drive and drill, Up flies, E enters the lander, Space braces, Escape pauses." aria-busy="true"></div>
+  <div id="campaign-game" tabindex="0" role="application" aria-label="Mining expedition. Hold or drag in the world to drive and drill; hold above the rig to fly. Tap minerals to inspect. Arrows or WASD drive and drill, Up flies, E enters the lander, Space braces, Escape pauses." aria-busy="true"></div>
   <div class="campaign-hud" aria-label="Vehicle conditions">
     <section class="instrument instrument-left" aria-label="Energy and hull">
       <div class="vital energy-vital">${hudIcon("energy")}<div><div class="instrument-row"><span>ENERGY</span><strong id="campaign-energy">6 / 10</strong></div><div class="meter energy-meter"><i id="campaign-energy-fill"></i></div></div></div>
@@ -147,7 +149,7 @@ $("app").innerHTML = `
     </section>
   </div>
   <button id="campaign-menu-toggle" class="campaign-menu-button" aria-haspopup="dialog" aria-controls="campaign-menu" aria-label="Pause menu" title="Pause menu"></button>
-  <section class="campaign-objective" aria-label="Current objective">${hudIcon("mission")}<div class="objective-copy"><div><span id="campaign-objective-step">01 / 03</span><strong id="campaign-objective-title">Survey the wreck</strong><p id="campaign-objective-progress"></p></div><small id="campaign-objective-reward"></small></div></section>
+  <section class="campaign-objective" aria-label="Stage mission">${hudIcon("mission")}<div class="objective-copy"><div class="mission-heading"><span id="campaign-objective-step">01 / 03</span><strong id="campaign-objective-title">Survey the wreck</strong></div><ul id="campaign-objective-progress" aria-label="Mission goals"></ul><p id="campaign-objective-next"></p><small id="campaign-objective-reward"></small></div></section>
   <div id="campaign-message" class="campaign-message" role="status"></div>
   <button id="campaign-dock-toggle" class="campaign-context" hidden><span class="interaction-key" aria-hidden="true">E</span><strong>Dock and trade</strong></button>
   <div class="campaign-toolbar" aria-label="Equipped attachments">
@@ -159,8 +161,8 @@ $("app").innerHTML = `
   <div class="campaign-touch" aria-label="Touch driving controls"><div><button data-dir="left" aria-label="Steer left"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7M7 12h13"/></svg></button><button data-dir="right" aria-label="Steer right"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 5 7 7-7 7M17 12H4"/></svg></button></div><div><button data-dir="down" aria-label="Drill downward"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 10 7 7 7-7M12 17V4m-5 17h10"/></svg></button><button data-dir="up" aria-label="Thrust upward"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 14 7-7 7 7M12 7v13"/></svg></button></div></div>
   <div id="campaign-launch" class="campaign-launch" hidden><span class="eyebrow">FRONTIER CERTIFICATE SECURED</span><h1>Course charted.</h1><p>Ice comet / Fractured moon</p></div>
 </main>
-<dialog id="campaign-welcome" class="campaign-welcome"><div class="title-screen"><p class="eyebrow">THE FRONTIER</p><h1>MOTHERLOAD</h1><p class="title-location">BROKEN ASTEROID <span>600 m</span></p><p class="title-mission">Recover the core. Restore the lander.</p><button id="campaign-start" class="primary">Deploy rig <span aria-hidden="true">›</span></button><p class="welcome-hint">Drive / drill / fly · Arrows or WASD</p><a href="?mode=legacy" class="quiet-link">Legacy mine</a></div></dialog>
-<dialog id="campaign-menu" class="campaign-panel" aria-labelledby="campaign-menu-title"><header><div><p class="eyebrow">PILOT CONSOLE</p><h1 id="campaign-menu-title">Paused</h1></div><button data-close="menu" class="return-button">Return to mine</button></header><div id="campaign-storage-notice" class="campaign-notice" hidden role="alert"></div><div class="pause-grid"><section><h2>Checkpoint</h2><p id="campaign-save-status" role="status">Preparing checkpoint…</p><div class="action-grid"><button data-command="save">Save checkpoint</button><button data-command="load">Load saved checkpoint</button><button data-command="export">Export campaign</button><button data-command="import">Import campaign</button><button data-command="restore">Restore backup</button></div><input id="campaign-import" type="file" accept="application/json,.json" hidden></section><section><h2>Flight record</h2><div id="campaign-record"></div><button data-command="map">Star map</button></section><section><h2>Systems</h2><button id="campaign-sound">Enable sound</button><label>Effects <input type="range" data-volume="effects" min="0" max="100"></label><label>Ambience <input type="range" data-volume="ambience" min="0" max="100"></label><label>Music <input type="range" data-volume="music" min="0" max="100"></label><label class="check"><input type="checkbox" data-setting="reducedMotion"> Reduced motion</label><label class="check"><input type="checkbox" data-setting="highContrast"> High-contrast edges</label><label class="check"><input type="checkbox" data-setting="largeText"> Larger text</label></section><section><h2>Pilot controls</h2><p class="muted">Hold Up to fly. Side drilling needs a ledge. A started cut finishes before ascent.</p><label class="check"><input type="checkbox" data-setting="drillToggle"> Toggle downward drilling</label><label class="check"><input type="checkbox" data-setting="braceToggle"> Toggle anchoring feet</label><details><summary>Keyboard bindings</summary><div id="campaign-bindings"></div><p id="campaign-remap-status" role="status"></p></details><p class="muted">Controller: left stick / D-pad drive, A thrust, X mobility, B / Y utilities, LB interact, RB map, Start pause.</p></section><section class="recovery-section"><h2>Recovery</h2><button data-command="recover">Request surface recovery</button><p class="muted">Carried cargo and relics are lost. Mission objects return to their marked sources. The recovery fee never creates debt.</p><button data-command="new">Start a new campaign</button><a href="?mode=legacy" id="campaign-legacy-link" class="quiet-link">Open Legacy mode →</a></section></div></dialog>
+<dialog id="campaign-welcome" class="campaign-welcome"><div class="title-screen"><p class="eyebrow">THE FRONTIER</p><h1>MOTHERLOAD</h1><p class="title-location">BROKEN ASTEROID <span>600 m</span></p><p class="title-mission">Recover the core. Restore the lander.</p><button id="campaign-start" class="primary">Deploy rig <span aria-hidden="true">›</span></button><p class="welcome-hint">Hold or drag in the world to drive and drill.<br>Hold above the rig to fly · Or use Arrows / WASD</p><a href="?mode=legacy" class="quiet-link">Legacy mine</a></div></dialog>
+<dialog id="campaign-menu" class="campaign-panel" aria-labelledby="campaign-menu-title"><header><div><p class="eyebrow">PILOT CONSOLE</p><h1 id="campaign-menu-title">Paused</h1></div><button data-close="menu" class="return-button">Return to mine</button></header><div id="campaign-storage-notice" class="campaign-notice" hidden role="alert"></div><div class="pause-grid"><section><h2>Checkpoint</h2><p id="campaign-save-status" role="status">Preparing checkpoint…</p><div class="action-grid"><button data-command="save">Save checkpoint</button><button data-command="load">Load saved checkpoint</button><button data-command="export">Export campaign</button><button data-command="import">Import campaign</button><button data-command="restore">Restore backup</button></div><input id="campaign-import" type="file" accept="application/json,.json" hidden></section><section><h2>Flight record</h2><div id="campaign-record"></div><button data-command="map">Star map</button></section><section><h2>Systems</h2><button id="campaign-sound">Enable sound</button><label>Effects <input type="range" data-volume="effects" min="0" max="100"></label><label>Ambience <input type="range" data-volume="ambience" min="0" max="100"></label><label>Music <input type="range" data-volume="music" min="0" max="100"></label><label class="check"><input type="checkbox" data-setting="reducedMotion"> Reduced motion</label><label class="check"><input type="checkbox" data-setting="highContrast"> High-contrast edges</label><label class="check"><input type="checkbox" data-setting="largeText"> Larger text</label></section><section><h2>Pilot controls</h2><p class="muted">Mouse / touch: hold or drag in the world toward your direction of travel. Hold above the rig to fly; below it to drill. Release to stop steering. Tap minerals to inspect.</p><p class="muted">Arrows / WASD drive and drill; Up flies. Side drilling needs a ledge. A started cut finishes before ascent.</p><label class="check"><input type="checkbox" data-setting="showDirectionButtons"> Show direction buttons on desktop</label><label class="check"><input type="checkbox" data-setting="drillToggle"> Toggle downward drilling</label><label class="check"><input type="checkbox" data-setting="braceToggle"> Toggle anchoring feet</label><details><summary>Keyboard bindings</summary><div id="campaign-bindings"></div><p id="campaign-remap-status" role="status"></p></details><p class="muted">Controller: left stick / D-pad drive, A thrust, X mobility, B / Y utilities, LB interact, RB map, Start pause.</p></section><section class="recovery-section"><h2>Recovery</h2><button data-command="recover">Request surface recovery</button><p class="muted">Carried cargo and relics are lost. Mission objects return to their marked sources. The recovery fee never creates debt.</p><button data-command="new">Start a new campaign</button><a href="?mode=legacy" id="campaign-legacy-link" class="quiet-link">Open Legacy mode →</a></section></div></dialog>
 <dialog id="campaign-dock" class="campaign-panel dock-panel" aria-labelledby="campaign-dock-title"><header><div><p class="eyebrow">LANDER TERMINAL / W01</p><h1 id="campaign-dock-title">The restored lander</h1></div><div class="dock-heading-right"><strong id="campaign-dock-credits">20 CR</strong><button data-close="dock" class="return-button">Undock</button></div></header><nav aria-label="Lander services"><button data-tab="service">Service</button><button data-tab="hardware">Hardware</button><button data-tab="tools">Attachments</button><button data-tab="lander">Lander</button><button data-tab="cargo">Cargo</button></nav><div id="campaign-dock-content"></div><p id="campaign-dock-message" class="dock-feedback" role="status"></p></dialog>
 <dialog id="campaign-map" class="campaign-panel map-panel" aria-labelledby="campaign-map-title"><header><div><p class="eyebrow">NAVIGATION ARCHIVE</p><h1 id="campaign-map-title">Navigation</h1></div><button data-close="map" class="return-button">Return to mine</button></header><p id="campaign-map-copy"></p><div id="campaign-map-worlds" class="world-cards"></div><p class="muted">Your rig, owned attachments, banked objectives and excavated routes persist. The next campaign chapter is under construction.</p></dialog>
 <dialog id="campaign-confirm" class="campaign-confirm" aria-labelledby="campaign-confirm-title"><p class="eyebrow">EXPEDITION DECISION</p><h2 id="campaign-confirm-title"></h2><p id="campaign-confirm-copy"></p><p id="campaign-confirm-error" role="alert"></p><div><button id="campaign-confirm-cancel">Cancel</button><button id="campaign-confirm-accept" class="primary">Confirm</button></div></dialog>`;
@@ -289,6 +291,10 @@ function applyPreferences() {
     preferences.highContrast,
   );
   document.body.classList.toggle("campaign-large-text", preferences.largeText);
+  document.body.classList.toggle(
+    "campaign-direction-buttons",
+    preferences.showDirectionButtons,
+  );
   document
     .querySelectorAll<HTMLInputElement>("[data-setting]")
     .forEach((element) => {
@@ -362,63 +368,6 @@ function renderMenu() {
     });
   renderBindings();
 }
-function objectiveProgress() {
-  const s = campaign.state,
-    milestone = campaign.currentMilestone;
-  if (!milestone)
-    return {
-      title: s.progress.departed ? "Frontier charted" : "Ready for departure",
-      step: "03 / 03",
-      detail: s.progress.departed
-        ? "W02 Ice comet and W03 Fractured moon charted"
-        : "Return to the lander and launch",
-      compactDetail: s.progress.departed ? "Charted" : "Launch",
-      reward: "Permanent Frontier certificate",
-    };
-  if (milestone.id === 1)
-    return {
-      title: milestone.name,
-      step: "01 / 03",
-      detail:
-        (s.progress.beacon ? "✓ Beacon surveyed" : "Survey beacon · 100 m") +
-        "  ·  Bank ore " +
-        Math.min(3, s.progress.bankedOre) +
-        "/3",
-      compactDetail:
-        "Beacon " +
-        Number(s.progress.beacon) +
-        "/1 · Ore " +
-        Math.min(3, s.progress.bankedOre) +
-        "/3",
-      reward: "Next: rank 1 hardware + anchoring feet",
-    };
-  const required = milestone.requiredMissionIds.map((id) =>
-    campaign.world.missions.find((item) => item.id === id),
-  );
-  return {
-    title: milestone.name,
-    step: "0" + milestone.id + " / 03",
-    detail: required
-      .map(
-        (item) =>
-          (item?.status === "banked"
-            ? "✓ "
-            : item?.status === "carried"
-              ? "Return: "
-              : "Find: ") + (item?.name ?? "Mission object"),
-      )
-      .join(" · "),
-    compactDetail:
-      (milestone.id === 2 ? "Parts " : "Core ") +
-      required.filter((item) => item?.status === "banked").length +
-      "/" +
-      required.length,
-    reward:
-      milestone.id === 2
-        ? "Next: cargo rack + star map"
-        : "Next: restored lander + new destinations",
-  };
-}
 function actionKey(action: "mobility" | "interact") {
   if (matchMedia("(pointer: coarse)").matches || innerWidth <= 760)
     return action === "mobility" && !preferences.braceToggle ? "Hold" : "Tap";
@@ -456,14 +405,31 @@ function syncHUD() {
   $("campaign-energy")
     .closest(".instrument")!
     .classList.toggle("critical", v.energy / campaign.maxEnergy <= 0.15);
-  const objective = objectiveProgress();
-  $("campaign-objective-step").textContent = objective.step;
-  $("campaign-objective-title").textContent = objective.title;
-  $("campaign-objective-progress").textContent = objective.compactDetail;
-  $("campaign-objective-reward").textContent = objective.reward.replace(
-    /^Next: /,
-    "→ ",
-  );
+  const objective = campaignMission(campaign);
+  const objectiveKey = JSON.stringify(objective);
+  if (objectiveKey !== previousObjective) {
+    previousObjective = objectiveKey;
+    $("campaign-objective-step").textContent = objective.step;
+    $("campaign-objective-title").textContent = objective.title;
+    $("campaign-objective-progress").innerHTML = objective.tasks
+      .map(
+        (task) =>
+          '<li data-task="' +
+          escape(task.id) +
+          '" data-status="' +
+          task.status +
+          '"><span class="mission-status" aria-hidden="true">' +
+          { pending: "○", carried: "↑", complete: "✓", ready: "◇" }[
+            task.status
+          ] +
+          "</span><span>" +
+          escape(task.label) +
+          "</span></li>",
+      )
+      .join("");
+    $("campaign-objective-next").textContent = objective.next;
+    $("campaign-objective-reward").textContent = objective.reward;
+  }
   $("campaign-dock-toggle").hidden =
     !campaign.atDock || Boolean(overlay || confirmation || launchUntil);
   $("campaign-dock-toggle").querySelector("strong")!.textContent = "Dock";
@@ -1398,6 +1364,9 @@ async function boot() {
       isPaused: paused,
       getControls: () => input.getControls(),
       onInteract: openDock,
+      onPilotGesture: () => {
+        void audio.unlock();
+      },
       reducedMotion: () => preferences.reducedMotion,
       onUpdate: (dt: number) => {
         input.pollCommands();
