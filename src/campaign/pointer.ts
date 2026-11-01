@@ -2,6 +2,7 @@ import type { CampaignControls } from "./types";
 
 interface Gesture {
   id: number;
+  kind: "mouse" | "touch";
   x: number;
   y: number;
   originX: number;
@@ -10,7 +11,14 @@ interface Gesture {
   active: boolean;
 }
 
-/** A short tap inspects; a deliberate hold or drag directly pilots the rig. */
+export const TOUCH_JOYSTICK = {
+  radius: 46,
+  knobRadius: 14,
+  travel: 32,
+  deadZone: 12,
+} as const;
+
+/** Taps inspect, mouse holds aim from the rig, and touch drags use their own center. */
 export class CampaignPointer {
   private gesture?: Gesture;
 
@@ -20,10 +28,26 @@ export class CampaignPointer {
     return this.gesture;
   }
 
-  begin(id: number, x: number, y: number) {
+  get joystick() {
+    const gesture = this.gesture;
+    if (!gesture || gesture.kind !== "touch") return undefined;
+    const dx = gesture.x - gesture.originX,
+      dy = gesture.y - gesture.originY,
+      distance = Math.hypot(dx, dy),
+      scale = distance ? Math.min(1, TOUCH_JOYSTICK.travel / distance) : 0;
+    return {
+      centerX: gesture.originX,
+      centerY: gesture.originY,
+      knobX: gesture.originX + dx * scale,
+      knobY: gesture.originY + dy * scale,
+    };
+  }
+
+  begin(id: number, x: number, y: number, kind: "mouse" | "touch" = "mouse") {
     if (this.gesture) return false;
     this.gesture = {
       id,
+      kind,
       x,
       y,
       originX: x,
@@ -39,7 +63,8 @@ export class CampaignPointer {
     if (!gesture || gesture.id !== id) return;
     gesture.x = x;
     gesture.y = y;
-    if (Math.hypot(x - gesture.originX, y - gesture.originY) > 8)
+    const slop = gesture.kind === "touch" ? TOUCH_JOYSTICK.deadZone : 8;
+    if (Math.hypot(x - gesture.originX, y - gesture.originY) > slop)
       gesture.active = true;
   }
 
@@ -60,10 +85,12 @@ export class CampaignPointer {
     if (!gesture) return {};
     gesture.active ||= this.now() - gesture.startedAt >= 180;
     if (!gesture.active) return {};
-    const dx = gesture.x - rigX,
-      dy = gesture.y - rigY,
+    const touch = gesture.kind === "touch";
+    const dx = gesture.x - (touch ? gesture.originX : rigX),
+      dy = gesture.y - (touch ? gesture.originY : rigY),
       distance = Math.hypot(dx, dy),
-      threshold = Math.max(20, distance * 0.38);
+      threshold = touch ? distance * 0.38 : Math.max(20, distance * 0.38);
+    if (touch && distance <= TOUCH_JOYSTICK.deadZone) return {};
     return {
       ...(dx < -threshold ? { left: true } : {}),
       ...(dx > threshold ? { right: true } : {}),

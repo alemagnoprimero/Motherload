@@ -359,6 +359,19 @@ async function pointerState(page) {
       .filter(Boolean),
   }));
 }
+async function joystickState(page) {
+  return page.locator("#campaign-game").evaluate((element) => ({
+    visible: element.dataset.joystickVisible === "true",
+    center: {
+      x: Number(element.dataset.joystickCenterX),
+      y: Number(element.dataset.joystickCenterY),
+    },
+    knob: {
+      x: Number(element.dataset.joystickKnobX),
+      y: Number(element.dataset.joystickKnobY),
+    },
+  }));
+}
 async function assertMissionGeometry(page, viewport) {
   assert.equal(await page.locator(".campaign-objective").isVisible(), true);
   const layout = await page.evaluate(() => {
@@ -525,12 +538,13 @@ export async function runCampaignSmoke(
   const chosen = (name) =>
     selection === "all" || selection.split(",").includes(name);
   let baseline;
-  if (chosen("pointer")) {
+  if (chosen("pointer") || chosen("joystick")) {
     for (const [label, viewport, touch] of [
       ["desktop", { width: 1440, height: 900 }, false],
       ["portrait", { width: 393, height: 851 }, true],
       ["landscape", { width: 568, height: 320 }, true],
     ]) {
+      if (chosen("joystick") && !chosen("pointer") && !touch) continue;
       const { context, page } = await ready(browser, base, {
         viewport,
         isMobile: touch,
@@ -562,6 +576,12 @@ export async function runCampaignSmoke(
           else await page.mouse.up({ button });
           await advance(page, 50);
         };
+        const moveTouch = async (point) => {
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchMove",
+            touchPoints: [{ id: 1, ...point }],
+          });
+        };
         const target = async (dx, dy) => {
           const rig = await rigPoint(page);
           return {
@@ -569,9 +589,20 @@ export async function runCampaignSmoke(
             y: Math.max(140, Math.min(viewport.height - 80, rig.y + dy)),
           };
         };
-        await assertGeometry(page, viewport, touch);
+        await assertGeometry(page, viewport, false);
         await assertMissionGeometry(page, viewport);
-        const down = await target(0, touch && viewport.height < 420 ? 55 : 110);
+        if (touch)
+          assert.equal(
+            await page.locator(".campaign-touch").isVisible(),
+            false,
+            "Floating joystick replaces fixed phone directions by default",
+          );
+        const down = touch
+          ? {
+              x: Math.round(viewport.width * 0.35),
+              y: Math.round(viewport.height * 0.58),
+            }
+          : await target(0, 110);
         await start(down);
         await advance(page, 100);
         assert.equal(
@@ -579,14 +610,53 @@ export async function runCampaignSmoke(
           false,
           "Short press remains a tap",
         );
+        if (touch) {
+          const stick = await joystickState(page);
+          assert.equal(
+            stick.visible,
+            true,
+            "Touchdown immediately shows the joystick",
+          );
+          assert.deepEqual(stick.center, down);
+          assert.deepEqual(stick.knob, down);
+        }
         await advance(page, 200);
         assert.equal((await pointerState(page)).active, true);
+        if (touch) {
+          assert.deepEqual(
+            (await pointerState(page)).directions,
+            [],
+            "Holding a centered joystick never drives toward the rig",
+          );
+          await moveTouch({ x: down.x, y: down.y + 70 });
+          await advance(page, 50);
+        }
         assert.ok((await pointerState(page)).directions.includes("down"));
         await advance(page, 2400);
         await page.screenshot({ path: path + "-pointer-" + label + ".png" });
+        if (touch) {
+          const stick = await joystickState(page);
+          assert.deepEqual(
+            stick.center,
+            down,
+            "Camera travel cannot shift the joystick center",
+          );
+          assert.ok(
+            Math.hypot(stick.knob.x - down.x, stick.knob.y - down.y) <= 50,
+            "Joystick knob remains inside its base",
+          );
+          await moveTouch(down);
+          await advance(page, 250);
+          assert.deepEqual(
+            (await pointerState(page)).directions,
+            [],
+            "Returning the finger to center is neutral",
+          );
+        }
         await end();
         assert.equal((await pointerState(page)).active, false);
         assert.deepEqual((await pointerState(page)).directions, []);
+        if (touch) assert.equal((await joystickState(page)).visible, false);
         const mined = await sample(page);
         assert.ok(
           mined.stats.mined > initial.state.stats.mined,
@@ -596,8 +666,24 @@ export async function runCampaignSmoke(
           carried(mined).length > 0,
           "World pointer drilling collects cargo",
         );
-        const up = await target(110, -100);
+        const up = touch
+          ? { x: down.x + 25, y: down.y - 15 }
+          : await target(110, -100);
         await start(up);
+        if (touch) {
+          await advance(page, 200);
+          assert.deepEqual(
+            (await joystickState(page)).center,
+            up,
+            "Each new touch establishes a new center",
+          );
+          assert.deepEqual(
+            (await pointerState(page)).directions,
+            [],
+            "A new joystick starts neutral anywhere in the world",
+          );
+          await moveTouch({ x: up.x + 60, y: up.y - 60 });
+        }
         await advance(page, 350);
         const diagonal = await pointerState(page);
         assert.ok(
@@ -606,6 +692,7 @@ export async function runCampaignSmoke(
           "World pointer supports simultaneous thrust and steering",
         );
         await advance(page, 1800);
+        if (touch) assert.deepEqual((await joystickState(page)).center, up);
         await end();
         const flown = await sample(page);
         assert.ok(
@@ -618,7 +705,50 @@ export async function runCampaignSmoke(
         );
 
         if (touch) {
-          const worldPoint = { id: 1, ...(await target(0, 80)) };
+          await menu(page);
+          await page
+            .locator('[data-setting="showDirectionButtons"]')
+            .check({ force: true });
+          await closeOverlay(page);
+          await assertGeometry(page, viewport, true);
+          const origin = { x: down.x, y: down.y };
+          const worldPoint = { id: 1, x: origin.x, y: origin.y + 50 };
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchStart",
+            touchPoints: [{ id: 1, ...origin }],
+          });
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchMove",
+            touchPoints: [worldPoint],
+          });
+          await advance(page, 100);
+          const otherFinger = {
+            id: 2,
+            x: viewport.width * 0.76,
+            y: origin.y - 20,
+          };
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchStart",
+            touchPoints: [worldPoint, otherFinger],
+          });
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchMove",
+            touchPoints: [
+              worldPoint,
+              { ...otherFinger, y: otherFinger.y - 35 },
+            ],
+          });
+          await advance(page, 100);
+          assert.deepEqual(
+            (await joystickState(page)).center,
+            origin,
+            "A second world finger cannot steal the joystick center",
+          );
+          assert.deepEqual((await pointerState(page)).directions, ["down"]);
+          await session.send("Input.dispatchTouchEvent", {
+            type: "touchEnd",
+            touchPoints: [otherFinger],
+          });
           const left = await page
             .locator('.campaign-touch [data-dir="left"]')
             .boundingBox();
@@ -627,11 +757,6 @@ export async function runCampaignSmoke(
             x: left.x + left.width / 2,
             y: left.y + left.height / 2,
           };
-          await session.send("Input.dispatchTouchEvent", {
-            type: "touchStart",
-            touchPoints: [worldPoint],
-          });
-          await advance(page, 300);
           await session.send("Input.dispatchTouchEvent", {
             type: "touchStart",
             touchPoints: [worldPoint, padPoint],
@@ -643,7 +768,7 @@ export async function runCampaignSmoke(
               .locator('.campaign-touch [data-dir="left"]')
               .evaluate((e) => e.classList.contains("held")),
             true,
-            "A pad finger remains independent from the world gesture",
+            "Optional pad input remains independent from the joystick finger",
           );
           await session.send("Input.dispatchTouchEvent", {
             type: "touchEnd",
@@ -659,7 +784,7 @@ export async function runCampaignSmoke(
           assert.equal(
             (await pointerState(page)).active,
             true,
-            "Releasing the pad finger keeps world steering active",
+            "Releasing a pad finger retains the independent joystick",
           );
           await session.send("Input.dispatchTouchEvent", {
             type: "touchCancel",
@@ -670,7 +795,43 @@ export async function runCampaignSmoke(
             active: false,
             directions: [],
           });
+          assert.equal((await joystickState(page)).visible, false);
           assert.equal(await page.locator(".campaign-touch .held").count(), 0);
+          await menu(page);
+          await page
+            .locator('[data-setting="showDirectionButtons"]')
+            .uncheck({ force: true });
+          await closeOverlay(page);
+
+          await start(origin);
+          await moveTouch({ x: origin.x + 50, y: origin.y - 50 });
+          await advance(page, 100);
+          await page.keyboard.press("Escape");
+          await advance(page, 100);
+          assert.equal(
+            await page.evaluate(() => document.body.dataset.campaignPaused),
+            "true",
+          );
+          assert.equal((await joystickState(page)).visible, false);
+          await page.keyboard.press("Escape");
+          await advance(page, 200);
+          assert.deepEqual(
+            await pointerState(page),
+            { active: false, directions: [] },
+            "Resuming with the old finger still down cannot restart the joystick",
+          );
+          await end();
+          await start(origin);
+          await moveTouch({ x: origin.x, y: origin.y - 50 });
+          await advance(page, 100);
+          await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+          await advance(page, 100);
+          assert.deepEqual(await pointerState(page), {
+            active: false,
+            directions: [],
+          });
+          assert.equal((await joystickState(page)).visible, false);
+          await end();
         } else {
           for (const button of ["right", "middle"]) {
             await start(await target(0, -90), button);
@@ -734,6 +895,19 @@ export async function runCampaignSmoke(
           /Ironium.*30.*1 bulk/,
           "A short world tap still inspects a visible mineral",
         );
+        if (touch) {
+          await start(orePoint);
+          await advance(page, 300);
+          assert.deepEqual((await pointerState(page)).directions, []);
+          await end();
+          assert.equal(
+            await page
+              .locator("#campaign-game")
+              .getAttribute("data-inspection"),
+            "",
+            "A centered joystick hold is neutral and cannot become an inspection tap",
+          );
+        }
 
         if (!touch) {
           await menu(page);
@@ -1635,6 +1809,14 @@ export async function runCampaignSmoke(
         deviceScaleFactor: 1,
       });
       try {
+        assert.equal(
+          await page.locator(".campaign-touch").isVisible(),
+          false,
+          "Fixed phone directions are an optional fallback",
+        );
+        await menu(page);
+        await page.locator('[data-setting="showDirectionButtons"]').check();
+        await closeOverlay(page);
         await assertGeometry(page, viewport);
         await page.screenshot({ path: path + "-" + label + ".png" });
         const session = await context.newCDPSession(page);

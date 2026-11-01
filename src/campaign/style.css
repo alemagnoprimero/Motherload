@@ -1386,9 +1386,6 @@ body[data-campaign-busy="true"] [data-command]:not([data-command="export"]) {
     max-width: calc(100vw - 28px);
     font-size: 12px;
   }
-  .campaign-touch {
-    display: flex;
-  }
   .campaign-panel {
     width: calc(100vw - 20px);
     max-height: calc(100dvh - 24px);

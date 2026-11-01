@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import type { Campaign } from "./model";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
 import { campaignSafeArea, campaignTileSize } from "./layout";
-import { CampaignPointer } from "./pointer";
+import { CampaignPointer, TOUCH_JOYSTICK } from "./pointer";
 export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
@@ -233,7 +233,14 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           if (bindings.isPaused() || document.hidden || event.button !== 0)
             return;
           const position = point(event);
-          if (!this.pointerPilot.begin(event.pointerId, position.x, position.y))
+          if (
+            !this.pointerPilot.begin(
+              event.pointerId,
+              position.x,
+              position.y,
+              event.pointerType === "touch" ? "touch" : "mouse",
+            )
+          )
             return;
           event.preventDefault();
           canvas.setPointerCapture(event.pointerId);
@@ -274,6 +281,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             tap.y < this.scale.height
           )
             this.inspectAt(tap.x, tap.y);
+        },
+        eventOptions,
+      );
+      canvas.addEventListener(
+        "contextmenu",
+        (event) => {
+          if (
+            (event as PointerEvent).pointerType === "touch" ||
+            this.pointerPilot.current?.kind === "touch"
+          )
+            event.preventDefault();
         },
         eventOptions,
       );
@@ -883,10 +901,50 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         );
       }
       const pointer = this.pointerPilot.current;
+      const joystick = this.pointerPilot.joystick;
       this.game.canvas.style.cursor = pointer?.active
         ? "grabbing"
         : "crosshair";
-      if (pointer?.active && !paused) {
+      if (joystick && !paused) {
+        this.screen.fillStyle(0x0d1a1b, 0.2);
+        this.screen.fillCircle(
+          joystick.centerX,
+          joystick.centerY,
+          TOUCH_JOYSTICK.radius,
+        );
+        this.screen.lineStyle(1.5, 0xbce7d4, 0.6);
+        this.screen.strokeCircle(
+          joystick.centerX,
+          joystick.centerY,
+          TOUCH_JOYSTICK.radius,
+        );
+        this.screen.lineStyle(1, 0xbce7d4, 0.22);
+        this.screen.strokeCircle(
+          joystick.centerX,
+          joystick.centerY,
+          TOUCH_JOYSTICK.deadZone,
+        );
+        this.screen.lineStyle(2, 0xbce7d4, 0.45);
+        this.screen.lineBetween(
+          joystick.centerX,
+          joystick.centerY,
+          joystick.knobX,
+          joystick.knobY,
+        );
+        this.screen.fillStyle(0x9cd8cc, 0.4);
+        this.screen.fillCircle(
+          joystick.knobX,
+          joystick.knobY,
+          TOUCH_JOYSTICK.knobRadius,
+        );
+        this.screen.lineStyle(1.5, 0xd6f4e8, 0.85);
+        this.screen.strokeCircle(
+          joystick.knobX,
+          joystick.knobY,
+          TOUCH_JOYSTICK.knobRadius,
+        );
+        if (pointer?.active) this.inspection = undefined;
+      } else if (pointer?.active && !paused) {
         const dx = pointer.x - px,
           dy = pointer.y - py,
           distance = Math.hypot(dx, dy),
@@ -1107,6 +1165,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           Boolean(pointer?.active && !paused),
         );
         host.dataset.pointerDirections = Object.keys(pointerControls).join(",");
+        host.dataset.joystickVisible = String(Boolean(joystick && !paused));
+        host.dataset.joystickCenterX = joystick?.centerX.toFixed(2) ?? "";
+        host.dataset.joystickCenterY = joystick?.centerY.toFixed(2) ?? "";
+        host.dataset.joystickKnobX = joystick?.knobX.toFixed(2) ?? "";
+        host.dataset.joystickKnobY = joystick?.knobY.toFixed(2) ?? "";
         host.dataset.rigScreenX = px.toFixed(2);
         host.dataset.rigScreenY = py.toFixed(2);
         host.dataset.worldCallout = String(Boolean(callout));
