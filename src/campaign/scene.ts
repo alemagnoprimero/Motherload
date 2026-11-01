@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import type { Campaign } from "./model";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
+import { campaignSafeArea, campaignTileSize } from "./layout";
+export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
 
@@ -12,23 +14,9 @@ export interface CampaignSceneBindings {
   onInteract?: () => void;
   onEvent?: (kind: "cut" | "pickup" | "damage" | "thrust" | "idle") => void;
   reducedMotion?: () => boolean;
-}
-
-/** Viewport scale is independent of map size: phones see fewer full-size cells. */
-export function campaignTileSize(width: number, height: number) {
-  if (height <= 420) return 48;
-  if (width < 600) return 48;
-  return Math.max(48, Math.min(76, Math.round(width / 22)));
-}
-
-export function campaignSafeArea(width: number, height: number) {
-  if (
-    width < 760 ||
-    (typeof matchMedia === "function" &&
-      matchMedia("(pointer: coarse)").matches)
-  )
-    return height <= 420 ? { top: 115, bottom: 90 } : { top: 170, bottom: 140 };
-  return { top: 90, bottom: 55 };
+  getInterfaceMode?: () => "welcome" | "menu" | "dock" | "map" | undefined;
+  getDockBounds?: () =>
+    { x: number; y: number; width: number; height: number } | undefined;
 }
 
 const wrap = (value: number, width: number) =>
@@ -80,10 +68,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private cameraY = 0;
     private tile = 48;
     private previousSize = "";
+    private previousInterface: string | undefined;
+    private framingTime = 0;
     private elapsed = 0;
     private artFailed = false;
     private lastMined = 0;
     private lastCargo = 0;
+    private previousCargoIds = new Set<string>();
     private lastHull = 0;
     private damageLife = 0;
     private chips: Chip[] = [];
@@ -303,7 +294,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             fontFamily: "system-ui, sans-serif",
             fontSize: "12px",
             color,
-            backgroundColor: "#101920ed",
+            stroke: "#071018",
+            strokeThickness: 3,
+            shadow: {
+              offsetX: 0,
+              offsetY: 1,
+              color: "#071018",
+              blur: 4,
+              fill: true,
+            },
             padding: { x: 8, y: 5 },
           })
           .setDepth(42);
@@ -351,6 +350,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.unwrappedX = campaign.renderX;
         this.lastMined = campaign.state.stats.mined;
         this.lastCargo = campaign.cargo.length;
+        this.previousCargoIds = new Set(campaign.cargo.map((item) => item.id));
         this.lastHull = campaign.state.vehicle.hull;
         this.inspection = undefined;
         this.popup = undefined;
@@ -394,9 +394,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         bindings.onEvent?.("cut");
       }
       if (campaign.cargo.length > this.lastCargo) {
+        const collected = campaign.cargo.filter(
+          (item) => !this.previousCargoIds.has(item.id),
+        );
         this.burst(this.unwrappedX, campaign.renderY, 0xf0a43c, 6);
         this.popup = {
-          text: "+ Cargo secured",
+          text:
+            collected.length === 1
+              ? `+ ${collected[0]!.name}`
+              : `+ ${collected.length || campaign.cargo.length - this.lastCargo} cargo`,
           x: this.unwrappedX,
           y: campaign.renderY,
           life: 1.2,
@@ -409,27 +415,53 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       }
       this.lastMined = campaign.state.stats.mined;
       this.lastCargo = campaign.cargo.length;
+      this.previousCargoIds = new Set(campaign.cargo.map((item) => item.id));
       this.lastHull = vehicle.hull;
 
       const width = this.scale.width;
       const height = this.scale.height;
       this.tile = campaignTileSize(width, height);
       const tile = this.tile;
-      const safe = campaignSafeArea(width, height);
+      const safe = campaignSafeArea(
+        width,
+        height,
+        matchMedia("(pointer: coarse)").matches,
+      );
       const usable = Math.max(100, height - safe.top - safe.bottom);
-      const targetX =
+      const interfaceMode = bindings.getInterfaceMode?.();
+      const dock =
+        interfaceMode === "dock" ? bindings.getDockBounds?.() : undefined;
+      if (interfaceMode !== this.previousInterface) {
+        this.previousInterface = interfaceMode;
+        this.framingTime = 0.5;
+      }
+      let targetX =
         this.unwrappedX * tile - width / 2 + campaign.velocityX * tile * 0.06;
-      const targetY = campaign.renderY * tile - (safe.top + usable * 0.46);
+      let targetY = campaign.renderY * tile - (safe.top + usable * 0.46);
+      // Docking frames the ship in the uncovered world. Only the presentation
+      // camera moves here; paused machinery, hazards and inventory never tick.
+      if (dock) {
+        const sideConsole = dock.x > width * 0.18;
+        const screenX = sideConsole ? Math.max(86, dock.x / 2) : width / 2;
+        const surface = sideConsole
+          ? height * 0.7
+          : Math.max(tile * 3, dock.y - 20);
+        targetX =
+          (this.unwrappedX + delta(campaign.renderX, 5.5, world.width)) * tile -
+          screenX;
+        targetY = -surface;
+      }
       const size = `${width}:${height}:${tile}`;
       if (changed || jumped || size !== this.previousSize) {
         this.cameraX = targetX;
         this.cameraY = targetY;
         this.previousSize = size;
-      } else if (!paused) {
-        const amount = 1 - Math.exp(-dt * 8);
+      } else if (!paused || this.framingTime > 0 || dock) {
+        const amount = bindings.reducedMotion?.() ? 1 : 1 - Math.exp(-dt * 8);
         this.cameraX += (targetX - this.cameraX) * amount;
         this.cameraY += (targetY - this.cameraY) * amount;
       }
+      this.framingTime = Math.max(0, this.framingTime - dt);
       const cx = this.cameraX;
       const cy = this.cameraY;
       const px = this.unwrappedX * tile - cx;
@@ -946,6 +978,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       if (host) {
         host.dataset.worldCallout = String(Boolean(callout));
         host.dataset.inspection = this.inspection && callout ? callout : "";
+        const shell = host.parentElement;
+        shell?.style.setProperty(
+          "--dock-prompt-x",
+          `${Math.round(Math.max(90, Math.min(width - 90, px)))}px`,
+        );
+        shell?.style.setProperty(
+          "--dock-prompt-y",
+          `${Math.round(Math.max(safe.top + 50, py - tile * 0.72))}px`,
+        );
       }
       if (this.artFailed) this.loading.setPosition(width / 2, safe.top + 18);
       bindings.onUpdate(dt);

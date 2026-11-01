@@ -8,11 +8,11 @@ Open **https://alemagnoprimero.github.io/Motherload/** on a computer or Android 
 
 ### Campaign: Broken asteroid
 
-Open **https://alemagnoprimero.github.io/Motherload/?mode=campaign** and choose **Start expedition**. Existing Legacy players can also choose **Menu → Open the new campaign**. The campaign uses a separate save and never converts an existing mine.
+Open **https://alemagnoprimero.github.io/Motherload/?mode=campaign** and choose **Deploy rig**. Existing Legacy players can also choose **Menu → Open the new campaign**. The campaign uses a separate save and never converts an existing mine.
 
 1. Hold **Down / S** to mine the starter vein. Hold **Up / W** to fly back; steer with **Left/Right or A/D**. A committed cut finishes before ascent. Side drilling needs a local ledge.
-2. The HUD tracks energy, hull, cargo bulk, haul value, credits and the current objective. Survey the beacon at **100 m**, then follow the surface lander marker. Park in its illuminated bay and press **E / Enter** or tap **Dock and trade**.
-3. **Unload and sell** banks the haul and sells its ordinary packages. **Store haul** keeps packages safely without selling. Refuel, repair, compare hardware and equip owned attachments inside the dock interface.
+2. Transparent gauges and readouts track energy, hull, cargo bulk, haul value, credits and the current objective while you mine and fly. Survey the beacon at **100 m**, then follow the surface lander marker. Park in its illuminated bay and press **E / Enter** or tap the nearby **Dock** prompt.
+3. The lander terminal opens beside the rig, keeping the world visible. **Unload and sell** banks the haul and sells its ordinary packages. **Bank without sale** keeps packages safely without selling. Refuel, repair, compare hardware and equip owned attachments there.
 4. Fund each construction stage after banking its objective discoveries: beacon/three ore packages, valve at **250 m** plus antenna at **400 m**, then navigation core at **600 m**. The lander changes visibly as it is rebuilt.
 5. Rank-1 hardware opens after M1. Anchoring feet cost **400 CR** and deploy while holding **Space**; the **900 CR** cargo rack opens after M2 and requires ownership of the feet. Tank/hull purchases fill their new capacity.
 6. Restore the lander and launch to record the Frontier departure. **W01 is the playable campaign chapter in this checkpoint.** The comet and fractured moon are charted as the next chapter and are not yet playable.

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { launchBrowser } from "./browser-helpers.mjs";
+import { campaignSafeArea, campaignTileSize } from "../src/campaign/layout.ts";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const destination = (base) => {
@@ -268,6 +269,18 @@ async function ready(browser, base, options = {}) {
     "mission-core",
   ])
     assert.ok(atlas.frames[frame], frame + " exists in delivered atlas");
+  await page.waitForFunction(() =>
+    Array.from(
+      document.querySelectorAll(".campaign-hud img, .campaign-toolbar img"),
+    ).every((image) => image.complete && image.naturalWidth > 0),
+  );
+  assert.equal(
+    await page
+      .locator(".drill-slot img")
+      .evaluate((image) => image.complete && image.naturalWidth > 0),
+    true,
+    "The active drill has a loaded game-art icon",
+  );
   return { context, page, assets };
 }
 function noErrors(page) {
@@ -276,7 +289,7 @@ function noErrors(page) {
 function carried(state) {
   return state.worlds.W01.packages.filter((item) => item.status === "carried");
 }
-async function assertGeometry(page, viewport) {
+async function assertGeometry(page, viewport, touch = true) {
   const canvas = await page.locator("#campaign-game canvas").boundingBox();
   assert.deepEqual(
     { x: canvas.x, y: canvas.y, width: canvas.width, height: canvas.height },
@@ -309,6 +322,7 @@ async function assertGeometry(page, viewport) {
     );
   for (const item of sizes)
     assert.ok(item.size >= 12, item.id + " retains readable 12px text");
+  if (!touch) return;
   const buttons = await page
     .locator(".campaign-touch button")
     .evaluateAll((elements) =>
@@ -354,8 +368,12 @@ export async function runCampaignInspectionSmoke(
       await freeze(page);
       await advance(page, 100);
       const session = await context.newCDPSession(page);
-      const top = viewport.height <= 420 ? 115 : 170,
-        bottom = viewport.height <= 420 ? 90 : 140;
+      const { top, bottom } = campaignSafeArea(
+        viewport.width,
+        viewport.height,
+        true,
+      );
+      const tile = campaignTileSize(viewport.width, viewport.height);
       const rigY = top + Math.max(100, viewport.height - top - bottom) * 0.46;
       const tap = async (x, y) => {
         await session.send("Input.dispatchTouchEvent", {
@@ -369,12 +387,12 @@ export async function runCampaignInspectionSmoke(
         await advance(page, 50);
       };
       // The cell behind the first wall must not become a mineral detector.
-      await tap(viewport.width / 2 - 3 * 48, rigY + (1.5 + 0.36) * 48);
+      await tap(viewport.width / 2 - 3 * tile, rigY + (1.5 + 0.36) * tile);
       assert.equal(
         await page.locator("#campaign-game").getAttribute("data-inspection"),
         "",
       );
-      await tap(viewport.width / 2 + 48, rigY + (0.5 + 0.36) * 48);
+      await tap(viewport.width / 2 + tile, rigY + (0.5 + 0.36) * tile);
       assert.match(
         await page.locator("#campaign-game").getAttribute("data-inspection"),
         /Ironium.*30.*1 bulk/,
@@ -430,6 +448,106 @@ export async function runCampaignSmoke(
   const chosen = (name) =>
     selection === "all" || selection.split(",").includes(name);
   let baseline;
+  if (chosen("hud")) {
+    const viewport = { width: 1440, height: 900 };
+    const { context, page } = await ready(browser, base, { viewport });
+    try {
+      await assertGeometry(page, viewport, false);
+      const readouts = () =>
+        page.evaluate(() => ({
+          energy: parseFloat(
+            document.querySelector("#campaign-energy").textContent,
+          ),
+          depth: parseFloat(
+            document.querySelector("#campaign-depth").textContent,
+          ),
+          cargo: parseFloat(
+            document.querySelector("#campaign-cargo").textContent,
+          ),
+          paused: document.body.dataset.campaignPaused,
+          overlay: document.body.dataset.campaignOverlay,
+        }));
+      assert.equal((await readouts()).paused, "false");
+      // Read-only instruments must let input reach the playfield beneath them.
+      const passthrough = await page
+        .locator(
+          "#campaign-energy, #campaign-hull, #campaign-cargo, #campaign-haul",
+        )
+        .evaluateAll((elements) =>
+          elements.map((element) => {
+            const rect = element.getBoundingClientRect();
+            const hit = document.elementFromPoint(
+              rect.x + rect.width / 2,
+              rect.y + rect.height / 2,
+            );
+            return {
+              id: element.id,
+              reachesWorld: Boolean(hit?.closest("#campaign-game")),
+            };
+          }),
+        );
+      for (const item of passthrough)
+        assert.equal(
+          item.reachesWorld,
+          true,
+          item.id + " does not block world input",
+        );
+      await page.screenshot({ path: path + "-hud-desktop.png" });
+      await freeze(page);
+      const before = await readouts();
+      await keys(page, ["ArrowDown"]);
+      await advance(page, 2200);
+      await keys(page, []);
+      const mining = await readouts();
+      assert.equal(mining.paused, "false");
+      assert.equal(mining.overlay, undefined);
+      assert.ok(
+        mining.energy < before.energy,
+        "Energy updates during active play",
+      );
+      assert.ok(mining.depth >= 10, "Depth updates during active play");
+      assert.ok(mining.cargo >= 1, "Cargo updates during active play");
+      await keys(page, ["ArrowDown"]);
+      await advance(page, 6500);
+      await keys(page, []);
+      await page.screenshot({ path: path + "-hud-underground.png" });
+
+      const fixture = await exportCheckpoint(page);
+      fixture.state.vehicle = { x: 5.5, y: -0.36, energy: 6, hull: 7 };
+      fixture.state.credits = 10000;
+      fixture.state.progress.beacon = true;
+      fixture.state.progress.bankedOre = Math.max(
+        3,
+        fixture.state.progress.bankedOre,
+      );
+      fixture.state.progress.completed = [1];
+      await importCheckpoint(page, fixture);
+      await closeOverlay(page);
+      await page.keyboard.press("e");
+      await tab(page, "hardware");
+      await advance(page, 350);
+      const dockBounds = await page.locator("#campaign-dock").boundingBox();
+      assert.ok(
+        dockBounds.x >= viewport.width * 0.3 &&
+          dockBounds.width <= viewport.width * 0.65,
+        "Desktop terminal leaves the mining world visible beside it",
+      );
+      assert.equal(
+        await page.evaluate(() => document.body.dataset.campaignPaused),
+        "true",
+        "Dock interaction freezes the expedition while the world remains visible",
+      );
+      await page.screenshot({ path: path + "-hud-dock.png" });
+      await click(page, '#campaign-dock [data-close="dock"]');
+      assert.equal((await readouts()).paused, "false");
+      noErrors(page);
+      check(
+        "transparent HUD passes world input and updates during active mining; side terminal keeps the world visible",
+      );
+    } finally {
+      await context.close();
+    }
+  }
   if (chosen("opening")) {
     const { context, page } = await ready(browser, base);
     try {
@@ -952,6 +1070,12 @@ export async function runCampaignSmoke(
           type: "touchCancel",
           touchPoints: [],
         });
+        assert.equal(
+          await page.evaluate(() => document.body.dataset.campaignPaused),
+          "false",
+          "Phone HUD changes during active mining without opening a menu",
+        );
+        await page.screenshot({ path: path + "-" + label + "-mining.png" });
         await menu(page);
         const paused = await exportCheckpoint(page);
         await page.waitForTimeout(350);
@@ -1021,6 +1145,13 @@ export async function runCampaignSmoke(
         );
         const docked = structuredClone(flown);
         docked.state.vehicle = { ...docked.state.vehicle, x: 5.5, y: -0.36 };
+        docked.state.credits = 10000;
+        docked.state.progress.beacon = true;
+        docked.state.progress.bankedOre = Math.max(
+          3,
+          docked.state.progress.bankedOre,
+        );
+        docked.state.progress.completed = [1];
         await importCheckpoint(page, docked);
         await closeOverlay(page);
         await advance(page, 100);
@@ -1029,6 +1160,8 @@ export async function runCampaignSmoke(
           await page.locator("#campaign-dock").evaluate((d) => d.open),
           true,
         );
+        // The paused world still gets presentation frames for dock framing.
+        await advance(page, 400);
         await tab(page, "hardware");
         const bounds = await page.locator("#campaign-dock").boundingBox();
         assert.ok(
@@ -1039,12 +1172,21 @@ export async function runCampaignSmoke(
           "Phone dock stays inside viewport",
         );
         await page.screenshot({ path: path + "-" + label + "-dock.png" });
+        await command(page, "hardware-hull");
+        const purchased = await exportCheckpoint(page);
+        assert.equal(purchased.state.hardware.hull, 1);
+        assert.equal(purchased.state.vehicle.hull, 18);
+        assert.equal(
+          purchased.state.credits,
+          5500,
+          "Native phone purchase charges exactly 450 CR",
+        );
         await closeOverlay(page);
         noErrors(page);
         check(
           "native " +
             label +
-            " touch mining, cancellation, pause and visible HUD layout",
+            " touch mining, cancellation, pause, HUD and dock purchase",
         );
       } finally {
         await context.close();
