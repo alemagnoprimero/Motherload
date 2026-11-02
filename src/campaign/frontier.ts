@@ -1,6 +1,8 @@
 import type { GearDefinition, OreDefinition } from "./config";
+import { BALANCE_VERSION } from "./config.ts";
+const improvedW02 = BALANCE_VERSION === "0.3";
 
-/** W02 contracts transcribed from the pinned v0.1 design; money is 0.1 CR. */
+/** Current W02 balance 0.3. Legacy worlds retain stored packages and hazards. */
 export const W02 = {
   id: "W02",
   name: "Ice comet",
@@ -15,8 +17,8 @@ export const W02 = {
   coreRow: 99,
   bodyHalfX: 0.39,
   bodyHalfY: 0.36,
-  budget: 186000,
-  minOrdinary: 558000,
+  budget: improvedW02 ? 180000 : 186000,
+  minOrdinary: improvedW02 ? 540000 : 558000,
 } as const;
 
 export const W02_ORES: readonly OreDefinition[] = [
@@ -24,7 +26,7 @@ export const W02_ORES: readonly OreDefinition[] = [
     id: "W02-O1",
     name: "Frost iron",
     value: 500,
-    bulk: 2,
+    bulk: improvedW02 ? 1 : 2,
     mass: 2,
     weight: 60,
     tags: ["ordinary"],
@@ -33,7 +35,7 @@ export const W02_ORES: readonly OreDefinition[] = [
     id: "W02-O2",
     name: "Blue nickel",
     value: 1200,
-    bulk: 2,
+    bulk: improvedW02 ? 1 : 2,
     mass: 2.3,
     weight: 30,
     tags: ["ordinary"],
@@ -71,13 +73,13 @@ export const W02_GEAR: readonly GearDefinition[] = [
   },
   {
     id: "W02-R2",
-    name: "Vapour condenser",
-    price: 22000,
+    name: "Steam reserve",
+    price: improvedW02 ? 16000 : 22000,
     slot: "utility",
     requires: "W02-R1",
     milestone: 1,
     description:
-      "Recover 20% of the energy actually spent drilling each ice cut, after extraction. Recovery cannot exceed the cut's spending.",
+      "Banks 20% of actual ice-drilling energy in a separate 5 L reserve. Automatically releases at an empty main tank, or release it manually from the tool dock.",
   },
   {
     id: "W02-R3",
@@ -97,7 +99,7 @@ export const W02_MILESTONES = [
     name: "Sample the thermal seam",
     fee: 4000,
     description:
-      "Bank five Helion thermal samples from the marked 150 m seam. Samples have no cash value. Build the heated refuge and unlock the vapour condenser.",
+      "Bank five Helion thermal samples from the marked 150 m seam. Samples have no cash value. Build the heated refuge and unlock the steam reserve.",
     requiredMissionIds: Array.from(
       { length: 5 },
       (_, index) => `W02-SAMPLE-${index + 1}`,
@@ -108,7 +110,7 @@ export const W02_MILESTONES = [
     name: "Recover without rupture",
     fee: 6000,
     description:
-      "Bank three intact cryosilicate packages from the marked 450 m vein or deeper. Release drilling within 0.75 seconds of the completion cue to preserve each package. Unlock the preservation chamber.",
+      "Bank three intact cryosilicate packages from the marked 450 m vein or deeper. Release drilling at the completion cue to preserve each package: 1.5 seconds for your first three cuts, then 0.75 seconds. Unlock the preservation chamber.",
     requiredMissionIds: [] as string[],
   },
   {
@@ -137,7 +139,11 @@ export const W02_EFFECTS = {
   thermal: { iceCutMultiplier: 0.55, drillingEnergyMultiplier: 1.2 },
   condenser: { refundFraction: 0.2 },
   preservation: { cutMultiplier: 1.35, valueMultiplier: 1.3 },
-  volatile: { releaseSeconds: 0.75 },
+  volatile: {
+    releaseSeconds: 0.75,
+    trainingReleaseSeconds: 1.5,
+    trainingCuts: 3,
+  },
   cold: { warningSeconds: 1.5, slowSeconds: 4, accelerationMultiplier: 0.75 },
   vent: { damage: 6, contactCooldown: 3 },
 } as const;

@@ -52,7 +52,7 @@ function trip(game: Campaign, column: number, depth: number) {
   until(game, { down: true }, () => game.depth >= depth, 60);
   dock(game);
   expect(game.bank()).toBe(true);
-  expect(game.sell()).toBe(true);
+  expect(game.sell()).toBeTruthy();
 }
 
 describe("W01 campaign expedition and economic transactions", () => {
@@ -153,10 +153,10 @@ describe("W01 campaign expedition and economic transactions", () => {
     expect(game.repair()).toBe(true);
     trip(game, 21, 70);
     expect(game.state.stats.ordinaryIncome).toBe(8600);
-    expect(game.buyHardware("hull")).toBe(true);
-    expect(game.maxHull).toBe(18);
-    expect(game.state.vehicle.hull).toBe(18);
-    expect(game.state.credits).toBeGreaterThan(500);
+    expect(game.buyHardware("energy")).toBe(true);
+    expect(game.maxEnergy).toBe(16);
+    expect(game.state.vehicle.energy).toBe(16);
+    expect(game.state.credits).toBeGreaterThanOrEqual(250);
     expect(game.state.stats.recoveries).toBe(0);
     expect(decodeCampaign(JSON.stringify(game.state))).toEqual(game.state);
   });
@@ -215,7 +215,7 @@ describe("W01 campaign expedition and economic transactions", () => {
     expect(game.state.progress.bankedOre).toBe(7);
     expect(game.bank()).toBe(false);
     expect(game.state.progress.bankedOre).toBe(7);
-    expect(game.sell()).toBe(true);
+    expect(game.sell()).toBeTruthy();
     expect(game.state.credits).toBe(4000);
     expect(game.sell()).toBe(false);
     expect(game.state.credits).toBe(4000);
@@ -349,7 +349,7 @@ describe("campaign motion, tools and completion", () => {
     expect(wall.state.vehicle.x).toBeCloseTo(0.5);
   });
 
-  it("applies the rack and anchoring feet only when owned and equipped", () => {
+  it("equips a rack without a brace prerequisite and supports the shaft brace", () => {
     const game = new Campaign(createCampaign());
     game.state.vehicle.x = W01.dockX;
     game.state.progress.beacon = true;
@@ -358,10 +358,9 @@ describe("campaign motion, tools and completion", () => {
     game.world.missions[0]!.status = "banked";
     game.world.missions[1]!.status = "banked";
     game.state.credits = 50000;
-    expect(game.buyGear("W01-R3")).toBe(false);
-    expect(game.buyGear("W01-R2")).toBe(true);
     expect(game.buyGear("W01-R3")).toBe(true);
-    expect(game.capacity).toBe(8);
+    expect(game.buyGear("W01-R2")).toBe(true);
+    expect(game.capacity).toBe(10);
     expect(game.toggleGear("W01-R3")).toBe(true);
     expect(game.capacity).toBe(7);
     expect(game.toggleGear("W01-R3")).toBe(true);
@@ -417,12 +416,22 @@ describe("campaign motion, tools and completion", () => {
     expect(game.payMilestone()).toBe(false);
 
     drive(game, 20.5);
-    until(game, { down: true }, () => game.depth >= 400);
-    until(game, { right: true }, () => game.state.vehicle.x >= 21.45, 5);
+    // Release during the committed cut at the antenna level so a second
+    // downward cut does not start before entering its side chamber.
+    until(game, { down: true }, () => game.drillTarget?.y === 39);
+    until(game, {}, () => !game.drillTarget);
+    until(
+      game,
+      { right: true },
+      () =>
+        game.world.missions.find((item) => item.id === "W01-ANTENNA")!
+          .status === "carried",
+      5,
+    );
     expect(
       game.world.missions.find((item) => item.id === "W01-ANTENNA")!.status,
     ).toBe("carried");
-    until(game, { left: true }, () => game.state.vehicle.x <= 20.55, 5);
+    until(game, { left: true }, () => game.state.vehicle.x <= 20.9, 5);
     dock(game);
     game.bank();
     game.sell();
@@ -510,7 +519,7 @@ describe("campaign import boundaries", () => {
     [
       "future schema",
       (state: ReturnType<typeof createCampaign>) => {
-        state.schema = 3 as 1;
+        state.schema = 4 as 3;
       },
     ],
     [

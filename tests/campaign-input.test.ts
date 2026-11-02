@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CampaignInput,
+  mergePilotControls,
   loadPilotPreferences,
   type PilotPreferences,
 } from "../src/campaign/input";
@@ -249,12 +250,44 @@ describe("campaign keyboard ownership", () => {
     expect(h.key("x").preventDefault).not.toHaveBeenCalled();
     h.focus(h.toolbar);
     expect(h.key("x").preventDefault).toHaveBeenCalledOnce();
-    expect(h.preferences.keys.down).toEqual(["x"]);
+    expect(h.preferences.keys.down).toEqual(["x", "s"]);
     expect(h.input.getControls()).toEqual({});
   });
 });
 
 describe("campaign controller menus", () => {
+  it("preserves the primary key when replacing a secondary binding and can reset both", () => {
+    const h = inputHarness();
+    h.input.remap("down", 1);
+    h.key("x");
+    expect(h.preferences.keys.down).toEqual(["ArrowDown", "x"]);
+    h.input.resetBindings();
+    expect(h.preferences.keys.down).toEqual(["ArrowDown", "s"]);
+  });
+  it("remaps unused controller buttons, rejects duplicates, and keeps keyboard axis authority", () => {
+    const h = inputHarness();
+    h.input.remapGamepad("mobility");
+    h.pad([0]);
+    h.input.pollCommands();
+    expect(h.preferences.gamepad.mobility).toBe(2);
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([6]);
+    h.input.pollCommands();
+    expect(h.preferences.gamepad.mobility).toBe(6);
+    h.pad([], [0.5, 0]);
+    expect(h.input.getControls().throttleX).toBeCloseTo(
+      0.35 + (0.25 / 0.75) * 0.65,
+    );
+    h.key("d");
+    expect(h.input.getControls().throttleX).toBe(1);
+    expect(
+      mergePilotControls({ right: true }, { left: true, throttleX: 0.35 }),
+    ).toMatchObject({ right: true, left: false, throttleX: 1 });
+    expect(mergePilotControls({}, { up: true, throttleY: 0.35 })).toMatchObject(
+      { up: true, throttleY: 0.35 },
+    );
+  });
   it("consumes a held controller button when another input opens a menu before polling", () => {
     const h = inputHarness();
     h.pad([0]);

@@ -1,6 +1,6 @@
 # Improvement plan: playability, progression, graphics and interface
 
-Date: 2026-11-02. Status: **Implementation authorized; Phase 0 started.** The owner supplied this plan and requested review and implementation. [Implementation review and progress](IMPROVEMENT_PROGRESS.md) records what is delivered, measured, and still pending. The proposal and audit evidence below remain the reference; estimates and targets are not completion claims.
+Date: 2026-11-02. Status: **Numbered W01/W02 feature set implemented; acceptance gaps remain documented.** The owner supplied this plan and subsequently requested continuation through the remaining work. [Implementation review and progress](IMPROVEMENT_PROGRESS.md) records what is delivered, measured, and still pending. The proposal and audit evidence below remain the reference; estimates and targets are not completion claims.
 
 **Scope.** The playable campaign at `dbf0b1a`: W01 Broken asteroid and W02 Ice comet. The plan merges seven read-only audits (PROG, FTUE, FEEL, GFX, HUD, MENU, WORLD; [reports 01–07](improvement-plan/analysis/)) and three critiques. Disputed claims were re-checked in the code.
 

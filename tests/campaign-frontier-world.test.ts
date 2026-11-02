@@ -1,17 +1,24 @@
 import { describe, expect, it } from "vitest";
 import source from "../design/v0.1/motherload-balance-v01.json";
-import { W02, W02_GEAR, W02_HAZARDS, W02_ORES } from "../src/campaign/frontier";
+import overlay from "../design/v0.3/balance-overlay.json";
+import { W02, W02_GEAR, W02_ORES } from "../src/campaign/frontier";
 import { createW02 } from "../src/campaign/world";
 
 describe("Ice comet definitions and generation", () => {
-  it("keeps numeric W02 contracts aligned with the approved source data", () => {
+  it("keeps W02 contracts aligned with the versioned design overlay", () => {
     const definition = source.worlds.find((world) => world.id === "W02")!;
     expect([W02.width, W02.rows, 1]).toEqual(definition.size);
     expect(W02.depth).toBe(definition.depth);
-    expect(W02.budget).toBe(definition.budget.budget * 10);
-    expect(W02.minOrdinary).toBe(definition.budget.minimum_ordinary_value * 10);
+    expect(W02.budget).toBe(
+      definition.budget.budget * 10 -
+        definition.prices[1]! * 10 +
+        overlay.worlds.W02.gear["W02-R2"].price * 10,
+    );
+    expect(W02.minOrdinary).toBe(W02.budget * 3);
     expect(W02_GEAR.map((gear) => gear.price)).toEqual(
-      definition.prices.map((price) => price * 10),
+      definition.prices.map((price, index) =>
+        index === 1 ? overlay.worlds.W02.gear["W02-R2"].price * 10 : price * 10,
+      ),
     );
     expect(
       W02_ORES.map(({ value, weight, bulk, mass }) => [
@@ -21,10 +28,10 @@ describe("Ice comet definitions and generation", () => {
         mass,
       ]),
     ).toEqual(
-      definition.ores.map(({ value, weight, bulk, mass }) => [
+      definition.ores.map(({ value, weight, bulk, mass }, index) => [
         value * 10,
         weight,
-        bulk,
+        overlay.worlds.W02.ore_bulk[index] ?? bulk,
         mass,
       ]),
     );
@@ -93,8 +100,7 @@ describe("Ice comet definitions and generation", () => {
         ).toBe(true);
       }
       for (let row = 0; row < W02.rows; row++)
-        for (let column = 22; column <= 27; column++)
-          expect(world.tiles[row * W02.width + column]).toBe(1);
+        expect(world.tiles[row * W02.width + 24]).toBe(1);
     }
   });
 
@@ -180,7 +186,10 @@ describe("Ice comet definitions and generation", () => {
             item.itemId === "W02-O3" && item.y >= 44.5 && item.value === 3000,
         ),
       ).toBe(true);
-      for (const hazard of [...W02_HAZARDS.coldPockets, ...W02_HAZARDS.vents]) {
+      for (const hazard of [
+        ...world.hazards!.coldPockets,
+        ...world.hazards!.vents,
+      ]) {
         expect(hazard.x < 20 || hazard.x > 29).toBe(true);
         expect(
           world.tiles[

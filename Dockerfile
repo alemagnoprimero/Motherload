@@ -8,8 +8,11 @@ COPY index.html tsconfig.json vite.config.ts ./
 COPY src ./src
 COPY tests ./tests
 COPY assets/campaign/generated ./assets/campaign/generated
-COPY design/v0.1 ./design/v0.1
-COPY scripts/check-campaign-data.mjs scripts/check-campaign-assets.mjs scripts/check-frontier-assets.mjs ./scripts/
+COPY assets/campaign/source ./assets/campaign/source
+COPY assets/campaign/w02 ./assets/campaign/w02
+COPY assets/ui ./assets/ui
+COPY design ./design
+COPY scripts/check-campaign-data.mjs scripts/check-campaign-assets.mjs scripts/check-frontier-assets.mjs scripts/check-render-assets.mjs ./scripts/
 RUN npm run build
 
 FROM nginx:1.28-alpine AS runtime

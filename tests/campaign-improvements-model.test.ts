@@ -1,3 +1,4 @@
+import { createW01V1 } from "../src/campaign/world-v1";
 import { describe, expect, it } from "vitest";
 import { W01 } from "../src/campaign/config";
 import {
@@ -49,7 +50,7 @@ describe("first-expedition recovery", () => {
       expect(game.state.vehicle.hull).toBe(preview.hull);
       expect(decodeCampaign(JSON.stringify(game.state))).toEqual(game.state);
       expect(game.bank()).toBe(true);
-      expect(game.sell()).toBe(true);
+      expect(game.sell()).toBeTruthy();
       expect(game.state.credits).toBe(4000);
     }
   }, 15000);
@@ -109,13 +110,22 @@ describe("first-expedition recovery", () => {
     (schema) => {
       const old = JSON.parse(JSON.stringify(createCampaign(14)));
       old.schema = schema;
+      old.balanceVersion = "0.1";
+      old.generatorVersion = 1;
+      old.worlds.W01 = createW01V1(14);
       old.vehicle.energy = 3.25;
       delete old.progress.towsUsed;
-      const worlds = JSON.stringify(old.worlds);
+      const tiles = [...old.worlds.W01.tiles];
+      const values = old.worlds.W01.packages.map(
+        (item: { value: number }) => item.value,
+      );
       const restored = decodeCampaign(JSON.stringify(old));
       expect(restored.progress.towsUsed).toEqual([]);
       expect(restored.vehicle.energy).toBe(3.25);
-      expect(JSON.stringify(restored.worlds)).toBe(worlds);
+      expect(restored.worlds.W01!.tiles).toEqual(tiles);
+      expect(restored.worlds.W01!.packages.map((item) => item.value)).toEqual(
+        values,
+      );
     },
   );
 

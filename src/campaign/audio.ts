@@ -1,121 +1,177 @@
 import type { PilotPreferences } from "./input";
-
-/** Three local synthesizer buses; no downloaded sound or reference assets. */
+import type { CampaignEvent } from "./events";
+import { CampaignAudioGraph, type AudioCue } from "./audio-graph";
+export interface AudioWorldState {
+  worldId: string;
+  depth: number;
+  danger: "ok" | "plan" | "turn" | "stranded";
+  material?: "soil" | "ice" | "stone" | "plate";
+}
+/** Event-driven feedback; graph is also used by the offline mix checks. */
 export class CampaignAudio {
   private context?: AudioContext;
-  private master?: GainNode;
-  private effects?: GainNode;
-  private ambience?: GainNode;
-  private music?: GainNode;
-  private machine?: OscillatorNode;
-  private machineGain?: GainNode;
-  private ambienceGain?: GainNode;
+  private graph?: CampaignAudioGraph;
   private musicTimer = 0;
-  muted = true;
+  private musicStep = 0;
+  private alarmTimer = 0;
+  private state: AudioWorldState = { worldId: "W01", depth: 0, danger: "ok" };
   constructor(private preferences: PilotPreferences) {}
+  get muted() {
+    return this.preferences.sound === false;
+  }
+  set muted(value: boolean) {
+    this.preferences.sound = !value;
+  }
+  get running() {
+    return this.context?.state === "running";
+  }
+  get voiceCount() {
+    return this.graph?.voiceCount ?? 0;
+  }
+  /** Construct and resume synchronously before the first await in the click handler. */
   async unlock() {
     if (this.muted) return;
     if (!this.context) {
-      const context = (this.context = new AudioContext());
-      this.master = context.createGain();
-      this.master.connect(context.destination);
-      this.effects = context.createGain();
-      this.effects.connect(this.master);
-      this.ambience = context.createGain();
-      this.ambience.connect(this.master);
-      this.music = context.createGain();
-      this.music.connect(this.master);
-      this.machineGain = context.createGain();
-      this.machineGain.connect(this.effects);
-      this.machineGain.gain.value = 0;
-      this.machine = context.createOscillator();
-      this.machine.type = "triangle";
-      this.machine.frequency.value = 55;
-      this.machine.connect(this.machineGain);
-      this.machine.start();
-      this.ambienceGain = context.createGain();
-      this.ambienceGain.gain.value = 0;
-      this.ambienceGain.connect(this.ambience);
-      for (const frequency of [43, 64.5]) {
-        const tone = context.createOscillator();
-        tone.type = "sine";
-        tone.frequency.value = frequency;
-        tone.connect(this.ambienceGain);
-        tone.start();
-      }
+      this.context = new AudioContext();
+      this.graph = new CampaignAudioGraph(this.context, this.preferences);
     }
-    if (this.context.state === "suspended") await this.context.resume();
+    const resumed =
+      this.context.state === "suspended" ? this.context.resume() : undefined;
     this.settings();
+    await resumed;
   }
   settings() {
-    if (!this.context) return;
-    const t = this.context.currentTime;
-    this.master!.gain.setTargetAtTime(this.muted ? 0 : 0.5, t, 0.03);
-    this.effects!.gain.setTargetAtTime(this.preferences.effects, t, 0.03);
-    this.ambience!.gain.setTargetAtTime(this.preferences.ambience, t, 0.03);
-    this.music!.gain.setTargetAtTime(this.preferences.music, t, 0.03);
+    this.graph?.settings(this.preferences);
   }
-  event(kind: "pickup" | "build" | "warning" | "purchase") {
-    if (!this.context || this.muted) return;
-    const base =
-      kind === "warning"
-        ? 180
-        : kind === "build"
-          ? 392
-          : kind === "purchase"
-            ? 330
-            : 660;
-    this.note(base, 0.08, this.effects!, 0.09);
-    if (kind !== "warning")
-      setTimeout(() => {
-        if (this.context) this.note(base * 1.5, 0.1, this.effects!, 0.06);
-      }, 85);
+  setState(state: Partial<AudioWorldState>) {
+    this.state = { ...this.state, ...state };
+    this.graph?.atmosphere(this.state.worldId, this.state.depth);
   }
-  private note(
-    frequency: number,
-    duration: number,
-    output: GainNode,
-    volume: number,
-  ) {
-    const context = this.context!,
-      tone = context.createOscillator(),
-      gain = context.createGain(),
-      now = context.currentTime;
-    tone.type = "sine";
-    tone.frequency.value = frequency;
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(volume, now + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    tone.connect(gain);
-    gain.connect(output);
-    tone.start(now);
-    tone.stop(now + duration + 0.02);
-    tone.onended = () => {
-      tone.disconnect();
-      gain.disconnect();
-    };
+  event(kind: AudioCue) {
+    this.graph?.cue(kind);
+  }
+  handleEvent(event: CampaignEvent) {
+    this.setState({
+      worldId: event.worldId,
+      depth: Math.max(0, (event.y + 1) * 10),
+    });
+    switch (event.type) {
+      case "interaction":
+        this.graph?.cue(event.action);
+        break;
+      case "cut":
+        this.state.material = event.material;
+        this.graph?.cue(
+          "cut",
+          event.material === "ice" ? 3 : event.material === "soil" ? 2 : 1,
+        );
+        break;
+      case "pickup":
+        this.graph?.cue("pickup", event.relic ? 4 : event.tier);
+        this.haptic(15, 0.15);
+        break;
+      case "landing":
+        this.graph?.cue("landing", 1, event.speed);
+        if (event.speed > 4) this.haptic(35, 0.3);
+        break;
+      case "damage":
+        this.graph?.cue("damage");
+        this.haptic(40, 0.6);
+        break;
+      case "volatile":
+        this.graph?.cue(event.phase === "ruptured" ? "rupture" : "volatile");
+        this.haptic(25, 0.2);
+        break;
+      case "shelf":
+      case "pressure":
+        this.graph?.cue(event.phase === "warning" ? "shelf" : "damage");
+        break;
+      case "sale":
+        this.graph?.cue("sale");
+        break;
+      case "install":
+        this.graph?.cue("purchase");
+        break;
+      case "construction":
+        this.graph?.cue("build");
+        this.haptic(50, 0.3);
+        break;
+      case "travel":
+        this.graph?.cue("travel");
+        break;
+      case "reserve":
+        this.graph?.cue("reserve");
+        break;
+      case "discovery":
+      case "mission":
+        this.graph?.cue("discovery");
+        break;
+      case "disabled":
+        this.graph?.cue("powerdown");
+        break;
+    }
+  }
+  private haptic(duration: number, magnitude: number) {
+    if (!this.preferences.haptics || typeof navigator === "undefined") return;
+    if (navigator.vibrate && matchMedia("(pointer: coarse)").matches)
+      navigator.vibrate(duration);
+    for (const pad of navigator.getGamepads?.() ?? []) {
+      const actuator =
+        pad &&
+        (
+          pad as Gamepad & {
+            vibrationActuator?: {
+              playEffect: (kind: string, options: object) => Promise<unknown>;
+            };
+          }
+        ).vibrationActuator;
+      if (actuator)
+        void actuator
+          .playEffect("dual-rumble", {
+            duration,
+            startDelay: 0,
+            strongMagnitude: magnitude,
+            weakMagnitude: magnitude / 2,
+          })
+          .catch(() => {});
+    }
   }
   update(dt: number, paused: boolean, drilling: boolean, thrusting: boolean) {
-    if (!this.context) return;
-    const time = this.context.currentTime;
-    this.machineGain!.gain.setTargetAtTime(
-      paused || this.muted ? 0 : drilling ? 0.09 : thrusting ? 0.06 : 0.015,
-      time,
-      0.035,
-    );
-    this.machine!.frequency.setTargetAtTime(
-      drilling ? 96 : thrusting ? 78 : 48,
-      time,
-      0.06,
-    );
-    this.ambienceGain!.gain.setTargetAtTime(
-      paused || this.muted ? 0 : 0.028,
-      time,
-      0.1,
-    );
-    if (!paused && !this.muted && (this.musicTimer += dt) > 12) {
+    if (!this.graph) return;
+    this.graph.machine({
+      paused,
+      drilling,
+      thrusting,
+      material: this.state.material,
+    });
+    if (paused || this.muted) return;
+    const danger = this.state.danger !== "ok",
+      interval =
+        this.state.danger === "stranded"
+          ? 1
+          : this.state.danger === "turn"
+            ? 2
+            : 4;
+    if (danger && this.preferences.alarm) {
+      this.alarmTimer += dt;
+      if (this.alarmTimer >= interval) {
+        this.alarmTimer = 0;
+        this.graph.cue("warning");
+      }
+    } else this.alarmTimer = 0;
+    this.musicTimer += dt;
+    if (this.musicTimer >= (danger ? 1.8 : 2.8)) {
       this.musicTimer = 0;
-      this.note(130.81, 2.2, this.music!, 0.035);
+      this.graph.musicBeat(
+        this.musicStep++,
+        this.state.worldId,
+        this.state.depth,
+        danger,
+      );
     }
+  }
+  dispose() {
+    this.graph?.dispose();
+    void this.context?.close();
   }
 }

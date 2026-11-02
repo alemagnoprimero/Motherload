@@ -74,8 +74,9 @@ describe("W01 mission-first generation", () => {
         ).toBe(false);
       }
       for (let row = 0; row < world.rows; row++)
-        for (const column of [20, 21])
-          expect(world.tiles[row * world.width + column]).toBe(1);
+        expect(world.tiles[row * world.width + 20]).toBe(
+          row === 30 || row === 31 ? 4 : 1,
+        );
       expect(
         world.shelves.every(
           (shelf) => shelf.y > 10 && (shelf.x < 18 || shelf.x > 24),
@@ -89,7 +90,7 @@ describe("W01 mission-first generation", () => {
         ).toBeCloseTo(ore.weight / 100, 10);
       expect(
         world.packages.filter((item) => item.tags.includes("relic")).length,
-      ).toBeLessThanOrEqual(2);
+      ).toBe(1);
     }
   });
 

@@ -1,0 +1,43 @@
+{
+  "scale": 2,
+  "pages": [
+    {
+      "image": "w02-runtime.png",
+      "data": "w02-runtime.json",
+      "frames": [
+        "dock-stage-1",
+        "dock-stage-2",
+        "dock-stage-3",
+        "sky-body",
+        "dock-stage-0",
+        "world-w02",
+        "relic",
+        "ore-o3",
+        "mission-cryovein",
+        "ore-o4",
+        "mission-catalyst",
+        "ore-o2",
+        "package-o3",
+        "package-o4",
+        "mission-sample",
+        "cold-warning",
+        "package-o2",
+        "ore-o1",
+        "package-o1",
+        "tool-condenser",
+        "tool-thermal",
+        "rig-engine-2",
+        "rig-energy-2",
+        "tool-preservation",
+        "rig-drill-collar-left-2",
+        "rig-drill-collar-right-2",
+        "rig-bay-2",
+        "rig-drill-collar-down-2",
+        "rig-hull-2"
+      ],
+      "width": 1024,
+      "height": 576,
+      "bytes": 2359296
+    }
+  ]
+}

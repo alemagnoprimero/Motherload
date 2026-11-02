@@ -1,33 +1,31 @@
 # Project status — 2026-11-02
 
-The owner supplied an [improvement plan](IMPROVEMENT_PLAN.md) for W01/W02. Work now follows that plan before adding W03; its [implementation review and progress](IMPROVEMENT_PROGRESS.md) distinguishes the first Phase 0 batch from remaining visual, economic and playtest gates.
+**The Deep Frontier** is the working title of the two-world mining campaign. Development follows the owner's [improvement plan](IMPROVEMENT_PLAN.md); [implementation progress](IMPROVEMENT_PROGRESS.md) records releases, measured gates and remaining validation. The repository, published `/Motherload/` address and browser-save namespace retain their original names.
 
-Motherload has one playable campaign with two destinations. W01 Broken asteroid includes mining, flight, discovery, package collection/banking/sale, services, rank-1 hardware, three local attachments, three construction milestones, recovery, full checkpoints and Frontier departure. [W02 Ice comet](CAMPAIGN_W02.md) adds persistent travel/returns, rank-2 hardware, volatile extraction, cold hazards, three local tools and the Planetary certificate. W03 and later destinations remain in development; the complete Frontier branch still awaits W03.
+W01 Broken asteroid and W02 Ice comet are playable. Both support persistent excavation, minerals, services, upgrades, construction, travel, optional contracts, logs, named relics and specialist caches. W03 and later destinations remain outside this improvement plan's two-world implementation scope.
 
-The retired prototype's alternate mode, routing, runtime source, artwork pipeline and tests were removed. The root address and old bookmarked mode URLs open the campaign. Retired localStorage data is left untouched; no automatic conversion/deletion occurs. Campaign IndexedDB keeps its namespace and checkpoint envelope; state schema 2 migrates existing W01 saves while preserving the preceding raw checkpoint as the next save's backup.
+## Gameplay and interface
 
-## Interface and controls
+The fullscreen game uses transparent condition gauges, a compact mission chip, a return-energy estimate, a home beacon, independent danger/progress messages and a tool dock. Keyboard, immediate mouse steering, the floating touch joystick and controller navigation share the same simulation. The first-sortie guide surveys the beacon, teaches the two starter seams and directs the player to the 600 CR tank.
 
-The canvas fills desktop and phone viewports. Compact condition gauges, live stage missions and priority safety warnings overlay the world. Surface services appear beside the lander while simulation pauses. Prices, current → next equipment benefits, prerequisites, total service charges and resulting conditions are visible before purchases.
+The title offers Continue, New expedition and Settings. In-game terminals separate Trade, Workshop and Construction; purchases preserve focus. Pause separates settings, controls, records/journal, cargo and save data. The claim map contains only surveyed terrain and persisted waypoints. Sales and installations present their already-committed results while simulation is paused.
 
-Touch uses a floating joystick centered at each initial press. Dragging controls direction relative to that screen position; returning to its dead zone gives neutral input. Mouse aiming, keyboard controls and optional direction buttons accompany it. Browser shortcuts and focused form/toolbar keys do not become pilot actions. Down assists entry into a nearby excavated shaft, and a short cut-input buffer helps when landing. Gamepad menus support D-pad focus, A activation and B return; full spatial menu navigation remains future work.
+New expeditions begin with a full tank. One emergency tow per world preserves cargo; ordinary recovery remains a previewed fee/loss decision. Return estimates, shaft alignment, air braking and bay assistance make travel more legible. Low resources, pressure seams, shelves and volatile cuts have distinct notices and feedback. New comet worlds give three extended volatile training windows.
 
-Saved, imported and backup-restored runs wait for explicit Resume. New campaigns start with a full tank. The first disabled-rig tow per world is free and preserves cargo and mission items; voluntary and subsequent recovery retain their fees and cargo consequences. Recovery preserves resources above half capacity. Disabled rigs at the lander can use normal services. Warnings take priority over routine pickups and state the current low-energy band; undocking below half a tank prompts a service preview.
+## Versions and persistence
 
-Known ores have distinct shape markers and a pause legend. Wall-occluded discovery keeps unexplored minerals hidden. The palette, panels and visible keyboard focus are preserved.
+Schema 3 loads earlier campaign schemas without regenerating their worlds. Existing terrain, mineral values, bulk and vehicle condition remain intact; current display names and rules read at use can change. New W01 uses generator 2/balance 0.2; new W02 uses generator 2/balance 0.3. Versioned overlays and matching checks are described in [BALANCE_VERSIONS.md](BALANCE_VERSIONS.md). The original design pack remains unchanged in `design/v0.1/`.
 
-Mission objectives have distinct wreck landmarks, a persistent bearing/range readout, nearby world markers and proximity alerts. Guidance follows actual saved source positions, accounts for horizontal wrapping and switches to the lander for banking/construction. Physical wreckage follows discovered terrain and remains after survey/recovery; radio markers do not reveal ores. See [mission guidance](MISSION_POIS.md).
+IndexedDB uses atomic current/backup checkpoints and compare-and-swap protection against stale tabs. Three independent valid campaign archives survive autosaves; unsupported or corrupt records remain protected. Load, import and restoration arrive paused. Export supports manual device transfer; browser saves do not synchronize automatically. Retired prototype save bytes are neither converted nor deleted.
 
-## Source, persistence and art
+## Rendering, assets and audio
 
-`src/campaign/` owns the simulator, renderer, interface, audio, input, configuration and IndexedDB persistence. `src/main.ts` loads that game directly. Design JSON remains pinned unchanged in `design/v0.1/`; typed handlers implement W01/W02 rules rather than executing prose.
+The renderer shares a CSS/device/world View with input and DOM labels, uses retained terrain and streamed depth-band art, and supports both WebGL and Canvas. Local licensed typefaces, native-resolution trimmed sprites, material patterns, headlamp lighting and high-contrast edges support the new HUD and world presentation. Original SVGs and generated outputs remain editable; production builds require Node only.
 
-Checkpoints preserve exact terrain/discovery, packages, missions, equipment, paid prices, conditions and money. Transactions rotate current/backup records together and reject stale writers. Replacing a valid campaign also retains a separate archive, with the three newest valid archives restorable from Pause. Archive creation/pruning and checkpoint replacement are atomic; malformed/future records remain protected. Export/import provides manual device transfer; no server account or automatic synchronization is required.
+The event stream drives synthesized material cutting, tiered pickups, warnings, transactions, adaptive music and ambience. Sound unlocks on Deploy/Continue and remembers mute. Reduced motion changes presentation rather than simulation timing. Audio and rendering checks use the actual production implementations.
 
-Campaign art uses layered SVG sources and a committed atlas, backgrounds and icons. Normal builds need no browser/Blender/Python authoring tools. The original SWF/reference research lab remains separate and never ships in `dist/`.
+## Validation boundary and future work
 
-## Validation and next work
+Launch, Docker and verification commands are in [README](../README.md). The maintained pacing harness measures deterministic policies and native capability tests; it does not substitute for novice playtests. Shared-host browser measurements do not establish sustained physical Android performance. Owner review of target/art comparisons, novice testing and hardware checks remain separate evidence requirements.
 
-Current verification is recorded in [USABILITY_REVIEW.md](USABILITY_REVIEW.md) and [CAMPAIGN_W01.md](CAMPAIGN_W01.md). Launch, Docker, test and export instructions are in the root README.
-
-Next work includes W03 to complete the first branch, later destinations/tools, chunked multiworld persistence, complete controller menu accessibility, human full-run pacing and physical Android testing. The pack's 45-minute opening and 16-hour campaign are targets, not demonstrated completion times. W01/W02 and original research do not establish complete fifteen-world gameplay or exact Flash timing parity.
+After the W01/W02 improvement gates, the campaign roadmap adds W03 and subsequent destinations. Chunked storage for a complete fifteen-world campaign and the roadmap's later-world mechanics remain future work. The earlier SWF research remains isolated under `reference/` and is not shipped in the game.

@@ -35,7 +35,7 @@ describe("persistent stage mission guidance", () => {
     expect(campaignMission(game).next).toBe("Lander → Fund construction");
     expect(game.payMilestone()).toBe(true);
     expect(campaignMission(game).step).toBe("02 / 03");
-    expect(task(game, "construction").label).toContain("0/300 CR");
+    expect(task(game, "construction").label).toContain("0/600 CR");
   });
 
   it("keeps mission objects actionable through collection, banking, recovery and reload", () => {
@@ -67,17 +67,17 @@ describe("persistent stage mission guidance", () => {
     game.state.progress.beacon = true;
     game.state.progress.bankedOre = 3;
     game.state.progress.completed = [1, 2];
-    game.state.credits = 5000;
+    game.state.credits = 10000;
     for (const item of game.world.missions) item.status = "banked";
     atDock(game);
     expect(task(game, "W01-Q").status).toBe("complete");
-    expect(task(game, "construction").label).toContain("500 CR ready");
+    expect(task(game, "construction").label).toContain("1,000 CR ready");
     expect(campaignMission(game).step).toBe("03 / 03");
     expect(game.payMilestone()).toBe(true);
     expect(task(game, "launch").status).toBe("ready");
     expect(campaignMission(game).next).toBe("Lander → Launch");
     expect(game.depart()).toBe(true);
     expect(task(game, "launch").status).toBe("complete");
-    expect(campaignMission(game).next).toContain("chapter in development");
+    expect(campaignMission(game).next).toContain("surveyor's compass");
   });
 });

@@ -15,6 +15,7 @@ import {
   keys,
   menu,
   noErrors,
+  pauseSection,
   ready,
   tab,
 } from "./campaign-smoke.mjs";
@@ -500,6 +501,12 @@ export async function runImprovementSmoke(browser, base, path) {
               "ready",
           );
           await idle(newer);
+          await click(newer, "#campaign-start");
+          await idle(newer);
+          await menu(newer);
+          // Continue now saves by design. Acknowledge that earlier write before
+          // opening the archive confirmation whose race this scenario tests.
+          await command(page, "load");
           await freeze(newer);
           const archiveCommand = await page
             .locator('#campaign-archives [data-command^="archive:"]')
@@ -602,16 +609,99 @@ export async function runImprovementSmoke(browser, base, path) {
             await idle(page);
           };
           const focus = async (selector) => {
-            for (let step = 0; step < 50; step++) {
-              if (
-                await page.evaluate(
-                  (s) => document.activeElement?.matches(s),
-                  selector,
-                )
-              )
-                return;
-              await pad(13);
+            // Compute a short spatial D-pad path from the visible terminal. We
+            // never call focus(): every edge is exercised by native pad polling.
+            for (let attempt = 0; attempt < 8; attempt++) {
+              const route = await page.evaluate((selector) => {
+                const confirmation =
+                  document.getElementById("campaign-confirm");
+                const host = confirmation?.open
+                  ? confirmation
+                  : document.getElementById(
+                      "campaign-" + document.body.dataset.campaignOverlay,
+                    );
+                if (!host) throw new Error("No controller menu is open");
+                const controls = [
+                  ...host.querySelectorAll(
+                    "button:not(:disabled), input:not(:disabled), select:not(:disabled), summary, a[href]",
+                  ),
+                ].filter(
+                  (el) =>
+                    !el.closest("[hidden], [inert]") &&
+                    (!el.closest("details:not([open])") ||
+                      el
+                        .closest("details:not([open])")
+                        .querySelector(":scope > summary")
+                        ?.contains(el)) &&
+                    el.checkVisibility?.() !== false &&
+                    el.getClientRects().length,
+                );
+                const target = controls.findIndex((el) => el.matches(selector));
+                if (target < 0)
+                  throw new Error("No enabled controller target: " + selector);
+                const start = controls.indexOf(document.activeElement);
+                if (start === target) return [];
+                if (start < 0) return [13];
+                const queue = [[start, []]],
+                  visited = new Set([start]);
+                for (let head = 0; head < queue.length; head++) {
+                  const [current, path] = queue[head],
+                    rect = controls[current].getBoundingClientRect();
+                  for (const [key, dx, dy] of [
+                    [12, 0, -1],
+                    [13, 0, 1],
+                    [14, -1, 0],
+                    [15, 1, 0],
+                  ]) {
+                    let next = -1,
+                      score = Infinity;
+                    controls.forEach((el, index) => {
+                      if (index === current) return;
+                      const r = el.getBoundingClientRect(),
+                        x = r.x + r.width / 2 - rect.x - rect.width / 2,
+                        y = r.y + r.height / 2 - rect.y - rect.height / 2;
+                      const forward = x * dx + y * dy,
+                        value =
+                          forward > 2
+                            ? forward + Math.abs(x * dy - y * dx) * 3
+                            : Infinity;
+                      if (value < score) {
+                        score = value;
+                        next = index;
+                      }
+                    });
+                    if (next < 0)
+                      next =
+                        (current +
+                          (key === 12 || key === 14 ? -1 : 1) +
+                          controls.length) %
+                        controls.length;
+                    if (next === target) return [...path, key];
+                    if (!visited.has(next)) {
+                      visited.add(next);
+                      queue.push([next, [...path, key]]);
+                    }
+                  }
+                }
+                throw new Error(
+                  "Controller target is unreachable: " + selector,
+                );
+              }, selector);
+              if (!route.length) return;
+              for (const direction of route) await pad(direction);
             }
+            await page.screenshot({
+              path: `${path}/gamepad-focus-failure.png`,
+            });
+            console.log(
+              await page.evaluate(() => ({
+                focus: document.activeElement?.outerHTML,
+                clock: performance.now(),
+                overlays: [...document.querySelectorAll("dialog[open]")].map(
+                  (d) => d.id,
+                ),
+              })),
+            );
             throw new Error("Gamepad could not focus " + selector);
           };
           await advance(page, 350);
@@ -653,6 +743,14 @@ export async function runImprovementSmoke(browser, base, path) {
             await page.locator("#campaign-dock-message").innerText(),
             /rank 1|installed|upgraded/i,
           );
+          if (await page.locator("#campaign-reward").isVisible()) {
+            await pad(1);
+            assert.equal(
+              await page.evaluate(() => document.body.dataset.campaignOverlay),
+              "dock",
+              "First Back skips the install presentation without closing the terminal",
+            );
+          }
           await pad(1);
           assert.equal(
             await page.evaluate(() => document.body.dataset.campaignOverlay),
@@ -671,8 +769,31 @@ export async function runImprovementSmoke(browser, base, path) {
           );
           await page.keyboard.up("Enter");
           await page.screenshot({ path: `${path}/gamepad-terminal.png` });
+          const comet = fixture("W02", 0);
+          comet.state.vehicle = { x: 5.5, y: -0.36, energy: 9, hull: 10 };
+          await restore(page, comet);
+          await advance(page, 350);
+          await pad(5);
+          assert.equal(
+            await page.evaluate(() => document.body.dataset.campaignOverlay),
+            "map",
+          );
+          await focus('[data-command="travel-W01"]');
+          await pad(0);
+          assert.equal(
+            await page
+              .locator("#campaign-confirm")
+              .evaluate((dialog) => dialog.open),
+            true,
+          );
+          await focus("#campaign-confirm-accept");
+          await pad(0);
+          if (await page.locator("#campaign-reward").isVisible()) await pad(1);
+          const traveled = await exportCheckpoint(page);
+          assert.equal(traveled.state.currentWorld, "W01");
+          await page.screenshot({ path: `${path}/gamepad-traveled.png` });
           pass(
-            "Gamepad D-pad/A/B docks, sells, buys energy, and undocks; held Enter leaves the terminal open",
+            "Gamepad D-pad/A/B docks, sells, buys energy, skips presentation, undocks and confirms interworld travel; held Enter leaves the terminal open",
           );
         }
         noErrors(page);
@@ -729,6 +850,7 @@ export async function runImprovementSmoke(browser, base, path) {
         const ordinary = `${path}/${worldId}-normal-edges.png`;
         await page.screenshot({ path: ordinary });
         await menu(page);
+        await pauseSection(page, "systems");
         await click(page, '[data-setting="highContrast"]');
         await play(page, 50);
         assert.equal(

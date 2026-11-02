@@ -48,6 +48,11 @@ jobs:
           export CHROMIUM_PATH="$(node --input-type=module -e 'import { chromium } from "playwright-core"; process.stdout.write(chromium.executablePath());')"
           npm run test:improvements
           npm run test:campaign:storage
+          npm run test:feel
+          npm run test:audio
+          npm run test:plan-ui
+          npm run test:render
+          npm run test:render:memory
       - name: Retain browser evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -56,4 +61,34 @@ jobs:
           path: |
             artifacts/improvement/
             artifacts/improvement-*/
+            artifacts/pacing/
+            artifacts/feel/
+            artifacts/audio/
+            artifacts/plan-ui/
+            artifacts/render-*/
+          if-no-files-found: ignore
+  pacing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        policy: ${{ github.event_name == 'schedule' && fromJSON('["rusher","skilled","novice","guided-skilled","guided-novice"]') || fromJSON('["all"]') }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Calibrated pacing and native return paths
+        env:
+          PACING_POLICIES: ${{ matrix.policy }}
+        run: ${{ github.event_name == 'schedule' && 'npm run test:pacing:nightly' || 'npm run test:pacing' }}
+      - name: Retain every pacing seed
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pacing-evidence-${{ matrix.policy }}
+          path: artifacts/pacing/
           if-no-files-found: ignore

@@ -1239,6 +1239,94 @@
       "logicalWidth": 48,
       "logicalHeight": 48,
       "category": "glyph"
+    },
+    {
+      "name": "site-wreck",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "site-survey",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "site-mission",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "site-cache",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "site-geode",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "site-beacon",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "site-antenna",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "site-core",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "scenery"
+    },
+    {
+      "name": "cold-pocket",
+      "width": 192,
+      "height": 128,
+      "logicalWidth": 96,
+      "logicalHeight": 64,
+      "category": "hazard"
+    },
+    {
+      "name": "pressure-seam",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "hazard"
+    },
+    {
+      "name": "surface-salvage",
+      "width": 192,
+      "height": 96,
+      "logicalWidth": 96,
+      "logicalHeight": 48,
+      "category": "scenery"
     }
   ],
   "backgrounds": [

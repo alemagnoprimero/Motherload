@@ -9,12 +9,13 @@ interface Gesture {
   originY: number;
   startedAt: number;
   active: boolean;
+  inspectable: boolean;
 }
 
 export const TOUCH_JOYSTICK = {
-  radius: 46,
+  radius: 54,
   knobRadius: 14,
-  travel: 32,
+  travel: 40,
   deadZone: 12,
 } as const;
 
@@ -43,7 +44,13 @@ export class CampaignPointer {
     };
   }
 
-  begin(id: number, x: number, y: number, kind: "mouse" | "touch" = "mouse") {
+  begin(
+    id: number,
+    x: number,
+    y: number,
+    kind: "mouse" | "touch" = "mouse",
+    inspectable = false,
+  ) {
     if (this.gesture) return false;
     this.gesture = {
       id,
@@ -53,7 +60,8 @@ export class CampaignPointer {
       originX: x,
       originY: y,
       startedAt: this.now(),
-      active: false,
+      active: kind === "mouse" && !inspectable,
+      inspectable,
     };
     return true;
   }
@@ -71,7 +79,8 @@ export class CampaignPointer {
   end(id: number) {
     const gesture = this.gesture;
     if (!gesture || gesture.id !== id) return undefined;
-    gesture.active ||= this.now() - gesture.startedAt >= 180;
+    gesture.active ||=
+      this.now() - gesture.startedAt >= (gesture.kind === "touch" ? 180 : 100);
     this.gesture = undefined;
     return gesture.active ? undefined : { x: gesture.x, y: gesture.y };
   }
@@ -83,7 +92,8 @@ export class CampaignPointer {
   controls(rigX: number, rigY: number): CampaignControls {
     const gesture = this.gesture;
     if (!gesture) return {};
-    gesture.active ||= this.now() - gesture.startedAt >= 180;
+    gesture.active ||=
+      this.now() - gesture.startedAt >= (gesture.kind === "touch" ? 180 : 100);
     if (!gesture.active) return {};
     const touch = gesture.kind === "touch";
     const dx = gesture.x - (touch ? gesture.originX : rigX),
@@ -91,11 +101,23 @@ export class CampaignPointer {
       distance = Math.hypot(dx, dy),
       threshold = touch ? distance * 0.38 : Math.max(20, distance * 0.38);
     if (touch && distance <= TOUCH_JOYSTICK.deadZone) return {};
+    const throttle = (value: number) =>
+      Math.max(
+        0.35,
+        Math.min(
+          1,
+          (Math.abs(value) - (touch ? TOUCH_JOYSTICK.deadZone : 20)) /
+            ((touch ? TOUCH_JOYSTICK.travel * 0.6 : 160) -
+              (touch ? TOUCH_JOYSTICK.deadZone : 20)),
+        ),
+      );
     return {
       ...(dx < -threshold ? { left: true } : {}),
       ...(dx > threshold ? { right: true } : {}),
       ...(dy < -threshold ? { up: true } : {}),
       ...(dy > threshold ? { down: true } : {}),
+      ...(Math.abs(dx) > threshold ? { throttleX: throttle(dx) } : {}),
+      ...(dy < -threshold ? { throttleY: throttle(dy) } : {}),
     };
   }
 }

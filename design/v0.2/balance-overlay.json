@@ -1,0 +1,75 @@
+{
+  "version": "0.2",
+  "extends": "0.1",
+  "date": "2026-11-02",
+  "description": "W01 improvement-plan balance. Stored packages retain their own version and value.",
+  "hardware_prices": {
+    "energy": {
+      "1": 600
+    }
+  },
+  "worlds": {
+    "W01": {
+      "milestone_fees": [
+        200,
+        600,
+        1000
+      ],
+      "ore_names": [
+        "Slag iron",
+        "Rust copper",
+        "Shard silver",
+        "Core crown"
+      ],
+      "ore_values": [
+        28,
+        53,
+        120,
+        400
+      ],
+      "gear": {
+        "W01-R2": {
+          "name": "Shaft brace",
+          "price": 250,
+          "effect": "Deploy against a wall to drill sideways without a floor; horizontal drift -60%, thrust energy -20%."
+        },
+        "W01-R3": {
+          "requires": null,
+          "effect": "Cargo capacity +30%, rounded up; acceleration -8% while loaded."
+        }
+      },
+      "jackpot_name": "Surveyor's compass",
+      "generator_version": 2
+    }
+  },
+  "rules": {
+    "w01_starter_seams": {
+      "A": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2
+      ],
+      "B": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2
+      ]
+    },
+    "mass_denominator": 80,
+    "plate_rows": [
+      30,
+      31
+    ],
+    "plate_required_drill": 1,
+    "pressure_warning_seconds": 1.2,
+    "pressure_damage": 4
+  }
+}

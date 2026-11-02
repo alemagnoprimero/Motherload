@@ -1,463 +1,603 @@
-import { BALANCE_VERSION, W01, W01_ORES } from "./config";
-import { W02, W02_HAZARDS, W02_ORES } from "./frontier";
+import {
+  BALANCE_VERSION,
+  GENERATOR_VERSION,
+  W01,
+  W01_ORES,
+  type OreDefinition,
+} from "./config";
+import { W02, W02_ORES } from "./frontier";
 import type { CampaignPackage, CampaignWorld } from "./types";
+import { FIELD_LOG_TEXT, WORLD_BANDS, worldBand } from "./world-content";
+import { createW01V1, createW02V1 } from "./world-v1";
+
+export { createW01V1, createW02V1 } from "./world-v1";
+export { WORLD_BANDS, worldBand } from "./world-content";
 
 const STARTER = [
-  [0, 0, 0, 0, 1, 2, 2],
-  [0, 1, 0, 1, 2, 2, 2],
+  [0, 0, 0, 0, 0, 2, 2],
+  [0, 1, 1, 1, 1, 2, 2],
 ] as const;
 
-/** Geometry and mission sources are fixed before caves and resource placement. */
-export function createW01(seed: number): CampaignWorld {
-  seed >>>= 0;
-  let randomState = seed;
-  const random = () => {
-    randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0;
-    return randomState / 4294967296;
+type WorldId = "W01" | "W02";
+function randomFor(seed: number, salt: number) {
+  let state = (seed ^ salt) >>> 0;
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 4294967296;
   };
-  const shuffle = <T>(values: T[]) => {
-    for (let index = values.length - 1; index > 0; index--) {
-      const other = Math.floor(random() * (index + 1));
-      [values[index], values[other]] = [values[other]!, values[index]!];
-    }
-    return values;
-  };
-  const width = W01.width,
-    rows = W01.rows,
-    indexOf = (column: number, row: number) => row * width + column;
-  const missions: CampaignWorld["missions"] = [
-    {
-      id: "W01-VALVE",
-      name: "Lander pressure valve",
-      x: 20.5,
-      y: W01.valveRow + 0.5,
-      status: "source",
-    },
-    {
-      id: "W01-ANTENNA",
-      name: "Lander antenna",
-      x: 21.5,
-      y: W01.antennaRow + 0.5,
-      status: "source",
-    },
-    {
-      id: "W01-Q",
-      name: "Navigation core",
-      x: 20.5,
-      y: W01.coreRow + 0.5,
-      status: "source",
-    },
-  ];
+}
+function shuffled<T>(values: T[], random: () => number): T[] {
+  for (let index = values.length - 1; index > 0; index--) {
+    const other = Math.floor(random() * (index + 1));
+    [values[index], values[other]] = [values[other]!, values[index]!];
+  }
+  return values;
+}
+
+/** Explicit stages keep resource placement independent of decorative randomness. */
+interface Generation {
+  world: CampaignWorld;
+  id: WorldId;
+  route: number;
+  missionCells: Set<number>;
+  occupied: Set<number>;
+  random: () => number;
+  index: (x: number, y: number) => number;
+  carve: (x: number, y: number) => void;
+}
+
+function establishWorld(id: WorldId, seed: number): Generation {
+  const definition = id === "W01" ? W01 : W02;
+  const { width, rows } = definition;
+  const route = id === "W01" ? 20 : 24;
+  const index = (x: number, y: number) => y * width + x;
+  const random = randomFor(seed, id === "W01" ? 0x1a7202 : 0x2ce202);
+  const missions: CampaignWorld["missions"] =
+    id === "W01"
+      ? [
+          {
+            id: "W01-VALVE",
+            name: "Lander pressure valve",
+            x: 20.5,
+            y: W01.valveRow + 0.5,
+            status: "source",
+          },
+          {
+            id: "W01-ANTENNA",
+            name: "Lander antenna",
+            x: 21.5,
+            y: W01.antennaRow + 0.5,
+            status: "source",
+          },
+          {
+            id: "W01-Q",
+            name: "Navigation core",
+            x: 20.5,
+            y: W01.coreRow + 0.5,
+            status: "source",
+          },
+        ]
+      : [
+          ...Array.from({ length: 5 }, (_, n) => ({
+            id: `W02-SAMPLE-${n + 1}`,
+            name: `Helion thermal sample ${n + 1}`,
+            x: 22.5 + n,
+            y: W02.sampleRow + 0.5,
+            status: "source" as const,
+          })),
+          {
+            id: "W02-Q",
+            name: "Cryogenic catalyst",
+            x: W02.spawnX,
+            y: W02.coreRow + 0.5,
+            status: "source",
+          },
+        ];
   const missionCells = new Set(
     missions.map((mission) =>
-      indexOf(Math.floor(mission.x), Math.floor(mission.y)),
+      index(Math.floor(mission.x), Math.floor(mission.y)),
     ),
   );
-  // A continuous soil corridor gives every required depth a drillable return
-  // route. It is not pre-excavated: players establish and reuse their own shaft.
-  const protectedColumn = (column: number) => column >= 18 && column <= 23;
-  const tiles: number[] = Array.from({ length: width * rows }, (_, index) => {
-    const column = index % width;
-    return !protectedColumn(column) && random() < 0.12 ? 2 : 1;
+  const tiles: number[] = Array.from({ length: width * rows }, (_, cell) => {
+    const x = cell % width,
+      y = Math.floor(cell / width);
+    if (x === route || missionCells.has(cell) || (y < 10 && x === route + 1))
+      return 1;
+    return random() < worldBand(id, y).rockChance ? 2 : 1;
   });
-  const carve = (column: number, row: number) => {
-    if (
-      column >= 1 &&
-      column < width - 1 &&
-      row >= 8 &&
-      row < rows - 1 &&
-      !protectedColumn(column) &&
-      !missionCells.has(indexOf(column, row))
-    )
-      tiles[indexOf(column, row)] = 0;
-  };
-  for (let row = 9; row < rows - 3; row += 4) {
-    for (const side of [0, 1]) {
-      const centerX = side === 0 ? 3 + random() * 12 : 27 + random() * 9,
-        centerY = row + random() * 1.5,
-        radiusX = 1.7 + random() * 1.8,
-        radiusY = 0.8 + random() * 0.7;
-      for (let y = Math.floor(centerY - radiusY); y <= centerY + radiusY; y++)
-        for (let x = Math.floor(centerX - radiusX); x <= centerX + radiusX; x++)
-          if (
-            ((x - centerX) / radiusX) ** 2 + ((y - centerY) / radiusY) ** 2 <
-            1
-          )
-            carve(x, y);
-    }
-  }
-
-  // Optional shelves teach collapse away from the opening and mission route.
-  // Shelf coordinates identify the centre of the breakable ceiling cell.
-  const shelves = [
-    { column: 8, row: 14 },
-    { column: 31, row: 29 },
-    { column: 11, row: 46 },
-  ].map(({ column, row }, index) => {
-    tiles[indexOf(column, row)] = 1;
-    for (let x = column - 1; x <= column + 1; x++) carve(x, row + 1);
-    tiles[indexOf(column, row + 2)] = 1;
-    return {
-      id: `W01-SHELF-${index + 1}`,
-      x: column + 0.5,
-      y: row + 0.5,
-      warning: null,
-      collapsed: false,
-    };
-  });
-  const shelfCells = new Set(
-    shelves.map((shelf) => indexOf(Math.floor(shelf.x), Math.floor(shelf.y))),
-  );
-  const packages: CampaignPackage[] = [];
-  const occupied = new Set<number>();
-  const addOrdinary = (column: number, row: number, oreIndex: number) => {
-    const ore = W01_ORES[oreIndex]!;
-    packages.push({
-      id: `W01:deposit:${row}:${column}`,
-      itemId: ore.id,
-      name: ore.name,
-      origin: "W01",
-      balanceVersion: BALANCE_VERSION,
-      value: ore.value,
-      bulk: ore.bulk,
-      mass: ore.mass,
-      tags: [...ore.tags],
-      x: column + 0.5,
-      y: row + 0.5,
-      status: "deposit",
-      processedBy: [],
-    });
-    occupied.add(indexOf(column, row));
-  };
-  STARTER.forEach((seam, offset) =>
-    seam.forEach((ore, row) => addOrdinary(20 + offset, row, ore)),
-  );
-
-  const candidates = tiles
-    .map((tile, index) => ({ tile, index }))
-    .filter(
-      ({ tile, index }) =>
-        tile !== 0 &&
-        !occupied.has(index) &&
-        !missionCells.has(index) &&
-        !shelfCells.has(index) &&
-        // Keep the initial descent's support and first banked beacon clear.
-        !(index < width * 10 && [20, 21].includes(index % width)),
-    )
-    .map(({ index }) => index);
-  const meanValue = W01_ORES.reduce(
-    (value, ore) => value + (ore.value * ore.weight) / 100,
-    0,
-  );
-  // Start at 12% anchors, grow adjacent veins, then meet the post-carving floor.
-  // Whole hundreds preserve the exact 60/30/9/1 final ordinary rarity mix.
-  const depositCount =
-    100 *
-    Math.ceil(
-      Math.max(
-        (candidates.length + packages.length) * 0.12,
-        W01.minOrdinary / meanValue,
-      ) / 100,
-    );
-  const remainingOres = W01_ORES.flatMap((ore, oreIndex) => {
-    const alreadyPlaced = packages.filter(
-      (item) => item.itemId === ore.id,
-    ).length;
-    return Array<number>(
-      (depositCount * ore.weight) / 100 - alreadyPlaced,
-    ).fill(oreIndex);
-  });
-  shuffle(remainingOres);
-  const bandOf = (index: number) => {
-    const row = Math.floor(index / width);
-    return row < 10 ? 0 : row < 40 ? 1 : 2;
-  };
-  const bandTotals = [
-    Math.round(depositCount * 0.2),
-    Math.round(depositCount * 0.5),
-    Math.round(depositCount * 0.3),
-  ];
-  for (let band = 0; band < 3; band++) {
-    const available = new Set(
-      candidates.filter((index) => bandOf(index) === band),
-    );
-    const seeds = shuffle([...available]);
-    let needed =
-      bandTotals[band]! -
-      packages.filter(
-        (item) =>
-          bandOf(indexOf(Math.floor(item.x), Math.floor(item.y))) === band,
-      ).length;
-    while (needed > 0) {
-      let anchor = seeds.pop();
-      while (anchor !== undefined && !available.has(anchor))
-        anchor = seeds.pop();
-      if (anchor === undefined)
-        throw new Error("W01 cannot satisfy its ordinary-resource budget.");
-      const queue = [anchor];
-      const veinSize = Math.min(needed, 2 + Math.floor(random() * 3));
-      let grown = 0;
-      while (queue.length && grown < veinSize) {
-        const index = queue.shift()!;
-        if (!available.delete(index)) continue;
-        const column = index % width,
-          row = Math.floor(index / width);
-        addOrdinary(column, row, remainingOres.pop()!);
-        needed--;
-        grown++;
-        const neighbors = shuffle([
-          column > 0 ? index - 1 : -1,
-          column < width - 1 ? index + 1 : -1,
-          index - width,
-          index + width,
-        ]).filter((neighbor) => available.has(neighbor));
-        queue.push(...neighbors);
-      }
-    }
-  }
-
-  const relicRoll = random();
-  const relicCount = relicRoll < 0.25 ? 0 : relicRoll < 0.85 ? 1 : 2;
-  const relicSites = shuffle(
-    candidates.filter((index) => !occupied.has(index)),
-  );
-  for (let relic = 0; relic < relicCount; relic++) {
-    const index = relicSites.pop()!;
-    packages.push({
-      id: `W01:relic:${relic + 1}`,
-      itemId: "W01-J",
-      name: "Broken asteroid relic",
-      origin: "W01",
-      balanceVersion: BALANCE_VERSION,
-      value: 7500,
-      bulk: 2,
-      mass: 2.5,
-      tags: ["relic"],
-      x: (index % width) + 0.5,
-      y: Math.floor(index / width) + 0.5,
-      status: "deposit",
-      processedBy: [],
-    });
-  }
-
-  return {
-    id: "W01",
-    seed,
+  const world: CampaignWorld = {
+    id,
+    seed: seed >>> 0,
     width,
     rows,
+    generatorVersion: 2,
+    balanceVersion: id === "W01" ? "0.2" : "0.3",
     tiles,
     discovered: Array(width * rows).fill(0),
-    packages,
+    packages: [],
     missions,
-    shelves,
+    shelves: [],
+    pressureSeams: [],
+    hazards: { coldPockets: [], vents: [] },
+    sites: [],
+    fieldLogs: [],
+    ...(id === "W02"
+      ? {
+          completed: [],
+          climate: { coldRemaining: 0, ventCooldown: 0, warning: null },
+        }
+      : {}),
+  };
+  const carve = (x: number, y: number) => {
+    if (
+      x >= 1 &&
+      x < width - 1 &&
+      y >= 7 &&
+      y < rows - 1 &&
+      x !== route &&
+      !missionCells.has(index(x, y))
+    )
+      tiles[index(x, y)] = 0;
+  };
+  return {
+    world,
+    id,
+    route,
+    missionCells,
+    occupied: new Set(),
+    random,
+    index,
+    carve,
   };
 }
 
-/** A fresh W02 instance is created only on first arrival, never on return. */
-export function createW02(seed: number): CampaignWorld {
-  seed >>>= 0;
-  let randomState = (seed ^ 0x1ce02) >>> 0;
-  const random = () => {
-    randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0;
-    return randomState / 4294967296;
-  };
-  const shuffle = <T>(values: T[]) => {
-    for (let index = values.length - 1; index > 0; index--) {
-      const other = Math.floor(random() * (index + 1));
-      [values[index], values[other]] = [values[other]!, values[index]!];
-    }
-    return values;
-  };
-  const width = W02.width,
-    rows = W02.rows,
-    indexOf = (column: number, row: number) => row * width + column,
-    protectedColumn = (column: number) => column >= 22 && column <= 27;
-  const missions: CampaignWorld["missions"] = [
-    ...Array.from({ length: 5 }, (_, index) => ({
-      id: `W02-SAMPLE-${index + 1}`,
-      name: `Helion thermal sample ${index + 1}`,
-      x: 22.5 + index,
-      y: W02.sampleRow + 0.5,
-      status: "source" as const,
-    })),
-    {
-      id: "W02-Q",
-      name: "Cryogenic catalyst",
-      x: W02.spawnX,
-      y: W02.coreRow + 0.5,
-      status: "source",
-    },
-  ];
-  const missionCells = new Set(
-    missions.map((mission) =>
-      indexOf(Math.floor(mission.x), Math.floor(mission.y)),
-    ),
-  );
-  const tiles: number[] = Array.from({ length: width * rows }, (_, index) =>
-    !protectedColumn(index % width) && random() < 0.12 ? 2 : 1,
-  );
-  const carve = (column: number, row: number) => {
-    if (
-      column >= 0 &&
-      column < width &&
-      row >= 10 &&
-      row < rows - 1 &&
-      !protectedColumn(column) &&
-      !missionCells.has(indexOf(column, row))
-    )
-      tiles[indexOf(column, row)] = 0;
-  };
-  // Long facets and rounded bubble pockets sit beside a drillable central route.
-  // The route remains solid ice: new objectives still require actual excavation.
-  for (let row = 12; row < rows - 5; row += 6)
-    for (const side of [0, 1]) {
-      const centerX = side === 0 ? 3 + random() * 14 : 32 + random() * 11,
-        centerY = row + random() * 2,
-        radiusX = 1.6 + random() * 2.2,
-        radiusY = 0.8 + random() * 1.2;
-      for (let y = Math.floor(centerY - radiusY); y <= centerY + radiusY; y++)
-        for (let x = Math.floor(centerX - radiusX); x <= centerX + radiusX; x++)
-          if (
-            ((x - centerX) / radiusX) ** 2 + ((y - centerY) / radiusY) ** 2 <
-            1
-          )
-            carve(x, y);
-    }
-  for (const hazard of [...W02_HAZARDS.coldPockets, ...W02_HAZARDS.vents])
-    for (let x = Math.floor(hazard.x) - 1; x <= Math.floor(hazard.x) + 1; x++)
-      for (let y = Math.floor(hazard.y) - 1; y <= Math.floor(hazard.y) + 1; y++)
-        carve(x, y);
+function ellipse(g: Generation, x: number, y: number, rx: number, ry: number) {
+  for (let row = Math.floor(y - ry); row <= y + ry; row++)
+    for (let column = Math.floor(x - rx); column <= x + rx; column++)
+      if (((column - x) / rx) ** 2 + ((row - y) / ry) ** 2 < 1)
+        g.carve(column, row);
+}
 
-  const packages: CampaignPackage[] = [];
-  const occupied = new Set<number>();
-  const addOrdinary = (column: number, row: number, oreIndex: number) => {
-    const ore = W02_ORES[oreIndex]!;
-    packages.push({
-      id: `W02:deposit:${row}:${column}`,
+/** Bands each have a silhouette, not merely a different ore distribution. */
+function shapeBands(g: Generation) {
+  const { world, id, route, random } = g;
+  for (const band of WORLD_BANDS[id]) {
+    for (let row = Math.max(9, band.start + 2); row < band.end; row += 6) {
+      for (const side of [-1, 1]) {
+        const x = route + side * (6 + Math.floor(random() * 8));
+        const rx =
+          band.cave === "gallery" ? 4 + random() * 2 : 1.8 + random() * 2;
+        const ry = band.cave === "geode" ? 2.8 : 1 + random() * 1.1;
+        ellipse(g, x, row, rx, ry);
+      }
+    }
+  }
+  // Every 50 m has a small branch touching the route. A player sees its mouth
+  // while excavating the route, but the solid route itself is never pre-dug.
+  for (let row = 8, n = 0; row < world.rows - 2; row += 5, n++) {
+    if (id === "W01" && row >= 28 && row <= 32) continue;
+    const side = n % 2 === 0 ? -1 : 1;
+    for (let dx = 1; dx <= 3; dx++) {
+      g.carve(route + side * dx, row);
+      if (dx > 1) g.carve(route + side * dx, row - 1);
+    }
+  }
+  // The deep gallery is deliberately large enough to change how a shaft feels.
+  ellipse(g, route - 7, id === "W01" ? 43 : 63, 6.2, 3.4);
+  const galleryRow = id === "W01" ? 43 : 63;
+  for (let x = route - 7; x < route; x++) g.carve(x, galleryRow);
+  // Each mission is flanked by a recognizable room while its object stays buried.
+  for (const mission of world.missions) {
+    const x = Math.floor(mission.x),
+      y = Math.floor(mission.y);
+    ellipse(g, x - 3, Math.min(world.rows - 3, y), 2.5, 1.6);
+    for (let column = x - 3; column < x; column++)
+      g.carve(column, Math.min(world.rows - 2, y));
+  }
+}
+
+function placeSites(g: Generation) {
+  const { world, id, route } = g;
+  const definitions =
+    id === "W01"
+      ? [
+          { row: 8, x: route - 2, kind: "survey", name: "Broken survey mast" },
+          {
+            row: 23,
+            x: route - 2,
+            kind: "mission",
+            name: "Lander valve store",
+          },
+          { row: 38, x: route + 2, kind: "mission", name: "Antenna workshop" },
+          {
+            row: 43,
+            x: route - 5,
+            kind: "wreck",
+            name: "Collapsed crew gallery",
+          },
+          {
+            row: 53,
+            x: route - 2,
+            kind: "geode",
+            name: "Surveyor's compass geode",
+          },
+          {
+            row: 56,
+            x: route + 3,
+            kind: "cache",
+            name: "Thermal service locker",
+          },
+        ]
+      : [
+          { row: 12, x: route - 3, kind: "wreck", name: "Old refuge crawler" },
+          {
+            row: 28,
+            x: route + 2,
+            kind: "survey",
+            name: "Blue glacier listening post",
+          },
+          {
+            row: 43,
+            x: route - 3,
+            kind: "mission",
+            name: "Intact sample gallery",
+          },
+          {
+            row: 58,
+            x: route + 4,
+            kind: "wreck",
+            name: "Steam collector wreck",
+          },
+          { row: 72, x: route - 3, kind: "survey", name: "Pressure relay" },
+          { row: 86, x: route - 2, kind: "geode", name: "Lantern seed geode" },
+          {
+            row: 94,
+            x: route + 3,
+            kind: "cache",
+            name: "Preservation instrument case",
+          },
+        ];
+  world.sites = definitions.map((site, n) => {
+    ellipse(g, site.x, site.row, site.kind === "geode" ? 3.1 : 2.1, 1.5);
+    for (
+      let x = Math.min(site.x, route - 1);
+      x <= Math.max(site.x, route + 1);
+      x++
+    )
+      g.carve(x, site.row);
+    return {
+      id: `${id}-SITE-${n + 1}`,
+      kind: site.kind as "survey" | "mission" | "wreck" | "geode" | "cache",
+      name: site.name,
+      x: site.x + 0.5,
+      y: site.row + 0.5,
+      opened: false,
+      discovered: false,
+      ...(site.kind === "cache"
+        ? {
+            tool: id === "W01" ? "W02-R1" : "W02-R3",
+            reward: id === "W01" ? 2000 : 6000,
+          }
+        : {}),
+    };
+  });
+  const logRows =
+    id === "W01"
+      ? [6, 8, 18, 23, 29, 38, 53, 56]
+      : [8, 24, 28, 43, 58, 72, 86, 94];
+  world.fieldLogs = FIELD_LOG_TEXT[id].map((log, n) => ({
+    id: `${id}-LOG-${n + 1}`,
+    ...log,
+    x: route + (n % 2 ? -1.5 : 1.5),
+    y: logRows[n]! + 0.5,
+    read: false,
+  }));
+  for (const site of world.sites) {
+    const nearest = world.fieldLogs.reduce((a, b) =>
+      Math.abs(a.y - site.y) < Math.abs(b.y - site.y) ? a : b,
+    );
+    site.logId = nearest.id;
+  }
+}
+
+function placeHazards(g: Generation) {
+  const { world, id, route, index } = g;
+  const random = randomFor(world.seed, id === "W01" ? 0x51e1f : 0xc01d);
+  if (id === "W01") {
+    world.shelves = [14, 35, 46].map((row, n) => {
+      const side = n % 2 ? 1 : -1;
+      const column = route + side * (6 + Math.floor(random() * 7));
+      world.tiles[index(column, row)] = 1;
+      for (let x = column - 1; x <= column + 1; x++) g.carve(x, row + 1);
+      world.tiles[index(column, row + 2)] = 1;
+      return {
+        id: `W01-SHELF-${n + 1}`,
+        x: column + 0.5,
+        y: row + 0.5,
+        warning: null,
+        collapsed: false,
+      };
+    });
+  } else {
+    world.hazards = {
+      coldPockets: [28, 61].map((y, n) => ({
+        x: route + (n % 2 ? 1 : -1) * (7 + Math.floor(random() * 7)) + 0.5,
+        y: y + Math.floor(random() * 3) + 0.5,
+      })),
+      vents: [48, 83].map((y, n) => ({
+        x: route + (n % 2 ? 1 : -1) * (8 + Math.floor(random() * 7)) + 0.5,
+        y: y + Math.floor(random() * 3) + 0.5,
+      })),
+    };
+    for (const hazard of [...world.hazards.coldPockets, ...world.hazards.vents])
+      ellipse(g, Math.floor(hazard.x), Math.floor(hazard.y), 2.2, 1.8);
+  }
+  const minimumRow = id === "W01" ? 45 : 75;
+  for (let row = minimumRow; row < world.rows; row++)
+    for (let column = 0; column < world.width; column++) {
+      if (
+        Math.abs(column - route) <= 1 ||
+        g.missionCells.has(index(column, row)) ||
+        world.tiles[index(column, row)] !== 1 ||
+        random() >= 0.08
+      )
+        continue;
+      world.pressureSeams!.push({
+        id: `${id}-PRESSURE-${row}-${column}`,
+        x: column + 0.5,
+        y: row + 0.5,
+        warning: null,
+        spent: false,
+      });
+    }
+}
+
+function protectRoute(g: Generation) {
+  const { world, route, id } = g;
+  for (let row = 0; row < world.rows; row++)
+    world.tiles[g.index(route, row)] = 1;
+  for (const cell of g.missionCells) world.tiles[cell] = 1;
+  if (id === "W01") {
+    // Includes previous cave air: wrapping or a lucky cavity cannot bypass it.
+    for (const row of [30, 31])
+      for (let x = 0; x < world.width; x++) world.tiles[g.index(x, row)] = 4;
+  } else {
+    for (const row of [W02.cryoRow, W02.cryoRow + 1])
+      for (const x of [22, 23, 24, 25]) world.tiles[g.index(x, row)] = 1;
+  }
+}
+
+function placeResources(g: Generation) {
+  const { world, id, route, index, occupied } = g;
+  const ores = id === "W01" ? W01_ORES : W02_ORES;
+  const random = randomFor(world.seed, id === "W01" ? 0x0ae102 : 0x0ae203);
+  const add = (x: number, y: number, oreIndex: number) => {
+    const ore: OreDefinition = ores[oreIndex]!;
+    if (occupied.has(index(x, y)))
+      throw new Error(`Duplicate resource at ${id}:${x},${y}`);
+    world.tiles[index(x, y)] =
+      world.tiles[index(x, y)] === 4
+        ? 4
+        : Math.max(1, world.tiles[index(x, y)]!);
+    world.packages.push({
+      id: `${id}:deposit:${y}:${x}`,
       itemId: ore.id,
       name: ore.name,
-      origin: "W02",
-      balanceVersion: BALANCE_VERSION,
+      origin: id,
+      balanceVersion: world.balanceVersion!,
       value: ore.value,
       bulk: ore.bulk,
       mass: ore.mass,
       tags: [
         ...ore.tags,
-        ...(oreIndex === 2 && row >= W02.cryoRow ? ["cryosample"] : []),
+        ...(id === "W02" && oreIndex === 2 && y >= W02.cryoRow
+          ? ["cryosample"]
+          : []),
       ],
-      x: column + 0.5,
-      y: row + 0.5,
+      x: x + 0.5,
+      y: y + 0.5,
       status: "deposit",
       processedBy: [],
     });
-    occupied.add(indexOf(column, row));
+    occupied.add(index(x, y));
   };
-  // 1,840 CR in the first ten rows buys R1 plus a service reserve, without
-  // requiring R1, volatile handling or an income-bearing mission sample.
-  for (const column of [24, 25])
-    [0, 1, 1, 0, 1, 1, 0, 1, 1, 0].forEach((ore, row) =>
-      addOrdinary(column, row, ore),
+  if (id === "W01")
+    STARTER.forEach((seam, offset) =>
+      seam.forEach((ore, row) => add(route + offset, row, ore)),
     );
-  // A safe first volatile occurs well before the required intact-sample vein.
-  addOrdinary(24, 24, 2);
-  for (const row of [W02.cryoRow, W02.cryoRow + 1])
-    for (const column of [22, 23, 24, 25]) addOrdinary(column, row, 2);
-
-  const candidates = tiles
-    .map((tile, index) => ({ tile, index }))
-    .filter(
-      ({ tile, index }) =>
-        tile !== 0 && !occupied.has(index) && !missionCells.has(index),
+  else {
+    for (const x of [24, 25])
+      [0, 1, 1, 0, 1, 1, 0, 1, 1, 0].forEach((ore, row) => add(x, row, ore));
+    add(24, 24, 2);
+    for (const row of [W02.cryoRow, W02.cryoRow + 1])
+      for (const x of [22, 23, 24, 25]) add(x, row, 2);
+  }
+  // A visible pocket beside the route every 50 m prevents empty middle bands.
+  const pocketRows = [
+    ...(id === "W01" ? [10] : []),
+    ...Array.from(
+      { length: Math.floor((world.rows - 15) / 5) + 1 },
+      (_, n) => 13 + n * 5,
+    ),
+  ];
+  for (const [n, row] of pocketRows.entries()) {
+    if (id === "W01" && row >= 30 && row <= 31) continue;
+    const x = route + (n % 2 ? 2 : -2);
+    if (g.missionCells.has(index(x, row)) || occupied.has(index(x, row)))
+      continue;
+    const tier =
+      id === "W01"
+        ? row >= 15 && n % 3 === 0
+          ? 2
+          : 1
+        : row >= 64 && n % 5 === 0
+          ? 3
+          : row >= 24 && n % 3 === 0
+            ? 2
+            : 1;
+    add(x, row, tier);
+  }
+  // Hazards guard optional value, never an objective or the guaranteed shaft.
+  const hazardPoints = [
+    ...world.shelves,
+    ...(world.hazards?.coldPockets ?? []),
+    ...(world.hazards?.vents ?? []),
+  ];
+  for (const hazard of hazardPoints) {
+    const x = Math.floor(hazard.x) + 2,
+      row = Math.floor(hazard.y);
+    if (
+      x >= world.width ||
+      occupied.has(index(x, row)) ||
+      g.missionCells.has(index(x, row))
     )
-    .map(({ index }) => index);
-  const meanValue = W02_ORES.reduce(
-    (total, ore) => total + (ore.value * ore.weight) / 100,
-    0,
+      continue;
+    add(x, row, row >= (id === "W01" ? 15 : 24) ? 2 : 1);
+  }
+  const shelfCells = new Set(
+    world.shelves.map((s) => index(Math.floor(s.x), Math.floor(s.y))),
   );
-  const depositCount =
-    100 *
-    Math.ceil(
-      Math.max(
-        (candidates.length + packages.length) * 0.12,
-        W02.minOrdinary / meanValue,
-      ) / 100,
-    );
-  const available = new Set(candidates);
-  // Rarity escalates with depth rather than placing the most valuable crowns
-  // beside the arrival site. Exact global weights still match the design data.
-  for (const oreIndex of [3, 2, 1, 0]) {
-    const ore = W02_ORES[oreIndex]!;
-    const minimumRow = oreIndex === 3 ? 64 : oreIndex === 2 ? 24 : 0;
-    const allowed = (index: number) =>
-      available.has(index) && Math.floor(index / width) >= minimumRow;
-    const anchors = shuffle([...available].filter(allowed));
+  const available = new Set(
+    world.tiles
+      .map((tile, cell) => ({ tile, cell }))
+      .filter(
+        ({ tile, cell }) =>
+          tile > 0 &&
+          tile !== 4 &&
+          !occupied.has(cell) &&
+          !g.missionCells.has(cell) &&
+          !shelfCells.has(cell) &&
+          !(
+            Math.floor(cell / world.width) < 10 &&
+            [route, route + 1].includes(cell % world.width)
+          ),
+      )
+      .map(({ cell }) => cell),
+  );
+  const count = id === "W01" ? 400 : 600;
+  const bandOf = (cell: number) => {
+    const y = Math.floor(cell / world.width);
+    return y < 10 ? 0 : y < 40 ? 1 : 2;
+  };
+  const quotas =
+    id === "W01"
+      ? [0.16, 0.4, 0.44].map((share) => Math.round(share * count))
+      : [count, count, count];
+  const placed = [0, 0, 0];
+  for (const item of world.packages)
+    placed[bandOf(index(Math.floor(item.x), Math.floor(item.y)))]!++;
+  const minimum = id === "W01" ? [0, 4, 15, 32] : [0, 0, 24, 64];
+  const exponents = id === "W01" ? [0, 1.0, 2.4, 3.2] : [0, 0.5, 1.6, 2.7];
+  for (const tier of [3, 2, 1, 0]) {
     let needed =
-      (depositCount * ore.weight) / 100 -
-      packages.filter((item) => item.itemId === ore.id).length;
+      (count * ores[tier]!.weight) / 100 -
+      world.packages.filter((item) => item.itemId === ores[tier]!.id).length;
+    const allowed = (cell: number) =>
+      available.has(cell) &&
+      Math.floor(cell / world.width) >= minimum[tier]! &&
+      placed[bandOf(cell)]! < quotas[bandOf(cell)]!;
+    const anchors = [...available]
+      .filter(allowed)
+      .map((cell) => ({
+        cell,
+        key: Math.pow(
+          random(),
+          1 /
+            Math.pow(1 + Math.floor(cell / world.width) / 15, exponents[tier]!),
+        ),
+      }))
+      .sort((a, b) => a.key - b.key)
+      .map(({ cell }) => cell);
     while (needed > 0) {
       let anchor = anchors.pop();
       while (anchor !== undefined && !allowed(anchor)) anchor = anchors.pop();
       if (anchor === undefined)
-        throw new Error("W02 cannot satisfy its ordinary-resource budget.");
-      const queue = [anchor];
-      const veinSize = Math.min(needed, 2 + Math.floor(random() * 4));
+        throw new Error(`${id} resource stage cannot place ${ores[tier]!.id}`);
+      const queue = [anchor],
+        veinSize = Math.min(needed, 2 + Math.floor(random() * 3));
       let grown = 0;
       while (queue.length && grown < veinSize) {
-        const index = queue.shift()!;
-        if (!allowed(index)) continue;
-        available.delete(index);
-        const column = index % width,
-          row = Math.floor(index / width);
-        addOrdinary(column, row, oreIndex);
+        const cell = queue.shift()!;
+        if (!allowed(cell)) continue;
+        available.delete(cell);
+        placed[bandOf(cell)]!++;
+        const x = cell % world.width,
+          row = Math.floor(cell / world.width);
+        add(x, row, tier);
         needed--;
         grown++;
         queue.push(
-          ...shuffle([
-            column > 0 ? index - 1 : -1,
-            column < width - 1 ? index + 1 : -1,
-            index - width,
-            index + width,
-          ]).filter(allowed),
+          ...shuffled(
+            [
+              x > 0 ? cell - 1 : -1,
+              x < world.width - 1 ? cell + 1 : -1,
+              cell - world.width,
+              cell + world.width,
+            ],
+            random,
+          ).filter(allowed),
         );
       }
     }
   }
+  const geode = world.sites!.find((site) => site.kind === "geode")!;
+  let relicX = Math.floor(geode.x),
+    relicY = Math.floor(geode.y);
+  while (
+    occupied.has(index(relicX, relicY)) ||
+    g.missionCells.has(index(relicX, relicY))
+  )
+    relicX--;
+  world.tiles[index(relicX, relicY)] = 1;
+  world.packages.push({
+    id: `${id}:relic:1`,
+    itemId: `${id}-J1`,
+    relicId: `${id}-J1`,
+    name: id === "W01" ? "Surveyor's compass" : "Lantern seed",
+    origin: id,
+    balanceVersion: world.balanceVersion!,
+    value: id === "W01" ? 7500 : 30000,
+    bulk: id === "W01" ? 2 : 4,
+    mass: id === "W01" ? 2.5 : 5,
+    tags: ["relic"],
+    x: relicX + 0.5,
+    y: relicY + 0.5,
+    status: "deposit",
+    processedBy: [],
+  });
+}
 
-  const relicRoll = random();
-  const relicCount = relicRoll < 0.25 ? 0 : relicRoll < 0.85 ? 1 : 2;
-  const relicSites = shuffle(
-    [...available].filter((index) => Math.floor(index / width) >= 20),
-  );
-  for (let relic = 0; relic < relicCount; relic++) {
-    const index = relicSites.pop()!;
-    packages.push({
-      id: `W02:relic:${relic + 1}`,
-      itemId: "W02-J",
-      name: "Ice comet relic",
-      origin: "W02",
-      balanceVersion: BALANCE_VERSION,
-      value: 30000,
-      bulk: 4,
-      mass: 5,
-      tags: ["relic"],
-      x: (index % width) + 0.5,
-      y: Math.floor(index / width) + 0.5,
-      status: "deposit",
-      processedBy: [],
-    });
-  }
+export function createWorld(
+  id: WorldId,
+  seed: number,
+  generatorVersion: 1 | 2 = id === "W01"
+    ? GENERATOR_VERSION
+    : BALANCE_VERSION === "0.3"
+      ? 2
+      : 1,
+): CampaignWorld {
+  if (generatorVersion === 1)
+    return id === "W01" ? createW01V1(seed) : createW02V1(seed);
+  const generation = establishWorld(id, seed);
+  shapeBands(generation);
+  placeSites(generation);
+  placeHazards(generation);
+  protectRoute(generation);
+  placeResources(generation);
+  return generation.world;
+}
 
-  return {
-    id: "W02",
-    seed,
-    width,
-    rows,
-    tiles,
-    discovered: Array(width * rows).fill(0),
-    packages,
-    missions,
-    shelves: [],
-    completed: [],
-    climate: { coldRemaining: 0, ventCooldown: 0, warning: null },
-  };
+export function createW01(
+  seed: number,
+  generatorVersion: 1 | 2 = GENERATOR_VERSION,
+): CampaignWorld {
+  return createWorld("W01", seed, generatorVersion);
+}
+
+/** A fresh world gets current rules; revisits always use the stored instance. */
+export function createW02(
+  seed: number,
+  generatorVersion: 1 | 2 = BALANCE_VERSION === "0.3" ? 2 : 1,
+): CampaignWorld {
+  return createWorld("W02", seed, generatorVersion);
 }

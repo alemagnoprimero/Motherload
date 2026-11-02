@@ -44,10 +44,10 @@ describe("versioned campaign configuration", () => {
     expect(W01_GEAR.map((gear) => [gear.milestone, gear.requires])).toEqual([
       [0, null],
       [1, "W01-R1"],
-      [2, "W01-R2"],
+      [2, null],
     ]);
     expect(W01_MILESTONES.map((milestone) => milestone.fee)).toEqual([
-      2000, 3000, 5000,
+      2000, 6000, 10000,
     ]);
     expect(W01_MILESTONES[1].requiredMissionIds).toEqual([
       "W01-VALVE",

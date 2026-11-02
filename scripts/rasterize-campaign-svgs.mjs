@@ -3,7 +3,12 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
-export async function rasterizeCampaignSources(source, output, manifest) {
+export async function rasterizeCampaignSources(
+  source,
+  output,
+  manifest,
+  scale = 1,
+) {
   const browser = await chromium.launch({
     executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
     args: ["--no-sandbox", "--disable-dev-shm-usage"],
@@ -19,9 +24,12 @@ export async function rasterizeCampaignSources(source, output, manifest) {
         new URL(`${frame.name}.svg`, source),
         "utf8",
       );
-      await page.setViewportSize({ width: frame.width, height: frame.height });
+      await page.setViewportSize({
+        width: Math.round(frame.width * scale),
+        height: Math.round(frame.height * scale),
+      });
       await page.setContent(
-        `<style>html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden}svg{display:block}</style>${drawing}`,
+        `<style>html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden}svg{display:block;width:100%;height:100%}</style>${drawing}`,
       );
       await page.screenshot({
         path: fileURLToPath(new URL(`${frame.name}.png`, output)),

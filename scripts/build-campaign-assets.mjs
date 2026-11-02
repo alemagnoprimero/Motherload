@@ -79,3 +79,40 @@ await writeFile(
     2,
   ) + "\n",
 );
+
+// Resolution pages preserve each source rectangle and pivot while removing transparent padding.
+for (const scale of [2, 3]) {
+  if (scale === 3) {
+    const renders3 = new URL(".cache/campaign-renders-3x/", root);
+    await mkdir(renders3, { recursive: true });
+    await rasterizeCampaignSources(
+      source,
+      renders3,
+      { ...manifest, backgrounds: [] },
+      1.5,
+    );
+  }
+  const packed = spawnSync(
+    process.env.PYTHON || "python",
+    [
+      fileURLToPath(new URL("scripts/pack-campaign-atlas.py", root)),
+      fileURLToPath(root),
+      "w01",
+      String(scale),
+    ],
+    { stdio: "inherit" },
+  );
+  if (packed.status !== 0) process.exit(packed.status || 1);
+  const runtime = spawnSync(
+    process.env.PYTHON || "python",
+    [
+      fileURLToPath(new URL("scripts/pack-campaign-atlas.py", root)),
+      fileURLToPath(root),
+      "w01",
+      String(scale),
+      "runtime",
+    ],
+    { stdio: "inherit" },
+  );
+  if (runtime.status !== 0) process.exit(runtime.status || 1);
+}

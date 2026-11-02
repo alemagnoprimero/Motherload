@@ -1,0 +1,31 @@
+{
+  "version": "0.3",
+  "extends": "0.2",
+  "date": "2026-11-02",
+  "description": "W02 common cargo bulk 1 and steam reserve; already generated comet cargo keeps its bulk.",
+  "worlds": {
+    "W02": {
+      "ore_bulk": [
+        1,
+        1,
+        2,
+        2
+      ],
+      "bulk": 1,
+      "gear": {
+        "W02-R2": {
+          "name": "Steam reserve",
+          "price": 1600,
+          "effect": "Store recovered drilling energy and release the reserve manually when needed."
+        }
+      },
+      "jackpot_name": "Lantern seed",
+      "generator_version": 2
+    }
+  },
+  "rules": {
+    "volatile_training_cuts": 3,
+    "volatile_training_window_seconds": 1.5,
+    "volatile_release_seconds": 0.75
+  }
+}

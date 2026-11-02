@@ -1,68 +1,93 @@
-# W01 implementation notes
+# Broken asteroid — current implementation
 
-This checkpoint implements the approved design-pack foundations and **Broken asteroid (W01)**. The subsequent [Ice comet expansion (W02)](CAMPAIGN_W02.md) is playable through Navigation after Frontier departure. W03 and later worlds have validated metadata, not playable mechanics.
+W01 is the opening destination of the campaign. [Ice comet (W02)](CAMPAIGN_W02.md) is playable after Frontier departure; W03 and later destinations are charted metadata, not playable worlds. Current production rules use schema 3 / balance 0.3, with newly generated W01 claims stamped balance 0.2 / generator 2. [Balance versions and migration](BALANCE_VERSIONS.md) explains how older claims retain their original geometry and package values.
 
 ## Play and progression
 
-The root address opens the campaign directly, including older bookmarked mode URLs. There is one playable game. Retired browser save data is neither selected nor converted/deleted; campaign checkpoints retain their existing IndexedDB namespace.
+The root address opens the campaign front door, with Continue for an existing save and New expedition for a fresh claim. There is one game; retired prototype saves are neither selected nor converted/deleted. Starting another campaign archives the previous valid campaign separately from ordinary backup rotation.
 
-The 40-column, 60-exploration-row asteroid wraps horizontally and reaches 600 m. Arrival air uses negative vertical coordinates, so the design's exploration rows do not lose depth to surface padding. The camera follows the rig and the map stays hidden behind wall-occluded discovery.
+The 40-column, 60-row asteroid wraps horizontally and reaches 600 m. Surface air has negative coordinates, so it does not reduce the exploration depth. Wall-occluded discovery conceals minerals and caves until explored; the claim map and waypoints show discovered ground rather than revealing the whole mine.
 
-The starter veins at columns 20/21 contain seven ordinary packages worth 380/480 CR. The survey beacon is at 100 m; the valve, antenna and navigation core are at 250/400/600 m. Required geometry is protected before caves and optional shelf hazards are placed. The mission corridor is drillable soil, not an already excavated passage.
+The two marked opening veins at columns 20/21 contain seven ordinary packages worth 380/480 CR. The opening coach and tracker guide the first haul, return, sale, construction, second seam and upgrade. Coach progress is a pilot preference and can be skipped without blocking controls. The survey beacon is at 100 m; the valve, antenna and navigation core are at 250/400/600 m.
 
-M1 requires the surveyed beacon, three banked ordinary packages and 200 CR. It opens rank-1 hardware and the anchoring feet. M2 requires the banked valve/antenna and 300 CR, opening the rack and navigation archive. M3 requires the banked core and 500 CR, granting the Frontier certificate and departure. Each payment changes the surface construction. R3 ownership is optional for W01 departure.
+| Stage | Required proof | Construction fee | Result |
+| --- | --- | --- | --- |
+| M1: Survey the wreck | Survey the 100 m beacon and bank three ordinary packages | 200 CR | Rank-1 hardware and the shaft brace |
+| M2: Recover the lander parts | Bank the valve and antenna | 600 CR | External cargo rack |
+| M3: Restore the lander | Bank the navigation core | 1,000 CR | Frontier certificate and departure; Ice comet playable, Fractured moon charted |
 
-Basic trade, banking, refuelling and repair exist at the arrival lander. M1 improves the infrastructure and unlocks blueprints; it does not gate the banking needed to satisfy its own objective. The free salvaged auger is installed for the opening tutorial.
+Basic banking, trade, refuelling and repair are available at the arrival lander before M1. Each paid stage changes its construction. Neither the rack nor all three local tools are mandatory for departure.
 
-## Economic rules
+New generator-2 worlds have a continuous fused plate across rows 30–31 (310–320 m). It includes cells that would otherwise be cave air, so horizontal wrapping cannot bypass it. A rank-1 drill is required and cuts plate 2.5 times more slowly than the equivalent ordinary material. Existing generator-1 claims retain their original terrain and receive no retroactive barrier.
 
-`src/campaign/config.ts` holds typed numeric W01 rules and all hardware-rank tables. The source JSON is pinned unchanged under `design/v0.1/`, audited at build time, and does not execute as a gameplay script. Later prose effects require separate typed handlers before those worlds can be marked implemented.
+## Economy and equipment
 
-Credits are integer tenths of a CR. Refuelling costs 1 CR per energy unit and repair 15 CR/HP; partial transactions round their charge upward to the next 0.1 CR. Rank-1 drill/energy/cargo/hull/engine cost 750/650/700/450/500 CR. Energy/hull purchases fill the new capacity.
+Credits are integer tenths of a CR. Refuelling costs 1 CR per litre and repair 15 CR per HP; partial purchases display their total cost and resulting condition. Energy and hull upgrades fill their new capacity. Rank-1 drill/energy/cargo/hull/engine cost **750/600/700/450/500 CR**.
 
-Packages preserve identity, origin, value, bulk, mass, tags and balance version. Their lifecycle distinguishes deposits, exposed cargo, carried cargo, safely banked cargo, sold cargo and losses. Banking does not create credits; selling operates on stored packages. Mission objects occupy no cargo bulk, cannot be sold and are tracked separately.
+| W01 package | New-package value | Bulk |
+| --- | --- | --- |
+| Slag iron | 28 CR | 1 |
+| Rust copper | 53 CR | 1 |
+| Shard silver | 120 CR | 1 |
+| Core crown | 400 CR | 1 |
 
-A full hold leaves an exposed package in cleared terrain. Ejection places an intact carried package in nearby open space. Collection, banking and sale move that same identity instead of copying it. Equipping/stowing the rack cannot create an invalid over-capacity save.
+The four ordinary counts remain 240/120/36/4, for 400 deposits worth 19,000 CR before optional rewards. Depth weighting places higher-value minerals deeper. The weighted mean remains 47.5 CR; the opening mixes retain their 380/480 CR totals. Current W01 reference spending is 5,950 CR and the ordinary-value floor is 17,850 CR. Versioned source overlays and runtime data are checked during builds.
 
-New campaigns start with the full rank-0 tank. The first tow per world, available when energy or hull reaches zero, is free and preserves carried cargo/relics and mission objects. The saved `progress.towsUsed` ledger prevents repeat free tows; old schema-1/2 saves default it to empty without changing their existing energy or world records. Voluntary recovery and subsequent tows lose carried ordinary cargo/relics and return unbanked mission objects to their marked sources. Their fee is `min(cash, 25,000, 100 + floor(0.01 × actual equipment spending))` in CR. Equipment spending includes hardware and local tools, excluding construction/services. Hull/energy rise to at least half maximum; healthier resources are preserved. An emergency ordinary salvage package is provided when nearby safe income is depleted; it supplies no story items or blueprints.
+| Local equipment | Price | Unlock | Effect |
+| --- | --- | --- | --- |
+| Salvaged auger | Free | Start | Soil cut time ×0.90 |
+| Shaft brace | 250 CR | M1; own auger | Deploy against a wall to cut sideways without a floor; bracing reduces drift and thrust energy |
+| External cargo rack | 900 CR | M2; no brace prerequisite | Cargo capacity ×1.30, rounded up; loaded acceleration −8% |
 
-The two starter hauls plus initial cash produce 880 CR before costs. M1 leaves at most 680 CR before services. The opening check therefore targets a useful affordable purchase with a reserve rather than promising a 750 CR drill.
+Cargo mass now slows ascent; the engine improves loaded climbing. The return-reserve indicator uses the same motion and energy constants as the simulation, including a committed cut's remaining cost. Its states are OK, Plan return, Turn back and Can't reach home. It is guidance for the cleared return route, not a promise that the rig can drill upward through an unexplored ceiling.
 
-## Simulation and persistence
+Packages keep their identity, origin, stamped value/bulk/mass and balance version through extraction, carrying, banking, sale and loss. Banking creates no credits. Mission objects have no cargo bulk or sale value. A full hold leaves packages exposed in cleared terrain; ejection moves the same package into nearby open space. Rack changes cannot leave the hold over capacity.
 
-The campaign owns its model, world generation, validation and save namespace under `src/campaign/`. The entry loads it directly. The retired prototype's runtime, assets, routing and tests have been removed.
+The two opening hauls plus starting cash produce 880 CR before expenses. The opening regression targets the **600 CR energy upgrade after M1 and one minor impact**, with a service reserve; it does not promise the 750 CR drill after two trips or establish novice completion time.
 
-IndexedDB database `motherload.campaign.v1` keeps current/backup checkpoints in one transaction, with compare-and-swap revision protection. A failed/aborted write rolls back both records. BroadcastChannel notifies other campaign tabs; revision comparison still guards writes without that notification. Corrupt/future records are protected; a valid backup can be reviewed before explicit restoration/replacement.
+## Recovery and hazards
 
-Campaign replacement also keeps the outgoing valid checkpoint under a separate `archive:<ISO>` key. The three newest valid archives are retained, independently of backup rotation, and are restorable from Pause. Archive insertion, valid-archive pruning and checkpoint/backup replacement share the same transaction. Unsupported/corrupt archive bytes are preserved rather than silently pruned. No database-version upgrade is required.
+New campaigns start with the full 10 L rank-0 tank. The first emergency tow per world is free and keeps carried ordinary cargo, relics and mission objects. It applies when energy or hull is depleted, or when the return estimate shows insufficient energy even after an equipped steam reserve. The saved `towsUsed` ledger prevents repeated free tows. Voluntary recovery and later tows keep the paid recovery rules.
 
-Checkpoints record schema, balance and generator versions. All current worlds, excavation/discovery, packages, mission state, equipment, paid prices, conditions and construction are included. Velocity, animation and partial cuts are transient. Pausing/backgrounding freezes simulation; background saving is best effort, so explicit Save/Export remains available.
+Paid recovery loses carried ordinary cargo/relics and returns unbanked mission objects to their sources. Its fee is `min(cash, 25,000, 100 + floor(0.01 × actual equipment spending))` CR, with no debt. Hardware and local tools count as equipment spending; construction and services do not. Energy and hull rise to at least half maximum, preserving resources already above that level. Emergency ordinary salvage appears when nearby safe income is exhausted; it supplies no mission objects or blueprints.
 
-Saved, imported and backup-restored runs require an explicit Resume expedition action before simulation can advance. Load waits for its asynchronous read to finish and retains the paused menu. Disabled restored rigs can request confirmed recovery directly from that menu's header. Save recency records actual successful saves in the current session, and Load clearly refers to the latest checkpoint including autosaves.
+Brittle shelves are placed per seed, away from the protected route, and warn for two seconds before collapse. Pressure seams begin below 450 m in optional soil: a cut starts a 1.2-second hiss before a nearby burst. Base damage is 4 HP and hull rank reduces that damage by `1 / (rank + 1)`. Normal falls remain below the ordinary landing-damage threshold.
 
-The validator bounds state JSON to 2 MiB and the checkpoint transport to 16 MiB. Across the initial 100 generated W01 seeds, the largest measured checkpoint was about 93 KiB. The W02 expansion adds a versioned two-world record, measured at most 240,777 bytes across 100 seeds. Those bounds are not a claim that every future campaign state fits; further expansion requires format/size review and chunk-storage work. See [W02 persistence](CAMPAIGN_W02.md).
+## World content
 
-## Visual and input scope
+The staged generator uses four shared bands: Regolith (rows 0–10), Broken plates (11–29), Iron shelf (30–47) and Core rubble (48–59). Rock density, cave shape, lighting and hazards vary by band. A one-column drillable route has nearby features and mission rooms; it is not a pre-excavated shaft.
 
-The renderer uses original layered 2D artwork and separate terrain/deposit/package/collision layers. Art is validated from committed PNG/JSON output; see `CAMPAIGN_ASSETS.md`. Transparent edge gauges and numeric readouts stay live during mining and flight. A compact objective line and equipped-tool icons accompany short contextual cues and item pickup feedback beside the rig. Uninstalled gear does not occupy the active HUD.
+Eight field logs, discoverable sites and a deep named relic, **Surveyor's compass**, support exploration. A nearby anomaly ping hints at the relic without exposing its exact hidden cell. Hollow-rock cues and reward pockets provide reasons to leave the direct objective route. A post-restoration cache requires the comet's thermal auger on a return visit.
 
-The title screen sits over the world. Surface services open a lander terminal beside the visible rig and ship: a side console on wide screens and a bottom console in portrait. The presentation camera frames the uncovered world while simulation and hazard timers remain paused. Hardware and services use icon-led rows with their existing exact prices, prerequisites, effects and service-reserve previews. The pause interface retains checkpoint, cargo, settings and recovery functions.
+Two optional contracts supplement the main construction path: sell twelve ordinary packages after acceptance for 120 CR, or reach 450 m and return for 250 CR. Their progress and one-time claims are saved. Chapter records track time, income, best banked haul, mining, recoveries, depth and contracts; mastery reflects completion, banking or selling at least half the ordinary value plus the relic, and a recovery-free completion within twenty minutes when a complete timing history is available. Migrated records with incomplete history cannot gain the speed star from a zero timer.
 
-`src/campaign/layout.ts` supplies the shared viewport contract used by the renderer and browser checks. Camera framing and contextual-prompt anchors follow the actual console bounds; collision and save coordinates remain simulation data.
+## Interface and controls
 
-Keyboard and independent touch controls share named actions. Keyboard remapping, drill/brace hold-toggle options, reduced motion, high-contrast edges, larger text, fullscreen and three sound volume buses are available. Default controller gameplay includes pause/resume; controller remapping and controller menu navigation remain follow-up work. Physical controller/Android comfort and performance are not established by browser emulation.
+The world remains the main screen. The persistent HUD presents conditions, return guidance and an objective chip; mission details, recent notices and exploration records are available through the game interface. Surface interactions use the paused Trade / Workshop / Construction terminal. Pause contains save data, settings and recovery; New expedition belongs to the front door.
 
-Touch controls use a floating joystick centered at the first screen position of each gesture. Direction follows the finger's displacement from that center, independently of the rig and camera; returning to its dead zone gives neutral input. The base and bounded knob appear at the touch position, and a new gesture places a new center. Diagonal dragging combines thrust and steering. Mouse holds retain rig-relative world aiming. Short taps retain mineral inspection and lander entry. Gestures are transient input, do not latch the keyboard drilling toggle, and clear on cancellation, focus loss or menus. Releasing input does not cancel the simulator's committed cut or remove vehicle momentum. Fixed direction buttons are an explicit optional fallback on any device.
+Keyboard, mouse, floating touch joystick and controller share named actions. Mouse press steers immediately except on an inspectable target; touch direction is relative to each gesture's dynamic center. A dead zone gives neutral input, diagonal motion combines thrust and steering, and cancelled gestures or lost focus clear transient controls. Input release does not cancel a committed cut. Fixed directional buttons remain an optional fallback.
 
-The live mission tracker names each current-stage requirement, distinguishes objects still at their source from carried and banked objects, and tracks the construction fee against available credits. It directs the player to the next discovery, return/banking, earning or construction action, then advances after actual construction payment. The departure stage points to launching from the lander. These instructions reflect existing model/configuration rules; they do not change rewards, prices or saved progression.
+Shaft alignment assists Down entry from small offsets, including ledges above the deepest excavation. The brace enables side cuts against a wall without requiring a floor. Air braking and bay assistance reduce overshoot. The settings expose accessibility and input preferences, including reduced motion, high contrast, type scaling, sound and remapping. Sound unlocks after a user action and remembered mute is respected. Physical controller/Android comfort is still a playtest concern.
 
-The survey beacon and three mission parts now have recognizable wreck landmarks and a live direction/range locator. Nearby radio pins identify the current source without exposing hidden ore; physical wreckage is clipped to discovered cells. Surveyed/recovered sites retain their remnants. Guidance uses each saved object's actual position and the shortest wrapped bearing, then points to the lander when banking or construction is needed. See [MISSION_POIS.md](MISSION_POIS.md) for ranges and verification.
+Mission wreckage, source beacons and wrapped proximity guidance identify the survey and recoverable parts. Home guidance remains available below the surface. Persistent danger notices are separate from routine pickups; disabled rigs have a recovery action with a preview of cost and retained/lost resources. Browser modifier shortcuts and focused form keys do not become pilot movement.
 
-Persistent HTML energy/hull warnings take priority over routine messages. Disabled rigs have a responsive recovery overlay with exact fee, consequences and resulting conditions before confirmation. Normal lander services remain accessible to disabled rigs already in its bay. Services use model-shared total/partial previews; known ores have shape inlays explained by the pause legend. Browser modifier shortcuts and focused toolbar/form keys do not become pilot commands. See [USABILITY_REVIEW.md](USABILITY_REVIEW.md).
+The rendering implementation and asset pipeline are documented in [CAMPAIGN_ASSETS.md](CAMPAIGN_ASSETS.md). World-to-screen mapping and measured HUD safe areas do not alter simulation or save coordinates.
 
-## Verification and remaining work
+## Persistence and compatibility
 
-The model checks include 100-seed mission/resource generation, source-budget arithmetic, duplicate-safe package handling, save validation, fog occlusion and varied-input snapshots. One input-driven opening includes two physical trips, a shelf hit, repairs, M1 and a hull purchase with reserve. A separate pre-funded route test isolates excavation/flight/tool feasibility to all mission depths and departure; it does not prove complete human earning pace.
+IndexedDB database `motherload.campaign.v1` retains its version-1 checkpoint envelope and store. Current/backup writes use compare-and-swap protection; archive insertion, valid-archive pruning and replacement share that transaction. Three valid campaign archives survive later autosaves. Corrupt/future data and unsupported archive bytes are protected rather than silently deleted. BroadcastChannel informs other tabs, with revision checks still authoritative.
+
+Schema 1/2 checkpoints migrate to schema 3 in memory. Old worlds remain generator 1 / balance 0.1 and retain excavation, discoveries and package economics. Current names resolve by item ID. New reserve, training, contract, record, waypoint, cache, site, log and hazard fields receive explicit defaults and validation. Old W01 campaigns can travel into a newly generated W02 without changing their original claim. Exports are canonical schema-3 snapshots; loading alone does not rewrite the source bytes.
+
+All restored expeditions remain paused until Resume. World timers, pressure/volatile warnings, construction, cargo and conditions persist; velocity, gestures, animation and partial cuts are transient. The state limit remains 2 MiB and transport limit 16 MiB. Those are enforced bounds, not a claim that a future fifteen-world campaign fits this format.
+
+## Current verification
+
+Use `npm test`, `npm run build` and the maintained campaign/browser checks. Current release results and unverified performance or human-pacing targets belong in [IMPROVEMENT_PROGRESS.md](IMPROVEMENT_PROGRESS.md). Automated fixtures that provide funds or open shafts isolate mechanics and interface behavior; they do not prove human earning pace. No physical-device result should be inferred from emulated phone viewports.
+
+## Historical verification before the improvement-plan implementation
+
+The evidence below records earlier releases. Its scenario counts, interface descriptions and measured sizes are historical and are not the current acceptance tally. Initial W01 checkpoints measured about 93 KiB across 100 seeds; the first two-world schema-2 expansion measured at most 240,777 bytes. Current schema-3 content has separate size/round-trip checks.
 
 Final campaign-only test results are recorded in [USABILITY_REVIEW.md](USABILITY_REVIEW.md). The W01 baseline passed ten campaign browser scenarios across focused runs: the native opening, fixture-assisted late mission/departure loop, cargo identity and reload, reserve previews/capacity fills, invalid/cancelled imports, two-tab conflict handling, portrait/landscape multitouch, and phone mineral inspection. The late mission fixture deliberately provides credits and an opened shaft; it is not an earnings or campaign-duration measurement.
 
@@ -74,4 +99,4 @@ The pointer-control and mission-tracker iteration passed nine focused browser sc
 
 The floating-joystick iteration passed eight focused development browser scenarios and four phone scenarios against the compiled Docker bundle. Native touch checks cover immediate joystick placement, stationary neutral holds, downward mining, diagonal flight, center stability during camera movement, returning to neutral, fresh centers, independent fingers, cancellation and short-tap inspection/docking. Fixed direction buttons are hidden by default and their explicit fallback remains tested. Six new unit checks cover touch behavior independently of mouse aiming and simulation timing. Physical-device comfort remains a playtest task.
 
-Remaining campaign work includes W02/W03, subsequent worlds and tools, chunked multiworld persistence, complete controller accessibility, broader telemetry and human full-run pacing. The pack's 45-minute W01 and 16-hour campaign are design targets, not demonstrated completion times. Normal builds do not need the authoring tools or supplied PDF/HTML/concept images.
+The historical roadmap's W02 work is now delivered. W03 and later worlds, wider device/human playtests and any future chunked multiworld storage remain separate work. The pack's 45-minute W01 and 16-hour campaign durations are design targets, not demonstrated human completion times.

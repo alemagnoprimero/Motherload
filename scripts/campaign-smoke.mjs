@@ -32,6 +32,18 @@ async function click(page, selector) {
     return top === element || element.contains(top);
   });
   assert.equal(hit, true, selector + " receives native pointer input");
+  if (
+    selector === "#campaign-confirm-accept" &&
+    /Hold for/.test((await target.getAttribute("aria-label")) || "")
+  ) {
+    const box = await target.boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    if (clocked.has(page)) await page.clock.fastForward(750);
+    else await delay(750);
+    await page.mouse.up();
+    return;
+  }
   await target.click({ force: clocked.has(page) });
 }
 async function idle(page) {
@@ -65,8 +77,13 @@ async function menu(page) {
   if (open) await closeOverlay(page);
   await click(page, "#campaign-menu-toggle");
 }
+async function pauseSection(page, section) {
+  const tab = page.locator(`[data-pause-tab="${section}"]`);
+  if (await tab.isVisible()) await click(page, `[data-pause-tab="${section}"]`);
+}
 async function exportCheckpoint(page, resume = false) {
   await menu(page);
+  await pauseSection(page, "save");
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     click(page, '#campaign-menu [data-command="export"]'),
@@ -78,12 +95,21 @@ async function exportCheckpoint(page, resume = false) {
 }
 async function importCheckpoint(page, checkpoint) {
   await menu(page);
+  await pauseSection(page, "save");
   await page.locator("#campaign-import").setInputFiles({
     name: "qa-campaign.json",
     mimeType: "application/json",
     buffer: Buffer.from(JSON.stringify(checkpoint)),
   });
-  await page.locator("#campaign-confirm").waitFor({ state: "visible" });
+  await page
+    .locator("#campaign-confirm")
+    .waitFor({ state: "visible" })
+    .catch(async (error) => {
+      throw new Error(
+        `Import did not open confirmation: ${await page.locator("#campaign-save-status").textContent()}`,
+        { cause: error },
+      );
+    });
   await click(page, "#campaign-confirm-accept");
   for (
     let n = 0;
@@ -115,8 +141,16 @@ async function advance(page, ms) {
     await page.clock.fastForward(Math.min(50, ms - elapsed));
 }
 async function freeze(page) {
+  // Installing Playwright's clock resets performance.now(). Keep it beyond
+  // timestamps already sampled by the running UI (labels, cooldowns, holds).
+  const elapsed = await page.evaluate(() => performance.now());
   await page.clock.install();
-  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 3000));
+  await page.clock.pauseAt(
+    await page.evaluate(
+      (advanceBy) => Date.now() + advanceBy,
+      Math.max(3000, elapsed + 300),
+    ),
+  );
   clocked.add(page);
 }
 async function sample(page) {
@@ -204,14 +238,42 @@ async function dock(page) {
   throw new Error("Unable to physically return and dock at the lander");
 }
 async function command(page, name) {
-  const overlay = await page.evaluate(
+  let overlay = await page.evaluate(
     () => document.body.dataset.campaignOverlay,
   );
-  const selector =
+  if (name === "new" && overlay !== "welcome") {
+    await menu(page);
+    await pauseSection(page, "expedition");
+    await click(page, '#campaign-menu [data-command="title"]');
+    overlay = "welcome";
+  }
+  if (
+    overlay === "menu" &&
+    (["save", "load", "export", "import", "restore"].includes(name) ||
+      name.startsWith("archive:"))
+  )
+    await pauseSection(page, "save");
+  if (overlay === "menu" && ["map", "recover", "title"].includes(name))
+    await pauseSection(page, "expedition");
+  if (
+    overlay === "dock" &&
+    (["bank", "sell"].includes(name) || name.startsWith("eject:"))
+  )
+    await tab(page, "cargo");
+  let selector =
     (overlay ? "#campaign-" + overlay + " " : "") +
     '[data-command="' +
     name +
     '"]';
+  // The Next strip repeats the same transaction as the current terminal tab.
+  // Prefer that tab's actual control when both are visible.
+  if (
+    overlay === "dock" &&
+    (await page
+      .locator('#campaign-dock-content [data-command="' + name + '"]')
+      .count())
+  )
+    selector = '#campaign-dock-content [data-command="' + name + '"]';
   assert.equal(
     await page.locator(selector).isEnabled(),
     true,
@@ -227,6 +289,26 @@ async function command(page, name) {
     );
 }
 async function tab(page, name) {
+  if (name === "cargo") {
+    await click(page, '#campaign-dock [data-tab="service"]');
+    if (
+      !(await page
+        .locator(".terminal-detail")
+        .evaluate((details) => details.open))
+    )
+      await click(page, ".terminal-detail summary");
+    return;
+  }
+  if (name === "tools" || name === "hardware") {
+    await click(page, '#campaign-dock [data-tab="hardware"]');
+    await click(
+      page,
+      name === "tools"
+        ? '#campaign-dock [data-tab="tools"]'
+        : '#campaign-dock [data-workshop-tab="hardware"]',
+    );
+    return;
+  }
   await click(page, '#campaign-dock [data-tab="' + name + '"]');
 }
 async function ready(browser, base, options = {}) {
@@ -245,7 +327,7 @@ async function ready(browser, base, options = {}) {
   page.on("pageerror", (error) => faults.push(error.message));
   page.on("response", (response) => {
     const path = new URL(response.url()).pathname;
-    if (/w01-atlas.*\.(png|json)$/.test(path))
+    if (/w01-(?:atlas|runtime).*\.(png|json)$/.test(path))
       assets.set(path.endsWith(".png") ? "png" : "json", response);
   });
   await page.goto(destination(base));
@@ -310,7 +392,6 @@ async function assertGeometry(page, viewport, touch = true) {
     "campaign-cargo",
     "campaign-credits",
     "campaign-depth",
-    "campaign-haul",
     "campaign-drill-name",
   ])
     assert.equal(
@@ -318,9 +399,14 @@ async function assertGeometry(page, viewport, touch = true) {
       true,
       id + " remains visible",
     );
+  assert.equal(
+    await page.locator("#campaign-haul").count(),
+    1,
+    "Haul detail hook remains available outside the compact HUD",
+  );
   const sizes = await page
     .locator(
-      "#campaign-haul, #campaign-drill-name, #campaign-energy, #campaign-hull, #campaign-cargo",
+      "#campaign-drill-name, #campaign-energy, #campaign-hull, #campaign-cargo",
     )
     .evaluateAll((elements) =>
       elements.map((e) => ({
@@ -364,7 +450,9 @@ async function pointerState(page) {
     active: element.dataset.pointerActive === "true",
     directions: (element.dataset.pointerDirections || "")
       .split(",")
-      .filter(Boolean),
+      .filter((direction) =>
+        ["up", "down", "left", "right"].includes(direction),
+      ),
   }));
 }
 async function joystickState(page) {
@@ -397,12 +485,12 @@ async function assertMissionGeometry(page, viewport) {
       )
         .filter((element) => element.checkVisibility())
         .map(box),
-      tasks: Array.from(mission.querySelectorAll("[data-task]")).map(
-        (element) => ({
+      tasks: Array.from(mission.querySelectorAll("[data-task]"))
+        .filter((element) => element.checkVisibility())
+        .map((element) => ({
           box: box(element),
           size: parseFloat(getComputedStyle(element).fontSize),
-        }),
-      ),
+        })),
     };
   });
   const m = layout.mission;
@@ -441,6 +529,22 @@ async function missionStatus(page, task, status) {
   return row.innerText();
 }
 
+function surfaceOreExpectation(checkpoint) {
+  const world = checkpoint.state.worlds.W01;
+  const ore = world.packages.find(
+    (item) => item.itemId === "W01-O1" && item.x === 21.5 && item.y === 0.5,
+  );
+  assert.ok(ore, "The fixture has its marked visible surface ore");
+  const legacy =
+    (world.balanceVersion ?? checkpoint.state.balanceVersion) === "0.1";
+  assert.equal(
+    ore.value,
+    legacy ? 300 : 280,
+    "Inspection uses the fixture's stamped mineral economics",
+  );
+  return new RegExp(`Slag iron.*${ore.value / 10} CR.*${ore.bulk} bulk`);
+}
+
 export async function runCampaignInspectionSmoke(
   browser,
   base,
@@ -466,13 +570,11 @@ export async function runCampaignInspectionSmoke(
       await freeze(page);
       await advance(page, 100);
       const session = await context.newCDPSession(page);
-      const { top, bottom } = campaignSafeArea(
-        viewport.width,
-        viewport.height,
-        true,
+      const rig = await rigPoint(page);
+      const tile = Number(
+        await page.locator("#campaign-game").getAttribute("data-view-tile"),
       );
-      const tile = campaignTileSize(viewport.width, viewport.height);
-      const rigY = top + Math.max(100, viewport.height - top - bottom) * 0.46;
+      const rigY = rig.y;
       const tap = async (x, y) => {
         await session.send("Input.dispatchTouchEvent", {
           type: "touchStart",
@@ -485,15 +587,15 @@ export async function runCampaignInspectionSmoke(
         await advance(page, 50);
       };
       // The cell behind the first wall must not become a mineral detector.
-      await tap(viewport.width / 2 - 3 * tile, rigY + (1.5 + 0.36) * tile);
+      await tap(rig.x - 3 * tile, rigY + (1.5 + 0.36) * tile);
       assert.equal(
         await page.locator("#campaign-game").getAttribute("data-inspection"),
         "",
       );
-      await tap(viewport.width / 2 + tile, rigY + (0.5 + 0.36) * tile);
+      await tap(rig.x + tile, rigY + (0.5 + 0.36) * tile);
       assert.match(
         await page.locator("#campaign-game").getAttribute("data-inspection"),
-        /Ironium.*30.*1 bulk/,
+        surfaceOreExpectation(fixture),
       );
       assert.equal(
         await page.locator("#campaign-game").getAttribute("data-world-callout"),
@@ -510,6 +612,11 @@ export async function runCampaignInspectionSmoke(
         "Inspection suppresses the overlapping toast",
       );
       const toolbar = await page.locator(".campaign-toolbar").boundingBox();
+      const {
+        safe: { top, bottom },
+      } = JSON.parse(
+        await page.locator("#campaign-game").getAttribute("data-view-snapshot"),
+      );
       const labelBottom =
         Math.max(top + 12, viewport.height - bottom - 44) + 28;
       assert.ok(
@@ -615,8 +722,10 @@ export async function runCampaignSmoke(
         await advance(page, 100);
         assert.equal(
           (await pointerState(page)).active,
-          false,
-          "Short press remains a tap",
+          !touch,
+          touch
+            ? "Short touch remains a tap"
+            : "Mouse steering begins immediately on open terrain",
         );
         if (touch) {
           const stick = await joystickState(page);
@@ -699,7 +808,15 @@ export async function runCampaignSmoke(
             diagonal.directions.includes("right"),
           "World pointer supports simultaneous thrust and steering",
         );
-        await advance(page, 1800);
+        if (touch) await advance(page, 1800);
+        else
+          for (let elapsed = 0; elapsed < 1800; elapsed += 100) {
+            // Mouse steering is relative to the rig. Follow its camera framing
+            // to keep the intended up/right aim throughout the ascent.
+            const aim = await target(160, -160);
+            await page.mouse.move(aim.x, aim.y);
+            await advance(page, 100);
+          }
         if (touch) assert.deepEqual((await joystickState(page)).center, up);
         await end();
         const flown = await sample(page);
@@ -709,11 +826,13 @@ export async function runCampaignSmoke(
         );
         assert.ok(
           delta(mined.vehicle.x, flown.vehicle.x) > 0.03,
-          "Diagonal pointer thrust also steers the rig",
+          "Diagonal pointer thrust also steers the rig: " +
+            JSON.stringify({ start: mined.vehicle, end: flown.vehicle, touch }),
         );
 
         if (touch) {
           await menu(page);
+          await pauseSection(page, "controls");
           await page
             .locator('[data-setting="showDirectionButtons"]')
             .check({ force: true });
@@ -806,6 +925,7 @@ export async function runCampaignSmoke(
           assert.equal((await joystickState(page)).visible, false);
           assert.equal(await page.locator(".campaign-touch .held").count(), 0);
           await menu(page);
+          await pauseSection(page, "controls");
           await page
             .locator('[data-setting="showDirectionButtons"]')
             .uncheck({ force: true });
@@ -900,7 +1020,7 @@ export async function runCampaignSmoke(
         await end();
         assert.match(
           await page.locator("#campaign-game").getAttribute("data-inspection"),
-          /Ironium.*30.*1 bulk/,
+          surfaceOreExpectation(initial),
           "A short world tap still inspects a visible mineral",
         );
         if (touch) {
@@ -919,6 +1039,7 @@ export async function runCampaignSmoke(
 
         if (!touch) {
           await menu(page);
+          await pauseSection(page, "controls");
           await page
             .locator('[data-setting="showDirectionButtons"]')
             .check({ force: true });
@@ -980,6 +1101,7 @@ export async function runCampaignSmoke(
             "Native keyboard thrust remains usable alongside pointer controls",
           );
           await menu(page);
+          await pauseSection(page, "controls");
           await page
             .locator('[data-setting="showDirectionButtons"]')
             .uncheck({ force: true });
@@ -1003,6 +1125,7 @@ export async function runCampaignSmoke(
             "World hold releases even when keyboard drilling uses toggle mode",
           );
           await menu(page);
+          await pauseSection(page, "controls");
           await page
             .locator('[data-setting="drillToggle"]')
             .uncheck({ force: true });
@@ -1823,6 +1946,7 @@ export async function runCampaignSmoke(
           "Fixed phone directions are an optional fallback",
         );
         await menu(page);
+        await pauseSection(page, "controls");
         await page.locator('[data-setting="showDirectionButtons"]').check();
         await closeOverlay(page);
         await assertGeometry(page, viewport);
@@ -1994,6 +2118,7 @@ export {
   keys,
   menu,
   noErrors,
+  pauseSection,
   ready,
   tab,
 };

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Campaign, createCampaign } from "../src/campaign/model";
 import { createW02 } from "../src/campaign/world";
+import oldW01Source from "./fixtures/improvement-w01.json?raw";
 import {
   CampaignSaveError,
   CampaignStore,
@@ -54,14 +55,14 @@ function envelope(state: unknown, revision = 4) {
 
 describe("Frontier checkpoint compatibility", () => {
   it("loads a schema-1 excavation without writing or replacing its original bytes", async () => {
-    const legacy = createCampaign(53);
+    const legacy = JSON.parse(oldW01Source).state;
     legacy.schema = 1;
     legacy.credits = 4137;
     const world = legacy.worlds.W01!;
     world.tiles[40 * 2 + 20] = 0;
     world.discovered[40 * 2 + 20] = 1;
     const exposed = world.packages.find(
-      (item) => item.x === 20.5 && item.y === 2.5,
+      (item: { x: number; y: number }) => item.x === 20.5 && item.y === 2.5,
     )!;
     exposed.status = "exposed";
     const backend = new MemoryBackend();
@@ -71,14 +72,33 @@ describe("Frontier checkpoint compatibility", () => {
     const store = new CampaignStore(backend);
     const loaded = await store.load();
     expect(loaded).toMatchObject({ blocked: false, revision: 4 });
-    expect(loaded.state?.schema).toBe(2);
-    expect(loaded.state?.worlds.W01).toEqual(world);
+    expect(loaded.state?.schema).toBe(3);
+    expect(loaded.state?.worlds.W01!.tiles).toEqual(world.tiles);
+    expect(
+      loaded.state?.worlds.W01!.packages.map(({ value, bulk, status }) => ({
+        value,
+        bulk,
+        status,
+      })),
+    ).toEqual(
+      world.packages.map(
+        ({
+          value,
+          bulk,
+          status,
+        }: {
+          value: number;
+          bulk: number;
+          status: string;
+        }) => ({ value, bulk, status }),
+      ),
+    );
     expect(loaded.state?.credits).toBe(4137);
-    expect(loaded.state?.progress).toEqual(legacy.progress);
+    expect(loaded.state?.progress).toMatchObject(legacy.progress);
     expect(await backend.read()).toEqual(bytes);
     expect(backend.writes).toBe(0);
     await store.save(loaded.state!);
-    expect(JSON.parse(backend.current!).state.schema).toBe(2);
+    expect(JSON.parse(backend.current!).state.schema).toBe(3);
     expect(backend.backup).toBe(bytes.current);
   });
 

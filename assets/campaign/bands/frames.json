@@ -1,0 +1,245 @@
+{
+  "frames": [
+    {
+      "name": "w01-a-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-A",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-a-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-A",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-a-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-A",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-b-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-B",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-b-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-B",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-b-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-B",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-c-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-C",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-c-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-C",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-c-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-C",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-d-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-D",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-d-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-D",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w01-d-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W01",
+      "band": "W01-D",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-a-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-A",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-a-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-A",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-a-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-A",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-b-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-B",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-b-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-B",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-b-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-B",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-c-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-C",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-c-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-C",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-c-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-C",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-d-soil",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-D",
+      "material": "soil",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-d-rock",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-D",
+      "material": "rock",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    },
+    {
+      "name": "w02-d-wall",
+      "width": 768,
+      "height": 768,
+      "world": "W02",
+      "band": "W02-D",
+      "material": "wall",
+      "logicalWidth": 384,
+      "logicalHeight": 384
+    }
+  ],
+  "backgrounds": []
+}

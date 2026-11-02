@@ -1,8 +1,12 @@
 import type { HardwareKey } from "./types";
+import { ACTIVE_BALANCE_VERSION } from "./versions.ts";
+export { MOTION } from "./motion.ts";
 
-/** Numeric gameplay contracts curated from design/v0.1; prices use tenths of CR. */
-export const BALANCE_VERSION = "0.1" as const;
-export const GENERATOR_VERSION = 1 as const;
+/** Numeric gameplay contracts curated from the versioned design; prices use tenths of CR. */
+export const BALANCE_VERSION = ACTIVE_BALANCE_VERSION;
+export const GENERATOR_VERSION = BALANCE_VERSION === "0.1" ? 1 : 2;
+const improvedW01 = BALANCE_VERSION !== "0.1";
+const improvedW02 = BALANCE_VERSION === "0.3";
 export const HARDWARE_KEYS = [
   "drill",
   "energy",
@@ -22,7 +26,16 @@ export const HARDWARE_PRICES: Record<HardwareKey, readonly number[]> = {
     0, 7500, 22000, 65000, 180000, 550000, 1600000, 4800000, 14000000, 40000000,
   ],
   energy: [
-    0, 6500, 18000, 50000, 140000, 400000, 1200000, 3500000, 10000000, 28000000,
+    0,
+    improvedW01 ? 6000 : 6500,
+    18000,
+    50000,
+    140000,
+    400000,
+    1200000,
+    3500000,
+    10000000,
+    28000000,
   ],
   cargo: [
     0, 7000, 24000, 70000, 200000, 600000, 1800000, 5400000, 16000000, 46000000,
@@ -67,8 +80,8 @@ export const WORLD_CATALOG: readonly WorldDefinition[] = [
     minutes: 45,
     coreCap: 1,
     bulk: 1,
-    referenceBudget: 53500,
-    ordinaryFloor: 160500,
+    referenceBudget: improvedW01 ? 59500 : 53500,
+    ordinaryFloor: improvedW01 ? 178500 : 160500,
     topology: "wrap",
     implemented: true,
     palette: ["17232B", "56616A", "A8B0B4", "F0A43C", "F6E1AF"],
@@ -85,9 +98,9 @@ export const WORLD_CATALOG: readonly WorldDefinition[] = [
     depth: 1000,
     minutes: 75,
     coreCap: 2,
-    bulk: 2,
-    referenceBudget: 186000,
-    ordinaryFloor: 558000,
+    bulk: improvedW02 ? 1 : 2,
+    referenceBudget: improvedW02 ? 180000 : 186000,
+    ordinaryFloor: improvedW02 ? 540000 : 558000,
     topology: "wrap",
     implemented: true,
     palette: ["102B3D", "3C8196", "B8E6EB", "49D8C6", "F7C673"],
@@ -349,8 +362,8 @@ export const W01 = {
   gravity: 0.55,
   dockX: 5.5,
   spawnX: 20.5,
-  budget: 53500,
-  minOrdinary: 160500,
+  budget: improvedW01 ? 59500 : 53500,
+  minOrdinary: improvedW01 ? 178500 : 160500,
   beaconRow: 9,
   valveRow: 24,
   antennaRow: 39,
@@ -370,8 +383,8 @@ export interface OreDefinition {
 export const W01_ORES: readonly OreDefinition[] = [
   {
     id: "W01-O1",
-    name: "Ironium",
-    value: 300,
+    name: "Slag iron",
+    value: improvedW01 ? 280 : 300,
     bulk: 1,
     mass: 1,
     weight: 60,
@@ -379,8 +392,8 @@ export const W01_ORES: readonly OreDefinition[] = [
   },
   {
     id: "W01-O2",
-    name: "Bronzium",
-    value: 600,
+    name: "Rust copper",
+    value: improvedW01 ? 530 : 600,
     bulk: 1,
     mass: 1.15,
     weight: 30,
@@ -388,8 +401,8 @@ export const W01_ORES: readonly OreDefinition[] = [
   },
   {
     id: "W01-O3",
-    name: "Silverium",
-    value: 1000,
+    name: "Shard silver",
+    value: improvedW01 ? 1200 : 1000,
     bulk: 1,
     mass: 1.35,
     weight: 9,
@@ -397,8 +410,8 @@ export const W01_ORES: readonly OreDefinition[] = [
   },
   {
     id: "W01-O4",
-    name: "Goldium",
-    value: 2500,
+    name: "Core crown",
+    value: improvedW01 ? 4000 : 2500,
     bulk: 1,
     mass: 1.6,
     weight: 1,
@@ -428,23 +441,23 @@ export const W01_GEAR: readonly GearDefinition[] = [
   },
   {
     id: "W01-R2",
-    name: "Anchoring feet",
-    price: 4000,
+    name: "Shaft brace",
+    price: improvedW01 ? 2500 : 4000,
     slot: "mobility",
     requires: "W01-R1",
     milestone: 1,
     description:
-      "Deploy in 0.35 s. While held on a solid edge, horizontal drift -60% and thrust energy -20%; drilling still allowed.",
+      "Deploy against a wall to cut sideways without a ledge. Bracing reduces horizontal drift by 60% and thrust energy by 20%.",
   },
   {
     id: "W01-R3",
     name: "External cargo rack",
     price: 9000,
     slot: "processor",
-    requires: "W01-R2",
+    requires: improvedW01 ? null : "W01-R2",
     milestone: 2,
     description:
-      "Cargo capacity +20%, rounded down; acceleration -8% while loaded. Removable cargo attachment.",
+      "Cargo capacity +30%, rounded up; acceleration -8% while loaded. No shaft-brace prerequisite.",
   },
 ];
 export const W01_EFFECTS = {
@@ -454,7 +467,7 @@ export const W01_EFFECTS = {
     horizontalDriftMultiplier: 0.4,
     thrustEnergyMultiplier: 0.8,
   },
-  rack: { bulkMultiplier: 1.2, loadedAccelerationMultiplier: 0.92 },
+  rack: { bulkMultiplier: 1.3, loadedAccelerationMultiplier: 0.92 },
   shelf: { warningSeconds: 2, damage: 3 },
 } as const;
 export const W01_MILESTONES = [
@@ -463,23 +476,23 @@ export const W01_MILESTONES = [
     name: "Survey the wreck",
     fee: 2000,
     description:
-      "Reach the marked beacon at 100 m and bank any three ore deposits. Unlock R2 and a surface service dock.",
+      "Survey the beacon at 100 m and bank three ore packages. Construction unlocks the shaft brace; surface services are already available.",
     requiredMissionIds: [],
   },
   {
     id: 2,
     name: "Recover the lander parts",
-    fee: 3000,
+    fee: improvedW01 ? 6000 : 3000,
     description:
-      "Recover a valve at 250 m and an antenna at 400 m; bank both. Unlock R3 and the star map.",
+      "Bank the valve from 250 m and antenna from 400 m. A rank-1 drill crosses the fused plate at 310 m. Construction unlocks the external cargo rack.",
     requiredMissionIds: ["W01-VALVE", "W01-ANTENNA"],
   },
   {
     id: 3,
     name: "Restore the lander",
-    fee: 5000,
+    fee: improvedW01 ? 10000 : 5000,
     description:
-      "Retrieve the navigation core at 600 m and complete construction. Grant Frontier certificate; open W02 and W03.",
+      "Bank the navigation core from 600 m and restore the lander. Earn the Frontier certificate, travel to Ice comet and chart Fractured moon.",
     requiredMissionIds: ["W01-Q"],
   },
 ] as const;

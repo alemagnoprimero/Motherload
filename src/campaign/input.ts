@@ -11,7 +11,8 @@ export type PilotAction =
   | "interact"
   | "map"
   | "pause";
-export type MenuAction = "previous" | "next" | "activate" | "back";
+export type MenuAction =
+  "previous" | "next" | "left" | "right" | "activate" | "back";
 export const ACTION_LABELS: Record<PilotAction, string> = {
   left: "Steer left",
   right: "Steer right",
@@ -24,7 +25,7 @@ export const ACTION_LABELS: Record<PilotAction, string> = {
   map: "Star map",
   pause: "Pause menu",
 };
-const DEFAULT_KEYS: Record<PilotAction, string[]> = {
+export const DEFAULT_KEYS: Record<PilotAction, string[]> = {
   left: ["ArrowLeft", "a"],
   right: ["ArrowRight", "d"],
   up: ["ArrowUp", "w"],
@@ -47,7 +48,29 @@ export interface PilotPreferences {
   effects: number;
   ambience: number;
   music: number;
+  sound: boolean;
+  alarm: boolean;
+  haptics: boolean;
+  shake: boolean;
+  assists: boolean;
+  uiScale: number;
+  renderScale: number;
+  coachStep: number;
+  coachSkipped: boolean;
+  gamepad: Record<PilotAction, number>;
 }
+export const DEFAULT_GAMEPAD: Record<PilotAction, number> = {
+  left: 14,
+  right: 15,
+  up: 0,
+  down: 13,
+  mobility: 2,
+  primary: 1,
+  secondary: 3,
+  interact: 4,
+  map: 5,
+  pause: 9,
+};
 const KEY = "motherload.campaign.preferences.v1";
 export function loadPilotPreferences(): PilotPreferences {
   const defaults: PilotPreferences = {
@@ -58,9 +81,19 @@ export function loadPilotPreferences(): PilotPreferences {
     highContrast: false,
     largeText: false,
     showDirectionButtons: false,
-    effects: 0.5,
-    ambience: 0.3,
-    music: 0.15,
+    effects: 0.8,
+    ambience: 0.5,
+    music: 0.45,
+    sound: true,
+    alarm: true,
+    haptics: true,
+    shake: false,
+    assists: true,
+    uiScale: 1,
+    renderScale: 2,
+    coachStep: 0,
+    coachSkipped: false,
+    gamepad: { ...DEFAULT_GAMEPAD },
   };
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -72,11 +105,32 @@ export function loadPilotPreferences(): PilotPreferences {
       "highContrast",
       "largeText",
       "showDirectionButtons",
+      "sound",
+      "alarm",
+      "haptics",
+      "shake",
+      "assists",
+      "coachSkipped",
     ] as const)
       if (typeof raw[k] === "boolean") defaults[k] = raw[k];
     for (const k of ["effects", "ambience", "music"] as const)
       if (typeof raw[k] === "number" && Number.isFinite(raw[k]))
         defaults[k] = Math.max(0, Math.min(1, raw[k]));
+    if ([1, 1.15, 1.3].includes(raw.uiScale)) defaults.uiScale = raw.uiScale;
+    if ([1, 1.5, 2].includes(raw.renderScale))
+      defaults.renderScale = raw.renderScale;
+    if (
+      Number.isInteger(raw.coachStep) &&
+      raw.coachStep >= 0 &&
+      raw.coachStep <= 12
+    )
+      defaults.coachStep = raw.coachStep;
+    if (raw.gamepad && typeof raw.gamepad === "object")
+      for (const action of Object.keys(DEFAULT_GAMEPAD) as PilotAction[]) {
+        const value = raw.gamepad[action];
+        if (Number.isInteger(value) && value >= 0 && value <= 16)
+          defaults.gamepad[action] = value;
+      }
     if (raw.keys)
       for (const action of Object.keys(DEFAULT_KEYS) as PilotAction[])
         if (
@@ -140,6 +194,8 @@ export class CampaignInput {
   private gamepadAxesSuppressed = false;
   private lastCommandAt = -Infinity;
   private remapping?: PilotAction;
+  private remappingSlot = 0;
+  private gamepadRemapping?: PilotAction;
   onRemapped?: (message: string) => void;
   constructor(
     public preferences: PilotPreferences,
@@ -162,6 +218,12 @@ export class CampaignInput {
         return;
       }
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      if (this.gamepadRemapping && key === "Escape") {
+        event.preventDefault();
+        this.gamepadRemapping = undefined;
+        this.onRemapped?.("Controller remapping cancelled.");
+        return;
+      }
       // A held Interact/Enter must not activate the newly focused Undock
       // button. Space/Enter repeats on focused menu controls are inert too.
       if (
@@ -198,7 +260,9 @@ export class CampaignInput {
           );
           return;
         }
-        this.preferences.keys[action] = [key];
+        const keys = [...this.preferences.keys[action]];
+        keys[this.remappingSlot] = key;
+        this.preferences.keys[action] = [...new Set(keys.filter(Boolean))];
         this.remapping = undefined;
         savePilotPreferences(this.preferences);
         this.onRemapped?.(
@@ -299,12 +363,27 @@ export class CampaignInput {
     for (const [action, source] of this.latched)
       if (source.startsWith("key:")) this.latched.delete(action);
   }
-  remap(action: PilotAction) {
+  remap(action: PilotAction, slot = 0) {
     this.clear();
     this.remapping = action;
+    this.remappingSlot = Math.max(0, Math.min(1, slot));
     this.onRemapped?.(
       "Press a new key for " + ACTION_LABELS[action] + ". Escape cancels.",
     );
+  }
+  remapGamepad(action: PilotAction) {
+    this.clear();
+    this.gamepadRemapping = action;
+    this.onRemapped?.(
+      "Press a controller button for " + ACTION_LABELS[action] + ".",
+    );
+  }
+  resetBindings() {
+    this.clear();
+    this.preferences.keys = structuredClone(DEFAULT_KEYS);
+    this.preferences.gamepad = { ...DEFAULT_GAMEPAD };
+    savePilotPreferences(this.preferences);
+    this.onRemapped?.("Default controls restored.");
   }
   clear() {
     this.held.clear();
@@ -343,24 +422,57 @@ export class CampaignInput {
       pressed.has(index) &&
       !this.gamepadButtons.has(index) &&
       !this.suppressedGamepadButtons.has(index);
+    if (this.gamepadRemapping) {
+      const selected = [...pressed].find(fresh);
+      if (selected !== undefined) {
+        const other = (
+          Object.keys(this.preferences.gamepad) as PilotAction[]
+        ).find(
+          (action) =>
+            action !== this.gamepadRemapping &&
+            this.preferences.gamepad[action] === selected,
+        );
+        if (other) {
+          this.onRemapped?.(
+            "That button is assigned to " +
+              ACTION_LABELS[other] +
+              ". Choose another button.",
+          );
+          this.gamepadButtons = pressed;
+          return;
+        }
+        this.preferences.gamepad[this.gamepadRemapping] = selected;
+        this.gamepadRemapping = undefined;
+        savePilotPreferences(this.preferences);
+        this.onRemapped?.("Controller binding updated.");
+      }
+      this.gamepadButtons = pressed;
+      return;
+    }
     // Record every button before callbacks can change the interface. Holding
     // thrust while docking cannot confirm a transaction on the next frame.
     const menu = this.callbacks.blocked() && this.callbacks.menu;
-    const action = fresh(9)
+    const action = fresh(this.preferences.gamepad.pause)
       ? () => this.callbacks.pause()
-      : menu && (fresh(12) || fresh(14))
+      : menu && fresh(12)
         ? () => menu("previous")
-        : menu && (fresh(13) || fresh(15))
+        : menu && fresh(13)
           ? () => menu("next")
-          : menu && fresh(0)
-            ? () => menu("activate")
-            : menu && fresh(1)
-              ? () => menu("back")
-              : !this.callbacks.blocked() && fresh(4)
-                ? () => this.callbacks.interact()
-                : !this.callbacks.blocked() && fresh(5)
-                  ? () => this.callbacks.map()
-                  : undefined;
+          : menu && fresh(14)
+            ? () => menu("left")
+            : menu && fresh(15)
+              ? () => menu("right")
+              : menu && fresh(0)
+                ? () => menu("activate")
+                : menu && fresh(1)
+                  ? () => menu("back")
+                  : !this.callbacks.blocked() &&
+                      fresh(this.preferences.gamepad.interact)
+                    ? () => this.callbacks.interact()
+                    : !this.callbacks.blocked() &&
+                        fresh(this.preferences.gamepad.map)
+                      ? () => this.callbacks.map()
+                      : undefined;
     this.gamepadButtons = pressed;
     if (action) this.command(action);
   }
@@ -373,7 +485,9 @@ export class CampaignInput {
         action in DEFAULT_KEYS &&
         !["interact", "map", "pause"].includes(action)
       )
-        controls[action as keyof CampaignControls] = true;
+        controls[
+          action as Exclude<keyof CampaignControls, "throttleX" | "throttleY">
+        ] = true;
     const pad = navigator.getGamepads?.().find((entry) => entry?.connected);
     if (pad) {
       const button = (index: number) =>
@@ -381,14 +495,53 @@ export class CampaignInput {
         !this.suppressedGamepadButtons.has(index);
       const axis = (index: number) =>
         this.gamepadAxesSuppressed ? 0 : (pad.axes[index] ?? 0);
-      controls.left ||= axis(0) < -0.25 || button(14);
-      controls.right ||= axis(0) > 0.25 || button(15);
-      controls.up ||= axis(1) < -0.25 || button(12) || button(0);
-      controls.down ||= axis(1) > 0.25 || button(13);
-      controls.mobility ||= button(2);
-      controls.primary ||= button(1);
-      controls.secondary ||= button(3);
+      const binding = this.preferences.gamepad;
+      const digitalX = Boolean(
+        controls.left ||
+        controls.right ||
+        button(binding.left) ||
+        button(binding.right),
+      );
+      const digitalY = Boolean(controls.up || button(12) || button(binding.up));
+      controls.left ||= axis(0) < -0.25 || button(binding.left);
+      controls.right ||= axis(0) > 0.25 || button(binding.right);
+      controls.up ||= axis(1) < -0.25 || button(12) || button(binding.up);
+      controls.down ||= axis(1) > 0.25 || button(binding.down);
+      controls.mobility ||= button(binding.mobility);
+      controls.primary ||= button(binding.primary);
+      controls.secondary ||= button(binding.secondary);
+      const throttle = (value: number) =>
+        Math.max(
+          0.35,
+          Math.min(1, 0.35 + ((Math.abs(value) - 0.25) / 0.75) * 0.65),
+        );
+      if (controls.left || controls.right)
+        controls.throttleX = digitalX ? 1 : throttle(axis(0));
+      if (controls.up) controls.throttleY = digitalY ? 1 : throttle(axis(1));
     }
     return controls;
   }
+}
+
+/** Keep an active keyboard/controller axis authoritative over pointer gestures. */
+export function mergePilotControls(
+  digital: CampaignControls,
+  pointer: CampaignControls,
+): CampaignControls {
+  const horizontal = digital.left || digital.right ? digital : pointer;
+  const vertical = digital.up || digital.down ? digital : pointer;
+  return {
+    ...digital,
+    left: Boolean(horizontal.left),
+    right: Boolean(horizontal.right),
+    up: Boolean(vertical.up),
+    down: Boolean(vertical.down),
+    mobility: Boolean(digital.mobility || pointer.mobility),
+    primary: Boolean(digital.primary || pointer.primary),
+    secondary: Boolean(digital.secondary || pointer.secondary),
+    ...(horizontal.left || horizontal.right
+      ? { throttleX: horizontal.throttleX ?? 1 }
+      : {}),
+    ...(vertical.up ? { throttleY: vertical.throttleY ?? 1 } : {}),
+  };
 }

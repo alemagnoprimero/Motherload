@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import {
   HARDWARE_LEVELS,
@@ -21,6 +21,7 @@ import {
   keys,
   menu,
   noErrors,
+  pauseSection,
   ready,
   tab,
 } from "./campaign-smoke.mjs";
@@ -83,11 +84,11 @@ function docked(checkpoint) {
 }
 function completedAsteroid(checkpoint) {
   const fixture = docked(checkpoint);
-  fixture.state.schema = 1;
   fixture.state.credits = 1000000;
   fixture.state.vehicle.energy = 10;
   fixture.state.vehicle.hull = 10;
   fixture.state.progress = {
+    ...fixture.state.progress,
     beacon: true,
     bankedOre: 3,
     completed: [1, 2, 3],
@@ -170,7 +171,14 @@ async function play(page, advanceMs = 50) {
   assert.equal(
     await page.evaluate(() => document.body.dataset.campaignPaused),
     "false",
-    "Explicit native Resume / Undock starts the expedition",
+    "Explicit native Resume / Undock starts the expedition: " +
+      JSON.stringify(
+        await page.evaluate(() => ({
+          ...document.body.dataset,
+          reward: !document.getElementById("campaign-reward").hidden,
+          launch: !document.getElementById("campaign-launch").hidden,
+        })),
+      ),
   );
 }
 async function snapshot(page, resume = true) {
@@ -208,6 +216,24 @@ async function confirm(page, accept = true) {
   );
   await closed;
   await idle(page);
+  await advance(page, 50);
+  // Travel/build presentations pause simulation; finish the visible beat before
+  // issuing the next independent action, rather than consuming it as Skip.
+  for (let elapsed = 0; elapsed < 15000; elapsed += 50) {
+    const destinationRendered = await page.evaluate(
+      () =>
+        document.getElementById("campaign-game").dataset.campaignWorld ===
+        document.body.dataset.campaignWorld,
+    );
+    if (
+      destinationRendered &&
+      !(await page.locator("#campaign-reward").isVisible()) &&
+      !(await page.locator("#campaign-launch").isVisible())
+    )
+      break;
+    await advance(page, 50);
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
 }
 async function enterDock(page) {
   await keys(page, []);
@@ -344,9 +370,14 @@ async function releaseCue(page, { keyboard = true, max = 12000 } = {}) {
     )
       return;
   }
-  throw new Error(
-    "Native cut did not produce the visible 0.75-second release cue",
-  );
+  throw new Error("Native cut did not produce the visible release cue");
+}
+function releaseDuration(checkpoint) {
+  return (world(checkpoint).generatorVersion ??
+    checkpoint.state.generatorVersion) >= 2 &&
+    (checkpoint.state.progress.volatileTraining ?? 0) < 3
+    ? 1.5
+    : 0.75;
 }
 async function returnAndBank(page, checkpoint) {
   // Deep return travel is fixture-assisted; banking remains a real UI action.
@@ -411,9 +442,15 @@ async function layout(page, viewport, full = false) {
     "#campaign-hull",
     "#campaign-cargo",
     ".campaign-objective",
-    "#campaign-mission-signal",
   ])
     await inViewport(page, selector, viewport);
+  await inViewport(
+    page,
+    (await page.locator("#campaign-target-beacon").isVisible())
+      ? "#campaign-target-beacon"
+      : "#campaign-home-beacon",
+    viewport,
+  );
   await inViewport(page, "#campaign-menu-toggle", viewport, 44);
   assert.equal(
     await page.locator(".campaign-touch").isVisible(),
@@ -505,7 +542,8 @@ async function warningRecovery(page, checkpoint, viewport, path) {
 }
 async function climate(page, checkpoint, viewport, path) {
   // Contact fixtures shorten access to the authored off-route hazard pockets.
-  const pocket = W02_HAZARDS.coldPockets[0];
+  const hazards = world(checkpoint).hazards ?? W02_HAZARDS;
+  const pocket = hazards.coldPockets[0];
   const cold = above(checkpoint, { x: pocket.x, y: pocket.y + 1 });
   // A small fixture ledge holds contact for the full authored warning interval.
   world(cold).tiles[indexOf(world(cold), pocket.x, Math.floor(pocket.y) + 1)] =
@@ -523,7 +561,7 @@ async function climate(page, checkpoint, viewport, path) {
     "cold",
   );
   await page.screenshot({ path: path + "-cold-pocket.png" });
-  const source = W02_HAZARDS.vents[0];
+  const source = hazards.vents[0];
   const vent = above(checkpoint, { x: source.x, y: source.y + 1 });
   world(vent).tiles[indexOf(world(vent), source.x, Math.floor(source.y) + 1)] =
     1;
@@ -587,18 +625,24 @@ export async function runFrontierSmoke(
       try {
         await freeze(page);
         const initial = await snapshot(page);
-        const legacy = structuredClone(initial);
+        const legacy = JSON.parse(
+          await readFile(
+            new URL("../tests/fixtures/improvement-w01.json", import.meta.url),
+            "utf8",
+          ),
+        );
         legacy.state.schema = 1;
+        legacy.state.vehicle = { x: 20.5, y: -0.36, energy: 10, hull: 10 };
         await restore(page, legacy, false);
         const migrated = await exportCheckpoint(page);
-        assert.equal(migrated.state.schema, 2);
+        assert.equal(migrated.state.schema, 3);
         for (const key of ["tiles", "packages", "missions"])
           assert.deepEqual(
             migrated.state.worlds.W01[key],
-            initial.state.worlds.W01[key],
+            legacy.state.worlds.W01[key],
             "Schema1 import preserves original " + key,
           );
-        assert.deepEqual(migrated.state.hardware, initial.state.hardware);
+        assert.deepEqual(migrated.state.hardware, legacy.state.hardware);
         await command(page, "map");
         assert.equal(
           await page.evaluate(() => document.body.dataset.campaignOverlay),
@@ -632,7 +676,7 @@ export async function runFrontierSmoke(
         await restore(page, launched);
         await travel(page, "W02", { cargo: { packages: 1, missions: 0 } });
         const arrival = await snapshot(page);
-        assert.equal(arrival.state.schema, 2);
+        assert.equal(arrival.state.schema, 3);
         assert.equal(world(arrival).width, 48);
         assert.equal(world(arrival).rows, 100);
         assert.equal(arrival.state.vehicle.energy, 7.3);
@@ -859,7 +903,12 @@ export async function runFrontierSmoke(
       const pending = await exportCheckpoint(page);
       assert.ok(
         world(pending).volatile.remaining > 0 &&
-          world(pending).volatile.remaining <= 0.75,
+          world(pending).volatile.remaining <= releaseDuration(fixture),
+      );
+      assert.equal(
+        world(pending).volatile.duration ?? 0.75,
+        releaseDuration(fixture),
+        "The stamped world selects its exact training/normal release window",
       );
       await advance(page, 2000);
       assert.deepEqual(
@@ -899,7 +948,7 @@ export async function runFrontierSmoke(
       assert.equal(world(intact).volatile, undefined);
       await restore(page, fixture);
       await releaseCue(page);
-      await advance(page, 850);
+      await advance(page, releaseDuration(fixture) * 1000 + 100);
       await keys(page, []);
       const ruptured = await snapshot(page);
       assert.equal(tutorial(ruptured).status, "lost");
@@ -914,6 +963,7 @@ export async function runFrontierSmoke(
         "Diagonal takeoff releases drilling and preserves the completed crystal",
       );
       await menu(page);
+      await pauseSection(page, "controls");
       await page.locator('[data-setting="drillToggle"]').check({ force: true });
       await play(page);
       await restore(page, fixture);
@@ -1059,7 +1109,7 @@ export async function runFrontierSmoke(
         await advance(page, 100);
         await touch("touchMove", [{ id: 1, ...down }]);
         await releaseCue(page, { keyboard: false });
-        await advance(page, 850);
+        await advance(page, releaseDuration(fixture) * 1000 + 100);
         await touch("touchEnd", []);
         const ruptured = await snapshot(page);
         assert.equal(tutorial(ruptured).status, "lost");

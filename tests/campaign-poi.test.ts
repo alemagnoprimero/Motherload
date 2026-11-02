@@ -5,6 +5,7 @@ import {
   decodeCampaign,
 } from "../src/campaign/model";
 import { W01 } from "../src/campaign/config";
+import { createW01V1 } from "../src/campaign/world";
 import { campaignPois, campaignSignal } from "../src/campaign/poi";
 
 function stageTwo() {
@@ -12,6 +13,7 @@ function stageTwo() {
   campaign.state.progress.beacon = true;
   campaign.state.progress.bankedOre = 3;
   campaign.state.progress.completed = [1];
+  campaign.state.hardware.energy = 1;
   return campaign;
 }
 function dock(campaign: Campaign) {
@@ -57,7 +59,7 @@ describe("mission landmarks and proximity guidance", () => {
     expect(signal.direction).toBe("down");
     expect(signal.distanceMeters).toBe(99);
     expect(signal.band).toBe("distant");
-    expect(campaignPois(campaign)).toHaveLength(4);
+    expect(campaignPois(campaign)).toHaveLength(6);
     for (let n = 0; n < 10; n++) {
       campaignSignal(campaign);
       campaignPois(campaign);
@@ -65,8 +67,9 @@ describe("mission landmarks and proximity guidance", () => {
     expect(JSON.stringify(campaign.state)).toBe(before);
   });
 
-  it("changes proximity bands but leaves surveying to the actual simulator", () => {
+  it("preserves legacy proximity bands and leaves surveying to the actual simulator", () => {
     const campaign = new Campaign(createCampaign(12));
+    campaign.state.worlds.W01 = createW01V1(12);
     const targetY = W01.beaconRow + 0.5;
     campaign.state.vehicle.y = targetY - 8;
     expect(campaignSignal(campaign)?.band).toBe("near");
@@ -112,7 +115,7 @@ describe("mission landmarks and proximity guidance", () => {
     campaign.state.credits = 2000;
     expect(campaignSignal(campaign)?.targetId).toBe("W01-LANDER");
     expect(campaign.payMilestone()).toBe(true);
-    expect(campaignSignal(campaign)?.targetId).toBe("W01-VALVE");
+    expect(campaignSignal(campaign)?.targetId).toBe("W01-SEAM-B");
   });
 
   it("finds the nearest current part using actual positions and the shorter wrap bearing", () => {
@@ -219,10 +222,10 @@ describe("mission landmarks and proximity guidance", () => {
     expect(campaignSignal(campaign)?.targetId).toBe("W01-LANDER");
     dock(campaign);
     campaign.bank();
-    campaign.state.credits = 5000;
+    campaign.state.credits = 10000;
     expect(campaign.payMilestone()).toBe(true);
     expect(campaignSignal(campaign)?.action).toBe("Dock and launch");
     expect(campaign.depart()).toBe(true);
-    expect(campaignSignal(campaign)).toBeUndefined();
+    expect(campaignSignal(campaign)?.kind).toBe("relic");
   });
 });

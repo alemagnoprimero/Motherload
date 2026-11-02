@@ -30,6 +30,18 @@ async function click(page, selector) {
     selector +
       " receives native pointer input after ordinary centered scrolling",
   );
+  if (
+    selector === "#campaign-confirm-accept" &&
+    /Hold for/.test((await element.getAttribute("aria-label")) || "")
+  ) {
+    const box = await element.boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    if (clocked.has(page)) await page.clock.fastForward(750);
+    else await delay(750);
+    await page.mouse.up();
+    return;
+  }
   await element.click({ force: clocked.has(page) });
 }
 async function idle(page) {
@@ -43,11 +55,16 @@ async function idle(page) {
   throw new Error("Persistence did not settle");
 }
 async function freeze(page) {
+  let advanceBy = 100;
   if (!clocked.has(page)) {
+    const elapsed = await page.evaluate(() => performance.now());
     await page.clock.install();
     clocked.add(page);
+    advanceBy = Math.max(100, elapsed + 300);
   }
-  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+  await page.clock.pauseAt(
+    await page.evaluate((elapsed) => Date.now() + elapsed, advanceBy),
+  );
 }
 async function advance(page, ms) {
   for (let elapsed = 0; elapsed < ms; elapsed += 50)
@@ -56,7 +73,11 @@ async function advance(page, ms) {
 const paused = (page) =>
   page.evaluate(() => document.body.dataset.campaignPaused === "true");
 async function menu(page) {
-  if (!(await page.locator("#campaign-menu").evaluate((dialog) => dialog.open)))
+  if (await page.locator("#campaign-welcome").evaluate((dialog) => dialog.open))
+    await click(page, '#campaign-welcome [data-command="title-settings"]');
+  else if (
+    !(await page.locator("#campaign-menu").evaluate((dialog) => dialog.open))
+  )
     await click(page, "#campaign-menu-toggle");
   if (clocked.has(page)) await advance(page, 50);
   assert.equal(await paused(page), true);
@@ -74,6 +95,10 @@ async function resume(page) {
     await click(page, "#campaign-resume");
     await closed;
   }
+  if (await page.locator("#campaign-start").isVisible()) {
+    await click(page, "#campaign-start");
+    await idle(page);
+  }
   await advance(page, 50);
   const disabled = await page.evaluate(
     () => document.body.dataset.campaignDisabled === "true",
@@ -86,6 +111,8 @@ async function resume(page) {
 }
 async function exported(page) {
   await menu(page);
+  const save = page.locator('[data-pause-tab="save"]');
+  if (await save.isVisible()) await click(page, '[data-pause-tab="save"]');
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     click(page, '#campaign-menu [data-command="export"]'),
@@ -107,6 +134,8 @@ async function confirmClick(page, selector) {
 }
 async function imported(page, state, envelope) {
   await menu(page);
+  const save = page.locator('[data-pause-tab="save"]');
+  if (await save.isVisible()) await click(page, '[data-pause-tab="save"]');
   await page.locator("#campaign-import").setInputFiles({
     name: "usability-fixture.json",
     mimeType: "application/json",
@@ -254,11 +283,12 @@ async function unchangedStatus(page) {
 }
 async function inspectLegend(page) {
   await menu(page);
+  await click(page, '[data-pause-tab="journal"]');
   const summary = page.locator("#campaign-legend summary");
   if (!(await summary.evaluate((element) => element.closest("details").open)))
     await click(page, "#campaign-legend summary");
   const text = await page.locator("#campaign-legend").innerText();
-  assert.match(text, /Ironium/i);
+  assert.match(text, /Slag iron/i);
   assert.match(text, /unstable.{0,12}shelf/i);
   assert.doesNotMatch(
     text,
@@ -323,6 +353,23 @@ export async function runUsabilitySmoke(
         await ready(page, base);
         await freeze(page);
         assert.equal(await paused(page), true, "Saved boot is paused");
+        await inViewport(page, "#campaign-start", viewport, 44);
+        assert.match(
+          await page.locator("#campaign-start").innerText(),
+          /Continue/i,
+        );
+        await page.keyboard.press("Escape");
+        await advance(page, 2500);
+        assert.equal(
+          await paused(page),
+          true,
+          "Escape cannot bypass explicit restoration Resume",
+        );
+        assert.deepEqual(
+          (await exported(page)).state,
+          before,
+          "Restored airborne saves do not fall, consume energy or lose hull before Resume",
+        );
         await inViewport(page, "#campaign-pause-conditions", viewport);
         assert.ok(
           await page
@@ -342,18 +389,6 @@ export async function runUsabilitySmoke(
           await click(page, '#campaign-menu [data-command="save"]');
           await idle(page);
         }
-        await page.keyboard.press("Escape");
-        await advance(page, 2500);
-        assert.equal(
-          await paused(page),
-          true,
-          "Escape cannot bypass explicit restoration Resume",
-        );
-        assert.deepEqual(
-          (await exported(page)).state,
-          before,
-          "Restored airborne saves do not fall, consume energy or lose hull before Resume",
-        );
         await inViewport(page, "#campaign-resume", viewport, 44);
         await imported(page, withConditions(initial), envelope);
         await resume(page);
@@ -500,11 +535,11 @@ export async function runUsabilitySmoke(
         await advance(page, 100);
         const preview = await page
           .locator('[data-service-preview="refuel"]')
-          .innerText();
+          .evaluate((element) => element.closest("article").innerText);
         assert.match(preview, /6\s*→\s*8/);
         assert.match(preview, /2 CR/);
-        assert.match(preview, /0 CR.*remains/);
-        await click(page, '#campaign-dock [data-command="refuel"]');
+        assert.match(preview, /0 CR.*after/);
+        await click(page, '#campaign-dock-content [data-command="refuel"]');
         await idle(page);
         await click(page, '#campaign-dock [data-close="dock"]');
         const bought = (await exported(page)).state;
@@ -530,8 +565,8 @@ export async function runUsabilitySmoke(
         const offer = await page
           .locator('[data-command="hardware-drill"]')
           .evaluate((button) => button.closest("article").innerText);
-        assert.match(offer, /2 speed\s*→\s*2\.8 speed/);
-        assert.match(offer, /Need 40 CR more/);
+        assert.match(offer, /2\s*→\s*2\.8/);
+        assert.match(offer, /Need 40 CR/);
         await click(page, '#campaign-dock [data-close="dock"]');
         check(
           "desktop: exact service totals/results and current→next upgrade shortfalls",
@@ -552,7 +587,7 @@ export async function runUsabilitySmoke(
         await inViewport(page, "#campaign-menu-dock", viewport, 44);
         await click(page, "#campaign-menu-dock");
         await click(page, '#campaign-dock [data-tab="service"]');
-        await click(page, '#campaign-dock [data-command="repair"]');
+        await click(page, '#campaign-dock-content [data-command="repair"]');
         await idle(page);
         await click(page, '#campaign-dock [data-close="dock"]');
         assert.equal(await paused(page), true);

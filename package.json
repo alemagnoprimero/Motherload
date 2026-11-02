@@ -1,5 +1,5 @@
 {
-  "name": "motherload-remake",
+  "name": "the-deep-frontier",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "npm run campaign:check && tsc --noEmit && vite build",
     "assets:build": "npm run campaign:assets",
-    "assets:check": "node scripts/check-campaign-assets.mjs && node scripts/check-frontier-assets.mjs",
+    "assets:check": "node scripts/check-campaign-assets.mjs && node scripts/check-frontier-assets.mjs && node scripts/check-render-assets.mjs",
     "campaign:check": "node scripts/check-campaign-data.mjs && npm run assets:check",
     "campaign:assets": "node scripts/build-campaign-assets.mjs",
     "frontier:assets": "node scripts/build-frontier-assets.mjs",
@@ -24,7 +24,15 @@
     "test:opening": "vitest run tests/campaign-improvements-model.test.ts tests/campaign-model.test.ts",
     "reference": "vite --host 0.0.0.0 --port 4174",
     "format:check": "prettier --check src tests scripts/*.mjs index.html reference/index.html",
-    "test:production": "node scripts/production-smoke.mjs"
+    "test:production": "node scripts/production-smoke.mjs",
+    "test:pacing": "node scripts/run-pacing.mjs",
+    "test:pacing:nightly": "node scripts/run-pacing.mjs --nightly",
+    "test:feel": "node scripts/feel-smoke.mjs",
+    "test:audio": "node scripts/audio-smoke.mjs",
+    "render:assets": "node scripts/build-band-assets.mjs",
+    "test:plan-ui": "node scripts/plan-ui-smoke.mjs",
+    "test:render": "node scripts/render-acceptance.mjs",
+    "test:render:memory": "node scripts/render-memory.mjs"
   },
   "engines": {
     "node": ">=22.18"

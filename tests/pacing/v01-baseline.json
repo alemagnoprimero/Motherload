@@ -1,0 +1,532 @@
+{
+  "format": "deep-frontier-pacing-baseline",
+  "version": 1,
+  "sourceGitSHA": "dbf0b1a2bd3dc919d58a98438edf5c4b511b47ca",
+  "archivedPlannerGitSHA": "2828b5c595144f221e17e61d3b0ff5dcd405dbe9",
+  "archivedPlannerPath": "docs/improvement-plan/work/progression/sim.ts",
+  "archivedSimSHA256": "279fdf002948c11e3754b26d44a190b5eabca0d2f14c0fa1dd41dd65eab3ab9f",
+  "sourceHashes": {
+    "src/campaign/config.ts": "fa4d53157e3a33e2cd78e6c6d65e9340bcc4f95f65b514151a418c8acaae93c4",
+    "src/campaign/frontier.ts": "595a79cee7636635a4946a5929f05288fa9be1cca6b157f2f5ce7a8de63757fc",
+    "src/campaign/model.ts": "65eb22509be1e601c11694656e393707249bd9a8584a6bf8535e277d8d58bb29",
+    "src/campaign/world.ts": "6a986aa2dc976e83c148a50d6c9485c6d11a6917661a98f9953b80b2254b434e",
+    "src/campaign/types.ts": "e896fbdde7e5d346050dbd6dc8e82d7b8c5287b4d6e8e5cc6f07c99cebe924cc"
+  },
+  "policy": {
+    "name": "mine-only",
+    "reserveFraction": 0.25,
+    "reserveMin": 1,
+    "volatileSuccess": 0.85,
+    "missionMode": "fixed",
+    "plan": {
+      "W01": [],
+      "W02": []
+    },
+    "dockOverhead": 20,
+    "precision": true,
+    "moveOverhead": 0
+  },
+  "seeds": [2, 9, 16, 23, 30, 37, 44, 51],
+  "window": {
+    "startSeconds": 120,
+    "endSecondsExclusive": 900,
+    "denominatorMinutes": 13
+  },
+  "fixtureSetup": {
+    "startingCreditsTenths": 100000,
+    "startingConditions": "Full installed tank and hull; no purchases during measurement.",
+    "W01": "M1 and M2 complete; all mission objects banked; fixed rank-0 or all-rank-1 loadout.",
+    "W02": "W01 complete with departure; W02 M1 and M2 complete; all mission objects banked; all-rank-1 hardware.",
+    "termination": "Complete the final trip after 900 seconds; income denominator uses actual elapsed time, while pickup count uses only the fixed window."
+  },
+  "method": {
+    "simulation": "Frozen v0.1 production model/generator and archived abstract planner.",
+    "instrumentation": [
+      "Only import paths normalized for standalone execution.",
+      "Pickup instrumentation added after the archived syncVehicle collection hook; no planner decisions or game rules changed.",
+      "Added an abstract-spend counter for diagnostics."
+    ],
+    "scope": "Paired automated policy comparison; not a human or physical-device measurement.",
+    "reproductionEvidence": "artifacts/pacing/v01-cadence (ignored local evidence)"
+  },
+  "means": {
+    "W01:base": {
+      "seeds": 8,
+      "pickupCountMean": 87,
+      "pickupCadenceMinutes2to15": 6.692307692307692,
+      "incomePerMinute": 367.10229478651024
+    },
+    "W01:rank1": {
+      "seeds": 8,
+      "pickupCountMean": 128.75,
+      "pickupCadenceMinutes2to15": 9.903846153846153,
+      "incomePerMinute": 515.4046116455304
+    },
+    "W02:arrival": {
+      "seeds": 8,
+      "pickupCountMean": 75.125,
+      "pickupCadenceMinutes2to15": 5.778846153846153,
+      "incomePerMinute": 530.9299428947382
+    }
+  },
+  "rows": [
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 2,
+      "pickupCountMinutes2to15": 93,
+      "pickupCadenceMinutes2to15": 7.153846153846154,
+      "incomePerMinute": 376.3232593528867,
+      "netPerMinute": 416.93824855792,
+      "elapsedSeconds": 945.4637499999925,
+      "minutes": 15.757729166666541,
+      "trips": 20,
+      "abstractSpendCalls": 1402,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 9,
+      "pickupCountMinutes2to15": 86,
+      "pickupCadenceMinutes2to15": 6.615384615384615,
+      "incomePerMinute": 382.4046448563451,
+      "netPerMinute": 375.2797745307277,
+      "elapsedSeconds": 928.8590104166626,
+      "minutes": 15.480983506944376,
+      "trips": 20,
+      "abstractSpendCalls": 1398,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 16,
+      "pickupCountMinutes2to15": 89,
+      "pickupCadenceMinutes2to15": 6.846153846153846,
+      "incomePerMinute": 361.9614062008083,
+      "netPerMinute": 354.60767358976904,
+      "elapsedSeconds": 943.1944791666509,
+      "minutes": 15.719907986110849,
+      "trips": 19,
+      "abstractSpendCalls": 1400,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 23,
+      "pickupCountMinutes2to15": 72,
+      "pickupCadenceMinutes2to15": 5.538461538461538,
+      "incomePerMinute": 316.9954408974606,
+      "netPerMinute": 408.79864139570225,
+      "elapsedSeconds": 908.5304166666554,
+      "minutes": 15.142173611110923,
+      "trips": 19,
+      "abstractSpendCalls": 1310,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 30,
+      "pickupCountMinutes2to15": 84,
+      "pickupCadenceMinutes2to15": 6.461538461538462,
+      "incomePerMinute": 324.01859480454715,
+      "netPerMinute": 316.5994165170708,
+      "elapsedSeconds": 920.3175520833263,
+      "minutes": 15.338625868055438,
+      "trips": 20,
+      "abstractSpendCalls": 1306,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 37,
+      "pickupCountMinutes2to15": 95,
+      "pickupCadenceMinutes2to15": 7.3076923076923075,
+      "incomePerMinute": 373.48967847388485,
+      "netPerMinute": 366.489966741107,
+      "elapsedSeconds": 931.7526562499983,
+      "minutes": 15.529210937499972,
+      "trips": 20,
+      "abstractSpendCalls": 1408,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 44,
+      "pickupCountMinutes2to15": 85,
+      "pickupCadenceMinutes2to15": 6.538461538461538,
+      "incomePerMinute": 361.20782935596816,
+      "netPerMinute": 354.0487552606246,
+      "elapsedSeconds": 921.9069270833288,
+      "minutes": 15.365115451388814,
+      "trips": 19,
+      "abstractSpendCalls": 1382,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "base",
+      "seed": 51,
+      "pickupCountMinutes2to15": 92,
+      "pickupCadenceMinutes2to15": 7.076923076923077,
+      "incomePerMinute": 440.41750435018105,
+      "netPerMinute": 433.09705123733346,
+      "elapsedSeconds": 907.3208854166555,
+      "minutes": 15.122014756944258,
+      "trips": 19,
+      "abstractSpendCalls": 1344,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 2,
+      "pickupCountMinutes2to15": 121,
+      "pickupCadenceMinutes2to15": 9.307692307692308,
+      "incomePerMinute": 486.3057781673921,
+      "netPerMinute": 524.3418372454846,
+      "elapsedSeconds": 967.2926399778102,
+      "minutes": 16.12154399963017,
+      "trips": 16,
+      "abstractSpendCalls": 1824,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 9,
+      "pickupCountMinutes2to15": 131,
+      "pickupCadenceMinutes2to15": 10.076923076923077,
+      "incomePerMinute": 547.1872874287096,
+      "netPerMinute": 538.6215342148085,
+      "elapsedSeconds": 963.8381813991108,
+      "minutes": 16.06396968998518,
+      "trips": 16,
+      "abstractSpendCalls": 1744,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 16,
+      "pickupCountMinutes2to15": 137,
+      "pickupCadenceMinutes2to15": 10.538461538461538,
+      "incomePerMinute": 547.6168456056492,
+      "netPerMinute": 538.9402337884484,
+      "elapsedSeconds": 914.8732439848663,
+      "minutes": 15.247887399747773,
+      "trips": 15,
+      "abstractSpendCalls": 1668,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 23,
+      "pickupCountMinutes2to15": 119,
+      "pickupCadenceMinutes2to15": 9.153846153846153,
+      "incomePerMinute": 487.6782829143662,
+      "netPerMinute": 527.0888240998182,
+      "elapsedSeconds": 938.7336201730913,
+      "minutes": 15.645560336218187,
+      "trips": 15,
+      "abstractSpendCalls": 1672,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 30,
+      "pickupCountMinutes2to15": 120,
+      "pickupCadenceMinutes2to15": 9.23076923076923,
+      "incomePerMinute": 480.56022203980456,
+      "netPerMinute": 471.8876634247258,
+      "elapsedSeconds": 907.6906077421236,
+      "minutes": 15.128176795702059,
+      "trips": 15,
+      "abstractSpendCalls": 1682,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 37,
+      "pickupCountMinutes2to15": 148,
+      "pickupCadenceMinutes2to15": 11.384615384615385,
+      "incomePerMinute": 557.1024952226421,
+      "netPerMinute": 549.0015390784058,
+      "elapsedSeconds": 927.2979468410824,
+      "minutes": 15.454965780684708,
+      "trips": 16,
+      "abstractSpendCalls": 1794,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 44,
+      "pickupCountMinutes2to15": 119,
+      "pickupCadenceMinutes2to15": 9.153846153846153,
+      "incomePerMinute": 483.20729994317844,
+      "netPerMinute": 474.27427915743385,
+      "elapsedSeconds": 902.7181502665499,
+      "minutes": 15.045302504442498,
+      "trips": 14,
+      "abstractSpendCalls": 1742,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W01",
+      "name": "rank1",
+      "seed": 51,
+      "pickupCountMinutes2to15": 135,
+      "pickupCadenceMinutes2to15": 10.384615384615385,
+      "incomePerMinute": 533.578681842501,
+      "netPerMinute": 525.0991780670951,
+      "elapsedSeconds": 914.2044399442221,
+      "minutes": 15.236740665737036,
+      "trips": 15,
+      "abstractSpendCalls": 1656,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 2,
+      "pickupCountMinutes2to15": 73,
+      "pickupCadenceMinutes2to15": 5.615384615384615,
+      "incomePerMinute": 514.7752703850455,
+      "netPerMinute": 506.7529702791733,
+      "elapsedSeconds": 907.969024328598,
+      "minutes": 15.1328170721433,
+      "trips": 17,
+      "abstractSpendCalls": 1574,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 9,
+      "pickupCountMinutes2to15": 69,
+      "pickupCadenceMinutes2to15": 5.3076923076923075,
+      "incomePerMinute": 435.20901862148366,
+      "netPerMinute": 615.5761914397995,
+      "elapsedSeconds": 956.7816432640554,
+      "minutes": 15.94636072106759,
+      "trips": 17,
+      "abstractSpendCalls": 1716,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 16,
+      "pickupCountMinutes2to15": 85,
+      "pickupCadenceMinutes2to15": 6.538461538461538,
+      "incomePerMinute": 612.4874449643123,
+      "netPerMinute": 605.4136463041611,
+      "elapsedSeconds": 904.1817992404206,
+      "minutes": 15.069696654007009,
+      "trips": 19,
+      "abstractSpendCalls": 1520,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 23,
+      "pickupCountMinutes2to15": 76,
+      "pickupCadenceMinutes2to15": 5.846153846153846,
+      "incomePerMinute": 552.2780607310992,
+      "netPerMinute": 545.0415367269061,
+      "elapsedSeconds": 927.7935091640085,
+      "minutes": 15.463225152733475,
+      "trips": 17,
+      "abstractSpendCalls": 1656,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 30,
+      "pickupCountMinutes2to15": 77,
+      "pickupCadenceMinutes2to15": 5.923076923076923,
+      "incomePerMinute": 499.78528020095007,
+      "netPerMinute": 492.3889766379243,
+      "elapsedSeconds": 925.5974882133405,
+      "minutes": 15.426624803555676,
+      "trips": 18,
+      "abstractSpendCalls": 1496,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 37,
+      "pickupCountMinutes2to15": 75,
+      "pickupCadenceMinutes2to15": 5.769230769230769,
+      "incomePerMinute": 558.8230641591143,
+      "netPerMinute": 551.3287703529495,
+      "elapsedSeconds": 969.5376493009827,
+      "minutes": 16.158960821683046,
+      "trips": 18,
+      "abstractSpendCalls": 1552,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 44,
+      "pickupCountMinutes2to15": 75,
+      "pickupCadenceMinutes2to15": 5.769230769230769,
+      "incomePerMinute": 596.9319919831083,
+      "netPerMinute": 589.3924957913572,
+      "elapsedSeconds": 905.6308042797908,
+      "minutes": 15.093846737996513,
+      "trips": 17,
+      "abstractSpendCalls": 1568,
+      "recoveries": 0,
+      "hullDamage": 0
+    },
+    {
+      "world": "W02",
+      "name": "arrival",
+      "seed": 51,
+      "pickupCountMinutes2to15": 71,
+      "pickupCadenceMinutes2to15": 5.461538461538462,
+      "incomePerMinute": 477.14941211279273,
+      "netPerMinute": 468.9754040779914,
+      "elapsedSeconds": 902.8618480162012,
+      "minutes": 15.047697466936686,
+      "trips": 17,
+      "abstractSpendCalls": 1468,
+      "recoveries": 0,
+      "hullDamage": 0
+    }
+  ],
+  "archivedIncomeReproduction": [
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 2,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 9,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 16,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 23,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 30,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 37,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 44,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "base",
+      "seed": 51,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 2,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 9,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 16,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 23,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 30,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 37,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 44,
+      "incomeRoundedMatchesArchivedReport": true
+    },
+    {
+      "world": "W01",
+      "loadout": "rank1",
+      "seed": 51,
+      "incomeRoundedMatchesArchivedReport": true
+    }
+  ]
+}

@@ -564,7 +564,12 @@ export class CampaignStore {
   }
 
   export(state: CampaignState): string {
-    return this.snapshot(state, this.currentRevision);
+    // Exports use current display identities and schema without mutating the live
+    // state or the original legacy checkpoint retained in storage.
+    return this.snapshot(
+      decodeCampaign(JSON.stringify(state)),
+      this.currentRevision,
+    );
   }
 
   inspectImport(raw: string): CampaignState {

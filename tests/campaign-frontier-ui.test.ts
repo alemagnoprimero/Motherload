@@ -98,7 +98,17 @@ describe("Frontier mission and POI guidance", () => {
     expect(game.bank()).toBe(true);
     expect(task(game, "intact").label).toContain("1/3 banked");
     expect(campaignSignal(game)?.kind).toBe("cryo");
-    expect(game.sell()).toBe(true);
+    const creditsBefore = game.state.credits;
+    const total = crystal.value + tutorial.value;
+    expect(game.sell()).toMatchObject({
+      total,
+      creditsBefore,
+      creditsAfter: creditsBefore + total,
+      packages: 2,
+      lines: [{ itemId: "W02-O3", count: 2, value: total }],
+    });
+    expect(crystal.status).toBe("sold");
+    expect(tutorial.status).toBe("sold");
     expect(task(game, "intact").label).toContain("1/3 banked");
     expect(game.missionReady).toBe(false);
   });
@@ -112,10 +122,14 @@ describe("Frontier mission and POI guidance", () => {
     }
     expect(campaignSignal(game)?.kind).toBe("cryo");
     expect(campaignMission(game).next).toContain("1 more crystal");
-    const ordinary = game.world.packages.find(
+    const ordinary = game.world.packages.filter(
       (item) => item.itemId === "W02-O1",
-    )!;
-    ordinary.status = "carried";
+    );
+    ordinary[0]!.status = "carried";
+    expect(game.cargoBulk).toBe(5);
+    expect(campaignSignal(game)?.kind).toBe("cryo");
+    expect(campaignMission(game).next).toContain("1 more crystal");
+    ordinary[1]!.status = "carried";
     expect(game.cargoBulk).toBe(6);
     expect(campaignSignal(game)?.targetId).toBe("W02-LANDER");
     expect(campaignMission(game).next).toContain("Bank intact cryosilicate");
@@ -130,9 +144,9 @@ describe("Frontier mission and POI guidance", () => {
     const full = secondStage();
     for (const item of full.world.packages
       .filter((item) => item.itemId === "W02-O1")
-      .slice(0, 3))
+      .slice(0, full.capacity))
       item.status = "carried";
-    expect(full.cargoBulk).toBe(6);
+    expect(full.cargoBulk).toBe(full.capacity);
     expect(campaignSignal(full)?.targetId).toBe("W02-LANDER");
     expect(campaignSignal(full)?.action).toContain("make room");
     expect(campaignMission(full).next).toContain("make room");
@@ -203,6 +217,41 @@ describe("Frontier mission and POI guidance", () => {
         (item) => item.label === "Planetary certificate earned",
       ),
     ).toBe(true);
+    expect(campaignSignal(game)?.kind).toBe("relic");
+    expect(campaignMission(game).next).toContain("Recover lantern seed");
+    const relic = game.world.packages.find((item) =>
+      item.tags.includes("relic"),
+    )!;
+    relic.status = "carried";
+    expect(campaignSignal(game)?.targetId).toBe("W02-LANDER");
+    expect(campaignMission(game).next).toContain("Bank the relic");
+    expect(game.bank()).toBe(true);
+    expect(campaignSignal(game)?.kind).toBe("log");
+    for (const log of game.world.fieldLogs ?? []) {
+      game.state.vehicle.x = log.x;
+      game.state.vehicle.y = log.y;
+      game.world.discovered[
+        Math.floor(log.y) * game.world.width + Math.floor(log.x)
+      ] = 1;
+      expect(game.readFieldLog(log.id)).toBe(true);
+    }
+    for (const cache of game.world.sites?.filter(
+      (site) => site.kind === "cache",
+    ) ?? []) {
+      if (cache.tool) {
+        game.state.vehicle.x = W02.dockX;
+        game.state.vehicle.y = -W01.bodyHalfY;
+        game.state.ownedGear.push(cache.tool);
+        expect(game.toggleGear(cache.tool)).toBe(true);
+      }
+      game.state.vehicle.x = cache.x;
+      game.state.vehicle.y = cache.y;
+      cache.discovered = true;
+      expect(game.openCache(cache.id)).toBe(true);
+    }
+    expect(game.postChapterObjectives).toHaveLength(0);
+    game.state.vehicle.x = W02.dockX;
+    game.state.vehicle.y = -W01.bodyHalfY;
     expect(campaignMission(game).next).toContain("Return to Broken asteroid");
     expect(campaignSignal(game)?.action).toContain("travel");
     expect(campaignSignal(game)?.action).not.toContain("launch");

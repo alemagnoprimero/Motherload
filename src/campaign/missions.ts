@@ -1,6 +1,13 @@
 import type { Campaign } from "./model";
-import { W01, W01_MILESTONES, formatCredits } from "./config";
-import { W02 } from "./frontier";
+import {
+  HARDWARE_PRICES,
+  W01,
+  W01_GEAR,
+  W01_MILESTONES,
+  formatCredits,
+} from "./config";
+import { W02, W02_GEAR } from "./frontier";
+import { openingRoute, openingSurveyPending, postChapterGoal } from "./poi";
 
 export interface MissionTask {
   id: string;
@@ -8,11 +15,46 @@ export interface MissionTask {
   status: "pending" | "carried" | "complete" | "ready";
 }
 
+function optionalSalvage(campaign: Campaign) {
+  const site = postChapterGoal(campaign);
+  if (!site) return undefined;
+  const gear = [...W01_GEAR, ...W02_GEAR].find((item) => item.id === site.tool);
+  const equipped = [
+    campaign.state.equipped.drill,
+    campaign.state.equipped.mobility,
+    campaign.state.equipped.processor,
+    ...campaign.state.equipped.utilities,
+  ];
+  const ready = !site.tool || equipped.includes(site.tool);
+  const owned = !site.tool || campaign.state.ownedGear.includes(site.tool);
+  return {
+    task: {
+      id: site.id,
+      label: site.carried
+        ? `${site.name} · onboard`
+        : `${site.name} · ${Math.floor(site.y + 1) * 10} m${ready ? "" : ` · needs ${gear?.name ?? "specialist tool"}`}`,
+      status: site.carried ? "carried" : ready ? "ready" : "pending",
+    } as MissionTask,
+    next: site.carried
+      ? "Return to lander → Bank the relic"
+      : ready
+        ? `${site.kind === "log" ? "Read" : "Recover"} ${site.name.toLowerCase()} · ${Math.floor(site.y + 1) * 10} m`
+        : owned
+          ? `Lander → Install ${gear?.name ?? "the cache tool"}`
+          : `${site.tool?.startsWith("W02") && campaign.state.currentWorld === "W01" ? "Ice comet" : "Workshop"} → Obtain ${gear?.name ?? "the cache tool"}`,
+    reward:
+      site.kind === "log"
+        ? "Field journal entry"
+        : `Optional salvage · ${formatCredits(site.reward)} CR`,
+  };
+}
+
 /** The HUD reads earned proof and paid stages; it never advances progression. */
 export function campaignMission(campaign: Campaign) {
   if (campaign.state.currentWorld === "W02") return cometMission(campaign);
   const state = campaign.state;
   const milestone = campaign.currentMilestone;
+  const salvage = optionalSalvage(campaign);
   if (!milestone)
     return {
       title: state.progress.departed
@@ -27,13 +69,17 @@ export function campaignMission(campaign: Campaign) {
             : "Launch from the restored lander",
           status: state.progress.departed ? "complete" : "ready",
         },
+        ...(salvage ? [salvage.task] : []),
       ] as MissionTask[],
       next: state.progress.departed
-        ? "Ice comet ready · Moon chapter in development"
+        ? (salvage?.next ?? "Ice comet ready · Moon chapter in development")
         : campaign.atDock
           ? "Lander → Launch"
           : "Return to the lander → Launch",
-      reward: "Ice comet + Fractured moon charted",
+      reward:
+        state.progress.departed && salvage
+          ? salvage.reward
+          : "Ice comet + Fractured moon charted",
     };
 
   const carriedOre = campaign.cargo.filter((item) =>
@@ -58,7 +104,7 @@ export function campaignMission(campaign: Campaign) {
         (banked < 3 && carriedOre ? ` · ${carriedOre} onboard` : ""),
       status: banked === 3 ? "complete" : carriedOre ? "carried" : "pending",
     });
-    if (!state.progress.beacon)
+    if (!state.progress.beacon || openingSurveyPending(campaign))
       next = `Survey the beacon at ${(W01.beaconRow + 1) * 10} m`;
     else if (banked < 3)
       next = carriedOre
@@ -112,14 +158,30 @@ export function campaignMission(campaign: Campaign) {
         : "Return to lander → Fund construction"
       : `Sell ore · earn ${formatCredits(milestone.fee - state.credits)} CR more`;
 
+  const opening = openingRoute(campaign);
+  if (opening) {
+    tasks.unshift({
+      id: "opening-upgrade",
+      label: `Expedition tank · ${formatCredits(HARDWARE_PRICES.energy[1]!)} CR`,
+      status: opening.phase === "upgrade" ? "ready" : "pending",
+    });
+    if (opening.phase !== "upgrade")
+      tasks.unshift({
+        id: "opening-seam-b",
+        label: `Seam B · ${7 - opening.remaining}/7 collected`,
+        status: opening.phase === "sell" ? "carried" : "pending",
+      });
+    next = opening.next;
+  }
+
   return {
-    title: milestone.name,
+    title: opening?.title ?? milestone.name,
     step: `0${milestone.id} / 0${W01_MILESTONES.length}`,
     tasks,
     next,
     reward:
       milestone.id === 1
-        ? "Unlock: rank 1 hardware + anchoring feet"
+        ? "Unlock: rank 1 hardware + shaft brace"
         : milestone.id === 2
           ? "Unlock: cargo rack + star map"
           : "Unlock: Frontier certificate + departure",
@@ -128,6 +190,7 @@ export function campaignMission(campaign: Campaign) {
 
 function cometMission(campaign: Campaign) {
   const milestone = campaign.currentMilestone;
+  const salvage = optionalSalvage(campaign);
   if (!milestone)
     return {
       title: "Comet fuel stabilized",
@@ -143,11 +206,14 @@ function cometMission(campaign: Campaign) {
           label: "Iron planet charted · chapter in development",
           status: "complete",
         },
+        ...(salvage ? [salvage.task] : []),
       ] as MissionTask[],
-      next: campaign.atDock
-        ? "Navigation → Return to Broken asteroid"
-        : "Return to the comet lander to travel",
-      reward: "Claim and equipment preserved",
+      next:
+        salvage?.next ??
+        (campaign.atDock
+          ? "Navigation → Return to Broken asteroid"
+          : "Return to the comet lander to travel"),
+      reward: salvage?.reward ?? "Claim and equipment preserved",
     };
 
   const tasks: MissionTask[] = [];
@@ -244,7 +310,7 @@ function cometMission(campaign: Campaign) {
     next,
     reward:
       milestone.id === 1
-        ? "Unlock: vapour condenser + heated refuge"
+        ? "Unlock: steam reserve + heated refuge"
         : milestone.id === 2
           ? "Unlock: preservation chamber"
           : "Unlock: Planetary certificate + Iron planet charted",

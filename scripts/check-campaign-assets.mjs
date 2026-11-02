@@ -203,25 +203,45 @@ export function checkCampaignAtlas(
       `Rotated frame changes campaign anchors: ${name}`,
     );
     assert.equal(
-      entry.trimmed,
-      false,
-      `Trimmed frame changes campaign anchors: ${name}`,
+      typeof entry.trimmed,
+      "boolean",
+      `Missing trim metadata: ${name}`,
     );
-    assert.deepEqual(
-      entry.sourceSize,
-      { w, h },
-      `Invalid source size: ${name}`,
-    );
-    assert.deepEqual(
-      entry.spriteSourceSize,
-      { x: 0, y: 0, w, h },
+    const source = entry.sourceSize,
+      rect = entry.spriteSourceSize;
+    assert.ok(
+      source &&
+        rect &&
+        [source.w, source.h, rect.x, rect.y, rect.w, rect.h].every(
+          Number.isInteger,
+        ),
       `Invalid source rectangle: ${name}`,
     );
+    assert.ok(
+      rect.x >= 0 &&
+        rect.y >= 0 &&
+        rect.w === w &&
+        rect.h === h &&
+        rect.x + w <= source.w &&
+        rect.y + h <= source.h,
+      `Trimmed frame leaves its source: ${name}`,
+    );
+    if (!entry.trimmed)
+      assert.deepEqual(
+        rect,
+        { x: 0, y: 0, w: source.w, h: source.h },
+        `Untrimmed frame changes source: ${name}`,
+      );
     if (REQUIRED_FRAMES.includes(name))
       assert.deepEqual(
-        { w, h },
-        expectedFrameSize(name),
-        `Frame dimensions change campaign anchors: ${name}`,
+        source,
+        Object.fromEntries(
+          Object.entries(expectedFrameSize(name)).map(([key, value]) => [
+            key,
+            (value * Number(atlas.meta?.scale ?? 2)) / 2,
+          ]),
+        ),
+        `Source dimensions change campaign anchors: ${name}`,
       );
     for (const other of bounds)
       assert.ok(
@@ -245,8 +265,8 @@ export function checkCampaignAtlas(
         for (let col = x; col < x + w; col++)
           if (alpha(col, row)) bottom = row - y + 1;
       assert.equal(
-        bottom,
-        100,
+        bottom + entry.spriteSourceSize.y,
+        (100 * Number(atlas.meta?.scale ?? 2)) / 2,
         `Tread pixels drift from the rig baseline: ${name}`,
       );
     }
@@ -328,9 +348,13 @@ export async function checkCampaignReadability(directory, world, png, atlas) {
   const pixels = decodeCampaignPixels(png);
   const stride = png.readUInt32BE(16);
   const sample = (name, x, y) => {
-    const frame = atlas.frames[name]?.frame;
+    const entry = atlas.frames[name];
+    const frame = entry?.frame;
     assert.ok(frame, `Missing material-readability frame ${world}:${name}`);
-    const at = ((frame.y + y) * stride + frame.x + x) * 4;
+    const sx = x - entry.spriteSourceSize.x,
+      sy = y - entry.spriteSourceSize.y;
+    if (sx < 0 || sy < 0 || sx >= frame.w || sy >= frame.h) return [0, 0, 0, 0];
+    const at = ((frame.y + sy) * stride + frame.x + sx) * 4;
     return [pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]];
   };
   const lab = (rgb) => {

@@ -1,3 +1,10 @@
+import { itemName } from "./names";
+import { knownBalanceVersion, knownGeneratorVersion } from "./versions";
+import {
+  migrateProgress,
+  migrateWorld,
+  validateProgressReferences,
+} from "./migrations";
 import {
   BALANCE_VERSION,
   GENERATOR_VERSION,
@@ -13,6 +20,18 @@ import {
   formatCredits,
 } from "./config";
 import { createW01, createW02 } from "./world";
+import {
+  MOTION,
+  motionProfile,
+  estimateReturnEnergy,
+  cutDuration,
+} from "./motion";
+import { CONTRACTS } from "./contracts";
+import type {
+  CampaignEvent,
+  CampaignEventPayload,
+  SaleReceipt,
+} from "./events";
 import {
   W02,
   W02_GEAR,
@@ -47,7 +66,7 @@ const level = (state: CampaignState, key: HardwareKey) =>
 export function createCampaign(seed = 73021): CampaignState {
   seed >>>= 0;
   return {
-    schema: 2,
+    schema: 3,
     balanceVersion: BALANCE_VERSION,
     generatorVersion: GENERATOR_VERSION,
     id: `campaign-${seed.toString(16)}-${Date.now().toString(36)}`,
@@ -67,6 +86,7 @@ export function createCampaign(seed = 73021): CampaignState {
       y: SURFACE_Y,
       energy: HARDWARE_LEVELS.energy[0]!,
       hull: HARDWARE_LEVELS.hull[0]!,
+      reserve: 0,
     },
     currentWorld: "W01",
     worlds: { W01: createW01(seed) },
@@ -77,6 +97,23 @@ export function createCampaign(seed = 73021): CampaignState {
       unlockedWorlds: ["W01"],
       departed: false,
       towsUsed: [],
+      volatileTraining: 0,
+      contracts: [],
+      records: {
+        W01: {
+          elapsed: 0,
+          ordinaryIncome: 0,
+          mined: 0,
+          recoveries: 0,
+          deepest: 0,
+          contracts: 0,
+          mastery: 0,
+          historyComplete: true,
+          bestHaul: 0,
+        },
+      },
+      waypoints: [],
+      caches: [],
     },
     elapsed: 0,
     stats: {
@@ -122,6 +159,236 @@ export class Campaign {
     { direction: Cut["direction"]; until: number } | undefined;
   private previousCutIntent: Cut["direction"] | undefined;
   private nextFootingHintAt = 0;
+  private events: CampaignEvent[] = [];
+  private disabledNotified = false;
+  private lastHollowHintAt = -30;
+  private lastAnomalyAt = -30;
+  private holdFullAt: { bulk: number; capacity: number } | undefined;
+  private freshPressure = new Set<string>();
+  lastSale: SaleReceipt | undefined;
+
+  private emit(
+    event: CampaignEventPayload,
+    x = this.state.vehicle.x,
+    y = this.state.vehicle.y,
+  ) {
+    this.events.push({
+      ...event,
+      worldId: this.state.currentWorld,
+      x,
+      y,
+      at: this.state.elapsed,
+    } as CampaignEvent);
+    if (this.events.length > 256)
+      this.events.splice(0, this.events.length - 256);
+  }
+  drainEvents() {
+    return this.events.splice(0);
+  }
+  get motion() {
+    return motionProfile(level(this.state, "engine"), this.cargoMass);
+  }
+  get returnReserve() {
+    return estimateReturnEnergy({
+      x: this.renderX,
+      y: this.renderY,
+      dockX: this.activeWorldDefinition.dockX,
+      width: this.world.width,
+      engine: level(this.state, "engine"),
+      cargoMass: this.cargoMass,
+      energy: this.state.vehicle.energy,
+      cutRemaining: this.cut ? (1 - this.cut.progress) * this.cut.seconds : 0,
+      cutEndY:
+        this.cut?.direction === "down" ? this.cut.y + 1 - HALF_Y : undefined,
+      cutEnergy:
+        MOTION.drillingEnergy *
+        (this.state.equipped.drill === "W02-R1"
+          ? W02_EFFECTS.thermal.drillingEnergyMultiplier
+          : 1),
+    });
+  }
+  /** Navigation estimate; unknown terrain is always assumed to be ordinary soil. */
+  get safeDescentDepth() {
+    const vehicle = this.state.vehicle;
+    const column = this.cut?.x ?? Math.floor(vehicle.x);
+    const cargoMass = this.cargoMass;
+    const engine = level(this.state, "engine");
+    const profile = motionProfile(engine, cargoMass);
+    const drilling =
+      MOTION.drillingEnergy *
+      (this.state.equipped.drill === "W02-R1"
+        ? W02_EFFECTS.thermal.drillingEnergyMultiplier
+        : 1);
+    const pending = this.cut ? (1 - this.cut.progress) * this.cut.seconds : 0;
+    let energy = vehicle.energy - pending * (drilling + MOTION.idleEnergy);
+    const startY =
+      this.cut?.direction === "down" ? this.cut.y + 1 - HALF_Y : vehicle.y;
+    let safe = this.depth;
+    for (
+      let row = Math.max(0, Math.floor(startY + HALF_Y));
+      row < this.world.rows;
+      row++
+    ) {
+      const material = this.isKnown(column, row) ? this.tile(column, row) : 1;
+      if (material === 3 || (material === 4 && this.state.hardware.drill < 1))
+        break;
+      const seconds =
+        material === 0
+          ? 1 / profile.verticalSpeed
+          : cutDuration({
+              material,
+              row,
+              down: true,
+              drill: level(this.state, "drill"),
+              worldId: this.state.currentWorld,
+              augerId: this.state.equipped.drill,
+            });
+      energy -= seconds * (MOTION.idleEnergy + (material === 0 ? 0 : drilling));
+      const reserve = estimateReturnEnergy({
+        x: column + 0.5,
+        y: row + 1 - HALF_Y,
+        dockX: this.activeWorldDefinition.dockX,
+        width: this.world.width,
+        engine,
+        cargoMass,
+        energy,
+      });
+      if (reserve.margin < reserve.buffer) break;
+      safe = (row + 1) * 10;
+    }
+    return Math.min(this.activeWorldDefinition.depth, safe);
+  }
+  get chapterSummary() {
+    const record = this.record();
+    const ordinary = this.world.packages.filter(
+      (item) =>
+        item.tags.includes("ordinary") && !item.tags.includes("emergency"),
+    );
+    const total = ordinary.reduce((sum, item) => sum + item.value, 0);
+    const banked = ordinary
+      .filter((item) => item.status === "banked" || item.status === "sold")
+      .reduce((sum, item) => sum + item.value, 0);
+    const relics = this.world.packages.filter(
+      (item) =>
+        item.tags.includes("relic") &&
+        (item.status === "banked" || item.status === "sold"),
+    ).length;
+    return {
+      worldId: this.state.currentWorld,
+      ...record,
+      oreBankedPercent: total ? (banked / total) * 100 : 0,
+      relics,
+      fastestM3:
+        record.historyComplete && record.completion
+          ? record.completion.elapsed
+          : null,
+    };
+  }
+  private record() {
+    const records = (this.state.progress.records ??= {});
+    return (records[this.state.currentWorld] ??= {
+      elapsed: 0,
+      ordinaryIncome: 0,
+      mined: 0,
+      recoveries: 0,
+      deepest: 0,
+      contracts: 0,
+      mastery: 0,
+      historyComplete: false,
+      bestHaul: 0,
+    });
+  }
+  get contractViews() {
+    return CONTRACTS.filter(
+      (def) => def.worldId === this.state.currentWorld,
+    ).map((def) => {
+      const progress = this.state.progress.contracts?.find(
+        (entry) => entry.id === def.id,
+      );
+      return {
+        ...def,
+        progress: progress?.progress ?? 0,
+        accepted: Boolean(progress),
+        completed: progress?.completed ?? false,
+        claimed: progress?.claimed ?? false,
+      };
+    });
+  }
+  acceptContract(id: string) {
+    if (!this.requireDock()) return false;
+    const def = CONTRACTS.find(
+      (entry) => entry.id === id && entry.worldId === this.state.currentWorld,
+    );
+    const contracts = (this.state.progress.contracts ??= []);
+    if (!def || contracts.some((entry) => entry.id === id)) return false;
+    contracts.push({
+      id,
+      worldId: def.worldId,
+      progress: 0,
+      completed: false,
+      claimed: false,
+    });
+    this.message = `${def.title} accepted. Progress is tracked in the mission drawer.`;
+    return true;
+  }
+  claimContract(id: string) {
+    if (!this.requireDock()) return false;
+    const def = CONTRACTS.find(
+      (entry) => entry.id === id && entry.worldId === this.state.currentWorld,
+    );
+    const progress = this.state.progress.contracts?.find(
+      (entry) => entry.id === id,
+    );
+    if (!def || !progress?.completed || progress.claimed) return false;
+    progress.claimed = true;
+    this.state.credits += def.reward;
+    this.record().contracts++;
+    this.updateMastery();
+    this.message = `${def.title}: ${formatCredits(def.reward)} CR paid.`;
+    this.emit({ type: "discovery", id, name: def.title, kind: "contract" });
+    return true;
+  }
+  private advanceContracts(
+    metric: "sold" | "intact" | "depth",
+    amount: number,
+  ) {
+    for (const contract of this.state.progress.contracts ?? []) {
+      const def = CONTRACTS.find((entry) => entry.id === contract.id);
+      if (
+        !def ||
+        def.worldId !== this.state.currentWorld ||
+        def.metric !== metric ||
+        contract.completed
+      )
+        continue;
+      contract.progress = Math.min(
+        def.target,
+        metric === "depth"
+          ? Math.max(contract.progress, amount)
+          : contract.progress + amount,
+      );
+      if (
+        contract.progress >= def.target &&
+        (metric !== "depth" || this.atDock)
+      )
+        contract.completed = true;
+    }
+  }
+  private updateMastery() {
+    const record = this.record();
+    const completed = this.completedMilestones.includes(3);
+    const summary = this.chapterSummary;
+    record.mastery =
+      Number(completed) +
+      Number(summary.oreBankedPercent >= 50 && summary.relics > 0) +
+      Number(
+        completed &&
+          record.historyComplete === true &&
+          Boolean(record.completion) &&
+          record.completion!.elapsed <= 1200 &&
+          record.completion!.recoveries === 0,
+      );
+  }
 
   constructor(state = createCampaign()) {
     this.state = state;
@@ -130,6 +397,7 @@ export class Campaign {
         "Ice comet expedition ready. Follow the mission signal and preserve volatile crystals.";
     this.refreshVisibility();
     this.wasDocked = this.atDock;
+    this.updateMastery();
   }
 
   get world() {
@@ -200,7 +468,7 @@ export class Campaign {
     return this.cargo.reduce((total, item) => total + item.value, 0);
   }
   get capacity() {
-    return Math.floor(
+    return Math.ceil(
       level(this.state, "cargo") *
         (this.state.equipped.processor === "W01-R3"
           ? W01_EFFECTS.rack.bulkMultiplier
@@ -360,6 +628,9 @@ export class Campaign {
   }
 
   tick(seconds: number, controls: CampaignControls = {}) {
+    // A new pressure tell first reaches the renderer at this outer tick's end.
+    // Do not consume its warning in later physics substeps of the same frame.
+    this.freshPressure.clear();
     let remaining = clamp(seconds, 0, 0.25);
     while (remaining > 1e-8) {
       const dt = Math.min(remaining, 1 / 120);
@@ -372,25 +643,43 @@ export class Campaign {
     const state = this.state,
       vehicle = state.vehicle;
     state.elapsed += dt;
+    if (!this.completedMilestones.includes(3)) this.record().elapsed += dt;
+    if (vehicle.energy <= 0 && vehicle.hull > 0) this.useReserve();
     if (vehicle.energy <= 0 || vehicle.hull <= 0) {
+      if (!this.disabledNotified)
+        this.emit({
+          type: "disabled",
+          cause: vehicle.hull <= 0 ? "hull" : "energy",
+        });
+      this.disabledNotified = true;
       this.stop();
       this.message =
         "Rig disabled. Request surface recovery from the pause menu.";
       return;
     }
+    this.disabledNotified = false;
+    const throttle = (value: number | undefined) =>
+      typeof value === "number" && Number.isFinite(value)
+        ? clamp(value, 0, 1)
+        : 1;
+    const throttleX = throttle(controls.throttleX),
+      throttleY = throttle(controls.throttleY);
+    const upInput = Boolean(controls.up && throttleY > 0),
+      downInput = Boolean(controls.down && throttleY > 0);
     const horizontal =
-      Number(Boolean(controls.right)) - Number(Boolean(controls.left));
+      (Number(Boolean(controls.right)) - Number(Boolean(controls.left))) *
+      throttleX;
     const supported = this.grounded;
-    const cutIntent: Cut["direction"] | undefined = controls.up
+    const cutIntent: Cut["direction"] | undefined = upInput
       ? undefined
-      : controls.down
+      : downInput
         ? "down"
         : horizontal < 0
           ? "left"
           : horizontal > 0
             ? "right"
             : undefined;
-    if (controls.up) this.bufferedCut = undefined;
+    if (upInput) this.bufferedCut = undefined;
     else if (
       !this.cut &&
       !supported &&
@@ -406,8 +695,8 @@ export class Campaign {
       this.bufferedCut = undefined;
     if (
       this.shaftAlignment &&
-      (!controls.down ||
-        controls.up ||
+      (!downInput ||
+        upInput ||
         state.elapsed > this.shaftAlignment.until ||
         vehicle.y + HALF_Y > this.shaftAlignment.rim + 0.05)
     )
@@ -422,14 +711,13 @@ export class Campaign {
       return;
     }
     if (this.world.volatile) {
-      if (controls.up || (!controls.down && !horizontal))
-        this.releaseVolatile();
+      if (upInput || (!downInput && !horizontal)) this.releaseVolatile();
       else {
         this.world.volatile.remaining = Math.max(
           0,
           this.world.volatile.remaining - dt,
         );
-        vehicle.energy = Math.max(0, vehicle.energy - 0.063 * dt);
+        vehicle.energy = Math.max(0, vehicle.energy - MOTION.idleEnergy * dt);
         if (this.world.volatile.remaining <= 1e-8) this.finishVolatile(false);
         this.updateObjects(dt);
         return;
@@ -437,30 +725,49 @@ export class Campaign {
     }
     if (horizontal && !this.cut)
       this.facing = horizontal < 0 ? "left" : "right";
-    if (controls.mobility && supported && state.equipped.mobility === "W01-R2")
-      this.feetTime += dt;
+    const wallContact =
+      this.blocked(vehicle.x - 0.16, vehicle.y) ||
+      this.blocked(vehicle.x + 0.16, vehicle.y);
+    const bracing = Boolean(
+      controls.mobility &&
+      !upInput &&
+      (supported || wallContact) &&
+      state.equipped.mobility === "W01-R2",
+    );
+    if (bracing) this.feetTime += dt;
     else this.feetTime = 0;
     this.feetDeployed = this.feetTime >= W01_EFFECTS.feet.deploySeconds;
-    this.thrusting = Boolean(controls.up && !this.cut);
-    const power = level(state, "engine") / 150,
-      movementFactor = 1 + 0.12 * (power - 1),
+    this.thrusting = Boolean(upInput && !this.cut);
+    const profile = this.motion;
+    const power = profile.power,
+      movementFactor = profile.massFactor,
       reserve = this.feetDeployed ? W01_EFFECTS.feet.thrustEnergyMultiplier : 1;
     const drillingFuel = this.cut
-      ? 0.252 *
+      ? MOTION.drillingEnergy *
         (state.equipped.drill === "W02-R1"
           ? W02_EFFECTS.thermal.drillingEnergyMultiplier
           : 1)
       : 0;
     const fuel =
-      (vehicle.y > SURFACE_Y + 0.01 ? 0.063 : 0) +
+      (vehicle.y > SURFACE_Y + 0.01 ? MOTION.idleEnergy : 0) +
       (this.cut
         ? drillingFuel
-        : Number(Boolean(horizontal)) * 0.126 * movementFactor +
-          Number(Boolean(controls.up)) * 0.126 * movementFactor * reserve);
+        : Math.abs(horizontal) * MOTION.axisEnergy * movementFactor +
+          Number(upInput) *
+            throttleY *
+            MOTION.axisEnergy *
+            movementFactor *
+            reserve);
     const spent = Math.min(vehicle.energy, fuel * dt);
     if (this.cut && fuel > 0) this.cut.spent += (spent * drillingFuel) / fuel;
     vehicle.energy = Math.max(0, vehicle.energy - spent);
+    if (vehicle.energy === 0 && this.useReserve())
+      this.message =
+        "Steam reserve feeding the main tank. Return to the lander.";
     if (vehicle.energy === 0) {
+      if (!this.disabledNotified)
+        this.emit({ type: "disabled", cause: "energy" });
+      this.disabledNotified = true;
       this.stop();
       this.message = "Energy depleted. Request surface recovery.";
       return;
@@ -471,15 +778,19 @@ export class Campaign {
       this.updateObjects(dt);
       return;
     }
-    const cutDirection = controls.up
+    const cutDirection = upInput
       ? undefined
       : (cutIntent ?? this.bufferedCut?.direction);
-    if (cutDirection && supported) {
+    if (
+      cutDirection &&
+      (supported ||
+        (cutDirection !== "down" && this.feetDeployed && wallContact))
+    ) {
       const down = cutDirection === "down";
       const direction = down ? 0 : cutDirection === "left" ? -1 : 1;
       const tx = Math.floor(vehicle.x + direction * (HALF_X + 0.15));
       const ty = Math.floor(vehicle.y + (down ? HALF_Y + 0.05 : 0));
-      if (down && controls.down && this.tile(tx, ty) === 0) {
+      if (down && downInput && this.tile(tx, ty) === 0) {
         // A near miss over an existing shaft should enter that shaft, not
         // excavate the supporting rim. Motion remains collision constrained.
         if (!this.shaftAlignment)
@@ -491,6 +802,8 @@ export class Campaign {
       }
       const material = this.tile(tx, ty);
       if (material === 3) this.message = "The claim's bedrock ends here.";
+      else if (material === 4 && state.hardware.drill < 1)
+        this.message = "Fused plate · install a rank-1 drill at the lander.";
       else if (material) {
         const isVolatile = this.world.packages.some(
           (item) =>
@@ -499,16 +812,6 @@ export class Campaign {
             Math.floor(item.y) === ty &&
             item.tags.includes("volatile"),
         );
-        const auger =
-          material === 1 &&
-          state.currentWorld === "W02" &&
-          state.equipped.drill === "W02-R1"
-            ? W02_EFFECTS.thermal.iceCutMultiplier
-            : material === 1 &&
-                state.currentWorld === "W01" &&
-                state.equipped.drill === "W01-R1"
-              ? W01_EFFECTS.auger.soilCutMultiplier
-              : 1;
         this.cut = {
           x: Math.floor(this.wrap(tx)),
           y: ty,
@@ -518,18 +821,21 @@ export class Campaign {
           spent: 0,
           precision: isVolatile && this.precisionActive,
           direction: cutDirection,
-          seconds: Math.max(
-            0.25,
-            ((down ? 1 : 0.75) *
-              (material === 2 ? 1.85 : 1) *
-              Math.min(5, 1 + Math.max(0, ty) / 80) *
-              auger *
-              (isVolatile && this.precisionActive
-                ? W02_EFFECTS.preservation.cutMultiplier
-                : 1)) /
-              (level(state, "drill") / 2),
-          ),
+          seconds: cutDuration({
+            material,
+            row: ty,
+            down,
+            drill: level(state, "drill"),
+            worldId: state.currentWorld,
+            augerId: state.equipped.drill,
+            precision: isVolatile && this.precisionActive,
+          }),
         };
+        this.emit(
+          { type: "interaction", action: "cut-start", direction: cutDirection },
+          tx + 0.5,
+          ty + 0.5,
+        );
         if (!down) this.facing = cutDirection as "left" | "right";
         this.bufferedCut = undefined;
         this.shaftAlignment = undefined;
@@ -540,10 +846,10 @@ export class Campaign {
       }
     }
     const surfaceWalkway =
-      Math.abs(vehicle.y - SURFACE_Y) < 0.001 && !controls.up && !controls.down;
+      Math.abs(vehicle.y - SURFACE_Y) < 0.001 && !upInput && !downInput;
     const onGround = supported || surfaceWalkway,
-      massFactor = 1 + this.cargoMass / 198,
-      drag = onGround ? 3.2 : 0.85,
+      massFactor = profile.massFactor,
+      drag = onGround ? 3.2 : !horizontal ? 4.5 : 0.85,
       rack =
         this.cargo.length && state.equipped.processor === "W01-R3"
           ? W01_EFFECTS.rack.loadedAccelerationMultiplier
@@ -558,7 +864,7 @@ export class Campaign {
             : 1)) /
         massFactor,
       decay = Math.exp(-drag * dt),
-      maxHorizontal = Math.min(10, 5 * Math.sqrt(power));
+      maxHorizontal = profile.groundSpeed * (horizontal ? throttleX : 1);
     this.velocityX = clamp(
       this.velocityX * decay + (acceleration / drag) * (1 - decay),
       -maxHorizontal,
@@ -570,6 +876,23 @@ export class Campaign {
         -3,
         3,
       );
+    if (upInput && !horizontal) {
+      const column = Math.floor(vehicle.x);
+      const center = column + 0.5;
+      const roof = Math.floor(vehicle.y - HALF_Y);
+      const shaftAbove = [roof, roof - 1].some(
+        (row) =>
+          row >= 0 &&
+          this.tile(column, row) === 0 &&
+          (this.tile(column - 1, row) !== 0 ||
+            this.tile(column + 1, row) !== 0),
+      );
+      if (
+        shaftAbove &&
+        Math.abs(this.delta(vehicle.x, center)) <= 0.45 + EPSILON
+      )
+        this.velocityX = clamp(this.delta(vehicle.x, center) * 14, -3, 3);
+    }
     if (this.feetDeployed)
       this.velocityX *= Math.pow(
         W01_EFFECTS.feet.horizontalDriftMultiplier,
@@ -578,45 +901,58 @@ export class Campaign {
     const gravity = 11.54 * this.activeWorldDefinition.gravity,
       thrust = Math.max(
         (26.7 *
-          power *
+          power ** 3 *
           ((this.coldStatus?.coldRemaining ?? 0) > 0
             ? W02_EFFECTS.cold.accelerationMultiplier
             : 1)) /
           massFactor,
         gravity + 3.6,
       ),
-      maxVertical = Math.min(12, 6 * Math.sqrt(power));
+      maxVertical = profile.verticalSpeed;
     this.velocityY = clamp(
-      (this.velocityY - (controls.up ? thrust : 0) * dt) *
+      (this.velocityY - (upInput ? thrust * throttleY : 0) * dt) *
         Math.exp(-0.85 * dt) +
         gravity * dt,
-      -maxVertical,
+      -maxVertical * (upInput ? throttleY : 1),
       maxVertical,
     );
+    if (bracing && wallContact && !upInput) this.velocityY = 0;
+    // A quiet stick releases into an air brake; near the bay it settles the rig.
+    if (
+      !horizontal &&
+      !upInput &&
+      Math.abs(vehicle.y - SURFACE_Y) < 0.5 &&
+      Math.abs(this.delta(vehicle.x, this.activeWorldDefinition.dockX)) < 1.8
+    )
+      this.velocityX *= Math.exp(-8 * dt);
+    if (!upInput && this.velocityY < 0 && this.velocityY > -1.2)
+      this.velocityY *= Math.exp(-3 * dt);
     const beforeY = vehicle.y;
     this.moveAxis("x", this.velocityX * dt);
     this.moveAxis("y", this.velocityY * dt);
     if (
-      !controls.down &&
-      !controls.up &&
+      !downInput &&
+      !upInput &&
       beforeY <= SURFACE_Y + 1e-4 &&
       vehicle.y > SURFACE_Y
     ) {
       vehicle.y = SURFACE_Y;
       this.velocityY = 0;
     }
-    if (controls.up && this.blocked(vehicle.x, vehicle.y - 0.04))
+    if (upInput && this.blocked(vehicle.x, vehicle.y - 0.04))
       this.message =
         "Upward rock cannot be drilled. Return through an open shaft.";
     if (
       !supported &&
+      !this.feetDeployed &&
       horizontal &&
-      !controls.down &&
-      !controls.up &&
+      !downInput &&
+      !upInput &&
       this.blocked(vehicle.x + horizontal * 0.05, vehicle.y) &&
       state.elapsed >= this.nextFootingHintAt
     ) {
       this.message = "Side drilling needs footing · land on a ledge first.";
+      this.emit({ type: "interaction", action: "footing" });
       this.nextFootingHintAt = state.elapsed + 3;
     }
     this.updateObjects(dt);
@@ -649,10 +985,9 @@ export class Campaign {
         else free = mid;
       }
       end = free;
-      const landingThreshold = Math.max(
-        7,
-        Math.min(12, 6 * Math.sqrt(level(this.state, "engine") / 150)) + 0.3,
-      );
+      const landingThreshold = Math.max(7, this.motion.verticalSpeed + 0.3);
+      if (axis === "y" && this.velocityY > 1.5)
+        this.emit({ type: "landing", speed: this.velocityY });
       if (axis === "y" && this.velocityY > landingThreshold)
         this.damage(
           Math.max(1, Math.round((this.velocityY - landingThreshold) * 0.6)),
@@ -668,12 +1003,46 @@ export class Campaign {
     const cut = this.cut!;
     cut.progress = Math.min(1, cut.progress + dt / cut.seconds);
     if (cut.progress < 1) return;
-    const ice =
-      this.state.currentWorld === "W02" && this.tile(cut.x, cut.y) === 1;
+    const material = this.tile(cut.x, cut.y);
+    const ice = this.state.currentWorld === "W02" && material === 1;
+    this.emit(
+      {
+        type: "cut",
+        material:
+          material === 4
+            ? "plate"
+            : material === 2
+              ? "stone"
+              : ice
+                ? "ice"
+                : "soil",
+        direction: cut.direction,
+      },
+      cut.x + 0.5,
+      cut.y + 0.5,
+    );
     this.world.tiles[cut.y * this.world.width + cut.x] = 0;
     this.state.vehicle.x = cut.x + 0.5;
     if (cut.direction === "down") this.state.vehicle.y = cut.y + 1 - HALF_Y;
     this.state.stats.mined++;
+    this.record().mined++;
+    const pressure = this.world.pressureSeams?.find(
+      (seam) =>
+        !seam.spent &&
+        seam.warning === null &&
+        Math.floor(seam.x) === cut.x &&
+        Math.floor(seam.y) === cut.y,
+    );
+    if (pressure) {
+      pressure.warning = 1.2;
+      this.freshPressure.add(pressure.id);
+      this.message = "Pressure seam hissing · move clear!";
+      this.emit(
+        { type: "pressure", phase: "warning", id: pressure.id },
+        pressure.x,
+        pressure.y,
+      );
+    }
     const volatileIds: string[] = [];
     for (const item of this.world.packages)
       if (
@@ -687,14 +1056,21 @@ export class Campaign {
         this.message = `${item.name} exposed.`;
       }
     if (volatileIds.length) {
+      const training =
+        (this.world.generatorVersion ?? 1) >= 2 &&
+        (this.state.progress.volatileTraining ?? 0) < 3;
+      const duration = training ? 1.5 : W02_EFFECTS.volatile.releaseSeconds;
+      this.state.progress.volatileTraining =
+        (this.state.progress.volatileTraining ?? 0) + 1;
       this.world.volatile = {
         packageIds: volatileIds,
-        remaining: W02_EFFECTS.volatile.releaseSeconds,
+        remaining: duration,
+        duration,
         spent: ice ? cut.spent : 0,
         precision: cut.precision,
       };
-      this.message =
-        "Volatile seam complete! Release drilling now to preserve it (0.75 s).";
+      this.message = `Release drilling · ${duration.toFixed(2).replace(/0$/, "")} s${training ? " training window" : ""}.`;
+      this.emit({ type: "volatile", phase: "warning", duration });
     } else if (ice) this.refundIceEnergy(cut.spent);
     this.cut = undefined;
   }
@@ -704,10 +1080,31 @@ export class Campaign {
       spent,
       Math.max(0, spent * W02_EFFECTS.condenser.refundFraction),
     );
-    this.state.vehicle.energy = Math.min(
-      this.maxEnergy,
-      this.state.vehicle.energy + refund,
+    this.state.vehicle.reserve = Math.min(
+      5,
+      (this.state.vehicle.reserve ?? 0) + refund,
     );
+  }
+  useReserve() {
+    if (
+      !this.state.equipped.utilities.includes("W02-R2") ||
+      this.state.vehicle.hull <= 0
+    )
+      return false;
+    const amount = Math.min(
+      this.maxEnergy - this.state.vehicle.energy,
+      this.state.vehicle.reserve ?? 0,
+    );
+    if (amount <= EPSILON) return false;
+    this.state.vehicle.reserve = Math.max(
+      0,
+      (this.state.vehicle.reserve ?? 0) - amount,
+    );
+    this.state.vehicle.energy += amount;
+    this.disabledNotified = false;
+    this.emit({ type: "reserve", amount });
+    this.message = `Steam reserve supplied ${amount.toFixed(1)} L. Return to the lander.`;
+    return true;
   }
   private finishVolatile(intact: boolean) {
     const pending = this.world.volatile;
@@ -735,6 +1132,7 @@ export class Campaign {
       }
     }
     this.refundIceEnergy(pending.spent);
+    this.emit({ type: "volatile", phase: intact ? "preserved" : "ruptured" });
     this.message = intact
       ? "Intact volatile package preserved. Approach to collect and bank it."
       : "Volatile package ruptured. Release drilling on the next completion cue.";
@@ -763,7 +1161,7 @@ export class Campaign {
       climate.warning = null;
       return;
     }
-    const cold = W02_HAZARDS.coldPockets.some(
+    const cold = (this.world.hazards ?? W02_HAZARDS).coldPockets.some(
       (pocket) => Math.hypot(this.delta(x, pocket.x), y - pocket.y) <= 1.65,
     );
     if (!cold) climate.warning = null;
@@ -783,7 +1181,7 @@ export class Campaign {
     }
     if (
       climate.ventCooldown <= 0 &&
-      W02_HAZARDS.vents.some(
+      (this.world.hazards ?? W02_HAZARDS).vents.some(
         (vent) => Math.hypot(this.delta(x, vent.x), y - vent.y) <= 0.95,
       )
     ) {
@@ -794,7 +1192,15 @@ export class Campaign {
   private updateObjects(dt: number) {
     const state = this.state,
       vehicle = state.vehicle;
+    if (
+      this.holdFullAt &&
+      (this.cargoBulk < this.holdFullAt.bulk ||
+        this.capacity > this.holdFullAt.capacity)
+    )
+      this.holdFullAt = undefined;
     state.stats.largestDepth = Math.max(state.stats.largestDepth, this.depth);
+    this.record().deepest = Math.max(this.record().deepest, this.depth);
+    this.advanceContracts("depth", this.depth);
     if (
       state.currentWorld === "W01" &&
       !state.progress.beacon &&
@@ -804,6 +1210,7 @@ export class Campaign {
       ) < 1.15
     ) {
       state.progress.beacon = true;
+      this.emit({ type: "mission", id: "W01-BEACON", phase: "surveyed" });
       this.message =
         "Wreck beacon surveyed. Bank three ore packages at the lander.";
     }
@@ -817,12 +1224,26 @@ export class Campaign {
         continue;
       if (this.cargoBulk + item.bulk <= this.capacity) {
         item.status = "carried";
+        this.emit(
+          {
+            type: "pickup",
+            itemId: item.itemId,
+            name: item.name,
+            tier: Number(item.itemId.match(/-O(\d)$/)?.[1] ?? 4),
+            relic: item.tags.includes("relic"),
+            value: item.value,
+          },
+          item.x,
+          item.y,
+        );
         this.message =
           this.cargoBulk === this.capacity
             ? `Hold full: ${this.cargoBulk}/${this.capacity} bulk. Return to the lander to bank your haul.`
             : `${item.name} secured. ${this.cargoBulk}/${this.capacity} bulk.`;
+        if (this.cargoBulk >= this.capacity) this.notifyHoldFull();
       } else {
         this.message = `Hold full: ${item.name} remains here (${item.bulk} bulk). Return or eject a package.`;
+        this.notifyHoldFull();
       }
     }
     for (const mission of this.world.missions)
@@ -833,6 +1254,11 @@ export class Campaign {
           0.9
       ) {
         mission.status = "carried";
+        this.emit(
+          { type: "mission", id: mission.id, phase: "collected" },
+          mission.x,
+          mission.y,
+        );
         this.message = `${mission.name} recovered. Bank it safely at the lander.`;
       }
     for (const shelf of this.world.shelves) {
@@ -847,12 +1273,22 @@ export class Campaign {
         vehicle.y < shelf.y + 2.5;
       if (shelf.warning === null && nearby) {
         shelf.warning = W01_EFFECTS.shelf.warningSeconds;
+        this.emit(
+          { type: "shelf", phase: "warning", id: shelf.id },
+          shelf.x,
+          shelf.y,
+        );
         this.message = "Brittle shelf cracking! Move clear before it falls.";
       }
       if (shelf.warning !== null) {
         shelf.warning = Math.max(0, shelf.warning - dt);
         if (shelf.warning === 0) {
           shelf.collapsed = true;
+          this.emit(
+            { type: "shelf", phase: "burst", id: shelf.id },
+            shelf.x,
+            shelf.y,
+          );
           this.world.tiles[
             Math.floor(shelf.y) * this.world.width + Math.floor(shelf.x)
           ] = 0;
@@ -860,13 +1296,255 @@ export class Campaign {
         }
       }
     }
+    this.updatePressure(dt);
+    this.updateDiscoveries();
     const docked = this.atDock;
+    if (docked && !this.wasDocked) {
+      this.advanceContracts("depth", 0);
+      this.updateMastery();
+    }
     if (docked && !this.wasDocked) state.stats.expeditions++;
     this.wasDocked = docked;
   }
+  private notifyHoldFull() {
+    if (this.holdFullAt) return;
+    this.holdFullAt = { bulk: this.cargoBulk, capacity: this.capacity };
+    this.emit({ type: "interaction", action: "hold-full" });
+  }
   private damage(amount: number, cause: string) {
-    this.state.vehicle.hull = Math.max(0, this.state.vehicle.hull - amount);
-    this.message = `${cause}: −${amount} hull. Return for service.`;
+    const actual = Math.min(this.state.vehicle.hull, amount);
+    this.state.vehicle.hull = Math.max(0, this.state.vehicle.hull - actual);
+    this.emit({ type: "damage", amount: actual, cause });
+    this.message = `${cause}: −${actual} hull. Return for service.`;
+  }
+  private updatePressure(dt: number) {
+    for (const seam of this.world.pressureSeams ?? []) {
+      if (
+        seam.spent ||
+        seam.warning === null ||
+        this.freshPressure.has(seam.id)
+      )
+        continue;
+      seam.warning = Math.max(0, seam.warning - dt);
+      if (seam.warning > EPSILON) continue;
+      seam.spent = true;
+      seam.warning = null;
+      this.emit(
+        { type: "pressure", phase: "burst", id: seam.id },
+        seam.x,
+        seam.y,
+      );
+      if (
+        Math.hypot(
+          this.delta(this.state.vehicle.x, seam.x),
+          this.state.vehicle.y - seam.y,
+        ) < 1.4
+      )
+        this.damage(4 / (this.state.hardware.hull + 1), "Pressure seam");
+    }
+  }
+  private updateDiscoveries() {
+    const { x, y } = this.state.vehicle;
+    for (const site of this.world.sites ?? []) {
+      if (
+        site.discovered ||
+        !this.isVisible(site.x, site.y) ||
+        Math.hypot(this.delta(x, site.x), y - site.y) > 4
+      )
+        continue;
+      site.discovered = true;
+      this.emit(
+        { type: "discovery", id: site.id, name: site.name, kind: "site" },
+        site.x,
+        site.y,
+      );
+      this.message = `${site.name} discovered.`;
+    }
+    const relic = this.world.packages.find(
+      (item) =>
+        item.tags.includes("relic") &&
+        (item.status === "deposit" || item.status === "exposed"),
+    );
+    if (
+      relic &&
+      Math.hypot(this.delta(x, relic.x), y - relic.y) < 8 &&
+      this.state.elapsed - this.lastAnomalyAt >= 12
+    ) {
+      this.lastAnomalyAt = this.state.elapsed;
+      this.emit(
+        {
+          type: "discovery",
+          id: relic.relicId ?? relic.id,
+          name: "Anomaly nearby",
+          kind: "anomaly",
+        },
+        x,
+        y,
+      );
+      this.message = "Anomaly nearby · scan the surrounding rock.";
+    }
+    if (this.cut && this.state.elapsed - this.lastHollowHintAt >= 15) {
+      const target = this.cut;
+      const direction =
+        target.direction === "left" ? -1 : target.direction === "right" ? 1 : 0;
+      if (
+        this.tile(target.x + direction, target.y + (direction ? 0 : 1)) === 0
+      ) {
+        this.lastHollowHintAt = this.state.elapsed;
+        this.emit({
+          type: "discovery",
+          id: `hollow-${target.x}-${target.y}`,
+          name: "Hollow rock ahead",
+          kind: "hollow",
+        });
+      }
+    }
+  }
+  get nearbyFieldLogs() {
+    const { x, y } = this.state.vehicle;
+    return (this.world.fieldLogs ?? []).filter(
+      (log) =>
+        !log.read &&
+        this.isKnown(log.x, log.y) &&
+        Math.hypot(this.delta(x, log.x), y - log.y) <= 3,
+    );
+  }
+  readFieldLog(id: string) {
+    const log = this.nearbyFieldLogs.find((entry) => entry.id === id);
+    if (!log) return false;
+    log.read = true;
+    this.message = log.title;
+    this.emit(
+      { type: "discovery", id, name: log.title, kind: "log" },
+      log.x,
+      log.y,
+    );
+    return true;
+  }
+  get nearbyCaches() {
+    const { x, y } = this.state.vehicle;
+    return (this.world.sites ?? []).filter(
+      (site) =>
+        site.kind === "cache" &&
+        !site.opened &&
+        site.discovered &&
+        Math.hypot(this.delta(x, site.x), y - site.y) <= 2,
+    );
+  }
+  get postChapterObjectives() {
+    if (!this.completedMilestones.includes(3)) return [];
+    const goals: {
+      id: string;
+      kind: "cache" | "relic" | "log";
+      name: string;
+      x: number;
+      y: number;
+      tool?: string;
+      reward: number;
+      carried?: boolean;
+    }[] = [];
+    for (const site of this.world.sites ?? [])
+      if (site.kind === "cache" && !site.opened)
+        goals.push({
+          id: site.id,
+          kind: "cache",
+          name: site.name,
+          x: site.x,
+          y: site.y,
+          tool: site.tool,
+          reward: site.reward ?? 0,
+        });
+    for (const item of this.world.packages)
+      if (
+        item.tags.includes("relic") &&
+        ["deposit", "exposed", "carried"].includes(item.status)
+      )
+        goals.push({
+          id: item.relicId ?? item.id,
+          kind: "relic",
+          name: item.name,
+          x: item.x,
+          y: item.y,
+          reward: item.value,
+          carried: item.status === "carried",
+        });
+    for (const log of this.world.fieldLogs ?? [])
+      if (!log.read)
+        goals.push({
+          id: log.id,
+          kind: "log",
+          name: log.title,
+          x: log.x,
+          y: log.y,
+          reward: 0,
+        });
+    return goals;
+  }
+  openCache(id: string) {
+    const cache = this.nearbyCaches.find((site) => site.id === id);
+    if (!cache) return false;
+    if (!this.completedMilestones.includes(3)) {
+      this.message =
+        "Restore this world's lander through M3 to authenticate the sealed cache.";
+      return false;
+    }
+    const equipped = [
+      this.state.equipped.drill,
+      this.state.equipped.mobility,
+      this.state.equipped.processor,
+      ...this.state.equipped.utilities,
+    ];
+    if (cache.tool && !equipped.includes(cache.tool)) {
+      const name =
+        this.gearDefinitions.find((gear) => gear.id === cache.tool)?.name ??
+        cache.tool;
+      this.message = `Install ${name} to open this cache.`;
+      return false;
+    }
+    cache.opened = true;
+    (this.state.progress.caches ??= []).push(cache.id);
+    this.state.credits += cache.reward ?? 0;
+    this.message = `${cache.name} opened · ${formatCredits(cache.reward ?? 0)} CR recovered.`;
+    this.emit(
+      { type: "discovery", id, name: cache.name, kind: "cache" },
+      cache.x,
+      cache.y,
+    );
+    return true;
+  }
+  setWaypoint(x: number, y: number, label = "Waypoint") {
+    if (
+      !Number.isFinite(x) ||
+      !Number.isFinite(y) ||
+      y < 0 ||
+      y >= this.world.rows ||
+      !this.isKnown(x, y)
+    )
+      return false;
+    const waypoints = (this.state.progress.waypoints ??= []);
+    if (waypoints.length >= 12) {
+      this.message = "Remove a waypoint before placing another.";
+      return false;
+    }
+    const base = `mark-${this.state.currentWorld}-${Math.floor(this.state.elapsed * 1000)}`;
+    let serial = 0;
+    while (waypoints.some((point) => point.id === `${base}-${serial}`))
+      serial++;
+    waypoints.push({
+      id: `${base}-${serial}`,
+      worldId: this.state.currentWorld,
+      x: this.wrap(x),
+      y,
+      label: label.trim().slice(0, 60) || "Waypoint",
+    });
+    return true;
+  }
+  removeWaypoint(id: string) {
+    const waypoints = this.state.progress.waypoints ?? [];
+    const index = waypoints.findIndex((point) => point.id === id);
+    if (index < 0) return false;
+    waypoints.splice(index, 1);
+    return true;
   }
   /** Forget uncommitted input on pause/focus loss without canceling a cut. */
   clearInputAssist() {
@@ -890,6 +1568,10 @@ export class Campaign {
   }
   bank() {
     if (!this.requireDock()) return false;
+    this.record().bestHaul = Math.max(
+      this.record().bestHaul ?? 0,
+      this.cargoValue,
+    );
     let packages = 0,
       missions = 0;
     for (const item of this.cargo) {
@@ -901,8 +1583,10 @@ export class Campaign {
     for (const mission of this.world.missions)
       if (mission.status === "carried") {
         mission.status = "banked";
+        this.emit({ type: "mission", id: mission.id, phase: "banked" });
         missions++;
       }
+    this.updateMastery();
     this.message =
       packages || missions
         ? `Banked ${packages} cargo packages and ${missions} mission objects. Stored cargo can now be sold.`
@@ -917,16 +1601,41 @@ export class Campaign {
       return false;
     }
     const value = banked.reduce((total, item) => total + item.value, 0);
+    const lines = new Map<string, SaleReceipt["lines"][number]>();
+    for (const item of banked) {
+      const line = lines.get(item.itemId) ?? {
+        itemId: item.itemId,
+        name: item.name,
+        count: 0,
+        value: 0,
+      };
+      line.count++;
+      line.value += item.value;
+      lines.set(item.itemId, line);
+    }
+    const creditsBefore = this.state.credits;
     for (const item of banked) {
       item.status = "sold";
       if (item.tags.includes("ordinary")) {
         this.state.stats.ordinarySold++;
         this.state.stats.ordinaryIncome += item.value;
+        this.record().ordinaryIncome += item.value;
+        this.advanceContracts("sold", 1);
+        if (item.tags.includes("intact")) this.advanceContracts("intact", 1);
       }
     }
     this.state.credits += value;
+    this.lastSale = {
+      total: value,
+      creditsBefore,
+      creditsAfter: this.state.credits,
+      packages: banked.length,
+      lines: [...lines.values()],
+    };
+    this.emit({ type: "sale", receipt: this.lastSale });
+    this.updateMastery();
     this.message = `Sold stored cargo for ${(value / 10).toLocaleString("en-US")} CR.`;
-    return true;
+    return this.lastSale;
   }
   /** Costs are integer tenths of CR, exactly as charged by surface services. */
   servicePreview(action: "refuel" | "repair") {
@@ -1006,7 +1715,8 @@ export class Campaign {
     });
     if (key === "energy") this.state.vehicle.energy = this.maxEnergy;
     if (key === "hull") this.state.vehicle.hull = this.maxHull;
-    this.message = `Salvaged ${key} installed. Its improvement is active now.`;
+    this.emit({ type: "install", id: `CORE-${rank}-${key.toUpperCase()}` });
+    this.message = `Rank-${rank} ${key} installed. Its improvement is active now.`;
     return true;
   }
   buyGear(id: string) {
@@ -1035,7 +1745,7 @@ export class Campaign {
     if (
       gear.slot === "processor" &&
       this.cargoBulk >
-        Math.floor(
+        Math.ceil(
           level(this.state, "cargo") *
             (gear.id === "W01-R3" ? W01_EFFECTS.rack.bulkMultiplier : 1),
         )
@@ -1059,6 +1769,7 @@ export class Campaign {
       this.state.equipped[gear.slot] = id;
     if (gear.slot === "utility" && this.state.equipped.utilities.length < 2)
       this.state.equipped.utilities.push(id);
+    this.emit({ type: "install", id });
     this.message = `${gear.name} purchased and installed.`;
     return true;
   }
@@ -1114,6 +1825,13 @@ export class Campaign {
     }
     this.state.credits -= milestone.fee;
     this.completedMilestones.push(milestone.id);
+    if (milestone.id === 3 && !this.record().completion)
+      this.record().completion = {
+        elapsed: this.record().elapsed,
+        recoveries: this.record().recoveries,
+      };
+    this.emit({ type: "construction", milestone: milestone.id });
+    this.updateMastery();
     if (milestone.id === 3) {
       if (this.state.currentWorld === "W01")
         this.state.progress.unlockedWorlds = ["W01", "W02", "W03"];
@@ -1126,6 +1844,8 @@ export class Campaign {
           ? "Lander restored. Frontier certificate granted. Ice comet and Fractured moon charted."
           : "Comet fuel stabilized. Planetary certificate granted; Iron planet charted."
         : `M${milestone.id} complete. Construction installed and new blueprints unlocked.`;
+    if (milestone.id === 3 && this.postChapterObjectives.length)
+      this.message += ` New salvage signal: ${this.postChapterObjectives[0]!.name}.${this.postChapterObjectives[0]!.tool ? " Return with its specialist tool." : " Follow the survey signal."}`;
     return true;
   }
   eject(id: string) {
@@ -1152,7 +1872,15 @@ export class Campaign {
   }
   get recoveryPreview() {
     const freeTow =
-      (this.state.vehicle.energy <= 0 || this.state.vehicle.hull <= 0) &&
+      (this.state.vehicle.energy <= 0 ||
+        this.state.vehicle.hull <= 0 ||
+        (!this.atDock &&
+          this.returnReserve.state === "stranded" &&
+          this.state.vehicle.energy +
+            (this.state.equipped.utilities.includes("W02-R2")
+              ? (this.state.vehicle.reserve ?? 0)
+              : 0) <=
+            this.returnReserve.estimate)) &&
       !this.state.progress.towsUsed?.includes(this.state.currentWorld);
     const spend = this.state.purchases.reduce(
         (total, purchase) => total + purchase.paid,
@@ -1196,8 +1924,11 @@ export class Campaign {
       y: SURFACE_Y,
       energy: preview.energy,
       hull: preview.hull,
+      reserve: state.vehicle.reserve ?? 0,
     };
     state.stats.recoveries++;
+    this.record().recoveries++;
+    this.updateMastery();
     this.stop();
     this.wasDocked = true;
     const safeIncome = this.world.packages.some(
@@ -1219,7 +1950,7 @@ export class Campaign {
       this.world.packages.push({
         id: `${state.currentWorld}-emergency-${serial}`,
         itemId: ore.id,
-        name: `Emergency ${ore.name} salvage`,
+        name: ore.name,
         origin: state.currentWorld,
         balanceVersion: BALANCE_VERSION,
         value: ore.value,
@@ -1293,15 +2024,28 @@ export class Campaign {
       return false;
     }
     this.bank();
-    if (destination === "W02" && !this.state.worlds.W02)
+    if (destination === "W02" && !this.state.worlds.W02) {
       this.state.worlds.W02 = createW02((this.state.seed ^ 0x02c0ffee) >>> 0);
+      (this.state.progress.records ??= {}).W02 = {
+        elapsed: 0,
+        ordinaryIncome: 0,
+        mined: 0,
+        recoveries: 0,
+        deepest: 0,
+        contracts: 0,
+        mastery: 0,
+        historyComplete: true,
+        bestHaul: 0,
+      };
+    }
     this.state.currentWorld = destination as "W01" | "W02";
-    this.state.schema = 2;
+    this.state.schema = 3;
     this.state.vehicle.x = this.activeWorldDefinition.dockX;
     this.state.vehicle.y = SURFACE_Y;
     this.stop();
     this.wasDocked = true;
     this.refreshVisibility();
+    this.emit({ type: "travel", destination });
     this.message =
       destination === "W02"
         ? "Ice comet arrival. Rank-2 blueprints available. Follow the marked thermal sample seam at 150 m."
@@ -1332,9 +2076,11 @@ export function decodeCampaign(raw: string): CampaignState {
     const source: unknown = JSON.parse(raw);
     if (!record(source)) throw new Error("Campaign must be an object.");
     if (
-      (source.schema !== 1 && source.schema !== 2) ||
-      source.balanceVersion !== BALANCE_VERSION ||
-      source.generatorVersion !== GENERATOR_VERSION
+      (source.schema !== 1 && source.schema !== 2 && source.schema !== 3) ||
+      !knownBalanceVersion(source.balanceVersion) ||
+      !knownGeneratorVersion(source.generatorVersion) ||
+      (source.schema !== 3 &&
+        (source.balanceVersion !== "0.1" || source.generatorVersion !== 1))
     )
       throw new Error(
         "This campaign version is unsupported. Its saved data has been kept.",
@@ -1380,6 +2126,7 @@ export function decodeCampaign(raw: string): CampaignState {
       )
     )
       throw new Error("Campaign emergency tow history is invalid.");
+    migrateProgress(state);
     const frontier = state.worlds.W02;
     const hardwareCap = frontier && !legacy ? 2 : 1;
     if (
@@ -1437,7 +2184,7 @@ export function decodeCampaign(raw: string): CampaignState {
           !record(purchase) ||
           !shortString(purchase.id) ||
           !integer(purchase.paid, 0, 1e10) ||
-          purchase.balanceVersion !== BALANCE_VERSION,
+          !knownBalanceVersion(purchase.balanceVersion),
       )
     )
       throw new Error("Campaign purchase ledger is invalid.");
@@ -1453,11 +2200,14 @@ export function decodeCampaign(raw: string): CampaignState {
         !integer(world.seed, 0, 0xffffffff)
       )
         throw new Error("Campaign world dimensions are invalid.");
+      migrateWorld(world);
       const cells = definition.width * definition.rows;
       if (
         !Array.isArray(world.tiles) ||
         world.tiles.length !== cells ||
-        world.tiles.some((tile) => !integer(tile, 0, 3)) ||
+        world.tiles.some(
+          (tile) => !integer(tile, 0, world.generatorVersion === 1 ? 3 : 4),
+        ) ||
         !Array.isArray(world.discovered) ||
         world.discovered.length !== cells ||
         world.discovered.some((known) => known !== 0 && known !== 1) ||
@@ -1473,8 +2223,10 @@ export function decodeCampaign(raw: string): CampaignState {
           packageIdentities.has(item.id) ||
           !shortString(item.name) ||
           item.origin !== id ||
-          item.balanceVersion !== BALANCE_VERSION ||
-          ![...ores.map((ore) => ore.id), id + "-J"].includes(item.itemId) ||
+          !knownBalanceVersion(item.balanceVersion) ||
+          ![...ores.map((ore) => ore.id), id + "-J", id + "-J1"].includes(
+            item.itemId,
+          ) ||
           !integer(item.value, 0, 100000) ||
           !integer(item.bulk, 1, 32) ||
           !finite(item.mass, 0.1, 1000) ||
@@ -1491,6 +2243,11 @@ export function decodeCampaign(raw: string): CampaignState {
           )
         )
           throw new Error("Campaign cargo package is invalid.");
+        if (item.relicId !== undefined && item.relicId !== id + "-J1")
+          throw new Error("Campaign relic identity is invalid.");
+        if (item.itemId === id + "-J" || item.itemId === id + "-J1")
+          item.relicId ??= id + "-J1";
+        item.name = itemName(item.itemId, item.name);
         packageIdentities.add(item.id);
         if (
           item.status === "deposit" &&
@@ -1582,8 +2339,14 @@ export function decodeCampaign(raw: string): CampaignState {
             !finite(
               pending.remaining,
               Number.EPSILON,
-              W02_EFFECTS.volatile.releaseSeconds,
+              pending.duration ?? W02_EFFECTS.volatile.releaseSeconds,
             ) ||
+            (pending.duration !== undefined &&
+              pending.duration !== 0.75 &&
+              pending.duration !== 1.5) ||
+            (pending.duration === 1.5 &&
+              (world.generatorVersion !== 2 ||
+                (state.progress.volatileTraining ?? 0) > 3)) ||
             !finite(pending.spent, 0, 100) ||
             typeof pending.precision !== "boolean" ||
             pending.packageIds.some(
@@ -1637,12 +2400,15 @@ export function decodeCampaign(raw: string): CampaignState {
         throw new Error("W01 contains unsupported destination state.");
     }
     const world = state.worlds[state.currentWorld]!;
+    if (record(state.vehicle) && state.vehicle.reserve === undefined)
+      state.vehicle.reserve = 0;
     if (
       !record(state.vehicle) ||
       !finite(state.vehicle.x, 0, world.width - EPSILON) ||
       !finite(state.vehicle.y, -5.5, world.rows - HALF_Y + 1e-6) ||
       !finite(state.vehicle.energy, 0, level(state, "energy")) ||
-      !finite(state.vehicle.hull, 0, level(state, "hull"))
+      !finite(state.vehicle.hull, 0, level(state, "hull")) ||
+      !finite(state.vehicle.reserve, 0, 5)
     )
       throw new Error("Vehicle condition is invalid.");
     const bodyFree = [
@@ -1666,7 +2432,7 @@ export function decodeCampaign(raw: string): CampaignState {
     const cargoBulk = world.packages
       .filter((item) => item.status === "carried")
       .reduce((total, item) => total + item.bulk, 0);
-    const capacity = Math.floor(
+    const capacity = Math.ceil(
       level(state, "cargo") *
         (state.equipped.processor === "W01-R3"
           ? W01_EFFECTS.rack.bulkMultiplier
@@ -1722,7 +2488,10 @@ export function decodeCampaign(raw: string): CampaignState {
         throw new Error(
           "A completed milestone lacks its banked mission objects.",
         );
-    state.schema = 2;
+    validateProgressReferences(state);
+    state.schema = 3;
+    state.balanceVersion = BALANCE_VERSION;
+    state.generatorVersion = GENERATOR_VERSION;
     return state;
   } catch (error) {
     if (error instanceof SyntaxError)

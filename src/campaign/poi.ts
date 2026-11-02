@@ -1,5 +1,5 @@
 import type { Campaign } from "./model";
-import { W01 } from "./config";
+import { HARDWARE_PRICES, W01 } from "./config";
 import { W02 } from "./frontier";
 
 export type MissionPoiKind =
@@ -10,7 +10,11 @@ export type MissionPoiKind =
   | "sample"
   | "cryo"
   | "catalyst"
-  | "lander";
+  | "lander"
+  | "seam"
+  | "cache"
+  | "relic"
+  | "log";
 export type MissionPoiStatus =
   "source" | "surveyed" | "carried" | "banked" | "ready";
 export type MissionSignalBand = "distant" | "near" | "close" | "at";
@@ -95,6 +99,108 @@ const PARTS = [
 const wrapDelta = (from: number, to: number, width: number) =>
   ((((to - from + width / 2) % width) + width) % width) - width / 2;
 
+/** Finish the marked first shaft before turning; never revoke banked/older proof. */
+export function openingSurveyPending(campaign: Campaign) {
+  return (
+    campaign.state.currentWorld === "W01" &&
+    campaign.world.generatorVersion === 2 &&
+    campaign.currentMilestone?.id === 1 &&
+    campaign.state.progress.bankedOre === 0 &&
+    campaign.state.stats.expeditions === 0 &&
+    campaign.state.stats.largestDepth < 100 &&
+    campaign.state.vehicle.y >= 0
+  );
+}
+
+export interface OpeningRoute {
+  phase: "seam" | "sell" | "upgrade";
+  title: string;
+  next: string;
+  remaining: number;
+  x: number;
+  y: number;
+}
+
+/** Advice is derived from real packages; it cannot reset or advance a save. */
+export function openingRoute(campaign: Campaign): OpeningRoute | undefined {
+  const { state, world } = campaign;
+  if (
+    state.currentWorld !== "W01" ||
+    world.generatorVersion !== 2 ||
+    campaign.currentMilestone?.id !== 2 ||
+    !state.progress.beacon ||
+    Object.values(state.hardware).some((rank) => rank > 0) ||
+    world.missions.some((mission) => mission.status !== "source")
+  )
+    return undefined;
+  const packages = world.packages.filter((item) =>
+    /^W01:deposit:[0-6]:21$/.test(item.id),
+  );
+  // Missing or edited entry records do not invent a replacement seam.
+  if (packages.length !== 7) return undefined;
+  const remaining = packages.filter(
+    (item) => item.status === "deposit" || item.status === "exposed",
+  );
+  const last = remaining.reduce<(typeof remaining)[number] | undefined>(
+    (deepest, item) => (!deepest || item.y > deepest.y ? item : deepest),
+    undefined,
+  );
+  const base = {
+    remaining: remaining.length,
+    x: last?.x ?? 21.5,
+    y: last?.y ?? 6.5,
+  };
+  if (state.credits >= HARDWARE_PRICES.energy[1]!)
+    return {
+      ...base,
+      phase: "upgrade",
+      title: "Install the expedition tank",
+      next: "Lander → Workshop → Expedition tank",
+    };
+  if (
+    campaign.cargoBulk >= campaign.capacity ||
+    (!remaining.length &&
+      (campaign.cargo.length > 0 || campaign.warehouse.length > 0))
+  )
+    return {
+      ...base,
+      phase: "sell",
+      title: "Sell the second haul",
+      next: "Return to lander → Unload and sell → Expedition tank",
+    };
+  if (last)
+    return {
+      ...base,
+      phase: "seam",
+      title: "Mine the second shallow seam",
+      next: "Mine seam B · 70 m → Sell → Expedition tank",
+    };
+  return undefined;
+}
+
+/** Ready salvage stays actionable; a tool-locked locker cannot hide other goals. */
+export function postChapterGoal(campaign: Campaign) {
+  const goals = campaign.postChapterObjectives;
+  const equipped = [
+    campaign.state.equipped.drill,
+    campaign.state.equipped.mobility,
+    campaign.state.equipped.processor,
+    ...campaign.state.equipped.utilities,
+  ];
+  return (
+    goals.find((goal) => goal.kind === "relic" && goal.carried) ??
+    goals.find(
+      (goal) =>
+        goal.kind === "cache" && (!goal.tool || equipped.includes(goal.tool)),
+    ) ??
+    goals.find((goal) => goal.kind === "relic") ??
+    goals
+      .filter((goal) => goal.kind === "log")
+      .sort((a, b) => distanceTo(campaign, a) - distanceTo(campaign, b))[0] ??
+    goals[0]
+  );
+}
+
 /** Physical landmarks read existing state; radio guidance never discovers terrain. */
 export function campaignPois(campaign: Campaign): MissionPoi[] {
   const describe = (
@@ -106,8 +212,26 @@ export function campaignPois(campaign: Campaign): MissionPoi[] {
     buried: campaign.tile(poi.x, poi.y) !== 0,
     depthMeters: Math.max(0, (Math.floor(poi.y) + 1) * 10),
   });
+  const caches = campaign.postChapterObjectives.map((site) =>
+    describe({
+      id: site.id,
+      kind: site.kind,
+      name: site.name,
+      title: site.name,
+      x: site.x,
+      y: site.y,
+      frame:
+        site.kind === "cache"
+          ? "site-cache"
+          : site.kind === "relic"
+            ? "relic"
+            : "site-survey",
+      stage: 4,
+      status: site.carried ? "carried" : "source",
+    }),
+  );
   if (campaign.state.currentWorld === "W02")
-    return cometPois(campaign, describe);
+    return [...cometPois(campaign, describe), ...caches];
   const result: MissionPoi[] = [
     describe({
       id: "W01-BEACON",
@@ -136,7 +260,38 @@ export function campaignPois(campaign: Campaign): MissionPoi[] {
         }),
       );
   }
-  return result;
+  if (campaign.world.generatorVersion === 2) {
+    for (const [offset, letter] of [
+      [0, "A"],
+      [1, "B"],
+    ] as const) {
+      const packages = campaign.world.packages.filter((item) =>
+        new RegExp(`^W01:deposit:[0-6]:${20 + offset}$`).test(item.id),
+      );
+      if (packages.length !== 7) continue;
+      const remaining = packages.filter(
+        (item) => item.status === "deposit" || item.status === "exposed",
+      );
+      const last = remaining.reduce<(typeof remaining)[number] | undefined>(
+        (deepest, item) => (!deepest || item.y > deepest.y ? item : deepest),
+        undefined,
+      );
+      result.push(
+        describe({
+          id: `W01-SEAM-${letter}`,
+          kind: "seam",
+          name: `Marked seam ${letter}`,
+          title: `Seam ${letter} · shallow ore`,
+          x: last?.x ?? 20.5 + offset,
+          y: last?.y ?? 6.5,
+          frame: "ore-o1",
+          stage: offset + 1,
+          status: remaining.length ? "source" : "surveyed",
+        }),
+      );
+    }
+  }
+  return [...result, ...caches];
 }
 
 function cometPois(
@@ -228,19 +383,39 @@ type ReturnReason =
   | "space"
   | "construction"
   | "launch"
-  | "travel";
+  | "travel"
+  | "opening-sale"
+  | "upgrade"
+  | "energy"
+  | "relic";
 
 /** Current-stage bearings are mission broadcasts, not a scanner for hidden ore. */
 export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
   const state = campaign.state;
   const comet = state.currentWorld === "W02";
-  if (!comet && state.progress.departed) return undefined;
   const milestone = campaign.currentMilestone;
   const pois = campaignPois(campaign);
   let poi: MissionPoi | undefined;
   let returnReason: ReturnReason | undefined;
   const distance = (target: MissionPoi) => distanceTo(campaign, target);
-  if (comet) {
+  const opening = openingRoute(campaign);
+  const equipped = [
+    state.equipped.drill,
+    state.equipped.mobility,
+    state.equipped.processor,
+    ...state.equipped.utilities,
+  ];
+  const goal = postChapterGoal(campaign);
+  if ((!milestone && comet) || (!comet && state.progress.departed)) {
+    if (goal?.kind === "relic" && goal.carried) returnReason = "relic";
+    else if (goal && (!goal.tool || equipped.includes(goal.tool)))
+      poi = pois.find((item) => item.id === goal.id);
+    else if (comet) returnReason = "travel";
+  } else if (opening) {
+    if (opening.phase === "seam")
+      poi = pois.find((item) => item.id === "W01-SEAM-B");
+    else returnReason = opening.phase === "sell" ? "opening-sale" : "upgrade";
+  } else if (comet) {
     if (!milestone) returnReason = "travel";
     else if (campaign.missionReady) returnReason = "construction";
     else {
@@ -271,7 +446,7 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
     }
   } else if (!milestone) returnReason = "launch";
   else if (milestone.id === 1) {
-    if (!state.progress.beacon)
+    if (!state.progress.beacon || openingSurveyPending(campaign))
       poi = pois.find((item) => item.kind === "beacon");
     else if (campaign.missionReady) returnReason = "construction";
     else if (campaign.cargo.some((item) => item.tags.includes("ordinary")))
@@ -288,6 +463,12 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
         .filter((item) => item.status === "source")
         .sort((a, b) => distance(a) - distance(b))[0];
   }
+  if (
+    !campaign.atDock &&
+    state.vehicle.y > 0 &&
+    ["turn", "stranded"].includes(campaign.returnReserve.state)
+  )
+    returnReason = "energy";
   if (returnReason)
     poi = {
       id: `${state.currentWorld}-LANDER`,
@@ -312,10 +493,12 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
     at =
       poi.kind === "lander"
         ? campaign.atDock
-        : cells <
-          (poi.kind === "beacon"
-            ? MISSION_SIGNAL_RANGES.beacon
-            : MISSION_SIGNAL_RANGES.part),
+        : poi.kind === "beacon" && openingSurveyPending(campaign)
+          ? false
+          : cells <
+            (poi.kind === "beacon"
+              ? MISSION_SIGNAL_RANGES.beacon
+              : MISSION_SIGNAL_RANGES.part),
     band: MissionSignalBand = at
       ? "at"
       : cells <= MISSION_SIGNAL_RANGES.close
@@ -349,7 +532,24 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
     here: "◉",
   };
   let action: string;
-  if (returnReason === "ore")
+  if (returnReason === "energy")
+    action =
+      campaign.returnReserve.state === "stranded"
+        ? "Cannot reach home · use reserve or request recovery"
+        : "Turn back · preserve energy for the climb";
+  else if (returnReason === "opening-sale")
+    action = campaign.atDock
+      ? "Unload and sell, then install the expedition tank"
+      : "Return to the lander to sell the second haul";
+  else if (returnReason === "upgrade")
+    action = campaign.atDock
+      ? "Workshop → Install the expedition tank"
+      : "Return to the lander to install the expedition tank";
+  else if (returnReason === "relic")
+    action = campaign.atDock
+      ? "Dock and bank the recovered relic"
+      : "Return to the lander to bank the relic";
+  else if (returnReason === "ore")
     action = campaign.atDock
       ? "Dock and bank your ore"
       : "Return to the lander to bank ore";
@@ -384,8 +584,22 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
           ? "Dock and fund construction"
           : "Return to the lander to fund construction"
         : "Sell ore at the lander to fund construction";
+  else if (poi.kind === "seam")
+    action = "Mine seam B to 70 m, then return and sell";
+  else if (poi.kind === "relic")
+    action = poi.buried
+      ? "Excavate the named relic"
+      : "Approach to recover the relic";
+  else if (poi.kind === "log") action = "Approach and read the field log";
+  else if (poi.kind === "cache")
+    action = poi.buried
+      ? "Excavate the sealed cache"
+      : "Approach and open the sealed cache";
   else if (poi.kind === "beacon")
-    action = "Approach the wreck beacon to survey";
+    action =
+      state.progress.beacon && openingSurveyPending(campaign)
+        ? "Finish the marked shaft to 100 m, then return"
+        : "Approach the wreck beacon to survey";
   else if (poi.kind === "sample")
     action = poi.buried
       ? "Excavate the marked Helion sample pods"
@@ -403,7 +617,7 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
       ? "Excavate the marked debris"
       : "Approach to recover the mission part";
 
-  if (!returnReason && band === "distant" && poi.buried)
+  if (!returnReason && band === "distant" && poi.buried && poi.kind !== "seam")
     action = `Descend to ${poi.depthMeters} m (${arrows[direction]})`;
 
   if (returnReason && !campaign.atDock && cells <= 3 && state.vehicle.y < 0)

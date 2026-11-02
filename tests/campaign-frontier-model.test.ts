@@ -163,7 +163,8 @@ describe("Ice comet extraction and persistent Frontier progression", () => {
     const item = volatile(game);
     prepareCut(game, item);
     until(game, () => Boolean(game.volatileWindow), { down: true });
-    advance(game, 0.76, { down: true });
+    expect(game.volatileWindow?.duration).toBe(1.5);
+    advance(game, 1.51, { down: true });
     expect(item.status).toBe("lost");
     expect(item.tags).toContain("ruptured");
     expect(game.volatileWindow).toBeUndefined();
@@ -171,7 +172,7 @@ describe("Ice comet extraction and persistent Frontier progression", () => {
     expect(game.bankedIntact).toBe(0);
   });
 
-  it("makes thermal ice cuts faster and refunds only a bounded share of actual drilling spend", () => {
+  it("makes thermal ice cuts faster and banks only a bounded share of actual drilling spend", () => {
     const bare = comet(71);
     const heated = comet(71);
     expect(heated.buyGear("W02-R1")).toBe(true);
@@ -199,10 +200,8 @@ describe("Ice comet extraction and persistent Frontier progression", () => {
     const energy = heated.state.vehicle.energy;
     expect(pending.spent).toBeGreaterThan(0);
     expect(heated.releaseVolatile()).toBe(true);
-    expect(heated.state.vehicle.energy - energy).toBeCloseTo(
-      pending.spent * 0.2,
-      8,
-    );
+    expect(heated.state.vehicle.energy).toBe(energy);
+    expect(heated.state.vehicle.reserve).toBeCloseTo(pending.spent * 0.2, 8);
     expect(heated.state.vehicle.energy).toBeLessThan(heated.maxEnergy);
     expect(heated.releaseVolatile()).toBe(false);
   });
@@ -226,7 +225,7 @@ describe("Ice comet extraction and persistent Frontier progression", () => {
       expect(item.tags).toContain("intact");
       park(game);
       expect(game.bank()).toBe(true);
-      expect(game.sell()).toBe(true);
+      expect(game.sell()).toBeTruthy();
     }
     expect(game.bankedIntact).toBe(3);
     expect(game.payMilestone()).toBe(true);
@@ -273,7 +272,7 @@ describe("Ice comet extraction and persistent Frontier progression", () => {
 
   it("warns before cold, freezes timers without simulation and rate-limits vent impacts", () => {
     const game = comet();
-    const cold = W02_HAZARDS.coldPockets[0];
+    const cold = game.world.hazards!.coldPockets[0]!;
     game.state.vehicle.x = cold.x;
     game.state.vehicle.y = cold.y;
     game.tick(step);
@@ -291,7 +290,7 @@ describe("Ice comet extraction and persistent Frontier progression", () => {
     const before = structuredClone(game.coldStatus);
     game.tick(0);
     expect(game.coldStatus).toEqual(before);
-    const vent = W02_HAZARDS.vents[0];
+    const vent = game.world.hazards!.vents[0]!;
     game.state.vehicle.x = vent.x;
     game.state.vehicle.y = vent.y;
     game.state.vehicle.hull = 10;

@@ -1,5 +1,6 @@
 /** Original W02 drawings. Run explicitly to refresh editable SVG sources. */
 import { mkdir, writeFile } from "node:fs/promises";
+import { oreBadge } from "../render-sources.mjs";
 import {
   stars,
   skyBody,
@@ -125,34 +126,34 @@ function mineral(index) {
       "chipped-iron-cluster",
       path(
         "M11 67 L22 45 L39 37 L52 48 L71 43 L87 64 L75 79 L32 82 Z",
-        "#84ABB8",
+        "#596579",
       ) +
-        path("M22 45 L39 37 L52 48 L42 63 L11 67 Z", "#D8EEF0") +
-        path("M52 48 L71 43 L87 64 L65 69 L42 63 Z", "#A4CDD4") +
-        path("M42 63 L65 69 L75 79 L32 82 L11 67 Z", "#6894A6") +
-        path("M33 46 L29 55 M58 52 L64 57", "none", "#F1FCF8", 2),
+        path("M22 45 L39 37 L52 48 L42 63 L11 67 Z", "#9eaaa9") +
+        path("M52 48 L71 43 L87 64 L65 69 L42 63 Z", "#738495") +
+        path("M42 63 L65 69 L75 79 L32 82 L11 67 Z", "#374457") +
+        path("M33 46 L29 55 M58 52 L64 57", "none", "#d4bd8e", 2),
     );
   if (index === 1)
     return layer(
       "paired-nickel-facets",
-      path("M14 73 L24 29 L40 15 L52 38 L45 80 Z", "#6199B3") +
-        path("M24 29 L40 15 L36 64 L14 73 Z", "#C8EAF2") +
-        path("M40 15 L52 38 L45 80 L36 64 Z", "#3C8196") +
-        path("M46 77 L54 39 L71 24 L84 47 L78 81 Z", "#7FBBD1") +
-        path("M54 39 L71 24 L67 67 L46 77 Z", "#EDF9F6") +
-        path("M71 24 L84 47 L78 81 L67 67 Z", "#2E6B8A"),
+      path("M14 73 L24 29 L40 15 L52 38 L45 80 Z", "#4261b8") +
+        path("M24 29 L40 15 L36 64 L14 73 Z", "#92a6ea") +
+        path("M40 15 L52 38 L45 80 L36 64 Z", "#283e82") +
+        path("M46 77 L54 39 L71 24 L84 47 L78 81 Z", "#5774c1") +
+        path("M54 39 L71 24 L67 67 L46 77 Z", "#b4c4f6") +
+        path("M71 24 L84 47 L78 81 L67 67 Z", "#283568"),
     );
   if (index === 2)
     return layer(
       "three-point-cryosilicate",
       path(
         "M48 9 L60 38 L84 27 L78 58 L86 73 L56 79 L43 90 L31 68 L10 57 L32 42 Z",
-        "#2C938F",
+        "#257e5d",
       ) +
-        path("M48 9 L50 55 L32 42 Z", "#D4FAEE") +
+        path("M48 9 L50 55 L32 42 Z", "#abf2c4") +
         path("M48 9 L60 38 L50 55 Z", TEAL) +
-        path("M84 27 L50 55 L60 38 Z", "#B4FAE9") +
-        path("M84 27 L78 58 L50 55 Z", "#4DD6BD") +
+        path("M84 27 L50 55 L60 38 Z", "#88e9af") +
+        path("M84 27 L78 58 L50 55 Z", "#42c586") +
         path("M10 57 L50 55 L31 68 Z", "#A5E8E3") +
         path("M50 55 L56 79 L43 90 L31 68 Z", "#55B7B0") +
         path("M50 55 L78 58 L86 73 L56 79 Z", "#84E4CB") +
@@ -180,7 +181,7 @@ for (let i = 0; i < 4; i++) {
     Array.from({ length: i + 1 }, (_, j) =>
       rect(30 + j * 10, 89, 6, 3, PALE, 1, "none", 0),
     ).join(""),
-  );
+  ) + oreBadge(i + 1);
   await save(`ore-o${i + 1}`, 96, 96, mineral(i) + identification, {
     category: "mineral",
   });

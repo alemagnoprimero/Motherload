@@ -1,6 +1,7 @@
 /** Original editable W01 drawings. Run explicitly to regenerate source SVGs. */
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { sceneryFrames, oreBadge } from "../render-sources.mjs";
 import {
   stars,
   skyBody,
@@ -141,7 +142,7 @@ function cracks(level) {
   return layer("fracture-overlay", s);
 }
 const oreColours = [
-  ["#d0d8d8", "#829ba5", "#eaf1eb"],
+  ["#657681", "#394954", "#a0adb3"],
   ["#d79967", "#955b42", "#f4c397"],
   ["#d1e7e6", "#71a6b3", "#f5fff6"],
   ["#edb44d", "#a16b39", "#ffe5a0"],
@@ -203,7 +204,7 @@ function ore(i, pack = false) {
           5,
         ) + rect(40, 73, 17, 13, "#f0a43c", 3, O, 3),
       );
-  return s;
+  return s + oreBadge(i + 1);
 }
 function body(frame) {
   let s = layer(
@@ -317,7 +318,8 @@ function hull(rank) {
   );
 }
 function drill(frame, direction) {
-  const p = frame % 4;
+  const p = frame % 8;
+  const twist = Math.sin(frame / 8 * Math.PI * 2);
   let g = layer(
     "drill-mount",
     rect(91, 60, 11, 16, "#b8c4be", 3, INK, 3) +
@@ -325,9 +327,9 @@ function drill(frame, direction) {
   );
   g += layer(
     "auger-flutes",
-    path(`M104 57 L124 68 L104 79 Z`, "#8b9b9b", INK, 4) +
+    path(`M103 ${55+twist*3} L126 68 L103 ${81-twist*3} Z`, frame%2?"#738b95":"#b2bda6", INK, 3) +
       path(
-        `M106 59 L${110 + p} 65 L106 73 M${112 + p / 2} 63 L116 68 L112 75`,
+        `M${104+p} ${59+twist*5} Q${118-p} 68 ${104+p} ${77-twist*5} M${112+p/2} 63 L${120-p/2} 72`,
         "none",
         "#e2e0ba",
         3,
@@ -373,7 +375,7 @@ function rack() {
   );
 }
 function thrust(i) {
-  const length = 12 + (i % 3) * 4;
+  const length = 5 + [0,8,3,12,5,15][i];
   return layer(
     "jet-flame",
     path(
@@ -855,6 +857,7 @@ for (const name of [
   "cooldown",
 ])
   await save(`ui-${name}`, 96, 96, glyph(name), { category: "glyph" });
+for(const frame of sceneryFrames()) await save(frame.name,frame.width,frame.height,frame.body,{category:frame.category});
 const backgrounds = [
   { name: "w01-sky", width: 1024, height: 512, body: stars() },
   { name: "w01-ridge-far", width: 1024, height: 384, body: ridges(false) },
