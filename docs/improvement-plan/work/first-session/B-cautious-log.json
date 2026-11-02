@@ -1,0 +1,1074 @@
+{
+ "name": "B-cautious",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "marks": {
+  "first-ore": 1.5,
+  "hold-full": 7.25,
+  "beacon": 9.25,
+  "trip1-docked": 15.2,
+  "first-sale": 15.2,
+  "M1-funded": 15.2,
+  "valve-onboard": 39.7,
+  "trip2-docked": 48.65,
+  "second-sale": 48.65,
+  "trip3-docked": 65.95,
+  "third-sale": 65.95,
+  "first-upgrade": 65.95
+ },
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "log": [
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 0.5,
+   "text": "SHOT B-cautious-000.5s-first-frame.png"
+  },
+  {
+   "t": 1.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 1.5,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 1.5,
+   "text": "MARK first-ore"
+  },
+  {
+   "t": 2.5,
+   "text": "message: \"Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey.\" (ArrowDown)"
+  },
+  {
+   "t": 2.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 2.5,
+   "text": "signal: \"↓downWreck survey beacon79 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 3.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 3.5,
+   "text": "signal: \"↓downWreck survey beacon69 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 4.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 4.25,
+   "text": "signal: \"↓downWreck survey beacon59 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 5.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 5.25,
+   "text": "signal: \"↓downWreck survey beacon49 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 6.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 6.25,
+   "text": "signal: \"↓downWreck survey beacon39 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 6.5,
+   "text": "message: \"\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "message: \"Wreck survey beacon · Very close. Approach the wreck beacon to survey.\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "signal: \"↓downWreck survey beacon29 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "MARK hold-full"
+  },
+  {
+   "t": 8.25,
+   "text": "signal: \"↓downWreck survey beacon19 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "message: \"Beacon surveyed · Return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "tasks: \"✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "next: \"Return to lander → Bank ore\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "signal: \"↖up and leftSalvage lander175 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "MARK beacon"
+  },
+  {
+   "t": 9.75,
+   "text": "SHOT B-cautious-009.8s-beacon-surveyed.png"
+  },
+  {
+   "t": 10.25,
+   "text": "signal: \"↖up and leftSalvage lander179 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 10.5,
+   "text": "signal: \"↖up and leftSalvage lander171 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 10.75,
+   "text": "signal: \"↖up and leftSalvage lander166 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 11,
+   "text": "signal: \"←leftSalvage lander159 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 11.25,
+   "text": "signal: \"←leftSalvage lander156 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 11.5,
+   "text": "signal: \"←leftSalvage lander152 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 11.75,
+   "text": "signal: \"←leftSalvage lander150 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 12,
+   "text": "trip1: out of the shaft · E 2.7 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20"
+  },
+  {
+   "t": 12,
+   "text": "SHOT B-cautious-00012s-trip1-out-of-shaft.png"
+  },
+  {
+   "t": 12.25,
+   "text": "signal: \"←leftSalvage lander148 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 12.5,
+   "text": "signal: \"←leftSalvage lander135 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 12.75,
+   "text": "signal: \"←leftSalvage lander125 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 13,
+   "text": "signal: \"←leftSalvage lander110 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 13.25,
+   "text": "message: \"\" (ArrowLeft)"
+  },
+  {
+   "t": 13.25,
+   "text": "signal: \"←leftSalvage lander100 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 13.5,
+   "text": "signal: \"←leftSalvage lander83 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 13.75,
+   "text": "message: \"Salvage lander · Signal nearby. Return to the lander to bank ore.\" (ArrowLeft)"
+  },
+  {
+   "t": 13.75,
+   "text": "danger: \"Low energy · return to the lander\" (ArrowLeft)"
+  },
+  {
+   "t": 13.75,
+   "text": "signal: \"←leftSalvage lander73 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 14,
+   "text": "signal: \"←leftSalvage lander58 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 14.25,
+   "text": "signal: \"←leftSalvage lander48 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 14.5,
+   "text": "signal: \"←leftSalvage lander33 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 14.65,
+   "text": "signal: \"←leftSalvage lander25 mVery close\" (ArrowLeft)"
+  },
+  {
+   "t": 14.8,
+   "text": "signal: \"←leftSalvage lander18 mVery close\" (ArrowLeft)"
+  },
+  {
+   "t": 14.95,
+   "text": "signal: \"◉At your positionSalvage lander13 mDock available\" (ArrowLeft)"
+  },
+  {
+   "t": 14.95,
+   "text": "dockPrompt: true (ArrowLeft)"
+  },
+  {
+   "t": 15.2,
+   "text": "signal: \"◉At your positionSalvage lander2 mDock available\" (idle)"
+  },
+  {
+   "t": 15.2,
+   "text": "trip1: at lander, dock prompt=true, small corrections=1 · E 2.3 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20"
+  },
+  {
+   "t": 15.2,
+   "text": "SHOT B-cautious-015.2s-trip1-at-lander.png"
+  },
+  {
+   "t": 15.2,
+   "text": "overlay: \"dock\" (E)"
+  },
+  {
+   "t": 15.2,
+   "text": "MARK trip1-docked"
+  },
+  {
+   "t": 15.2,
+   "text": "SHOT B-cautious-015.2s-trip1-dock-service.png"
+  },
+  {
+   "t": 15.2,
+   "text": "Dock service tab: LANDER TERMINAL / W01 Salvage lander 20 CR Undock Service Hardware Attachments Lander Cargo CARGO TRANSFER Mission objects stay protected. ONBOARD + STORED 380 CR 7 carried · 0 banked Unload hold Bank mission objects; sell minerals and relics. Unload & sell Bank without sale Energy reserve 2.34 → 10 / 10 L. Cost 7.7 CR · 12.3 CR remains. 1 CR per litre. Refuel · 7.7 CR Hull repair 10 → 10 / 10 HP. Cost 0 CR · 20 CR remains. 15 CR per HP. Repair · 0 CR A full basic service currently costs 7.7 CR. Beacon surveyed · Return to the lander"
+  },
+  {
+   "t": 15.2,
+   "text": "tasks: \"✓Beacon surveyed | ✓Ore banked · 3/3 | ◇Construction · 200 CR ready\" (unload & sell)"
+  },
+  {
+   "t": 15.2,
+   "text": "next: \"Lander → Fund construction\" (unload & sell)"
+  },
+  {
+   "t": 15.2,
+   "text": "dockPrompt: false (unload & sell)"
+  },
+  {
+   "t": 15.2,
+   "text": "MARK first-sale"
+  },
+  {
+   "t": 15.2,
+   "text": "SHOT B-cautious-015.2s-trip1-after-sell.png"
+  },
+  {
+   "t": 15.2,
+   "text": "After sell: Sold stored cargo for 380 CR. · credits 400 CR"
+  },
+  {
+   "t": 15.2,
+   "text": "SHOT B-cautious-015.2s-trip1-hardware-before-m1.png"
+  },
+  {
+   "t": 15.2,
+   "text": "Hardware tab before M1: LANDER TERMINAL / W01 Salvage lander 400 CR Undock Service Hardware Attachments Lander Cargo RIG SYSTEMS DRILL · RANK 1 Steel auger assembly 2 speed → 2.8 speed Cut faster and use less energy during each excavation. Blueprint: complete Survey the wreck. Purchase · 750 CR ENERGY · RANK 1 Riveted reservoir 10 L → 16 L Purchase fills the new capacity. Blueprint: complete Survey the wreck. Purchase · 650 CR CARGO · RANK 1 Reinforced cargo bay 7 bulk → 12 bulk Carry more bulk. Package mass still affects handling. Blueprint: complete Survey the wreck. Purchase · 700 CR HULL · RANK 1 Bolted protection 10 HP → 18 HP Purchase fills the new capacity. Blueprint: complete Survey the wreck. Purchase · 45"
+  },
+  {
+   "t": 15.2,
+   "text": "SHOT B-cautious-015.2s-trip1-lander-tab.png"
+  },
+  {
+   "t": 15.2,
+   "text": "Lander tab: LANDER TERMINAL / W01 Salvage lander 400 CR Undock Service Hardware Attachments Lander Cargo LANDER RESTORATION 01 CURRENT PROJECT Survey the wreck Reach the marked beacon at 100 m and bank any three ore deposits. Unlock R2 and a surface service dock. Objective discoveries are safely banked. Fund construction · 200 CR 02 NEXT PROJECT Recover the lander parts Recover a valve at 250 m and an antenna at 400 m; bank both. Unlock R3 and the star map. Complete the preceding project to begin. 03 NEXT PROJECT Restore the lander Retrieve the navigation core at 600 m and complete construction. Grant Frontier certificate; open W02 and W03. Complete the preceding project to begin. Sold stored cargo for 380 CR."
+  },
+  {
+   "t": 15.2,
+   "text": "MARK M1-funded"
+  },
+  {
+   "t": 15.2,
+   "text": "SHOT B-cautious-015.2s-trip1-after-m1.png"
+  },
+  {
+   "t": 15.2,
+   "text": "After M1: M1 complete. Construction installed and new blueprints unlocked."
+  },
+  {
+   "t": 15.2,
+   "text": "After refuel: Energy replenished for 7.7 CR. · credits 192.3 CR"
+  },
+  {
+   "t": 15.2,
+   "text": "SHOT B-cautious-015.2s-trip1-hardware-after-m1.png"
+  },
+  {
+   "t": 15.2,
+   "text": "Purchasable after trip 1: hardware-drill:disabled:Purchase · 750 CR ; hardware-energy:disabled:Purchase · 650 CR ; hardware-cargo:disabled:Purchase · 700 CR ; hardware-hull:disabled:Purchase · 450 CR ; hardware-engine:disabled:Purchase · 500 CR"
+  },
+  {
+   "t": 15.2,
+   "text": "Attachments after trip 1: gear-toggle-W01-R1:ENABLED:Unequip ; gear-buy-W01-R2:disabled:Purchase · 400 CR ; gear-buy-W01-R3:disabled:Purchase · 900 CR"
+  },
+  {
+   "t": 15.2,
+   "text": "message: \"Energy replenished for 7.7 CR.\" (undock)"
+  },
+  {
+   "t": 15.2,
+   "text": "danger: \"\" (undock)"
+  },
+  {
+   "t": 15.2,
+   "text": "objective: \"02 / 03 Recover the lander parts\" (undock)"
+  },
+  {
+   "t": 15.2,
+   "text": "tasks: \"○Pressure valve · 250 m | ○Antenna · 400 m | ○Construction · 192.3/300 CR\" (undock)"
+  },
+  {
+   "t": 15.2,
+   "text": "next: \"Excavate the marked debris\" (undock)"
+  },
+  {
+   "t": 15.2,
+   "text": "signal: \"↘down and rightLander pressure valve289 mTracking\" (undock)"
+  },
+  {
+   "t": 15.2,
+   "text": "dockPrompt: true (undock)"
+  },
+  {
+   "t": 15.2,
+   "text": "overlay: \"\" (undock)"
+  },
+  {
+   "t": 15.45,
+   "text": "signal: \"↘down and rightLander pressure valve291 mTracking\" (idle)"
+  },
+  {
+   "t": 15.7,
+   "text": "signal: \"↘down and rightLander pressure valve292 mTracking\" (idle)"
+  },
+  {
+   "t": 15.7,
+   "text": "SHOT B-cautious-015.7s-trip2-start.png"
+  },
+  {
+   "t": 15.7,
+   "text": "Trip 2 guidance: next=Excavate the marked debris | signal=↘down and rightLander pressure valve292 mTracking | tasks=○Pressure valve · 250 m | ○Antenna · 400 m | ○Construction · 192.3/300 CR"
+  },
+  {
+   "t": 16.2,
+   "text": "signal: \"↘down and rightLander pressure valve283 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 16.45,
+   "text": "signal: \"↘down and rightLander pressure valve280 mTracking\" (idle)"
+  },
+  {
+   "t": 16.45,
+   "text": "dockPrompt: false (idle)"
+  },
+  {
+   "t": 16.95,
+   "text": "signal: \"↘down and rightLander pressure valve271 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 17.2,
+   "text": "signal: \"↓downLander pressure valve266 mTracking\" (idle)"
+  },
+  {
+   "t": 17.7,
+   "text": "signal: \"↓downLander pressure valve259 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 17.95,
+   "text": "signal: \"↓downLander pressure valve257 mTracking\" (idle)"
+  },
+  {
+   "t": 18.45,
+   "text": "signal: \"↓downLander pressure valve253 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 18.7,
+   "text": "signal: \"↓downLander pressure valve251 mTracking\" (idle)"
+  },
+  {
+   "t": 18.85,
+   "text": "signal: \"↓downLander pressure valve250 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 19.1,
+   "text": "signal: \"↓downLander pressure valve249 mTracking\" (idle)"
+  },
+  {
+   "t": 19.25,
+   "text": "message: \"\" (ArrowRight)"
+  },
+  {
+   "t": 20.7,
+   "text": "trip2: aligned to column 20 after 4 fine taps (rigX 20.4548)"
+  },
+  {
+   "t": 20.7,
+   "text": "SHOT B-cautious-020.7s-trip2-aligned.png"
+  },
+  {
+   "t": 20.95,
+   "text": "signal: \"↓downLander pressure valve247 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 21.2,
+   "text": "signal: \"↓downLander pressure valve242 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 21.45,
+   "text": "signal: \"↓downLander pressure valve236 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 21.7,
+   "text": "signal: \"↓downLander pressure valve224 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 21.95,
+   "text": "signal: \"↓downLander pressure valve215 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 22.2,
+   "text": "signal: \"↓downLander pressure valve200 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 22.45,
+   "text": "signal: \"↓downLander pressure valve188 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 22.7,
+   "text": "signal: \"↓downLander pressure valve171 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 22.95,
+   "text": "signal: \"↓downLander pressure valve159 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 23.2,
+   "text": "signal: \"↓downLander pressure valve149 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 24.2,
+   "text": "signal: \"↓downLander pressure valve139 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 25.2,
+   "text": "signal: \"↓downLander pressure valve129 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 26.2,
+   "text": "signal: \"↓downLander pressure valve119 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 27.2,
+   "text": "signal: \"↓downLander pressure valve109 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 28.45,
+   "text": "signal: \"↓downLander pressure valve99 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 29.45,
+   "text": "signal: \"↓downLander pressure valve89 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 30.7,
+   "text": "message: \"Lander pressure valve · Signal nearby. Excavate the marked debris.\" (ArrowDown)"
+  },
+  {
+   "t": 30.7,
+   "text": "signal: \"↓downLander pressure valve79 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 31.7,
+   "text": "signal: \"↓downLander pressure valve69 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 32.7,
+   "text": "signal: \"↓downLander pressure valve59 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 33.95,
+   "text": "signal: \"↓downLander pressure valve49 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 34.7,
+   "text": "message: \"\" (ArrowDown)"
+  },
+  {
+   "t": 34.95,
+   "text": "signal: \"↓downLander pressure valve39 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 36.2,
+   "text": "message: \"Lander pressure valve · Very close. Excavate the marked debris.\" (ArrowDown)"
+  },
+  {
+   "t": 36.2,
+   "text": "signal: \"↓downLander pressure valve29 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 37.2,
+   "text": "signal: \"↓downLander pressure valve19 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 38.45,
+   "text": "message: \"Lander pressure valve · At target. Excavate the marked debris.\" (ArrowDown)"
+  },
+  {
+   "t": 38.45,
+   "text": "signal: \"◉At your positionLander pressure valve9 mAt target\" (ArrowDown)"
+  },
+  {
+   "t": 39.7,
+   "text": "message: \"Lander pressure valve secured · Return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 39.7,
+   "text": "tasks: \"↑Pressure valve · onboard, bank at lander | ○Antenna · 400 m | ○Construction · 192.3/300 CR\" (ArrowDown)"
+  },
+  {
+   "t": 39.7,
+   "text": "next: \"Return to lander → Bank mission cargo\" (ArrowDown)"
+  },
+  {
+   "t": 39.7,
+   "text": "signal: \"↖up and leftSalvage lander292 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 39.7,
+   "text": "MARK valve-onboard"
+  },
+  {
+   "t": 40.2,
+   "text": "SHOT B-cautious-040.2s-trip2-valve.png"
+  },
+  {
+   "t": 40.7,
+   "text": "signal: \"↖up and leftSalvage lander300 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 40.95,
+   "text": "signal: \"↖up and leftSalvage lander296 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 41.2,
+   "text": "signal: \"↖up and leftSalvage lander281 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 41.45,
+   "text": "signal: \"↖up and leftSalvage lander271 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 41.7,
+   "text": "signal: \"↖up and leftSalvage lander256 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 41.95,
+   "text": "signal: \"↖up and leftSalvage lander247 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 42.2,
+   "text": "signal: \"↖up and leftSalvage lander233 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 42.45,
+   "text": "signal: \"↖up and leftSalvage lander224 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 42.7,
+   "text": "signal: \"↖up and leftSalvage lander211 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 42.95,
+   "text": "signal: \"↖up and leftSalvage lander202 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 43.2,
+   "text": "signal: \"↖up and leftSalvage lander191 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 43.45,
+   "text": "signal: \"↖up and leftSalvage lander184 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 43.7,
+   "text": "message: \"\" (ArrowUp)"
+  },
+  {
+   "t": 43.7,
+   "text": "signal: \"↖up and leftSalvage lander174 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 43.95,
+   "text": "signal: \"↖up and leftSalvage lander168 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 44.2,
+   "text": "signal: \"←leftSalvage lander161 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 44.45,
+   "text": "signal: \"←leftSalvage lander157 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 44.7,
+   "text": "signal: \"←leftSalvage lander153 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 44.95,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 45.2,
+   "text": "signal: \"←leftSalvage lander150 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 45.45,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 45.45,
+   "text": "trip2: out of the shaft · E 3.1 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 192.3"
+  },
+  {
+   "t": 45.7,
+   "text": "signal: \"←leftSalvage lander147 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 45.95,
+   "text": "signal: \"←leftSalvage lander139 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 46.2,
+   "text": "signal: \"←leftSalvage lander125 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 46.45,
+   "text": "signal: \"←leftSalvage lander115 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 46.7,
+   "text": "signal: \"←leftSalvage lander99 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 46.95,
+   "text": "signal: \"←leftSalvage lander87 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 47.2,
+   "text": "signal: \"←leftSalvage lander71 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 47.45,
+   "text": "signal: \"←leftSalvage lander60 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 47.7,
+   "text": "signal: \"←leftSalvage lander45 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 47.95,
+   "text": "signal: \"←leftSalvage lander35 mSignal nearby\" (ArrowLeft)"
+  },
+  {
+   "t": 48.1,
+   "text": "message: \"Salvage lander · Very close. Land in the illuminated bay to dock.\" (ArrowLeft)"
+  },
+  {
+   "t": 48.1,
+   "text": "signal: \"←leftSalvage lander25 mVery close\" (ArrowLeft)"
+  },
+  {
+   "t": 48.25,
+   "text": "signal: \"←leftSalvage lander20 mVery close\" (ArrowLeft)"
+  },
+  {
+   "t": 48.4,
+   "text": "message: \"Salvage lander · Dock available. Dock and bank mission cargo.\" (ArrowLeft)"
+  },
+  {
+   "t": 48.4,
+   "text": "signal: \"◉At your positionSalvage lander10 mDock available\" (ArrowLeft)"
+  },
+  {
+   "t": 48.4,
+   "text": "dockPrompt: true (ArrowLeft)"
+  },
+  {
+   "t": 48.65,
+   "text": "signal: \"◉At your positionSalvage lander3 mDock available\" (idle)"
+  },
+  {
+   "t": 48.65,
+   "text": "trip2: at lander, dock prompt=true, small corrections=1 · E 2.8 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 192.3"
+  },
+  {
+   "t": 48.65,
+   "text": "overlay: \"dock\" (E)"
+  },
+  {
+   "t": 48.65,
+   "text": "MARK trip2-docked"
+  },
+  {
+   "t": 48.65,
+   "text": "Trip 2 dock opened on tab: Attachments"
+  },
+  {
+   "t": 48.65,
+   "text": "SHOT B-cautious-048.7s-trip2-dock-opened.png"
+  },
+  {
+   "t": 48.65,
+   "text": "MARK second-sale"
+  },
+  {
+   "t": 48.65,
+   "text": "Trip 2 sale: Bank your carried packages before selling them. · credits 192.3 CR"
+  },
+  {
+   "t": 48.65,
+   "text": "Trip 2 refuel: Energy replenished for 7.3 CR. · credits 185 CR"
+  },
+  {
+   "t": 48.65,
+   "text": "SHOT B-cautious-048.7s-trip2-hardware.png"
+  },
+  {
+   "t": 48.65,
+   "text": "Purchasable after trip 2: hardware-drill:disabled:Purchase · 750 CR ; hardware-energy:disabled:Purchase · 650 CR ; hardware-cargo:disabled:Purchase · 700 CR ; hardware-hull:disabled:Purchase · 450 CR ; hardware-engine:disabled:Purchase · 500 CR"
+  },
+  {
+   "t": 48.65,
+   "text": "Attachments after trip 2: gear-toggle-W01-R1:ENABLED:Unequip ; gear-buy-W01-R2:disabled:Purchase · 400 CR ; gear-buy-W01-R3:disabled:Purchase · 900 CR"
+  },
+  {
+   "t": 48.65,
+   "text": "message: \"Energy replenished for 7.3 CR.\" (undock)"
+  },
+  {
+   "t": 48.65,
+   "text": "tasks: \"✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 185/300 CR\" (undock)"
+  },
+  {
+   "t": 48.65,
+   "text": "next: \"Excavate the marked debris\" (undock)"
+  },
+  {
+   "t": 48.65,
+   "text": "signal: \"↓downLander antenna429 mTracking\" (undock)"
+  },
+  {
+   "t": 48.65,
+   "text": "overlay: \"\" (undock)"
+  },
+  {
+   "t": 48.9,
+   "text": "signal: \"↓downLander antenna430 mTracking\" (idle)"
+  },
+  {
+   "t": 49.15,
+   "text": "signal: \"↓downLander antenna431 mTracking\" (idle)"
+  },
+  {
+   "t": 49.15,
+   "text": "Trip 3 guidance: next=Excavate the marked debris | signal=↓downLander antenna431 mTracking | tasks=✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 185/300 CR"
+  },
+  {
+   "t": 49.65,
+   "text": "signal: \"↓downLander antenna425 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 49.9,
+   "text": "signal: \"↓downLander antenna422 mTracking\" (idle)"
+  },
+  {
+   "t": 49.9,
+   "text": "dockPrompt: false (idle)"
+  },
+  {
+   "t": 50.4,
+   "text": "signal: \"↓downLander antenna415 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 50.65,
+   "text": "signal: \"↓downLander antenna413 mTracking\" (idle)"
+  },
+  {
+   "t": 51.15,
+   "text": "signal: \"↓downLander antenna408 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 51.4,
+   "text": "signal: \"↓downLander antenna406 mTracking\" (idle)"
+  },
+  {
+   "t": 51.9,
+   "text": "signal: \"↓downLander antenna402 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 52.15,
+   "text": "signal: \"↓downLander antenna401 mTracking\" (idle)"
+  },
+  {
+   "t": 52.65,
+   "text": "signal: \"↓downLander antenna399 mTracking\" (ArrowRight)"
+  },
+  {
+   "t": 52.9,
+   "text": "message: \"\" (idle)"
+  },
+  {
+   "t": 53.3,
+   "text": "trip3: aligned to column 21 after 0 fine taps (rigX 21.5139)"
+  },
+  {
+   "t": 54.3,
+   "text": "signal: \"↓downLander antenna389 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 55.3,
+   "text": "signal: \"↓downLander antenna379 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 56.3,
+   "text": "signal: \"↓downLander antenna369 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 57.05,
+   "text": "signal: \"↓downLander antenna359 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 58.05,
+   "text": "signal: \"↓downLander antenna349 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 59.05,
+   "text": "signal: \"↓downLander antenna339 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 60.05,
+   "text": "message: \"Hold full: 7/7 bulk. Return to the lander to bank your haul.\" (ArrowDown)"
+  },
+  {
+   "t": 60.05,
+   "text": "signal: \"↓downLander antenna329 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 60.55,
+   "text": "SHOT B-cautious-060.6s-trip3-hold.png"
+  },
+  {
+   "t": 61.05,
+   "text": "signal: \"↓downLander antenna321 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 61.3,
+   "text": "signal: \"↓downLander antenna335 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 61.55,
+   "text": "signal: \"↓downLander antenna347 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 61.8,
+   "text": "signal: \"↓downLander antenna365 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 62.05,
+   "text": "signal: \"↓downLander antenna377 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 62.3,
+   "text": "signal: \"↓downLander antenna395 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 62.55,
+   "text": "signal: \"↓downLander antenna407 mTracking\" (ArrowUp)"
+  },
+  {
+   "t": 62.55,
+   "text": "trip3: out of the shaft · E 7.1 / 10 H 10 / 10 D 0 m C 7 / 7 haul 480 CR CR 185"
+  },
+  {
+   "t": 62.8,
+   "text": "signal: \"↓downLander antenna422 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 63.05,
+   "text": "signal: \"↓downLander antenna427 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 63.3,
+   "text": "signal: \"↓downLander antenna430 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 63.55,
+   "text": "signal: \"↓downLander antenna429 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 63.8,
+   "text": "signal: \"↓downLander antenna424 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 64.05,
+   "text": "message: \"\" (ArrowLeft)"
+  },
+  {
+   "t": 64.05,
+   "text": "signal: \"↓downLander antenna419 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 64.3,
+   "text": "signal: \"↓downLander antenna410 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 64.55,
+   "text": "signal: \"↓downLander antenna409 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 64.8,
+   "text": "signal: \"↓downLander antenna412 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 65.05,
+   "text": "signal: \"↓downLander antenna415 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 65.3,
+   "text": "signal: \"↓downLander antenna419 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 65.55,
+   "text": "signal: \"↓downLander antenna422 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 65.7,
+   "text": "signal: \"↓downLander antenna426 mTracking\" (ArrowLeft)"
+  },
+  {
+   "t": 65.7,
+   "text": "dockPrompt: true (ArrowLeft)"
+  },
+  {
+   "t": 65.95,
+   "text": "signal: \"↓downLander antenna428 mTracking\" (idle)"
+  },
+  {
+   "t": 65.95,
+   "text": "trip3: at lander, dock prompt=true, small corrections=1 · E 6.7 / 10 H 10 / 10 D 0 m C 7 / 7 haul 480 CR CR 185"
+  },
+  {
+   "t": 65.95,
+   "text": "overlay: \"dock\" (E)"
+  },
+  {
+   "t": 65.95,
+   "text": "MARK trip3-docked"
+  },
+  {
+   "t": 65.95,
+   "text": "MARK third-sale"
+  },
+  {
+   "t": 65.95,
+   "text": "Trip 3 sale: Sold stored cargo for 480 CR. · credits 665 CR"
+  },
+  {
+   "t": 65.95,
+   "text": "SHOT B-cautious-00066s-trip3-hardware.png"
+  },
+  {
+   "t": 65.95,
+   "text": "Purchasable after trip 3: hardware-drill:disabled:Purchase · 750 CR ; hardware-energy:ENABLED:Purchase · 650 CR ; hardware-cargo:disabled:Purchase · 700 CR ; hardware-hull:ENABLED:Purchase · 450 CR ; hardware-engine:ENABLED:Purchase · 500 CR"
+  },
+  {
+   "t": 65.95,
+   "text": "MARK first-upgrade"
+  },
+  {
+   "t": 65.95,
+   "text": "SHOT B-cautious-00066s-trip3-first-upgrade.png"
+  },
+  {
+   "t": 65.95,
+   "text": "First upgrade: hardware-energy -> Salvaged energy installed. · credits 15 CR"
+  },
+  {
+   "t": 66.2,
+   "text": "message: \"Salvaged energy installed.\" (idle)"
+  },
+  {
+   "t": 66.2,
+   "text": "tasks: \"✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 15/300 CR\" (idle)"
+  },
+  {
+   "t": 66.2,
+   "text": "signal: \"↓downLander antenna430 mTracking\" (idle)"
+  },
+  {
+   "t": 66.2,
+   "text": "overlay: \"\" (idle)"
+  },
+  {
+   "t": 66.45,
+   "text": "signal: \"↓downLander antenna431 mTracking\" (idle)"
+  },
+  {
+   "t": 66.75,
+   "text": "SHOT B-cautious-066.8s-after-first-upgrade-world.png"
+  },
+  {
+   "t": 66.75,
+   "text": "Checkpoint credits 15 hardware {\"drill\":0,\"energy\":1,\"cargo\":0,\"hull\":0,\"engine\":0} completed [1]"
+  },
+  {
+   "t": 66.75,
+   "text": "FAILED STEPS []"
+  }
+ ]
+}

@@ -1,0 +1,29 @@
+{
+  "current": {
+    "budgetCR": 5350,
+    "minOrdinaryCR": 16050,
+    "counts": [
+      400
+    ],
+    "minValueCR": 19000,
+    "maxValueCR": 19000
+  },
+  "a3FeesOnly": {
+    "budgetCR": 7050,
+    "minOrdinaryCR": 21150,
+    "counts": [
+      500
+    ],
+    "minValueCR": 23750,
+    "maxValueCR": 23750
+  },
+  "a3FeesAndA4Feet": {
+    "budgetCR": 6900,
+    "minOrdinaryCR": 20700,
+    "counts": [
+      500
+    ],
+    "minValueCR": 23750,
+    "maxValueCR": 23750
+  }
+}

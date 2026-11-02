@@ -1,0 +1,56 @@
+{
+ "g04-w01-depth-row4": {
+  "meanRGB": [
+   58,
+   71,
+   79
+  ],
+  "meanLuma": 69.0,
+  "stdLuma": 18.1
+ },
+ "g04-w01-depth-row30": {
+  "meanRGB": [
+   59,
+   72,
+   79
+  ],
+  "meanLuma": 69.6,
+  "stdLuma": 18.1
+ },
+ "g04-w01-depth-row56": {
+  "meanRGB": [
+   55,
+   68,
+   76
+  ],
+  "meanLuma": 65.8,
+  "stdLuma": 18.3
+ },
+ "g04-w02-depth-row6": {
+  "meanRGB": [
+   58,
+   105,
+   121
+  ],
+  "meanLuma": 96.1,
+  "stdLuma": 25.4
+ },
+ "g04-w02-depth-row50": {
+  "meanRGB": [
+   57,
+   102,
+   118
+  ],
+  "meanLuma": 93.9,
+  "stdLuma": 25.0
+ },
+ "g04-w02-depth-row94": {
+  "meanRGB": [
+   57,
+   104,
+   120
+  ],
+  "meanLuma": 94.8,
+  "stdLuma": 22.6
+ }
+}

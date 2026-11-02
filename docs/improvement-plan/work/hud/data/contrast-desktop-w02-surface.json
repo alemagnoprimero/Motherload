@@ -1,0 +1,288 @@
+{
+ "summary": {
+  "scene": "desktop-w02-surface",
+  "leaves": 25,
+  "median_cr50": 10.22,
+  "min_cr90": 2.47,
+  "below45_at_p90": 1,
+  "below3_at_p90": 1,
+  "below45_at_max": 1
+ },
+ "rows": [
+  {
+   "text": "ENERGY",
+   "fontSize": 12,
+   "color": "rgb(195, 209, 201)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0116,
+   "cr50": 10.78,
+   "cr90": 10.78,
+   "crMax": 10.68,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "6.0 / 10",
+   "fontSize": 14,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0116,
+   "cr50": 15.32,
+   "cr90": 15.32,
+   "crMax": 15.18,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "HULL",
+   "fontSize": 12,
+   "color": "rgb(195, 209, 201)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0116,
+   "cr50": 10.78,
+   "cr90": 10.78,
+   "crMax": 10.77,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "10 / 10",
+   "fontSize": 14,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0116,
+   "cr50": 15.32,
+   "cr90": 15.32,
+   "crMax": 15.18,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "0 m",
+   "fontSize": 14,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0122,
+   "cr50": 15.32,
+   "cr90": 15.18,
+   "crMax": 15.16,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "2 / 7",
+   "fontSize": 14,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0122,
+   "cr50": 15.32,
+   "cr90": 15.18,
+   "crMax": 15.16,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "HAUL",
+   "fontSize": 12,
+   "color": "rgb(184, 202, 194)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0122,
+   "cr50": 9.95,
+   "cr90": 9.86,
+   "crMax": 9.85,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "120 CR",
+   "fontSize": 14,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0122,
+   "cr50": 15.32,
+   "cr90": 15.18,
+   "crMax": 15.14,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "CR",
+   "fontSize": 12,
+   "color": "rgb(234, 194, 140)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0122,
+   "cr50": 10.22,
+   "cr90": 10.12,
+   "crMax": 10.11,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "100,000",
+   "fontSize": 14,
+   "color": "rgb(237, 193, 138)",
+   "bgL50": 0.0116,
+   "bgL90": 0.0122,
+   "cr50": 10.22,
+   "cr90": 10.12,
+   "crMax": 10.11,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "01 / 03",
+   "fontSize": 12,
+   "color": "rgb(212, 185, 130)",
+   "bgL50": 0.0197,
+   "bgL90": 0.0253,
+   "cr50": 7.93,
+   "cr90": 7.35,
+   "crMax": 6.59,
+   "bgStd": 0.0027
+  },
+  {
+   "text": "Sample the thermal seam",
+   "fontSize": 13,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0214,
+   "bgL90": 0.0251,
+   "cr50": 13.22,
+   "cr90": 12.57,
+   "crMax": 11.25,
+   "bgStd": 0.0026
+  },
+  {
+   "text": "\u25cb",
+   "fontSize": 12,
+   "color": "rgb(166, 188, 177)",
+   "bgL50": 0.0244,
+   "bgL90": 0.0244,
+   "cr50": 7.02,
+   "cr90": 7.02,
+   "crMax": 7.02,
+   "bgStd": 0.0
+  },
+  {
+   "text": "Helion samples \u00b7 0/5 banked",
+   "fontSize": 12,
+   "color": "rgb(220, 231, 219)",
+   "bgL50": 0.0214,
+   "bgL90": 0.0244,
+   "cr50": 11.55,
+   "cr90": 11.09,
+   "crMax": 10.79,
+   "bgStd": 0.0022
+  },
+  {
+   "text": "\u25c7",
+   "fontSize": 12,
+   "color": "rgb(240, 197, 132)",
+   "bgL50": 0.0244,
+   "bgL90": 0.0244,
+   "cr50": 8.75,
+   "cr90": 8.75,
+   "crMax": 8.52,
+   "bgStd": 0.0018
+  },
+  {
+   "text": "Construction \u00b7 400 CR ready",
+   "fontSize": 12,
+   "color": "rgb(220, 231, 219)",
+   "bgL50": 0.0215,
+   "bgL90": 0.0244,
+   "cr50": 11.53,
+   "cr90": 11.09,
+   "crMax": 10.21,
+   "bgStd": 0.0024
+  },
+  {
+   "text": "\u2198",
+   "fontSize": 16,
+   "color": "rgb(237, 193, 138)",
+   "bgL50": 0.0244,
+   "bgL90": 0.0263,
+   "cr50": 8.47,
+   "cr90": 8.25,
+   "crMax": 7.49,
+   "bgStd": 0.0021
+  },
+  {
+   "text": "Helion thermal sample 1",
+   "fontSize": 12,
+   "color": "rgb(197, 216, 202)",
+   "bgL50": 0.0214,
+   "bgL90": 0.0251,
+   "cr50": 9.83,
+   "cr90": 9.35,
+   "crMax": 8.38,
+   "bgStd": 0.0026
+  },
+  {
+   "text": "169 m",
+   "fontSize": 12,
+   "color": "rgb(175, 195, 183)",
+   "bgL50": 0.0244,
+   "bgL90": 0.0251,
+   "cr50": 7.6,
+   "cr90": 7.53,
+   "crMax": 6.74,
+   "bgStd": 0.0025
+  },
+  {
+   "text": "Tracking",
+   "fontSize": 12,
+   "color": "rgb(161, 184, 170)",
+   "bgL50": 0.0214,
+   "bgL90": 0.0253,
+   "cr50": 6.97,
+   "cr90": 6.61,
+   "crMax": 6.11,
+   "bgStd": 0.0026
+  },
+  {
+   "text": "Excavate the marked Helion sample pods",
+   "fontSize": 12,
+   "color": "rgb(240, 208, 153)",
+   "bgL50": 0.0214,
+   "bgL90": 0.0251,
+   "cr50": 9.93,
+   "cr90": 9.45,
+   "crMax": 9.28,
+   "bgStd": 0.0022
+  },
+  {
+   "text": "Unlock: vapour condenser + heated refuge",
+   "fontSize": 12,
+   "color": "rgb(168, 188, 176)",
+   "bgL50": 0.0234,
+   "bgL90": 0.0244,
+   "cr50": 7.14,
+   "cr90": 7.05,
+   "crMax": 6.51,
+   "bgStd": 0.0024
+  },
+  {
+   "text": "Ice comet expedition ready. Follow the mission signal and preserve volatile crys",
+   "fontSize": 13,
+   "color": "rgb(240, 220, 169)",
+   "bgL50": 0.0244,
+   "bgL90": 0.2637,
+   "cr50": 10.43,
+   "cr90": 2.47,
+   "crMax": 1.34,
+   "bgStd": 0.1053
+  },
+  {
+   "text": "DRILL",
+   "fontSize": 12,
+   "color": "rgb(159, 181, 171)",
+   "bgL50": 0.0243,
+   "bgL90": 0.0253,
+   "cr50": 6.51,
+   "cr90": 6.42,
+   "crMax": 6.33,
+   "bgStd": 0.0019
+  },
+  {
+   "text": "Salvaged auger",
+   "fontSize": 12,
+   "color": "rgb(230, 236, 221)",
+   "bgL50": 0.0244,
+   "bgL90": 0.0244,
+   "cr50": 11.7,
+   "cr90": 11.7,
+   "crMax": 10.8,
+   "bgStd": 0.0024
+  }
+ ]
+}

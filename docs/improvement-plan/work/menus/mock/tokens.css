@@ -1,0 +1,74 @@
+/* Proposed UI design tokens (MENU-P2). Shared with the HUD tokens proposed in 05-hud.md §5.4. */
+@font-face {
+  font-family: "Big Shoulders Display";
+  src: url("fonts/BigShouldersDisplay-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saira Stencil One";
+  src: url("fonts/SairaStencilOne-latin.woff2") format("woff2");
+  font-display: block;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/Inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  /* type families */
+  --font-logo: "Saira Stencil One", "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-ui: "Inter", "Arial", sans-serif;
+  /* type scale (×1.2 when Larger text is on) */
+  --ui-scale: 1;
+  --text-xs: calc(12px * var(--ui-scale)); /* captions, never body */
+  --text-sm: calc(14px * var(--ui-scale)); /* secondary body */
+  --text-md: calc(16px * var(--ui-scale)); /* body, buttons */
+  --text-lg: calc(20px * var(--ui-scale)); /* card titles, values */
+  --text-xl: calc(28px * var(--ui-scale)); /* screen titles (display face) */
+  --text-2xl: calc(40px * var(--ui-scale));
+  --text-hero: clamp(64px, 9vw, 136px);
+  --tracking-caps: 0.14em;
+  /* surfaces */
+  --scrim: rgba(4, 11, 15, 0.62);
+  --surface-1: #0f1d24; /* panel */
+  --surface-2: #152831; /* header, raised */
+  --surface-3: #1d3640; /* card, hover */
+  --surface-4: #26454f; /* selected */
+  --line: #2e4a52;
+  --line-strong: #56757a;
+  /* text */
+  --text-1: #eef4ea;
+  --text-2: #c0d0c8;
+  --text-3: #97aea7;
+  /* accents and semantics */
+  --accent: #f2b65a;
+  --accent-hi: #ffd08a;
+  --accent-ink: #1c1306;
+  --credit: #f3c47e;
+  --energy: #7fd8e0;
+  --hull: #e8a28f;
+  --cargo: #c9d6a0;
+  --ok: #8fe0b8;
+  --caution: #ffc55c;
+  --danger: #ff6b4f;
+  --danger-ink: #ffb3a3;
+  --locked: #6f8a88;
+  /* shape and depth */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --chamfer: 12px;
+  --shadow-panel: 0 30px 90px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --glow-accent: 0 0 0 1px rgba(255, 208, 138, 0.35), 0 6px 22px rgba(242, 182, 90, 0.28);
+  /* spacing (4-pt grid) */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px;
+  /* motion */
+  --dur-fast: 120ms; --dur-med: 220ms; --dur-slow: 420ms; --dur-count: 800ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* focus */
+  --focus: 0 0 0 2px var(--surface-1), 0 0 0 4px #a8f0e8;
+}

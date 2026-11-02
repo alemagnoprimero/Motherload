@@ -1,0 +1,865 @@
+{
+ "errors": [],
+ "state": {
+  "energy": "3.1 / 10",
+  "hull": "10 / 10",
+  "cargo": "0 / 7",
+  "depth": "200 m",
+  "danger": "",
+  "message": "",
+  "messageVisible": false,
+  "energyCritical": false,
+  "extraction": "",
+  "disabled": "false",
+  "next": "Excavate the marked debris",
+  "signal": "↙down and leftLander pressure valve111 mTracking"
+ },
+ "probe": {
+  "viewport": {
+   "w": 1440,
+   "h": 900,
+   "dpr": 1
+  },
+  "named": {
+   "hud": {
+    "visible": true,
+    "box": {
+     "x": 20,
+     "y": 16,
+     "w": 1340,
+     "h": 32
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY3.1 / 10 HULL10 / 10 Depth200 m Cargo0 / 7 HAUL0 CR CRCredits20"
+   },
+   "energyVital": {
+    "visible": true,
+    "box": {
+     "x": 20,
+     "y": 16,
+     "w": 154,
+     "h": 25
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY3.1 / 10"
+   },
+   "hullVital": {
+    "visible": true,
+    "box": {
+     "x": 194,
+     "y": 16,
+     "w": 154,
+     "h": 25
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HULL10 / 10"
+   },
+   "energyValue": {
+    "visible": true,
+    "box": {
+     "x": 127.3,
+     "y": 16.5,
+     "w": 46.7,
+     "h": 16
+    },
+    "fontSize": "14px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "3.1 / 10"
+   },
+   "hullValue": {
+    "visible": true,
+    "box": {
+     "x": 305.2,
+     "y": 16.5,
+     "w": 42.8,
+     "h": 16
+    },
+    "fontSize": "14px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "10 / 10"
+   },
+   "energyMeter": {
+    "visible": true,
+    "box": {
+     "x": 51,
+     "y": 37.5,
+     "w": 123,
+     "h": 3
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "hullMeter": {
+    "visible": true,
+    "box": {
+     "x": 225,
+     "y": 37.5,
+     "w": 123,
+     "h": 3
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "rightCluster": {
+    "visible": true,
+    "box": {
+     "x": 1060.3,
+     "y": 16,
+     "w": 299.7,
+     "h": 32
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Depth200 m Cargo0 / 7 HAUL0 CR CRCredits20"
+   },
+   "depth": {
+    "visible": true,
+    "box": {
+     "x": 1088.3,
+     "y": 24,
+     "w": 39.7,
+     "h": 16
+    },
+    "fontSize": "14px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "200 m"
+   },
+   "cargo": {
+    "visible": true,
+    "box": {
+     "x": 1178,
+     "y": 24,
+     "w": 27.3,
+     "h": 16
+    },
+    "fontSize": "14px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "0 / 7"
+   },
+   "haul": {
+    "visible": true,
+    "box": {
+     "x": 1267.2,
+     "y": 24,
+     "w": 31.9,
+     "h": 16
+    },
+    "fontSize": "14px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "0 CR"
+   },
+   "credits": {
+    "visible": true,
+    "box": {
+     "x": 1344.4,
+     "y": 24,
+     "w": 15.6,
+     "h": 16
+    },
+    "fontSize": "14px",
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "20"
+   },
+   "objective": {
+    "visible": true,
+    "box": {
+     "x": 20,
+     "y": 742.7,
+     "w": 275.6,
+     "h": 139.3
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "02 / 03Recover the lander parts○Pressure valve · 250 m○Antenna · 400 m○Construction · 20/300 CR↙down and leftLander pressure valve111 mTrackingExcavate the mark"
+   },
+   "objectiveTitle": {
+    "visible": true,
+    "box": {
+     "x": 100.7,
+     "y": 742.7,
+     "w": 152.5,
+     "h": 15
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Recover the lander parts"
+   },
+   "tasks": {
+    "visible": true,
+    "box": {
+     "x": 54,
+     "y": 762.7,
+     "w": 241.6,
+     "h": 54.6
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "○Pressure valve · 250 m○Antenna · 400 m○Construction · 20/300 CR"
+   },
+   "signal": {
+    "visible": true,
+    "box": {
+     "x": 54,
+     "y": 824.2,
+     "w": 241.6,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(197, 216, 202)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "↙down and leftLander pressure valve111 mTracking"
+   },
+   "next": {
+    "visible": true,
+    "box": {
+     "x": 54,
+     "y": 845.4,
+     "w": 241.6,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Excavate the marked debris"
+   },
+   "reward": {
+    "visible": true,
+    "box": {
+     "x": 54,
+     "y": 864.6,
+     "w": 241.6,
+     "h": 17.4
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(168, 188, 176)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Unlock: cargo rack + star map"
+   },
+   "toolbar": {
+    "visible": true,
+    "box": {
+     "x": 1233.3,
+     "y": 844,
+     "w": 188.7,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLSalvaged auger Space · MobilityNo attachment HOLD QPrecision UTILITYCondenser active PROCESSOROpen cargo bay"
+   },
+   "drillSlot": {
+    "visible": true,
+    "box": {
+     "x": 1233.3,
+     "y": 844,
+     "w": 135.7,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLSalvaged auger"
+   },
+   "feet": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Space · MobilityNo attachment"
+   },
+   "precision": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HOLD QPrecision"
+   },
+   "map": {
+    "visible": true,
+    "box": {
+     "x": 1378,
+     "y": 844,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "menuButton": {
+    "visible": true,
+    "box": {
+     "x": 1384,
+     "y": 8,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(212, 224, 213)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "message": {
+    "visible": false,
+    "box": {
+     "x": 720,
+     "y": 822,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "400",
+    "color": "rgb(240, 220, 169)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "danger": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(255, 213, 175)",
+    "background": "rgba(20, 33, 39, 0.875)",
+    "text": ""
+   },
+   "extraction": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(215, 243, 232)",
+    "background": "rgba(10, 32, 41, 0.91)",
+    "text": "Release drill"
+   },
+   "release": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(22, 43, 49)",
+    "background": "rgb(230, 182, 101)",
+    "text": "Release drill"
+   },
+   "dockPrompt": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(244, 210, 149)",
+    "background": "rgba(13, 26, 27, 0.44)",
+    "text": "EDock"
+   },
+   "disabled": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(233, 239, 223)",
+    "background": "rgba(16, 30, 37, 0.95)",
+    "text": "Rig disabledRequest recoveryLander servicesPause / save"
+   }
+  },
+  "leaves": [
+   {
+    "id": "SPAN",
+    "root": "campaign-hud",
+    "text": "ENERGY",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(195, 209, 201)",
+    "box": {
+     "x": 51,
+     "y": 18.5,
+     "w": 55,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-energy",
+    "root": "campaign-hud",
+    "text": "3.1 / 10",
+    "fontSize": 14,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 127.296875,
+     "y": 16.5,
+     "w": 46.703125,
+     "h": 16
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-hud",
+    "text": "HULL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(195, 209, 201)",
+    "box": {
+     "x": 225,
+     "y": 18.5,
+     "w": 33.5625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-hull",
+    "root": "campaign-hud",
+    "text": "10 / 10",
+    "fontSize": 14,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 305.171875,
+     "y": 16.5,
+     "w": 42.828125,
+     "h": 16
+    }
+   },
+   {
+    "id": "campaign-depth",
+    "root": "campaign-hud",
+    "text": "200 m",
+    "fontSize": 14,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 1088.28125,
+     "y": 24,
+     "w": 39.703125,
+     "h": 16
+    }
+   },
+   {
+    "id": "campaign-cargo",
+    "root": "campaign-hud",
+    "text": "0 / 7",
+    "fontSize": 14,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 1177.984375,
+     "y": 24,
+     "w": 27.25,
+     "h": 16
+    }
+   },
+   {
+    "id": "hud-mini-label",
+    "root": "campaign-hud",
+    "text": "HAUL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(184, 202, 194)",
+    "box": {
+     "x": 1227.234375,
+     "y": 25,
+     "w": 33.9375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-haul",
+    "root": "campaign-hud",
+    "text": "0 CR",
+    "fontSize": 14,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 1267.171875,
+     "y": 24,
+     "w": 31.90625,
+     "h": 16
+    }
+   },
+   {
+    "id": "credit-mark",
+    "root": "campaign-hud",
+    "text": "CR",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(234, 194, 140)",
+    "box": {
+     "x": 1321.078125,
+     "y": 25,
+     "w": 17.34375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-credits",
+    "root": "campaign-hud",
+    "text": "20",
+    "fontSize": 14,
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 1344.421875,
+     "y": 24,
+     "w": 15.578125,
+     "h": 16
+    }
+   },
+   {
+    "id": "campaign-objective-step",
+    "root": "campaign-objective",
+    "text": "02 / 03",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(212, 185, 130)",
+    "box": {
+     "x": 54,
+     "y": 743.671875,
+     "w": 36.703125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-title",
+    "root": "campaign-objective",
+    "text": "Recover the lander parts",
+    "fontSize": 13,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 100.703125,
+     "y": 742.671875,
+     "w": 152.453125,
+     "h": 15
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 56.375,
+     "y": 763.671875,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Pressure valve · 250 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 72,
+     "y": 763.671875,
+     "w": 123.390625,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 56.375,
+     "y": 782.859375,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Antenna · 400 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 72,
+     "y": 782.859375,
+     "w": 88.734375,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 56.375,
+     "y": 802.046875,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Construction · 20/300 CR",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 72,
+     "y": 802.046875,
+     "w": 135.40625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-direction",
+    "root": "campaign-objective",
+    "text": "↙",
+    "fontSize": 16,
+    "fontWeight": "400",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 55.796875,
+     "y": 823.328125,
+     "w": 12.40625,
+     "h": 17
+    }
+   },
+   {
+    "id": "campaign-signal-target",
+    "root": "campaign-objective",
+    "text": "Lander pressure valve",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(197, 216, 202)",
+    "box": {
+     "x": 77,
+     "y": 825.234375,
+     "w": 127.40625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-distance",
+    "root": "campaign-objective",
+    "text": "111 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(175, 195, 183)",
+    "box": {
+     "x": 211.40625,
+     "y": 825.234375,
+     "w": 31.578125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-proximity",
+    "root": "campaign-objective",
+    "text": "Tracking",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(161, 184, 170)",
+    "box": {
+     "x": 249.984375,
+     "y": 825.234375,
+     "w": 45.578125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-next",
+    "root": "campaign-objective",
+    "text": "Excavate the marked debris",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "box": {
+     "x": 54,
+     "y": 846.421875,
+     "w": 148.75,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-reward",
+    "root": "campaign-objective",
+    "text": "Unlock: cargo rack + star map",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(168, 188, 176)",
+    "box": {
+     "x": 54,
+     "y": 865.609375,
+     "w": 159.734375,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-toolbar",
+    "text": "DRILL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(159, 181, 171)",
+    "box": {
+     "x": 1275.28125,
+     "y": 851,
+     "w": 34.015625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-drill-name",
+    "root": "campaign-toolbar",
+    "text": "Salvaged auger",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(230, 236, 221)",
+    "box": {
+     "x": 1275.28125,
+     "y": 867,
+     "w": 88.71875,
+     "h": 14
+    }
+   }
+  ],
+  "game": {
+   "campaignArt": "ready",
+   "pointerActive": "false",
+   "pointerDirections": "",
+   "joystickVisible": "false",
+   "joystickCenterX": "",
+   "joystickCenterY": "",
+   "joystickKnobX": "",
+   "joystickKnobY": "",
+   "rigScreenX": "720.00",
+   "rigScreenY": "422.16",
+   "rigWorldX": "30.5000",
+   "rigWorldY": "19.6400",
+   "campaignWorld": "W01",
+   "worldWidth": "40",
+   "worldRows": "60",
+   "worldTexture": "campaign-w01",
+   "volatileCue": "false",
+   "volatileRemaining": "",
+   "precisionActive": "false",
+   "coldWarning": "false",
+   "poiLandmarks": "",
+   "poiSourceMarkers": "",
+   "poiScreenTargets": "[]",
+   "poiSignalTarget": "W01-VALVE",
+   "poiSignalBand": "distant",
+   "poiTargetKnown": "false",
+   "poiTargetVisible": "false",
+   "poiMarkerVisible": "false",
+   "poiMarkerX": "",
+   "poiMarkerY": "",
+   "worldCallout": "false",
+   "inspection": ""
+  },
+  "canvas": {
+   "width": 1440,
+   "height": 900,
+   "cssW": 1440,
+   "cssH": 900
+  },
+  "body": {
+   "mode": "campaign",
+   "campaignDanger": "false",
+   "campaignDisabled": "false",
+   "campaignResumeRequired": "false",
+   "campaignWorld": "W01",
+   "campaignExtraction": "false",
+   "campaignVolatile": "none",
+   "campaignPrecision": "false",
+   "campaignPaused": "false",
+   "campaignBusy": "false",
+   "classes": ""
+  }
+ }
+}

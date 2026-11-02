@@ -1,0 +1,102 @@
+{
+  "surfaceShaftEntry": {
+    "shaftColumn": 15,
+    "shaftCentre": 15.5,
+    "rigHalfWidth": 0.39,
+    "offset0": {
+      "result": "dropped into the existing shaft",
+      "rigYAfter1_2s": 3.055
+    },
+    "offset0.05": {
+      "result": "dropped into the existing shaft",
+      "rigYAfter1_2s": 3.055
+    },
+    "offset0.1": {
+      "result": "dropped into the existing shaft",
+      "rigYAfter1_2s": 3.055
+    },
+    "offset0.11": {
+      "result": "dropped into the existing shaft",
+      "rigYAfter1_2s": 3.055
+    },
+    "offset0.12": {
+      "result": "drilled a new tile",
+      "column": 16,
+      "row": 0,
+      "rigYAfter1_2s": 0.64
+    },
+    "offset0.15": {
+      "result": "drilled a new tile",
+      "column": 16,
+      "row": 0,
+      "rigYAfter1_2s": 0.64
+    },
+    "offset0.2": {
+      "result": "drilled a new tile",
+      "column": 16,
+      "row": 0,
+      "rigYAfter1_2s": 0.64
+    },
+    "offset0.3": {
+      "result": "drilled a new tile",
+      "column": 16,
+      "row": 0,
+      "rigYAfter1_2s": 0.64
+    },
+    "offset0.45": {
+      "result": "drilled a new tile",
+      "column": 16,
+      "row": 0,
+      "rigYAfter1_2s": 0.64
+    }
+  },
+  "tunnelCaptureWhileClimbing": {
+    "engine0": {
+      "capturedIntoTunnel": true,
+      "atS": 3.217,
+      "rigY": 12.36
+    },
+    "engine2": {
+      "capturedIntoTunnel": true,
+      "atS": 2.583,
+      "rigY": 12.36
+    }
+  },
+  "groundNudgeTiles": {
+    "windowToDropIntoShaftTiles": 0.22,
+    "tap17ms": 0.169,
+    "tap33ms": 0.271,
+    "tap50ms": 0.406,
+    "tap100ms": 0.812,
+    "tap150ms": 1.219,
+    "tap250ms": 2.031
+  },
+  "airDropOntoShaft": {
+    "offset0": {
+      "rigYAfterFalling": -0.36,
+      "enteredShaft": false
+    },
+    "offset0.08": {
+      "rigYAfterFalling": -0.36,
+      "enteredShaft": false
+    },
+    "offset0.11": {
+      "rigYAfterFalling": -0.36,
+      "enteredShaft": false
+    },
+    "offset0.15": {
+      "rigYAfterFalling": -0.36,
+      "enteredShaft": false
+    },
+    "offset0.3": {
+      "rigYAfterFalling": -0.36,
+      "enteredShaft": false
+    }
+  },
+  "hover": {
+    "upDutyCycle": 0.242,
+    "keyTogglesPer10sAt60Hz": 42,
+    "heightBandTiles": 0.318,
+    "note": "Perfect 60 Hz bang-bang controller; a human with ~100 ms reaction holds a wider band"
+  }
+}

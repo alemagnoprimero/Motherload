@@ -1,0 +1,48 @@
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   1.30s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   1.30s  signal: "↓downWreck survey beacon89 mTracking" (ArrowDown)
+   2.30s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (ArrowDown)
+   2.30s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   2.30s  signal: "↓downWreck survey beacon79 mSignal nearby" (ArrowDown)
+   3.05s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   3.05s  signal: "↓downWreck survey beacon69 mSignal nearby" (ArrowDown)
+   4.05s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   4.05s  signal: "↓downWreck survey beacon59 mSignal nearby" (ArrowDown)
+   5.05s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   5.05s  signal: "↓downWreck survey beacon49 mSignal nearby" (ArrowDown)
+   6.05s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   6.05s  signal: "↓downWreck survey beacon39 mSignal nearby" (ArrowDown)
+   6.30s  message: "" (ArrowDown)
+   7.05s  message: "Wreck survey beacon · Very close. Approach the wreck beacon to survey." (ArrowDown)
+   7.05s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   7.05s  signal: "↓downWreck survey beacon29 mVery close" (ArrowDown)
+   8.05s  signal: "↓downWreck survey beacon19 mVery close" (ArrowDown)
+   9.00s  message: "Beacon surveyed · Return to the lander" (idle)
+   9.00s  tasks: "✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (idle)
+   9.00s  next: "Return to lander → Bank ore" (idle)
+   9.00s  signal: "↖up and leftSalvage lander175 mTracking" (idle)
+   9.70s  after drilling: E 3.3 / 10 H 10 / 10 D 90 m C 7 / 7 haul 380 CR CR 20 rigX=20.5 rigY=8.64
+   9.85s  signal: "↖up and leftSalvage lander174 mTracking" (ArrowUp)
+  10.00s  signal: "↖up and leftSalvage lander172 mTracking" (ArrowUp)
+  10.15s  signal: "↖up and leftSalvage lander168 mTracking" (ArrowUp+ArrowRight)
+  10.30s  signal: "↖up and leftSalvage lander165 mTracking" (ArrowUp+ArrowRight)
+  10.45s  signal: "←leftSalvage lander161 mTracking" (ArrowUp+ArrowRight)
+  10.60s  signal: "←leftSalvage lander159 mTracking" (ArrowUp+ArrowRight)
+  10.60s  hover Up+Right in shaft: rigX 20.5 -> 20.61, rigY 4.2475, depth 49 m, message="Beacon surveyed · Return to the lander"
+  10.60s  SHOT R2-ledge-010.6s-hover-right.png
+  10.65s  signal: "←leftSalvage lander157 mTracking" (ArrowRight)
+  10.75s  signal: "←leftSalvage lander156 mTracking" (ArrowRight)
+  10.85s  signal: "←leftSalvage lander155 mTracking" (ArrowRight)
+  10.85s  falling Right: rigX 20.61, rigY 3.0926, message="Beacon surveyed · Return to the lander"
+  11.10s  signal: "←leftSalvage lander154 mTracking" (ArrowRight)
+  11.85s  signal: "←leftSalvage lander155 mTracking" (ArrowRight)
+  12.10s  signal: "←leftSalvage lander157 mTracking" (ArrowRight)
+  12.35s  signal: "←leftSalvage lander161 mTracking" (ArrowRight)
+  12.35s  after landing Right: rigX 20.61, depth 55 m, message="Beacon surveyed · Return to the lander"
+  12.35s  SHOT R2-ledge-012.4s-landed-right.png
+
+MARKS {}
+ERRORS ["console: Failed to load resource: the server responded with a status of 404 (Not Found)"]

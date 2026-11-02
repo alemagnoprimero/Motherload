@@ -1,0 +1,120 @@
+{
+ "w01:terrainLab": [
+  40.5,
+  -2.6,
+  -6.9
+ ],
+ "w01:hardLab": [
+  37.5,
+  -2.6,
+  -7.6
+ ],
+ "w01:terrain-vs-hard dE": 3.1,
+ "w01:ore-o1": {
+  "fillLab": [
+   80.4,
+   -3.5,
+   -1.3
+  ],
+  "dL_vs_terrain": 39.9,
+  "dE_vs_terrain": 40.3,
+  "outlinePct": 38.4
+ },
+ "w01:ore-o2": {
+  "fillLab": [
+   69.2,
+   13.0,
+   27.3
+  ],
+  "dL_vs_terrain": 28.7,
+  "dE_vs_terrain": 47.3,
+  "outlinePct": 44.4
+ },
+ "w01:ore-o3": {
+  "fillLab": [
+   85.4,
+   -6.6,
+   -0.6
+  ],
+  "dL_vs_terrain": 45.0,
+  "dE_vs_terrain": 45.6,
+  "outlinePct": 41.8
+ },
+ "w01:ore-o4": {
+  "fillLab": [
+   78.5,
+   5.0,
+   45.3
+  ],
+  "dL_vs_terrain": 38.0,
+  "dE_vs_terrain": 65.0,
+  "outlinePct": 51.0
+ },
+ "w01:ore-pairwise-dE": {
+  "o1-o2": 34.8,
+  "o1-o3": 5.9,
+  "o1-o4": 47.4,
+  "o2-o3": 37.7,
+  "o2-o4": 21.8,
+  "o3-o4": 47.9
+ },
+ "w02:terrainLab": [
+  63.6,
+  -16.5,
+  -13.8
+ ],
+ "w02:hardLab": [
+  43.3,
+  -7.4,
+  -14.5
+ ],
+ "w02:terrain-vs-hard dE": 22.2,
+ "w02:ore-o1": {
+  "fillLab": [
+   73.0,
+   -9.3,
+   -8.9
+  ],
+  "dL_vs_terrain": 9.3,
+  "dE_vs_terrain": 12.8,
+  "outlinePct": 28.9
+ },
+ "w02:ore-o2": {
+  "fillLab": [
+   69.3,
+   -9.3,
+   -11.7
+  ],
+  "dL_vs_terrain": 5.7,
+  "dE_vs_terrain": 9.4,
+  "outlinePct": 33.6
+ },
+ "w02:ore-o3": {
+  "fillLab": [
+   73.8,
+   -27.9,
+   -2.2
+  ],
+  "dL_vs_terrain": 10.2,
+  "dE_vs_terrain": 19.2,
+  "outlinePct": 36.7
+ },
+ "w02:ore-o4": {
+  "fillLab": [
+   71.7,
+   -22.4,
+   -8.8
+  ],
+  "dL_vs_terrain": 8.1,
+  "dE_vs_terrain": 11.2,
+  "outlinePct": 43.3
+ },
+ "w02:ore-pairwise-dE": {
+  "o1-o2": 4.6,
+  "o1-o3": 19.7,
+  "o1-o4": 13.2,
+  "o2-o3": 21.3,
+  "o2-o4": 13.6,
+  "o3-o4": 8.8
+ }
+}

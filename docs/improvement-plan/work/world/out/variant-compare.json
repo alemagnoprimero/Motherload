@@ -1,0 +1,538 @@
+{
+ "shipped": {
+  "validity": {
+   "invalidSeeds": 0,
+   "ordinaryValueTenths": {
+    "mean": 190000,
+    "min": 190000,
+    "median": 190000,
+    "p90": 190000,
+    "max": 190000
+   },
+   "relicsPerWorld": {
+    "mean": 0.85,
+    "min": 0,
+    "median": 1,
+    "p90": 2,
+    "max": 2
+   },
+   "floorTenths": 160500
+  },
+  "caves": {
+   "size": {
+    "mean": 9.57,
+    "min": 1,
+    "median": 9,
+    "p90": 14,
+    "max": 33
+   },
+   "largest": {
+    "mean": 18.61,
+    "min": 12,
+    "median": 17,
+    "p90": 26,
+    "max": 33
+   },
+   "atLeast20": {
+    "mean": 0.4,
+    "min": 0,
+    "median": 0,
+    "p90": 1,
+    "max": 3
+   },
+   "rowPhase": [
+    1064,
+    3208,
+    526,
+    88
+   ]
+  },
+  "shaft": {
+   "bandsWithNewContentType": {
+    "mean": 4.18,
+    "min": 4,
+    "median": 4,
+    "p90": 5,
+    "max": 6
+   },
+   "bandsWithNotableEncounter": {
+    "mean": 5.52,
+    "min": 4,
+    "median": 5,
+    "p90": 7,
+    "max": 8
+   },
+   "of": 11,
+   "relicSeenPct": 4.5,
+   "perBand": [
+    {
+     "band": "0-50 m",
+     "newTypes": 4.33,
+     "firsts": {
+      "material:soil": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "ore:O3": "100%",
+      "material:rock": "31%"
+     }
+    },
+    {
+     "band": "50-100 m",
+     "newTypes": 1.01,
+     "firsts": {
+      "landmark:beacon": "100%"
+     }
+    },
+    {
+     "band": "100-150 m",
+     "newTypes": 0.02,
+     "firsts": {}
+    },
+    {
+     "band": "150-200 m",
+     "newTypes": 0.03,
+     "firsts": {}
+    },
+    {
+     "band": "200-250 m",
+     "newTypes": 1.02,
+     "firsts": {
+      "landmark:W01-VALVE": "100%"
+     }
+    },
+    {
+     "band": "250-300 m",
+     "newTypes": 0.05,
+     "firsts": {}
+    },
+    {
+     "band": "300-350 m",
+     "newTypes": 0.03,
+     "firsts": {}
+    },
+    {
+     "band": "350-400 m",
+     "newTypes": 1.02,
+     "firsts": {
+      "landmark:W01-ANTENNA": "100%"
+     }
+    },
+    {
+     "band": "400-450 m",
+     "newTypes": 0.03,
+     "firsts": {}
+    },
+    {
+     "band": "450-500 m",
+     "newTypes": 0.02,
+     "firsts": {}
+    },
+    {
+     "band": "500-550 m",
+     "newTypes": 0.03,
+     "firsts": {}
+    },
+    {
+     "band": "550-600 m",
+     "newTypes": 1.02,
+     "firsts": {
+      "landmark:W01-Q": "100%"
+     }
+    }
+   ]
+  },
+  "comb": {
+   "bandsWithNewContentType": {
+    "mean": 5.61,
+    "min": 5,
+    "median": 6,
+    "p90": 6,
+    "max": 8
+   },
+   "bandsWithNotableEncounter": {
+    "mean": 10.79,
+    "min": 9,
+    "median": 11,
+    "p90": 11,
+    "max": 11
+   },
+   "of": 11,
+   "relicSeenPct": 31.5,
+   "perBand": [
+    {
+     "band": "0-50 m",
+     "newTypes": 5.12,
+     "firsts": {
+      "material:soil": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "ore:O3": "100%",
+      "material:rock": "100%",
+      "ore:O4": "10%"
+     }
+    },
+    {
+     "band": "50-100 m",
+     "newTypes": 1.96,
+     "firsts": {
+      "landmark:beacon": "100%",
+      "cave": "86%"
+     }
+    },
+    {
+     "band": "100-150 m",
+     "newTypes": 0.61,
+     "firsts": {
+      "cave": "14%",
+      "hazard:shelf": "35%"
+     }
+    },
+    {
+     "band": "150-200 m",
+     "newTypes": 0.14,
+     "firsts": {
+      "ore:O4": "11%"
+     }
+    },
+    {
+     "band": "200-250 m",
+     "newTypes": 1.13,
+     "firsts": {
+      "landmark:W01-VALVE": "100%",
+      "ore:O4": "11%"
+     }
+    },
+    {
+     "band": "250-300 m",
+     "newTypes": 0.76,
+     "firsts": {
+      "hazard:shelf": "65%"
+     }
+    },
+    {
+     "band": "300-350 m",
+     "newTypes": 0.09,
+     "firsts": {}
+    },
+    {
+     "band": "350-400 m",
+     "newTypes": 1.07,
+     "firsts": {
+      "landmark:W01-ANTENNA": "100%"
+     }
+    },
+    {
+     "band": "400-450 m",
+     "newTypes": 0.06,
+     "firsts": {}
+    },
+    {
+     "band": "450-500 m",
+     "newTypes": 0.07,
+     "firsts": {}
+    },
+    {
+     "band": "500-550 m",
+     "newTypes": 0.08,
+     "firsts": {}
+    },
+    {
+     "band": "550-600 m",
+     "newTypes": 1.05,
+     "firsts": {
+      "landmark:W01-Q": "100%"
+     }
+    }
+   ]
+  }
+ },
+ "prototype": {
+  "validity": {
+   "invalidSeeds": 0,
+   "ordinaryValueTenths": {
+    "mean": 190000,
+    "min": 190000,
+    "median": 190000,
+    "p90": 190000,
+    "max": 190000
+   },
+   "relicsPerWorld": {
+    "mean": 1,
+    "min": 1,
+    "median": 1,
+    "p90": 1,
+    "max": 1
+   },
+   "floorTenths": 160500
+  },
+  "caves": {
+   "size": {
+    "mean": 14.56,
+    "min": 1,
+    "median": 12,
+    "p90": 35,
+    "max": 86
+   },
+   "largest": {
+    "mean": 43.9,
+    "min": 26,
+    "median": 42,
+    "p90": 50,
+    "max": 86
+   },
+   "atLeast20": {
+    "mean": 2.77,
+    "min": 1,
+    "median": 3,
+    "p90": 4,
+    "max": 5
+   },
+   "rowPhase": [
+    613,
+    569,
+    709,
+    720
+   ]
+  },
+  "shaft": {
+   "bandsWithNewContentType": {
+    "mean": 7.34,
+    "min": 6,
+    "median": 7,
+    "p90": 8,
+    "max": 10
+   },
+   "bandsWithNotableEncounter": {
+    "mean": 8.9,
+    "min": 7,
+    "median": 9,
+    "p90": 10,
+    "max": 11
+   },
+   "of": 11,
+   "relicSeenPct": 71,
+   "perBand": [
+    {
+     "band": "0-50 m",
+     "newTypes": 4.62,
+     "firsts": {
+      "material:soil": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "ore:O3": "100%",
+      "material:rock": "62%"
+     }
+    },
+    {
+     "band": "50-100 m",
+     "newTypes": 1.19,
+     "firsts": {
+      "landmark:beacon": "100%",
+      "material:rock": "19%"
+     }
+    },
+    {
+     "band": "100-150 m",
+     "newTypes": 0.47,
+     "firsts": {
+      "material:rock": "16%",
+      "cave": "25%"
+     }
+    },
+    {
+     "band": "150-200 m",
+     "newTypes": 1.89,
+     "firsts": {
+      "cave": "56%",
+      "setpiece:survey-camp": "63%",
+      "log": "63%"
+     }
+    },
+    {
+     "band": "200-250 m",
+     "newTypes": 1.9,
+     "firsts": {
+      "cave": "19%",
+      "setpiece:survey-camp": "35%",
+      "log": "35%",
+      "landmark:W01-VALVE": "100%"
+     }
+    },
+    {
+     "band": "250-300 m",
+     "newTypes": 1.02,
+     "firsts": {
+      "material:fused-plate": "100%"
+     }
+    },
+    {
+     "band": "300-350 m",
+     "newTypes": 0.01,
+     "firsts": {}
+    },
+    {
+     "band": "350-400 m",
+     "newTypes": 1,
+     "firsts": {
+      "landmark:W01-ANTENNA": "100%"
+     }
+    },
+    {
+     "band": "400-450 m",
+     "newTypes": 0.06,
+     "firsts": {}
+    },
+    {
+     "band": "450-500 m",
+     "newTypes": 0.35,
+     "firsts": {
+      "setpiece:crystal-geode": "18%",
+      "ore:O4": "13%"
+     }
+    },
+    {
+     "band": "500-550 m",
+     "newTypes": 1.89,
+     "firsts": {
+      "setpiece:crystal-geode": "83%",
+      "ore:O4": "60%",
+      "relic": "47%"
+     }
+    },
+    {
+     "band": "550-600 m",
+     "newTypes": 1.41,
+     "firsts": {
+      "relic": "21%",
+      "landmark:W01-Q": "100%",
+      "ore:O4": "21%"
+     }
+    }
+   ]
+  },
+  "comb": {
+   "bandsWithNewContentType": {
+    "mean": 8.39,
+    "min": 6,
+    "median": 8,
+    "p90": 9,
+    "max": 11
+   },
+   "bandsWithNotableEncounter": {
+    "mean": 10.47,
+    "min": 8,
+    "median": 11,
+    "p90": 11,
+    "max": 11
+   },
+   "of": 11,
+   "relicSeenPct": 100,
+   "perBand": [
+    {
+     "band": "0-50 m",
+     "newTypes": 5,
+     "firsts": {
+      "material:soil": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "ore:O3": "100%",
+      "material:rock": "100%"
+     }
+    },
+    {
+     "band": "50-100 m",
+     "newTypes": 1,
+     "firsts": {
+      "landmark:beacon": "100%"
+     }
+    },
+    {
+     "band": "100-150 m",
+     "newTypes": 1.33,
+     "firsts": {
+      "cave": "70%",
+      "hazard:shelf": "28%",
+      "setpiece:survey-camp": "18%",
+      "log": "18%"
+     }
+    },
+    {
+     "band": "150-200 m",
+     "newTypes": 1.67,
+     "firsts": {
+      "setpiece:survey-camp": "59%",
+      "log": "59%",
+      "cave": "26%",
+      "hazard:shelf": "17%"
+     }
+    },
+    {
+     "band": "200-250 m",
+     "newTypes": 1.88,
+     "firsts": {
+      "setpiece:survey-camp": "24%",
+      "log": "24%",
+      "landmark:W01-VALVE": "100%",
+      "setpiece:salvage-pod": "23%",
+      "hazard:shelf": "14%"
+     }
+    },
+    {
+     "band": "250-300 m",
+     "newTypes": 1.07,
+     "firsts": {
+      "material:fused-plate": "100%"
+     }
+    },
+    {
+     "band": "300-350 m",
+     "newTypes": 0.2,
+     "firsts": {
+      "hazard:shelf": "11%"
+     }
+    },
+    {
+     "band": "350-400 m",
+     "newTypes": 1.16,
+     "firsts": {
+      "landmark:W01-ANTENNA": "100%",
+      "hazard:shelf": "11%"
+     }
+    },
+    {
+     "band": "400-450 m",
+     "newTypes": 0.23,
+     "firsts": {
+      "setpiece:collapsed-shaft": "10%"
+     }
+    },
+    {
+     "band": "450-500 m",
+     "newTypes": 1.38,
+     "firsts": {
+      "setpiece:crystal-geode": "39%",
+      "setpiece:collapsed-shaft": "48%",
+      "ore:O4": "28%",
+      "relic": "24%"
+     }
+    },
+    {
+     "band": "500-550 m",
+     "newTypes": 1.88,
+     "firsts": {
+      "setpiece:crystal-geode": "61%",
+      "ore:O4": "51%",
+      "relic": "75%"
+     }
+    },
+    {
+     "band": "550-600 m",
+     "newTypes": 1.01,
+     "firsts": {
+      "landmark:W01-Q": "100%"
+     }
+    }
+   ]
+  }
+ }
+}

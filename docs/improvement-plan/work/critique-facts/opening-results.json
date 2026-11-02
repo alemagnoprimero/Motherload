@@ -1,0 +1,86 @@
+[
+ {
+  "seed": 10,
+  "startEnergy": 6,
+  "impact": false,
+  "hullAfterTrip1": 10,
+  "energyAtDock1": 2.5,
+  "creditsAfterSale1": 400,
+  "creditsAfterM1": 200,
+  "creditsAfterService1": 192.5,
+  "creditsAfterSale2": 672.5,
+  "energyAtDock2": 7.24,
+  "affordableLeftCR": {
+   "energy": 22.5,
+   "drill": false,
+   "cargo": false,
+   "engine": 172.5,
+   "hull": 222.5
+  },
+  "afterService2": 669.7,
+  "tankAfterService": 19.7
+ },
+ {
+  "seed": 10,
+  "startEnergy": 6,
+  "impact": true,
+  "hullAfterTrip1": 7,
+  "energyAtDock1": 2.37,
+  "creditsAfterSale1": 400,
+  "creditsAfterM1": 200,
+  "creditsAfterService1": 147.3,
+  "creditsAfterSale2": 627.3,
+  "energyAtDock2": 7.24,
+  "affordableLeftCR": {
+   "energy": false,
+   "drill": false,
+   "cargo": false,
+   "engine": 127.3,
+   "hull": 177.3
+  },
+  "afterService2": 624.5,
+  "tankAfterService": false
+ },
+ {
+  "seed": 10,
+  "startEnergy": 10,
+  "impact": false,
+  "hullAfterTrip1": 10,
+  "energyAtDock1": 6.5,
+  "creditsAfterSale1": 400,
+  "creditsAfterM1": 200,
+  "creditsAfterService1": 196.5,
+  "creditsAfterSale2": 676.5,
+  "energyAtDock2": 7.24,
+  "affordableLeftCR": {
+   "energy": 26.5,
+   "drill": false,
+   "cargo": false,
+   "engine": 176.5,
+   "hull": 226.5
+  },
+  "afterService2": 673.7,
+  "tankAfterService": 23.7
+ },
+ {
+  "seed": 10,
+  "startEnergy": 10,
+  "impact": true,
+  "hullAfterTrip1": 7,
+  "energyAtDock1": 6.37,
+  "creditsAfterSale1": 400,
+  "creditsAfterM1": 200,
+  "creditsAfterService1": 151.3,
+  "creditsAfterSale2": 631.3,
+  "energyAtDock2": 7.24,
+  "affordableLeftCR": {
+   "energy": false,
+   "drill": false,
+   "cargo": false,
+   "engine": 131.3,
+   "hull": 181.3
+  },
+  "afterService2": 628.5,
+  "tankAfterService": false
+ }
+]

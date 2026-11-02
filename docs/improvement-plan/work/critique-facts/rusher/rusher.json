@@ -1,0 +1,1642 @@
+[
+ {
+  "seed": 0,
+  "plan": "(none)",
+  "activeSeconds": 165.1,
+  "withDockOverheadSeconds": 265.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 171.6,
+  "income": 1190,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198.1,
+    "what": "M2",
+    "credits": 600.2
+   },
+   {
+    "t": 265.1,
+    "what": "M3",
+    "credits": 180.7
+   },
+   {
+    "t": 265.1,
+    "what": "departed",
+    "credits": 171.6
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.5,
+    "haul": 120,
+    "energyLeft": 0.5,
+    "depth": 320,
+    "credits": 780.2
+   },
+   {
+    "label": "energy",
+    "t": 198.1,
+    "haul": 120,
+    "energyLeft": 0.59,
+    "depth": 470,
+    "credits": 590.7
+   },
+   {
+    "label": "core",
+    "t": 265.1,
+    "haul": 90,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 171.6
+   }
+  ]
+ },
+ {
+  "seed": 0,
+  "plan": "energy,drill",
+  "activeSeconds": 165.1,
+  "withDockOverheadSeconds": 265.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 171.6,
+  "income": 1190,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198.1,
+    "what": "M2",
+    "credits": 600.2
+   },
+   {
+    "t": 265.1,
+    "what": "M3",
+    "credits": 180.7
+   },
+   {
+    "t": 265.1,
+    "what": "departed",
+    "credits": 171.6
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.5,
+    "haul": 120,
+    "energyLeft": 0.5,
+    "depth": 320,
+    "credits": 780.2
+   },
+   {
+    "label": "energy",
+    "t": 198.1,
+    "haul": 120,
+    "energyLeft": 0.59,
+    "depth": 470,
+    "credits": 590.7
+   },
+   {
+    "label": "core",
+    "t": 265.1,
+    "haul": 90,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 171.6
+   }
+  ]
+ },
+ {
+  "seed": 1,
+  "plan": "(none)",
+  "activeSeconds": 165,
+  "withDockOverheadSeconds": 265,
+  "trips": 5,
+  "docks": 5,
+  "credits": 551.5,
+  "income": 1570,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 1040.1
+   },
+   {
+    "t": 265,
+    "what": "M3",
+    "credits": 560.6
+   },
+   {
+    "t": 265,
+    "what": "departed",
+    "credits": 551.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 490,
+    "energyLeft": 0.45,
+    "depth": 320,
+    "credits": 1150.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 190,
+    "energyLeft": 0.55,
+    "depth": 470,
+    "credits": 1030.6
+   },
+   {
+    "label": "core",
+    "t": 265,
+    "haul": 30,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 551.5
+   }
+  ]
+ },
+ {
+  "seed": 1,
+  "plan": "energy,drill",
+  "activeSeconds": 165,
+  "withDockOverheadSeconds": 265,
+  "trips": 5,
+  "docks": 5,
+  "credits": 551.5,
+  "income": 1570,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 1040.1
+   },
+   {
+    "t": 265,
+    "what": "M3",
+    "credits": 560.6
+   },
+   {
+    "t": 265,
+    "what": "departed",
+    "credits": 551.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 490,
+    "energyLeft": 0.45,
+    "depth": 320,
+    "credits": 1150.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 190,
+    "energyLeft": 0.55,
+    "depth": 470,
+    "credits": 1030.6
+   },
+   {
+    "label": "core",
+    "t": 265,
+    "haul": 30,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 551.5
+   }
+  ]
+ },
+ {
+  "seed": 2,
+  "plan": "(none)",
+  "activeSeconds": 165.1,
+  "withDockOverheadSeconds": 265.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 301.5,
+  "income": 1320,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 790.1
+   },
+   {
+    "t": 265.1,
+    "what": "M3",
+    "credits": 310.6
+   },
+   {
+    "t": 265.1,
+    "what": "departed",
+    "credits": 301.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 240,
+    "energyLeft": 0.46,
+    "depth": 320,
+    "credits": 900.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 190,
+    "energyLeft": 0.54,
+    "depth": 470,
+    "credits": 780.6
+   },
+   {
+    "label": "core",
+    "t": 265.1,
+    "haul": 30,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 301.5
+   }
+  ]
+ },
+ {
+  "seed": 2,
+  "plan": "energy,drill",
+  "activeSeconds": 165.1,
+  "withDockOverheadSeconds": 265.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 301.5,
+  "income": 1320,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 790.1
+   },
+   {
+    "t": 265.1,
+    "what": "M3",
+    "credits": 310.6
+   },
+   {
+    "t": 265.1,
+    "what": "departed",
+    "credits": 301.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 240,
+    "energyLeft": 0.46,
+    "depth": 320,
+    "credits": 900.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 190,
+    "energyLeft": 0.54,
+    "depth": 470,
+    "credits": 780.6
+   },
+   {
+    "label": "core",
+    "t": 265.1,
+    "haul": 30,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 301.5
+   }
+  ]
+ },
+ {
+  "seed": 3,
+  "plan": "(none)",
+  "activeSeconds": 164.4,
+  "withDockOverheadSeconds": 264.4,
+  "trips": 5,
+  "docks": 5,
+  "credits": 271.5,
+  "income": 1290,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 197.9,
+    "what": "M2",
+    "credits": 600.1
+   },
+   {
+    "t": 264.4,
+    "what": "M3",
+    "credits": 280.7
+   },
+   {
+    "t": 264.4,
+    "what": "departed",
+    "credits": 271.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.4,
+    "haul": 210,
+    "energyLeft": 0.47,
+    "depth": 320,
+    "credits": 870.1
+   },
+   {
+    "label": "energy",
+    "t": 197.9,
+    "haul": 30,
+    "energyLeft": 0.6,
+    "depth": 470,
+    "credits": 590.7
+   },
+   {
+    "label": "core",
+    "t": 264.4,
+    "haul": 190,
+    "energyLeft": 0.88,
+    "depth": 600,
+    "credits": 271.5
+   }
+  ]
+ },
+ {
+  "seed": 3,
+  "plan": "energy,drill",
+  "activeSeconds": 164.4,
+  "withDockOverheadSeconds": 264.4,
+  "trips": 5,
+  "docks": 5,
+  "credits": 271.5,
+  "income": 1290,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 197.9,
+    "what": "M2",
+    "credits": 600.1
+   },
+   {
+    "t": 264.4,
+    "what": "M3",
+    "credits": 280.7
+   },
+   {
+    "t": 264.4,
+    "what": "departed",
+    "credits": 271.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.4,
+    "haul": 210,
+    "energyLeft": 0.47,
+    "depth": 320,
+    "credits": 870.1
+   },
+   {
+    "label": "energy",
+    "t": 197.9,
+    "haul": 30,
+    "energyLeft": 0.6,
+    "depth": 470,
+    "credits": 590.7
+   },
+   {
+    "label": "core",
+    "t": 264.4,
+    "haul": 190,
+    "energyLeft": 0.88,
+    "depth": 600,
+    "credits": 271.5
+   }
+  ]
+ },
+ {
+  "seed": 4,
+  "plan": "(none)",
+  "activeSeconds": 165.1,
+  "withDockOverheadSeconds": 265.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 511.7,
+  "income": 1530,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198.1,
+    "what": "M2",
+    "credits": 820.2
+   },
+   {
+    "t": 265.1,
+    "what": "M3",
+    "credits": 520.8
+   },
+   {
+    "t": 265.1,
+    "what": "departed",
+    "credits": 511.7
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.5,
+    "haul": 120,
+    "energyLeft": 0.5,
+    "depth": 320,
+    "credits": 780.2
+   },
+   {
+    "label": "energy",
+    "t": 198.1,
+    "haul": 340,
+    "energyLeft": 0.62,
+    "depth": 470,
+    "credits": 810.8
+   },
+   {
+    "label": "core",
+    "t": 265.1,
+    "haul": 210,
+    "energyLeft": 0.98,
+    "depth": 600,
+    "credits": 511.7
+   }
+  ]
+ },
+ {
+  "seed": 4,
+  "plan": "energy,drill",
+  "activeSeconds": 165.1,
+  "withDockOverheadSeconds": 265.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 511.7,
+  "income": 1530,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198.1,
+    "what": "M2",
+    "credits": 820.2
+   },
+   {
+    "t": 265.1,
+    "what": "M3",
+    "credits": 520.8
+   },
+   {
+    "t": 265.1,
+    "what": "departed",
+    "credits": 511.7
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.5,
+    "haul": 120,
+    "energyLeft": 0.5,
+    "depth": 320,
+    "credits": 780.2
+   },
+   {
+    "label": "energy",
+    "t": 198.1,
+    "haul": 340,
+    "energyLeft": 0.62,
+    "depth": 470,
+    "credits": 810.8
+   },
+   {
+    "label": "core",
+    "t": 265.1,
+    "haul": 210,
+    "energyLeft": 0.98,
+    "depth": 600,
+    "credits": 511.7
+   }
+  ]
+ },
+ {
+  "seed": 5,
+  "plan": "(none)",
+  "activeSeconds": 165,
+  "withDockOverheadSeconds": 265,
+  "trips": 5,
+  "docks": 5,
+  "credits": 341.7,
+  "income": 1360,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198.2,
+    "what": "M2",
+    "credits": 860.2
+   },
+   {
+    "t": 265,
+    "what": "M3",
+    "credits": 350.8
+   },
+   {
+    "t": 265,
+    "what": "departed",
+    "credits": 341.7
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.5,
+    "haul": 250,
+    "energyLeft": 0.5,
+    "depth": 320,
+    "credits": 910.2
+   },
+   {
+    "label": "energy",
+    "t": 198.2,
+    "haul": 250,
+    "energyLeft": 0.62,
+    "depth": 470,
+    "credits": 850.8
+   },
+   {
+    "label": "core",
+    "t": 265,
+    "haul": 0,
+    "energyLeft": 0.96,
+    "depth": 600,
+    "credits": 341.7
+   }
+  ]
+ },
+ {
+  "seed": 5,
+  "plan": "energy,drill",
+  "activeSeconds": 165,
+  "withDockOverheadSeconds": 265,
+  "trips": 5,
+  "docks": 5,
+  "credits": 341.7,
+  "income": 1360,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198.2,
+    "what": "M2",
+    "credits": 860.2
+   },
+   {
+    "t": 265,
+    "what": "M3",
+    "credits": 350.8
+   },
+   {
+    "t": 265,
+    "what": "departed",
+    "credits": 341.7
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.5,
+    "haul": 250,
+    "energyLeft": 0.5,
+    "depth": 320,
+    "credits": 910.2
+   },
+   {
+    "label": "energy",
+    "t": 198.2,
+    "haul": 250,
+    "energyLeft": 0.62,
+    "depth": 470,
+    "credits": 850.8
+   },
+   {
+    "label": "core",
+    "t": 265,
+    "haul": 0,
+    "energyLeft": 0.96,
+    "depth": 600,
+    "credits": 341.7
+   }
+  ]
+ },
+ {
+  "seed": 6,
+  "plan": "(none)",
+  "activeSeconds": 164.1,
+  "withDockOverheadSeconds": 264.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 491.5,
+  "income": 1510,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 950.1
+   },
+   {
+    "t": 264.1,
+    "what": "M3",
+    "credits": 500.6
+   },
+   {
+    "t": 264.1,
+    "what": "departed",
+    "credits": 491.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 410,
+    "energyLeft": 0.46,
+    "depth": 320,
+    "credits": 1070.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 180,
+    "energyLeft": 0.56,
+    "depth": 470,
+    "credits": 940.6
+   },
+   {
+    "label": "core",
+    "t": 264.1,
+    "haul": 60,
+    "energyLeft": 0.92,
+    "depth": 600,
+    "credits": 491.5
+   }
+  ]
+ },
+ {
+  "seed": 6,
+  "plan": "energy,drill",
+  "activeSeconds": 164.1,
+  "withDockOverheadSeconds": 264.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 491.5,
+  "income": 1510,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 950.1
+   },
+   {
+    "t": 264.1,
+    "what": "M3",
+    "credits": 500.6
+   },
+   {
+    "t": 264.1,
+    "what": "departed",
+    "credits": 491.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 410,
+    "energyLeft": 0.46,
+    "depth": 320,
+    "credits": 1070.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 180,
+    "energyLeft": 0.56,
+    "depth": 470,
+    "credits": 940.6
+   },
+   {
+    "label": "core",
+    "t": 264.1,
+    "haul": 60,
+    "energyLeft": 0.92,
+    "depth": 600,
+    "credits": 491.5
+   }
+  ]
+ },
+ {
+  "seed": 7,
+  "plan": "(none)",
+  "activeSeconds": 164.4,
+  "withDockOverheadSeconds": 264.4,
+  "trips": 5,
+  "docks": 5,
+  "credits": 201.5,
+  "income": 1220,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 197.9,
+    "what": "M2",
+    "credits": 630.1
+   },
+   {
+    "t": 264.4,
+    "what": "M3",
+    "credits": 210.6
+   },
+   {
+    "t": 264.4,
+    "what": "departed",
+    "credits": 201.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.4,
+    "haul": 210,
+    "energyLeft": 0.44,
+    "depth": 320,
+    "credits": 870.1
+   },
+   {
+    "label": "energy",
+    "t": 197.9,
+    "haul": 60,
+    "energyLeft": 0.6,
+    "depth": 470,
+    "credits": 620.6
+   },
+   {
+    "label": "core",
+    "t": 264.4,
+    "haul": 90,
+    "energyLeft": 0.91,
+    "depth": 600,
+    "credits": 201.5
+   }
+  ]
+ },
+ {
+  "seed": 7,
+  "plan": "energy,drill",
+  "activeSeconds": 164.4,
+  "withDockOverheadSeconds": 264.4,
+  "trips": 5,
+  "docks": 5,
+  "credits": 201.5,
+  "income": 1220,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 197.9,
+    "what": "M2",
+    "credits": 630.1
+   },
+   {
+    "t": 264.4,
+    "what": "M3",
+    "credits": 210.6
+   },
+   {
+    "t": 264.4,
+    "what": "departed",
+    "credits": 201.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.4,
+    "haul": 210,
+    "energyLeft": 0.44,
+    "depth": 320,
+    "credits": 870.1
+   },
+   {
+    "label": "energy",
+    "t": 197.9,
+    "haul": 60,
+    "energyLeft": 0.6,
+    "depth": 470,
+    "credits": 620.6
+   },
+   {
+    "label": "core",
+    "t": 264.4,
+    "haul": 90,
+    "energyLeft": 0.91,
+    "depth": 600,
+    "credits": 201.5
+   }
+  ]
+ },
+ {
+  "seed": 8,
+  "plan": "(none)",
+  "activeSeconds": 165,
+  "withDockOverheadSeconds": 265,
+  "trips": 5,
+  "docks": 5,
+  "credits": 261.6,
+  "income": 1280,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 600.1
+   },
+   {
+    "t": 265,
+    "what": "M3",
+    "credits": 270.7
+   },
+   {
+    "t": 265,
+    "what": "departed",
+    "credits": 261.6
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.4,
+    "haul": 180,
+    "energyLeft": 0.45,
+    "depth": 320,
+    "credits": 840.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 60,
+    "energyLeft": 0.61,
+    "depth": 470,
+    "credits": 590.7
+   },
+   {
+    "label": "core",
+    "t": 265,
+    "haul": 180,
+    "energyLeft": 0.95,
+    "depth": 600,
+    "credits": 261.6
+   }
+  ]
+ },
+ {
+  "seed": 8,
+  "plan": "energy,drill",
+  "activeSeconds": 165,
+  "withDockOverheadSeconds": 265,
+  "trips": 5,
+  "docks": 5,
+  "credits": 261.6,
+  "income": 1280,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 198,
+    "what": "M2",
+    "credits": 600.1
+   },
+   {
+    "t": 265,
+    "what": "M3",
+    "credits": 270.7
+   },
+   {
+    "t": 265,
+    "what": "departed",
+    "credits": 261.6
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.4,
+    "haul": 180,
+    "energyLeft": 0.45,
+    "depth": 320,
+    "credits": 840.1
+   },
+   {
+    "label": "energy",
+    "t": 198,
+    "haul": 60,
+    "energyLeft": 0.61,
+    "depth": 470,
+    "credits": 590.7
+   },
+   {
+    "label": "core",
+    "t": 265,
+    "haul": 180,
+    "energyLeft": 0.95,
+    "depth": 600,
+    "credits": 261.6
+   }
+  ]
+ },
+ {
+  "seed": 9,
+  "plan": "(none)",
+  "activeSeconds": 163.1,
+  "withDockOverheadSeconds": 263.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 111.5,
+  "income": 1130,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 196.9,
+    "what": "M2",
+    "credits": 600.1
+   },
+   {
+    "t": 263.1,
+    "what": "M3",
+    "credits": 120.6
+   },
+   {
+    "t": 263.1,
+    "what": "departed",
+    "credits": 111.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 120,
+    "energyLeft": 0.49,
+    "depth": 320,
+    "credits": 780.1
+   },
+   {
+    "label": "energy",
+    "t": 196.9,
+    "haul": 120,
+    "energyLeft": 0.55,
+    "depth": 470,
+    "credits": 590.6
+   },
+   {
+    "label": "core",
+    "t": 263.1,
+    "haul": 30,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 111.5
+   }
+  ]
+ },
+ {
+  "seed": 9,
+  "plan": "energy,drill",
+  "activeSeconds": 163.1,
+  "withDockOverheadSeconds": 263.1,
+  "trips": 5,
+  "docks": 5,
+  "credits": 111.5,
+  "income": 1130,
+  "hardware": {
+   "drill": 0,
+   "energy": 0,
+   "cargo": 0,
+   "hull": 0,
+   "engine": 0
+  },
+  "recoveries": 0,
+  "events": [
+   {
+    "t": 35.4,
+    "what": "M1",
+    "credits": 200
+   },
+   {
+    "t": 196.9,
+    "what": "M2",
+    "credits": 600.1
+   },
+   {
+    "t": 263.1,
+    "what": "M3",
+    "credits": 120.6
+   },
+   {
+    "t": 263.1,
+    "what": "departed",
+    "credits": 111.5
+   }
+  ],
+  "tripLog": [
+   {
+    "label": "beacon",
+    "t": 35.4,
+    "haul": 380,
+    "energyLeft": 2.52,
+    "depth": 100,
+    "credits": 192.5
+   },
+   {
+    "label": "seam21",
+    "t": 71.5,
+    "haul": 480,
+    "energyLeft": 7.2,
+    "depth": 100,
+    "credits": 669.7
+   },
+   {
+    "label": "energy",
+    "t": 132.3,
+    "haul": 120,
+    "energyLeft": 0.49,
+    "depth": 320,
+    "credits": 780.1
+   },
+   {
+    "label": "energy",
+    "t": 196.9,
+    "haul": 120,
+    "energyLeft": 0.55,
+    "depth": 470,
+    "credits": 590.6
+   },
+   {
+    "label": "core",
+    "t": 263.1,
+    "haul": 30,
+    "energyLeft": 0.9,
+    "depth": 600,
+    "credits": 111.5
+   }
+  ]
+ }
+]

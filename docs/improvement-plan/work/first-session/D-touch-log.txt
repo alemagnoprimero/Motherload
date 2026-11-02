@@ -1,0 +1,81 @@
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   0.50s  SHOT D-touch-000.5s-first-frame.png
+   0.50s  rig screen (196.5,458.86)
+   0.80s  callout: "Ironium · 30 CR · 1 bulk" (tap ore-below)
+   0.80s  tap ore-below at (197,494) -> overlay= callout="Ironium · 30 CR · 1 bulk"
+   0.80s  SHOT D-touch-000.8s-tap-ore.png
+   1.05s  callout: "" (stick down)
+   1.80s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (stick down)
+   1.80s  signal: "↓downWreck survey beacon89 mTracking" (stick down)
+   2.80s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (stick down)
+   2.80s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (stick down)
+   2.80s  signal: "↓downWreck survey beacon79 mSignal nearby" (stick down)
+   3.55s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (stick down)
+   3.55s  signal: "↓downWreck survey beacon69 mSignal nearby" (stick down)
+   4.55s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (stick down)
+   4.55s  signal: "↓downWreck survey beacon59 mSignal nearby" (stick down)
+   5.55s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR" (stick down)
+   5.55s  signal: "↓downWreck survey beacon49 mSignal nearby" (stick down)
+   6.55s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR" (stick down)
+   6.55s  signal: "↓downWreck survey beacon39 mSignal nearby" (stick down)
+   6.80s  message: "" (stick down)
+   7.55s  message: "Wreck survey beacon · Very close. Approach the wreck beacon to survey." (stick down)
+   7.55s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (stick down)
+   7.55s  signal: "↓downWreck survey beacon29 mVery close" (stick down)
+   8.55s  signal: "↓downWreck survey beacon19 mVery close" (stick down)
+   9.55s  message: "Beacon surveyed · Return to the lander" (stick down)
+   9.55s  tasks: "✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (stick down)
+   9.55s  next: "Return to lander → Bank ore" (stick down)
+   9.55s  signal: "↖up and leftSalvage lander175 mTracking" (stick down)
+   9.55s  stick down (0,45) joystick={"vis":"true","cx":"196.00","cy":"680.00","kx":"196.00","ky":"712.00","dirs":"down"}
+   9.55s  MARK beacon-touch
+   9.55s  SHOT D-touch-009.6s-touch-drilling.png
+  10.55s  signal: "↖up and leftSalvage lander178 mTracking" (stick up)
+  10.80s  signal: "↖up and leftSalvage lander173 mTracking" (stick up)
+  11.05s  signal: "↖up and leftSalvage lander165 mTracking" (stick up)
+  11.30s  signal: "←leftSalvage lander160 mTracking" (stick up)
+  11.55s  signal: "←leftSalvage lander155 mTracking" (stick up)
+  11.80s  signal: "←leftSalvage lander152 mTracking" (stick up)
+  12.05s  signal: "←leftSalvage lander150 mTracking" (stick up)
+  12.30s  stick up (0,-45) joystick={"vis":"true","cx":"196.00","cy":"680.00","kx":"196.00","ky":"648.00","dirs":"up"}
+  12.30s  SHOT D-touch-012.3s-touch-out-of-shaft.png
+  12.55s  signal: "←leftSalvage lander147 mTracking" (stick up-left)
+  12.80s  signal: "←leftSalvage lander140 mTracking" (stick up-left)
+  13.05s  signal: "↙down and leftSalvage lander131 mTracking" (stick up-left)
+  13.30s  danger: "Low energy · return to the lander" (stick up-left)
+  13.30s  signal: "↙down and leftSalvage lander122 mTracking" (stick up-left)
+  13.55s  message: "" (stick up-left)
+  13.55s  signal: "↙down and leftSalvage lander108 mTracking" (stick up-left)
+  13.80s  signal: "↙down and leftSalvage lander100 mTracking" (stick up-left)
+  13.80s  stick up-left (-40,-25) joystick={"vis":"true","cx":"196.00","cy":"680.00","kx":"168.86","ky":"663.04","dirs":"left,up"}
+  13.80s  SHOT D-touch-013.8s-touch-flying.png
+  14.05s  signal: "↙down and leftSalvage lander86 mTracking" (stick left)
+  14.30s  signal: "↙down and leftSalvage lander76 mSignal nearby" (stick left)
+  14.55s  signal: "↙down and leftSalvage lander58 mSignal nearby" (stick left)
+  14.80s  signal: "↙down and leftSalvage lander46 mSignal nearby" (stick left)
+  15.05s  signal: "↙down and leftSalvage lander25 mVery close" (stick left)
+  15.05s  stick left (-45,0) joystick={"vis":"true","cx":"196.00","cy":"680.00","kx":"164.00","ky":"680.00","dirs":"left"}
+  15.30s  signal: "↙down and leftSalvage lander12 mVery close" (stick neutral)
+  15.55s  signal: "◉At your positionSalvage lander2 mDock available" (stick neutral)
+  15.55s  dockPrompt: true (stick neutral)
+  15.80s  signal: "◉At your positionSalvage lander1 mDock available" (stick neutral)
+  15.80s  stick neutral (0,0) joystick={"vis":"true","cx":"196.00","cy":"680.00","kx":"196.00","ky":"680.00","dirs":""}
+  15.85s  signal: "◉At your positionSalvage lander2 mDock available" (lift)
+  16.10s  signal: "◉At your positionSalvage lander3 mDock available" (idle)
+  16.35s  signal: "◉At your positionSalvage lander4 mDock available" (idle)
+  16.35s  dock prompt=true · E 2.2 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20
+  16.35s  SHOT D-touch-016.4s-touch-at-lander.png
+  16.65s  dockPrompt: false (tap lander)
+  16.65s  overlay: "dock" (tap lander)
+  16.65s  tap lander at (196,419) -> overlay=dock callout=""
+  16.65s  MARK touch-docked
+  16.65s  SHOT D-touch-016.7s-touch-dock-service.png
+  16.65s  SHOT D-touch-016.7s-touch-dock-sold.png
+  16.65s  Dock message: Sold stored cargo for 380 CR.
+  16.65s  SHOT D-touch-016.7s-touch-dock-lander.png
+
+MARKS {"beacon-touch":9.55,"touch-docked":16.65}
+ERRORS ["console: Failed to load resource: the server responded with a status of 404 (Not Found)"]

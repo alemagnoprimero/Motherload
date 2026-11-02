@@ -1,0 +1,56 @@
+[
+ {
+  "scene": "desktop-deep",
+  "alpha": 0.85,
+  "min_cr90": 7.8,
+  "median_cr90": 10.69,
+  "below45": 0,
+  "below7": 0,
+  "n": 26
+ },
+ {
+  "scene": "portrait-deep",
+  "alpha": 0.85,
+  "min_cr90": 7.72,
+  "median_cr90": 10.71,
+  "below45": 0,
+  "below7": 0,
+  "n": 26
+ },
+ {
+  "scene": "desktop-w02-shaft",
+  "alpha": 0.85,
+  "min_cr90": 7.27,
+  "median_cr90": 10.17,
+  "below45": 0,
+  "below7": 0,
+  "n": 24
+ },
+ {
+  "scene": "portrait-w02-shaft",
+  "alpha": 0.85,
+  "min_cr90": 7.25,
+  "median_cr90": 10.14,
+  "below45": 0,
+  "below7": 0,
+  "n": 24
+ },
+ {
+  "scene": "desktop-w02-surface",
+  "alpha": 0.85,
+  "min_cr90": 8.18,
+  "median_cr90": 11.49,
+  "below45": 0,
+  "below7": 0,
+  "n": 25
+ },
+ {
+  "scene": "portrait-w02-surface",
+  "alpha": 0.85,
+  "min_cr90": 6.88,
+  "median_cr90": 11.48,
+  "below45": 0,
+  "below7": 1,
+  "n": 25
+ }
+]

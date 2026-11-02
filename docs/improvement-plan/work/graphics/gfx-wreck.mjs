@@ -1,0 +1,31 @@
+import { readFile } from "node:fs/promises";
+import { chromium } from "/home/user/Motherload/node_modules/playwright-core/index.mjs";
+import { advance, click, freeze, importCheckpoint } from "/home/user/Motherload/scripts/campaign-smoke.mjs";
+const OUT = process.argv[2];
+const SHOTS = "/home/user/Motherload/docs/improvement-plan/shots/";
+const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--no-sandbox", "--disable-dev-shm-usage", "--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"] });
+const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+const page = await context.newPage();
+await page.goto("http://127.0.0.1:5173/?mode=campaign");
+await page.waitForFunction(() => document.querySelector("#campaign-game")?.dataset.campaignArt === "ready", null, { timeout: 30000 });
+await delay(400);
+if (await page.locator("#campaign-start").isVisible()) await click(page, "#campaign-start");
+await delay(300);
+await freeze(page);
+const base = JSON.parse(await readFile(SHOTS + "checkpoint-native.json", "utf8"));
+const s = base.state, w = s.worlds.W01;
+const bx = Number(process.argv[3] || 20), by = 9; // beacon at spawnX, row 9
+const missions = new Set(w.missions.map((m) => Math.floor(m.y) * w.width + Math.floor(m.x)));
+const carve = new Set();
+for (let y = by - 3; y <= by - 1; y++) for (let x = bx - 3; x <= bx - 1; x++) { const i = y * w.width + x; if (!missions.has(i)) { w.tiles[i] = 0; carve.add(i); } }
+w.packages = w.packages.filter((p) => !(p.status === "deposit" && carve.has(Math.floor(p.y) * w.width + Math.floor(p.x))));
+for (let y = by - 6; y <= by + 4; y++) for (let x = bx - 6; x <= bx + 6; x++) w.discovered[y * w.width + ((x % w.width) + w.width) % w.width] = 1;
+s.vehicle.x = bx - 1.5; s.vehicle.y = by - 0.36; s.vehicle.energy = 10;
+await importCheckpoint(page, base);
+if ((await page.evaluate(() => document.body.dataset.campaignOverlay)) === "menu") await click(page, "#campaign-resume");
+await advance(page, 700);
+await page.screenshot({ path: `${OUT}/g11-w01-wreck-beacon.png` });
+await context.close();
+await browser.close();
+console.log("ok");

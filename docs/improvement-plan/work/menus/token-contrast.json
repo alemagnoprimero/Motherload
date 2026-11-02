@@ -1,0 +1,72 @@
+{
+ "text-1": {
+  "surface-1": 15.36,
+  "surface-2": 13.6,
+  "surface-3": 11.34,
+  "surface-4": 9.17
+ },
+ "text-2": {
+  "surface-1": 10.72,
+  "surface-2": 9.49,
+  "surface-3": 7.92,
+  "surface-4": 6.4
+ },
+ "text-3": {
+  "surface-1": 7.31,
+  "surface-2": 6.47,
+  "surface-3": 5.4,
+  "surface-4": 4.36
+ },
+ "credit": {
+  "surface-1": 10.65,
+  "surface-2": 9.43,
+  "surface-3": 7.86,
+  "surface-4": 6.36
+ },
+ "energy": {
+  "surface-1": 10.48,
+  "surface-2": 9.28,
+  "surface-3": 7.74,
+  "surface-4": 6.25
+ },
+ "hull": {
+  "surface-1": 8.18,
+  "surface-2": 7.24,
+  "surface-3": 6.04,
+  "surface-4": 4.88
+ },
+ "ok": {
+  "surface-1": 11.07,
+  "surface-2": 9.8,
+  "surface-3": 8.18,
+  "surface-4": 6.61
+ },
+ "caution": {
+  "surface-1": 10.96,
+  "surface-2": 9.71,
+  "surface-3": 8.1,
+  "surface-4": 6.54
+ },
+ "danger-ink": {
+  "surface-1": 10.01,
+  "surface-2": 8.86,
+  "surface-3": 7.39,
+  "surface-4": 5.98
+ },
+ "locked": {
+  "surface-1": 4.64,
+  "surface-2": 4.11,
+  "surface-3": 3.43,
+  "surface-4": 2.77
+ },
+ "accent-hi": {
+  "surface-1": 11.99,
+  "surface-2": 10.61,
+  "surface-3": 8.85,
+  "surface-4": 7.15
+ },
+ "accent-ink on accent": 10.14,
+ "accent-ink on accent-hi": 12.79,
+ "line-strong vs surface-1 (button edge)": 3.46,
+ "line-strong vs surface-3": 2.55
+}

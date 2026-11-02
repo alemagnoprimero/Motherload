@@ -1,0 +1,203 @@
+{
+ "name": "A2-warn-portrait",
+ "viewport": {
+  "width": 393,
+  "height": 851
+ },
+ "marks": {},
+ "errors": [],
+ "log": [
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 1,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 1,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 2,
+   "text": "message: \"Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey.\" (ArrowDown)"
+  },
+  {
+   "t": 2,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 2,
+   "text": "signal: \"↓downWreck survey beacon79 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 2.75,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 2.75,
+   "text": "signal: \"↓downWreck survey beacon69 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 3.75,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 3.75,
+   "text": "signal: \"↓downWreck survey beacon59 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 4.75,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 4.75,
+   "text": "signal: \"↓downWreck survey beacon49 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 5.75,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 5.75,
+   "text": "signal: \"↓downWreck survey beacon39 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 6,
+   "text": "message: \"\" (ArrowDown)"
+  },
+  {
+   "t": 6.75,
+   "text": "message: \"Wreck survey beacon · Very close. Approach the wreck beacon to survey.\" (ArrowDown)"
+  },
+  {
+   "t": 6.75,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 6.75,
+   "text": "signal: \"↓downWreck survey beacon29 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 7.75,
+   "text": "signal: \"↓downWreck survey beacon19 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 8.75,
+   "text": "message: \"Beacon surveyed · Return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 8.75,
+   "text": "tasks: \"✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 8.75,
+   "text": "next: \"Return to lander → Bank ore\" (ArrowDown)"
+  },
+  {
+   "t": 8.75,
+   "text": "signal: \"↖up and leftSalvage lander175 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 9.75,
+   "text": "signal: \"↖up and leftSalvage lander180 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 10.75,
+   "text": "signal: \"↖up and leftSalvage lander186 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 11.25,
+   "text": "SHOT A2-warn-portrait-011.3s-energy-25pct.png"
+  },
+  {
+   "t": 11.25,
+   "text": "25%: danger= message=Beacon surveyed · Return to the lander depth=110 m"
+  },
+  {
+   "t": 11.5,
+   "text": "danger: \"Low energy · return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 11.75,
+   "text": "signal: \"↖up and leftSalvage lander192 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 12.75,
+   "text": "message: \"\" (ArrowDown)"
+  },
+  {
+   "t": 12.75,
+   "text": "signal: \"↖up and leftSalvage lander198 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 13.75,
+   "text": "signal: \"↖up and leftSalvage lander205 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 14.5,
+   "text": "SHOT A2-warn-portrait-014.5s-energy-15pct.png"
+  },
+  {
+   "t": 14.5,
+   "text": "15%: danger=Low energy · return to the lander message= depth=140 m"
+  },
+  {
+   "t": 14.75,
+   "text": "danger: \"Energy critical · return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 14.75,
+   "text": "signal: \"↖up and leftSalvage lander212 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 16,
+   "text": "signal: \"↖up and leftSalvage lander219 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 16.75,
+   "text": "SHOT A2-warn-portrait-016.8s-energy-8pct.png"
+  },
+  {
+   "t": 16.75,
+   "text": "8%: danger=Energy critical · return to the lander message= depth=160 m"
+  },
+  {
+   "t": 17,
+   "text": "signal: \"↖up and leftSalvage lander227 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 18.25,
+   "text": "signal: \"↖up and leftSalvage lander234 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 19.25,
+   "text": "signal: \"↖up and leftSalvage lander242 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 19.5,
+   "text": "danger: \"Energy depleted · request recovery\" (ArrowDown)"
+  },
+  {
+   "t": 19.5,
+   "text": "disabled: true (ArrowDown)"
+  },
+  {
+   "t": 19.5,
+   "text": "danger element geometry {\"rect\":[75,692,243,33],\"fontSize\":\"13px\",\"color\":\"rgb(255, 213, 175)\",\"bg\":\"rgba(20, 33, 39, 0.875)\"}"
+  }
+ ]
+}

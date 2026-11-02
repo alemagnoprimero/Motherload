@@ -1,0 +1,1447 @@
+{
+ "W01": {
+  "shaft": {
+   "world": "W01",
+   "path": "shaft",
+   "pathCells": 60,
+   "seeds": 200,
+   "discoveredCells": {
+    "n": 200,
+    "mean": 186,
+    "min": 186,
+    "p10": 186,
+    "median": 186,
+    "p90": 186,
+    "max": 186
+   },
+   "discoveredPctOfWorld": 7.8,
+   "excavatedCells": {
+    "n": 200,
+    "mean": 60,
+    "min": 60,
+    "p10": 60,
+    "median": 60,
+    "p90": 60,
+    "max": 60
+   },
+   "bands50m": [
+    {
+     "band": "0-50 m",
+     "ores": 13,
+     "oreValueCR": 657,
+     "rareO3O4": 2.23,
+     "rockCells": 0.36,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 4.33,
+     "newTypes": {
+      "material:soil": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "ore:O3": "100%",
+      "material:rock": "31%",
+      "ore:O4": "2%"
+     },
+     "notableCells": 2.23,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "50-100 m",
+     "ores": 4.06,
+     "oreValueCR": 351,
+     "rareO3O4": 3.1,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.01,
+     "newTypes": {
+      "landmark:beacon": "100%",
+      "ore:O4": "2%"
+     },
+     "notableCells": 4.1,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "100-150 m",
+     "ores": 3.14,
+     "oreValueCR": 145,
+     "rareO3O4": 0.27,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.02,
+     "newTypes": {
+      "ore:O4": "2%"
+     },
+     "notableCells": 0.27,
+     "bandsWithNotablePct": 24
+    },
+    {
+     "band": "150-200 m",
+     "ores": 2.76,
+     "oreValueCR": 129,
+     "rareO3O4": 0.25,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.03,
+     "newTypes": {
+      "ore:O4": "3%",
+      "relic": "1%"
+     },
+     "notableCells": 0.25,
+     "bandsWithNotablePct": 23
+    },
+    {
+     "band": "200-250 m",
+     "ores": 2.46,
+     "oreValueCR": 114,
+     "rareO3O4": 0.24,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.02,
+     "newTypes": {
+      "landmark:valve": "100%",
+      "ore:O4": "2%"
+     },
+     "notableCells": 1.24,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "250-300 m",
+     "ores": 2.97,
+     "oreValueCR": 140,
+     "rareO3O4": 0.26,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.05,
+     "newTypes": {
+      "ore:O4": "5%"
+     },
+     "notableCells": 0.26,
+     "bandsWithNotablePct": 22
+    },
+    {
+     "band": "300-350 m",
+     "ores": 2.83,
+     "oreValueCR": 130,
+     "rareO3O4": 0.22,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.03,
+     "newTypes": {
+      "ore:O4": "3%"
+     },
+     "notableCells": 0.22,
+     "bandsWithNotablePct": 19
+    },
+    {
+     "band": "350-400 m",
+     "ores": 2.63,
+     "oreValueCR": 124,
+     "rareO3O4": 0.27,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.02,
+     "newTypes": {
+      "landmark:antenna": "100%",
+      "ore:O4": "3%"
+     },
+     "notableCells": 1.26,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "400-450 m",
+     "ores": 2.54,
+     "oreValueCR": 114,
+     "rareO3O4": 0.23,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.03,
+     "newTypes": {
+      "ore:O4": "2%",
+      "relic": "1%"
+     },
+     "notableCells": 0.24,
+     "bandsWithNotablePct": 21
+    },
+    {
+     "band": "450-500 m",
+     "ores": 2.52,
+     "oreValueCR": 114,
+     "rareO3O4": 0.25,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.02,
+     "newTypes": {
+      "relic": "1%",
+      "ore:O4": "1%"
+     },
+     "notableCells": 0.26,
+     "bandsWithNotablePct": 23
+    },
+    {
+     "band": "500-550 m",
+     "ores": 2.62,
+     "oreValueCR": 117,
+     "rareO3O4": 0.21,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.03,
+     "newTypes": {
+      "ore:O4": "2%",
+      "relic": "1%"
+     },
+     "notableCells": 0.22,
+     "bandsWithNotablePct": 21
+    },
+    {
+     "band": "550-600 m",
+     "ores": 1.92,
+     "oreValueCR": 92,
+     "rareO3O4": 0.19,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.02,
+     "newTypes": {
+      "landmark:q": "100%",
+      "ore:O4": "2%",
+      "relic": "1%"
+     },
+     "notableCells": 1.2,
+     "bandsWithNotablePct": 100
+    }
+   ],
+   "bandsBelowSurfaceWithANewContentType": {
+    "n": 200,
+    "mean": 4.18,
+    "min": 4,
+    "p10": 4,
+    "median": 4,
+    "p90": 5,
+    "max": 6
+   },
+   "bandsBelowSurfaceWithANotableEncounter": {
+    "n": 200,
+    "mean": 5.52,
+    "min": 4,
+    "p10": 4,
+    "median": 5,
+    "p90": 7,
+    "max": 8
+   },
+   "of50mBandsBelowSurface": 11,
+   "distinctContentTypesMet": {
+    "n": 200,
+    "mean": 8.59,
+    "min": 8,
+    "p10": 8,
+    "median": 8,
+    "p90": 9,
+    "max": 11
+   },
+   "oreDiscoveryGapM": {
+    "n": 5354,
+    "mean": 20.76,
+    "min": 10,
+    "p10": 10,
+    "median": 10,
+    "p90": 50,
+    "max": 310
+   },
+   "longestOreDroughtM": {
+    "n": 200,
+    "mean": 109.9,
+    "min": 50,
+    "p10": 70,
+    "median": 100,
+    "p90": 160,
+    "max": 310
+   }
+  },
+  "comb": {
+   "world": "W01",
+   "path": "comb",
+   "pathCells": 312,
+   "seeds": 200,
+   "discoveredCells": {
+    "n": 200,
+    "mean": 977.69,
+    "min": 883,
+    "p10": 942,
+    "median": 976,
+    "p90": 1015,
+    "max": 1068
+   },
+   "discoveredPctOfWorld": 40.7,
+   "excavatedCells": {
+    "n": 200,
+    "mean": 277.15,
+    "min": 257,
+    "p10": 267,
+    "median": 277,
+    "p90": 288,
+    "max": 294
+   },
+   "bands50m": [
+    {
+     "band": "0-50 m",
+     "ores": 24.18,
+     "oreValueCR": 1227,
+     "rareO3O4": 4.13,
+     "rockCells": 6.13,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 2.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 5.12,
+     "newTypes": {
+      "material:soil": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "ore:O3": "100%",
+      "material:rock": "100%",
+      "ore:O4": "10%",
+      "relic": "3%"
+     },
+     "notableCells": 4.15,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "50-100 m",
+     "ores": 13.38,
+     "oreValueCR": 719,
+     "rareO3O4": 2.88,
+     "rockCells": 5.81,
+     "caveCellsSeen": 12.09,
+     "relicSeenPct": 2,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.96,
+     "newTypes": {
+      "landmark:beacon": "100%",
+      "cave": "86%",
+      "relic": "2%",
+      "ore:O4": "8%",
+      "material:rock": "1%"
+     },
+     "notableCells": 15.99,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "100-150 m",
+     "ores": 13.59,
+     "oreValueCR": 635,
+     "rareO3O4": 1.22,
+     "rockCells": 5.83,
+     "caveCellsSeen": 12.87,
+     "relicSeenPct": 3.5,
+     "hazardSeenPct": 35,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.61,
+     "newTypes": {
+      "cave": "14%",
+      "relic": "4%",
+      "hazard:shelf": "35%",
+      "ore:O4": "9%"
+     },
+     "notableCells": 14.47,
+     "bandsWithNotablePct": 97
+    },
+    {
+     "band": "150-200 m",
+     "ores": 13.57,
+     "oreValueCR": 629,
+     "rareO3O4": 1.11,
+     "rockCells": 5.83,
+     "caveCellsSeen": 11.74,
+     "relicSeenPct": 3,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.14,
+     "newTypes": {
+      "ore:O4": "11%",
+      "relic": "3%",
+      "cave": "1%"
+     },
+     "notableCells": 12.88,
+     "bandsWithNotablePct": 96
+    },
+    {
+     "band": "200-250 m",
+     "ores": 13.18,
+     "oreValueCR": 615,
+     "rareO3O4": 1.22,
+     "rockCells": 6.11,
+     "caveCellsSeen": 12.18,
+     "relicSeenPct": 2.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.13,
+     "newTypes": {
+      "landmark:valve": "100%",
+      "ore:O4": "11%",
+      "relic": "3%"
+     },
+     "notableCells": 14.42,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "250-300 m",
+     "ores": 13.21,
+     "oreValueCR": 625,
+     "rareO3O4": 1.25,
+     "rockCells": 5.28,
+     "caveCellsSeen": 12.22,
+     "relicSeenPct": 2.5,
+     "hazardSeenPct": 100,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.76,
+     "newTypes": {
+      "ore:O4": "9%",
+      "hazard:shelf": "65%",
+      "relic": "3%"
+     },
+     "notableCells": 14.49,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "300-350 m",
+     "ores": 13.17,
+     "oreValueCR": 614,
+     "rareO3O4": 1.13,
+     "rockCells": 5.46,
+     "caveCellsSeen": 13.14,
+     "relicSeenPct": 1.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.09,
+     "newTypes": {
+      "ore:O4": "8%",
+      "relic": "2%"
+     },
+     "notableCells": 14.28,
+     "bandsWithNotablePct": 97
+    },
+    {
+     "band": "350-400 m",
+     "ores": 13.25,
+     "oreValueCR": 611,
+     "rareO3O4": 1.17,
+     "rockCells": 6.31,
+     "caveCellsSeen": 11.19,
+     "relicSeenPct": 4,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.07,
+     "newTypes": {
+      "landmark:antenna": "100%",
+      "relic": "4%",
+      "ore:O4": "3%"
+     },
+     "notableCells": 13.41,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "400-450 m",
+     "ores": 12.66,
+     "oreValueCR": 588,
+     "rareO3O4": 1.16,
+     "rockCells": 6.03,
+     "caveCellsSeen": 13.48,
+     "relicSeenPct": 3,
+     "hazardSeenPct": 36,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.06,
+     "newTypes": {
+      "relic": "3%",
+      "ore:O4": "4%"
+     },
+     "notableCells": 15.02,
+     "bandsWithNotablePct": 93
+    },
+    {
+     "band": "450-500 m",
+     "ores": 11.67,
+     "oreValueCR": 549,
+     "rareO3O4": 1.13,
+     "rockCells": 5.83,
+     "caveCellsSeen": 12.18,
+     "relicSeenPct": 3.5,
+     "hazardSeenPct": 1,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.07,
+     "newTypes": {
+      "ore:O4": "4%",
+      "relic": "3%"
+     },
+     "notableCells": 13.36,
+     "bandsWithNotablePct": 98
+    },
+    {
+     "band": "500-550 m",
+     "ores": 12.04,
+     "oreValueCR": 568,
+     "rareO3O4": 1.13,
+     "rockCells": 5.85,
+     "caveCellsSeen": 14.65,
+     "relicSeenPct": 4,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.08,
+     "newTypes": {
+      "ore:O4": "4%",
+      "relic": "4%"
+     },
+     "notableCells": 15.82,
+     "bandsWithNotablePct": 99
+    },
+    {
+     "band": "550-600 m",
+     "ores": 8.05,
+     "oreValueCR": 389,
+     "rareO3O4": 0.81,
+     "rockCells": 3.89,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.05,
+     "newTypes": {
+      "landmark:q": "100%",
+      "ore:O4": "3%",
+      "relic": "2%"
+     },
+     "notableCells": 1.83,
+     "bandsWithNotablePct": 100
+    }
+   ],
+   "bandsBelowSurfaceWithANewContentType": {
+    "n": 200,
+    "mean": 5.61,
+    "min": 5,
+    "p10": 5,
+    "median": 6,
+    "p90": 6,
+    "max": 8
+   },
+   "bandsBelowSurfaceWithANotableEncounter": {
+    "n": 200,
+    "mean": 10.79,
+    "min": 9,
+    "p10": 10,
+    "median": 11,
+    "p90": 11,
+    "max": 11
+   },
+   "of50mBandsBelowSurface": 11,
+   "distinctContentTypesMet": {
+    "n": 200,
+    "mean": 12.12,
+    "min": 11,
+    "p10": 11,
+    "median": 12,
+    "p90": 13,
+    "max": 13
+   },
+   "oreDiscoveryGapM": {
+    "n": 6279,
+    "mean": 18.75,
+    "min": 10,
+    "p10": 10,
+    "median": 10,
+    "p90": 50,
+    "max": 100
+   },
+   "longestOreDroughtM": {
+    "n": 200,
+    "mean": 50.2,
+    "min": 40,
+    "p10": 50,
+    "median": 50,
+    "p90": 50,
+    "max": 100
+   }
+  }
+ },
+ "W02": {
+  "shaft": {
+   "world": "W02",
+   "path": "shaft",
+   "pathCells": 100,
+   "seeds": 200,
+   "discoveredCells": {
+    "n": 200,
+    "mean": 306,
+    "min": 306,
+    "p10": 306,
+    "median": 306,
+    "p90": 306,
+    "max": 306
+   },
+   "discoveredPctOfWorld": 6.4,
+   "excavatedCells": {
+    "n": 200,
+    "mean": 100,
+    "min": 100,
+    "p10": 100,
+    "median": 100,
+    "p90": 100,
+    "max": 100
+   },
+   "bands50m": [
+    {
+     "band": "0-50 m",
+     "ores": 12.27,
+     "oreValueCR": 1125,
+     "rareO3O4": 0,
+     "rockCells": 0.34,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 3.29,
+     "newTypes": {
+      "material:ice": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "material:rock": "29%"
+     },
+     "notableCells": 0,
+     "bandsWithNotablePct": 0
+    },
+    {
+     "band": "50-100 m",
+     "ores": 9.64,
+     "oreValueCR": 849,
+     "rareO3O4": 0,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0,
+     "newTypes": {},
+     "notableCells": 0,
+     "bandsWithNotablePct": 0
+    },
+    {
+     "band": "100-150 m",
+     "ores": 1.26,
+     "oreValueCR": 91,
+     "rareO3O4": 0,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1,
+     "newTypes": {
+      "landmark:sample-seam": "100%"
+     },
+     "notableCells": 3,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "150-200 m",
+     "ores": 1.94,
+     "oreValueCR": 147,
+     "rareO3O4": 0,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0,
+     "newTypes": {},
+     "notableCells": 0,
+     "bandsWithNotablePct": 0
+    },
+    {
+     "band": "200-250 m",
+     "ores": 2.65,
+     "oreValueCR": 423,
+     "rareO3O4": 1.03,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 1,
+     "newTypes": {
+      "ore:O3": "100%"
+     },
+     "notableCells": 1.03,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "250-300 m",
+     "ores": 2,
+     "oreValueCR": 193,
+     "rareO3O4": 0.25,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.01,
+     "newTypes": {
+      "relic": "1%"
+     },
+     "notableCells": 0.25,
+     "bandsWithNotablePct": 12
+    },
+    {
+     "band": "300-350 m",
+     "ores": 2.1,
+     "oreValueCR": 217,
+     "rareO3O4": 0.28,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0,
+     "newTypes": {},
+     "notableCells": 0.28,
+     "bandsWithNotablePct": 13
+    },
+    {
+     "band": "350-400 m",
+     "ores": 1.9,
+     "oreValueCR": 181,
+     "rareO3O4": 0.21,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.01,
+     "newTypes": {
+      "relic": "1%"
+     },
+     "notableCells": 0.22,
+     "bandsWithNotablePct": 9
+    },
+    {
+     "band": "400-450 m",
+     "ores": 5.39,
+     "oreValueCR": 1324,
+     "rareO3O4": 4.14,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1,
+     "newTypes": {
+      "landmark:cryo-vein": "100%"
+     },
+     "notableCells": 4.14,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "450-500 m",
+     "ores": 3.84,
+     "oreValueCR": 764,
+     "rareO3O4": 2.16,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 0.01,
+     "newTypes": {
+      "relic": "1%"
+     },
+     "notableCells": 2.17,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "500-550 m",
+     "ores": 1.91,
+     "oreValueCR": 171,
+     "rareO3O4": 0.19,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0,
+     "newTypes": {},
+     "notableCells": 0.19,
+     "bandsWithNotablePct": 9
+    },
+    {
+     "band": "550-600 m",
+     "ores": 1.91,
+     "oreValueCR": 177,
+     "rareO3O4": 0.21,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0,
+     "newTypes": {},
+     "notableCells": 0.21,
+     "bandsWithNotablePct": 8
+    },
+    {
+     "band": "600-650 m",
+     "ores": 2.07,
+     "oreValueCR": 184,
+     "rareO3O4": 0.17,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.01,
+     "newTypes": {
+      "relic": "1%"
+     },
+     "notableCells": 0.17,
+     "bandsWithNotablePct": 8
+    },
+    {
+     "band": "650-700 m",
+     "ores": 2.03,
+     "oreValueCR": 277,
+     "rareO3O4": 0.31,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.04,
+     "newTypes": {
+      "ore:O4": "4%",
+      "relic": "1%"
+     },
+     "notableCells": 0.31,
+     "bandsWithNotablePct": 14
+    },
+    {
+     "band": "700-750 m",
+     "ores": 1.96,
+     "oreValueCR": 232,
+     "rareO3O4": 0.2,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.03,
+     "newTypes": {
+      "relic": "1%",
+      "ore:O4": "2%"
+     },
+     "notableCells": 0.21,
+     "bandsWithNotablePct": 13
+    },
+    {
+     "band": "750-800 m",
+     "ores": 2,
+     "oreValueCR": 246,
+     "rareO3O4": 0.3,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.01,
+     "newTypes": {
+      "ore:O4": "1%",
+      "relic": "1%"
+     },
+     "notableCells": 0.3,
+     "bandsWithNotablePct": 14
+    },
+    {
+     "band": "800-850 m",
+     "ores": 1.72,
+     "oreValueCR": 209,
+     "rareO3O4": 0.28,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.02,
+     "newTypes": {
+      "ore:O4": "2%"
+     },
+     "notableCells": 0.28,
+     "bandsWithNotablePct": 11
+    },
+    {
+     "band": "850-900 m",
+     "ores": 2.1,
+     "oreValueCR": 305,
+     "rareO3O4": 0.32,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.04,
+     "newTypes": {
+      "ore:O4": "3%",
+      "relic": "1%"
+     },
+     "notableCells": 0.33,
+     "bandsWithNotablePct": 15
+    },
+    {
+     "band": "900-950 m",
+     "ores": 1.6,
+     "oreValueCR": 236,
+     "rareO3O4": 0.26,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.06,
+     "newTypes": {
+      "ore:O4": "5%",
+      "relic": "1%"
+     },
+     "notableCells": 0.26,
+     "bandsWithNotablePct": 14
+    },
+    {
+     "band": "950-1000 m",
+     "ores": 1.51,
+     "oreValueCR": 178,
+     "rareO3O4": 0.15,
+     "rockCells": 0,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.02,
+     "newTypes": {
+      "landmark:catalyst": "100%",
+      "ore:O4": "2%",
+      "relic": "1%"
+     },
+     "notableCells": 1.16,
+     "bandsWithNotablePct": 100
+    }
+   ],
+   "bandsBelowSurfaceWithANewContentType": {
+    "n": 200,
+    "mean": 4.21,
+    "min": 4,
+    "p10": 4,
+    "median": 4,
+    "p90": 5,
+    "max": 6
+   },
+   "bandsBelowSurfaceWithANotableEncounter": {
+    "n": 200,
+    "mean": 6.39,
+    "min": 5,
+    "p10": 5,
+    "median": 6,
+    "p90": 8,
+    "max": 10
+   },
+   "of50mBandsBelowSurface": 19,
+   "distinctContentTypesMet": {
+    "n": 200,
+    "mean": 7.53,
+    "min": 7,
+    "p10": 7,
+    "median": 7,
+    "p90": 8,
+    "max": 10
+   },
+   "oreDiscoveryGapM": {
+    "n": 7526,
+    "mean": 24.86,
+    "min": 10,
+    "p10": 10,
+    "median": 10,
+    "p90": 70,
+    "max": 310
+   },
+   "longestOreDroughtM": {
+    "n": 200,
+    "mean": 156.65,
+    "min": 70,
+    "p10": 110,
+    "median": 140,
+    "p90": 220,
+    "max": 310
+   }
+  },
+  "comb": {
+   "world": "W02",
+   "path": "comb",
+   "pathCells": 520,
+   "seeds": 200,
+   "discoveredCells": {
+    "n": 200,
+    "mean": 1556.33,
+    "min": 1459,
+    "p10": 1509,
+    "median": 1555,
+    "p90": 1600,
+    "max": 1690
+   },
+   "discoveredPctOfWorld": 32.4,
+   "excavatedCells": {
+    "n": 200,
+    "mean": 483.41,
+    "min": 460,
+    "p10": 475,
+    "median": 484,
+    "p90": 491,
+    "max": 495
+   },
+   "bands50m": [
+    {
+     "band": "0-50 m",
+     "ores": 19.92,
+     "oreValueCR": 1755,
+     "rareO3O4": 0,
+     "rockCells": 6.11,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 4,
+     "newTypes": {
+      "material:ice": "100%",
+      "ore:O1": "100%",
+      "ore:O2": "100%",
+      "material:rock": "100%"
+     },
+     "notableCells": 0,
+     "bandsWithNotablePct": 0
+    },
+    {
+     "band": "50-100 m",
+     "ores": 15.19,
+     "oreValueCR": 1197,
+     "rareO3O4": 0,
+     "rockCells": 5.74,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0,
+     "newTypes": {},
+     "notableCells": 0,
+     "bandsWithNotablePct": 0
+    },
+    {
+     "band": "100-150 m",
+     "ores": 7.75,
+     "oreValueCR": 567,
+     "rareO3O4": 0,
+     "rockCells": 6.13,
+     "caveCellsSeen": 9.81,
+     "relicSeenPct": 0,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.69,
+     "newTypes": {
+      "landmark:sample-seam": "100%",
+      "cave": "69%"
+     },
+     "notableCells": 14.81,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "150-200 m",
+     "ores": 8.6,
+     "oreValueCR": 637,
+     "rareO3O4": 0,
+     "rockCells": 5.97,
+     "caveCellsSeen": 10.91,
+     "relicSeenPct": 0.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.24,
+     "newTypes": {
+      "cave": "24%",
+      "relic": "1%"
+     },
+     "notableCells": 10.91,
+     "bandsWithNotablePct": 73
+    },
+    {
+     "band": "200-250 m",
+     "ores": 9.9,
+     "oreValueCR": 1069,
+     "rareO3O4": 1.49,
+     "rockCells": 5.55,
+     "caveCellsSeen": 10.21,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 1.07,
+     "newTypes": {
+      "ore:O3": "100%",
+      "cave": "6%",
+      "relic": "1%"
+     },
+     "notableCells": 11.71,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "250-300 m",
+     "ores": 9.85,
+     "oreValueCR": 956,
+     "rareO3O4": 1.12,
+     "rockCells": 5.83,
+     "caveCellsSeen": 6.42,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 4.5,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.07,
+     "newTypes": {
+      "hazard:cold": "5%",
+      "cave": "1%",
+      "relic": "1%"
+     },
+     "notableCells": 7.55,
+     "bandsWithNotablePct": 73
+    },
+    {
+     "band": "300-350 m",
+     "ores": 9.62,
+     "oreValueCR": 977,
+     "rareO3O4": 1.18,
+     "rockCells": 5.44,
+     "caveCellsSeen": 2.49,
+     "relicSeenPct": 2,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.02,
+     "newTypes": {
+      "relic": "2%"
+     },
+     "notableCells": 3.69,
+     "bandsWithNotablePct": 53
+    },
+    {
+     "band": "350-400 m",
+     "ores": 9.61,
+     "oreValueCR": 918,
+     "rareO3O4": 0.93,
+     "rockCells": 5.65,
+     "caveCellsSeen": 5.19,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.02,
+     "newTypes": {
+      "relic": "1%",
+      "cave": "1%"
+     },
+     "notableCells": 6.13,
+     "bandsWithNotablePct": 62
+    },
+    {
+     "band": "400-450 m",
+     "ores": 15.67,
+     "oreValueCR": 3108,
+     "rareO3O4": 8.7,
+     "rockCells": 5.81,
+     "caveCellsSeen": 10,
+     "relicSeenPct": 2,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.02,
+     "newTypes": {
+      "landmark:cryo-vein": "100%",
+      "relic": "2%",
+      "cave": "1%"
+     },
+     "notableCells": 18.72,
+     "bandsWithNotablePct": 100
+    },
+    {
+     "band": "450-500 m",
+     "ores": 9.86,
+     "oreValueCR": 948,
+     "rareO3O4": 1.07,
+     "rockCells": 5.94,
+     "caveCellsSeen": 10.6,
+     "relicSeenPct": 2,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.02,
+     "newTypes": {
+      "relic": "2%"
+     },
+     "notableCells": 11.68,
+     "bandsWithNotablePct": 83
+    },
+    {
+     "band": "500-550 m",
+     "ores": 9.71,
+     "oreValueCR": 869,
+     "rareO3O4": 0.83,
+     "rockCells": 6.04,
+     "caveCellsSeen": 9.95,
+     "relicSeenPct": 1.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.02,
+     "newTypes": {
+      "relic": "2%"
+     },
+     "notableCells": 10.79,
+     "bandsWithNotablePct": 76
+    },
+    {
+     "band": "550-600 m",
+     "ores": 9.39,
+     "oreValueCR": 877,
+     "rareO3O4": 0.96,
+     "rockCells": 5.93,
+     "caveCellsSeen": 6.53,
+     "relicSeenPct": 2,
+     "hazardSeenPct": 19,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.2,
+     "newTypes": {
+      "hazard:cold": "18%",
+      "relic": "2%"
+     },
+     "notableCells": 7.51,
+     "bandsWithNotablePct": 60
+    },
+    {
+     "band": "600-650 m",
+     "ores": 9.06,
+     "oreValueCR": 992,
+     "rareO3O4": 1.01,
+     "rockCells": 5.5,
+     "caveCellsSeen": 1.9,
+     "relicSeenPct": 1.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.08,
+     "newTypes": {
+      "ore:O4": "7%",
+      "relic": "2%"
+     },
+     "notableCells": 2.93,
+     "bandsWithNotablePct": 47
+    },
+    {
+     "band": "650-700 m",
+     "ores": 10.04,
+     "oreValueCR": 1275,
+     "rareO3O4": 1.34,
+     "rockCells": 5.98,
+     "caveCellsSeen": 6.46,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.13,
+     "newTypes": {
+      "ore:O4": "12%",
+      "relic": "1%"
+     },
+     "notableCells": 7.81,
+     "bandsWithNotablePct": 72
+    },
+    {
+     "band": "700-750 m",
+     "ores": 9.88,
+     "oreValueCR": 1222,
+     "rareO3O4": 1.2,
+     "rockCells": 5.44,
+     "caveCellsSeen": 10.12,
+     "relicSeenPct": 3.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.13,
+     "newTypes": {
+      "relic": "4%",
+      "ore:O4": "9%"
+     },
+     "notableCells": 11.35,
+     "bandsWithNotablePct": 85
+    },
+    {
+     "band": "750-800 m",
+     "ores": 9.06,
+     "oreValueCR": 1123,
+     "rareO3O4": 1.29,
+     "rockCells": 5.91,
+     "caveCellsSeen": 10.95,
+     "relicSeenPct": 1.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.1,
+     "newTypes": {
+      "ore:O4": "9%",
+      "relic": "2%"
+     },
+     "notableCells": 12.25,
+     "bandsWithNotablePct": 84
+    },
+    {
+     "band": "800-850 m",
+     "ores": 9.86,
+     "oreValueCR": 1298,
+     "rareO3O4": 1.48,
+     "rockCells": 5.82,
+     "caveCellsSeen": 9.93,
+     "relicSeenPct": 2.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.12,
+     "newTypes": {
+      "ore:O4": "10%",
+      "relic": "2%"
+     },
+     "notableCells": 11.43,
+     "bandsWithNotablePct": 82
+    },
+    {
+     "band": "850-900 m",
+     "ores": 9.48,
+     "oreValueCR": 1240,
+     "rareO3O4": 1.16,
+     "rockCells": 5.93,
+     "caveCellsSeen": 6.69,
+     "relicSeenPct": 1.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.1,
+     "newTypes": {
+      "ore:O4": "9%",
+      "relic": "2%"
+     },
+     "notableCells": 7.87,
+     "bandsWithNotablePct": 69
+    },
+    {
+     "band": "900-950 m",
+     "ores": 9.35,
+     "oreValueCR": 1223,
+     "rareO3O4": 1.23,
+     "rockCells": 5.89,
+     "caveCellsSeen": 0.35,
+     "relicSeenPct": 1,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 0,
+     "newTypeEvents": 0.1,
+     "newTypes": {
+      "ore:O4": "9%",
+      "relic": "1%"
+     },
+     "notableCells": 1.59,
+     "bandsWithNotablePct": 45
+    },
+    {
+     "band": "950-1000 m",
+     "ores": 6.12,
+     "oreValueCR": 736,
+     "rareO3O4": 0.65,
+     "rockCells": 3.65,
+     "caveCellsSeen": 0,
+     "relicSeenPct": 1.5,
+     "hazardSeenPct": 0,
+     "landmarkSeenPct": 100,
+     "newTypeEvents": 1.07,
+     "newTypes": {
+      "landmark:catalyst": "100%",
+      "ore:O4": "5%",
+      "relic": "2%"
+     },
+     "notableCells": 1.66,
+     "bandsWithNotablePct": 100
+    }
+   ],
+   "bandsBelowSurfaceWithANewContentType": {
+    "n": 200,
+    "mean": 5.31,
+    "min": 4,
+    "p10": 4,
+    "median": 5,
+    "p90": 6,
+    "max": 8
+   },
+   "bandsBelowSurfaceWithANotableEncounter": {
+    "n": 200,
+    "mean": 13.61,
+    "min": 10,
+    "p10": 12,
+    "median": 14,
+    "p90": 16,
+    "max": 17
+   },
+   "of50mBandsBelowSurface": 19,
+   "distinctContentTypesMet": {
+    "n": 200,
+    "mean": 10.15,
+    "min": 9,
+    "p10": 9,
+    "median": 10,
+    "p90": 11,
+    "max": 12
+   },
+   "oreDiscoveryGapM": {
+    "n": 9157,
+    "mean": 21.48,
+    "min": 10,
+    "p10": 10,
+    "median": 10,
+    "p90": 50,
+    "max": 130
+   },
+   "longestOreDroughtM": {
+    "n": 200,
+    "mean": 58.25,
+    "min": 50,
+    "p10": 50,
+    "median": 50,
+    "p90": 90,
+    "max": 130
+   }
+  }
+ }
+}

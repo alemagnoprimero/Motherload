@@ -1,0 +1,700 @@
+{
+ "desktopFacts": {
+  "dpr": 1,
+  "canvasBacking": [
+   1440,
+   900
+  ],
+  "canvasCss": [
+   1440,
+   900
+  ],
+  "glContexts": [
+   {
+    "type": "webgl",
+    "w": 1,
+    "h": 1,
+    "attrs": "{}"
+   },
+   {
+    "type": "webgl",
+    "w": 1440,
+    "h": 900,
+    "attrs": "{\"alpha\":false,\"desynchronized\":false,\"depth\":true,\"antialias\":true,\"premultipliedAlpha\":true,\"stencil\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"default\",\"preserveDrawingBuffer\":false,\"willReadFrequently\":false}"
+   }
+  ],
+  "twoDContexts": 20,
+  "dataset": {
+   "rigScreenX": "720.00",
+   "worldTexture": "campaign-w01"
+  }
+ },
+ "desktopSurfaceIdle": {
+  "frames": 16,
+  "ms": {
+   "median": 3.8,
+   "p95": 6.9,
+   "max": 6.9,
+   "mean": 3.79
+  },
+  "draws": {
+   "median": 3,
+   "p95": 3,
+   "max": 3,
+   "mean": 3
+  },
+  "verts": {
+   "median": 4536,
+   "p95": 4536,
+   "max": 4536,
+   "mean": 4536
+  },
+  "tex": {
+   "median": 6,
+   "p95": 6,
+   "max": 6,
+   "mean": 6
+  },
+  "texBytes": {
+   "median": 84000,
+   "p95": 84000,
+   "max": 84000,
+   "mean": 84000
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 18,
+   "p95": 18,
+   "max": 18,
+   "mean": 18
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "area": {
+   "median": 6674036.484069081,
+   "p95": 6674036.484069081,
+   "max": 6674036.484069081,
+   "mean": 6674036.48
+  },
+  "tris": {
+   "median": 1512,
+   "p95": 1512,
+   "max": 1512,
+   "mean": 1512
+  },
+  "clipped": {
+   "median": 5081058.425134797,
+   "p95": 5081058.425134797,
+   "max": 5081058.425134797,
+   "mean": 5081058.43
+  }
+ },
+ "desktopDrilling": {
+  "frames": 26,
+  "ms": {
+   "median": 5.4,
+   "p95": 6.9,
+   "max": 7.8,
+   "mean": 5.36
+  },
+  "draws": {
+   "median": 3,
+   "p95": 3,
+   "max": 3,
+   "mean": 3
+  },
+  "verts": {
+   "median": 7290,
+   "p95": 7692,
+   "max": 7698,
+   "mean": 7351.38
+  },
+  "tex": {
+   "median": 9,
+   "p95": 9,
+   "max": 13,
+   "mean": 7.65
+  },
+  "texBytes": {
+   "median": 108528,
+   "p95": 108528,
+   "max": 119052,
+   "mean": 96668.77
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 26,
+   "p95": 26,
+   "max": 33,
+   "mean": 22.27
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "area": {
+   "median": 7358198.959743426,
+   "p95": 7902376.00641238,
+   "max": 7930979.952234286,
+   "mean": 7435150.32
+  },
+  "tris": {
+   "median": 2430,
+   "p95": 2564,
+   "max": 2566,
+   "mean": 2450.46
+  },
+  "clipped": {
+   "median": 5442649.849124363,
+   "p95": 5736483.117917685,
+   "max": 5762311.257604609,
+   "mean": 5441740.91
+  }
+ },
+ "desktopErrors": [],
+ "deepFacts": {
+  "dpr": 1,
+  "canvasBacking": [
+   1440,
+   900
+  ],
+  "canvasCss": [
+   1440,
+   900
+  ],
+  "glContexts": [
+   {
+    "type": "webgl",
+    "w": 1,
+    "h": 1,
+    "attrs": "{}"
+   },
+   {
+    "type": "webgl",
+    "w": 1440,
+    "h": 900,
+    "attrs": "{\"alpha\":false,\"desynchronized\":false,\"depth\":true,\"antialias\":true,\"premultipliedAlpha\":true,\"stencil\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"default\",\"preserveDrawingBuffer\":false,\"willReadFrequently\":false}"
+   }
+  ],
+  "twoDContexts": 20,
+  "dataset": {
+   "rigScreenX": "720.00",
+   "worldTexture": "campaign-w01"
+  }
+ },
+ "deepIdle": {
+  "frames": 11,
+  "ms": {
+   "median": 3.9,
+   "p95": 5,
+   "max": 5,
+   "mean": 3.93
+  },
+  "draws": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "verts": {
+   "median": 12921,
+   "p95": 12921,
+   "max": 12921,
+   "mean": 12921
+  },
+  "tex": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "texBytes": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "area": {
+   "median": 24193182.27034736,
+   "p95": 24193182.270348202,
+   "max": 24193182.270348202,
+   "mean": 24193182.27
+  },
+  "tris": {
+   "median": 4307,
+   "p95": 4307,
+   "max": 4307,
+   "mean": 4307
+  },
+  "clipped": {
+   "median": 7906040.458893627,
+   "p95": 7906040.458894098,
+   "max": 7906040.458894098,
+   "mean": 7906040.46
+  }
+ },
+ "deepMovingRight": {
+  "frames": 18,
+  "ms": {
+   "median": 6.1,
+   "p95": 9.1,
+   "max": 9.1,
+   "mean": 5.79
+  },
+  "draws": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "verts": {
+   "median": 13692,
+   "p95": 14442,
+   "max": 14442,
+   "mean": 13754.33
+  },
+  "tex": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "texBytes": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "area": {
+   "median": 24209621.818358332,
+   "p95": 24365516.273827158,
+   "max": 24365516.273827158,
+   "mean": 24241266.3
+  },
+  "tris": {
+   "median": 4564,
+   "p95": 4814,
+   "max": 4814,
+   "mean": 4584.78
+  },
+  "clipped": {
+   "median": 7921724.242284735,
+   "p95": 7945924.7959063295,
+   "max": 7945924.7959063295,
+   "mean": 7904553.84
+  }
+ },
+ "deepProfileTop": {
+  "totalMs": 5534.5,
+  "top": [
+   {
+    "fn": "(program) @ :0",
+    "selfMs": 5345,
+    "pct": 96.57
+   },
+   {
+    "fn": "(anon) @ :33",
+    "selfMs": 29,
+    "pct": 0.52
+   },
+   {
+    "fn": "(garbage collector) @ :0",
+    "selfMs": 18.7,
+    "pct": 0.34
+   },
+   {
+    "fn": "update @ scene.ts:515",
+    "selfMs": 17.9,
+    "pct": 0.32
+   },
+   {
+    "fn": "has @ phaser.js:153736",
+    "selfMs": 6.9,
+    "pct": 0.12
+   },
+   {
+    "fn": "step @ phaser.js:142940",
+    "selfMs": 5.9,
+    "pct": 0.11
+   },
+   {
+    "fn": "ctx.<computed> @ :17",
+    "selfMs": 5.5,
+    "pct": 0.1
+   },
+   {
+    "fn": "image @ scene.ts:219",
+    "selfMs": 4.6,
+    "pct": 0.08
+   },
+   {
+    "fn": "linkedList @ phaser.js:68634",
+    "selfMs": 4.6,
+    "pct": 0.08
+   },
+   {
+    "fn": "bufferSubData @ :0",
+    "selfMs": 4.4,
+    "pct": 0.08
+   },
+   {
+    "fn": "(anon) @ :70",
+    "selfMs": 3.7,
+    "pct": 0.07
+   },
+   {
+    "fn": "GraphicsWebGLRenderer @ phaser.js:38592",
+    "selfMs": 3.7,
+    "pct": 0.07
+   },
+   {
+    "fn": "wrap @ scene.ts:10",
+    "selfMs": 3.2,
+    "pct": 0.06
+   },
+   {
+    "fn": "batchFillPath @ phaser.js:133356",
+    "selfMs": 2.9,
+    "pct": 0.05
+   },
+   {
+    "fn": "indexCurve @ phaser.js:68809",
+    "selfMs": 2.6,
+    "pct": 0.05
+   },
+   {
+    "fn": "setBodyData @ main.ts:208",
+    "selfMs": 2.6,
+    "pct": 0.05
+   },
+   {
+    "fn": "formatCredits @ config.ts:641",
+    "selfMs": 2.5,
+    "pct": 0.05
+   },
+   {
+    "fn": "tile @ model.ts:190",
+    "selfMs": 2.5,
+    "pct": 0.05
+   },
+   {
+    "fn": "applyStencil @ phaser.js:22431",
+    "selfMs": 2.4,
+    "pct": 0.04
+   },
+   {
+    "fn": "wrapCampaignX @ model.ts:4",
+    "selfMs": 2.3,
+    "pct": 0.04
+   },
+   {
+    "fn": "isEarHashed @ phaser.js:68698",
+    "selfMs": 2.2,
+    "pct": 0.04
+   },
+   {
+    "fn": "setTexture @ phaser.js:32587",
+    "selfMs": 2.2,
+    "pct": 0.04
+   },
+   {
+    "fn": "batchSprite @ phaser.js:133048",
+    "selfMs": 2.1,
+    "pct": 0.04
+   },
+   {
+    "fn": "earcut @ phaser.js:68611",
+    "selfMs": 2.1,
+    "pct": 0.04
+   },
+   {
+    "fn": "step @ model.ts:243",
+    "selfMs": 2,
+    "pct": 0.04
+   },
+   {
+    "fn": "matchMedia @ :0",
+    "selfMs": 1.9,
+    "pct": 0.03
+   },
+   {
+    "fn": "StableSort @ phaser.js:174411",
+    "selfMs": 1.8,
+    "pct": 0.03
+   },
+   {
+    "fn": "drawArrays @ :0",
+    "selfMs": 1.8,
+    "pct": 0.03
+   },
+   {
+    "fn": "render @ phaser.js:130339",
+    "selfMs": 1.7,
+    "pct": 0.03
+   },
+   {
+    "fn": "isKnown @ model.ts:196",
+    "selfMs": 1.6,
+    "pct": 0.03
+   },
+   {
+    "fn": "batchLine @ phaser.js:133438",
+    "selfMs": 1.5,
+    "pct": 0.03
+   },
+   {
+    "fn": "batchQuad @ phaser.js:127466",
+    "selfMs": 1.4,
+    "pct": 0.03
+   },
+   {
+    "fn": "getBoundingClientRect @ :0",
+    "selfMs": 1.4,
+    "pct": 0.03
+   },
+   {
+    "fn": "condition @ main.ts:211",
+    "selfMs": 1.4,
+    "pct": 0.03
+   },
+   {
+    "fn": "getControls @ input.ts:204",
+    "selfMs": 1.3,
+    "pct": 0.02
+   },
+   {
+    "fn": "describe @ poi.ts:36",
+    "selfMs": 1.3,
+    "pct": 0.02
+   },
+   {
+    "fn": "render @ phaser.js:8634",
+    "selfMs": 1.3,
+    "pct": 0.02
+   },
+   {
+    "fn": "requestAnimationFrame @ :0",
+    "selfMs": 1.3,
+    "pct": 0.02
+   },
+   {
+    "fn": "syncExtractionCue @ main.ts:415",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "flush @ phaser.js:127184",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "sortByDepth @ phaser.js:24734",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "syncHUD @ main.ts:458",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "tick @ model.ts:234",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "flush @ phaser.js:129570",
+    "selfMs": 1,
+    "pct": 0.02
+   },
+   {
+    "fn": "refreshVisibility @ model.ts:202",
+    "selfMs": 1,
+    "pct": 0.02
+   }
+  ]
+ },
+ "deepErrors": [],
+ "phoneFacts": {
+  "dpr": 3,
+  "canvasBacking": [
+   393,
+   851
+  ],
+  "canvasCss": [
+   393,
+   851
+  ],
+  "glContexts": [
+   {
+    "type": "webgl",
+    "w": 1,
+    "h": 1,
+    "attrs": "{}"
+   },
+   {
+    "type": "webgl",
+    "w": 393,
+    "h": 851,
+    "attrs": "{\"alpha\":false,\"desynchronized\":false,\"depth\":true,\"antialias\":true,\"premultipliedAlpha\":true,\"stencil\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"default\",\"preserveDrawingBuffer\":false,\"willReadFrequently\":false}"
+   }
+  ],
+  "twoDContexts": 18,
+  "dataset": {
+   "rigScreenX": "196.50",
+   "worldTexture": "campaign-w01"
+  }
+ },
+ "phoneDrilling": {
+  "frames": 63,
+  "ms": {
+   "median": 4,
+   "p95": 5.9,
+   "max": 11.8,
+   "mean": 4.1
+  },
+  "draws": {
+   "median": 3,
+   "p95": 3,
+   "max": 3,
+   "mean": 3
+  },
+  "verts": {
+   "median": 5736,
+   "p95": 7479,
+   "max": 7485,
+   "mean": 6131.48
+  },
+  "tex": {
+   "median": 6,
+   "p95": 6,
+   "max": 10,
+   "mean": 5.21
+  },
+  "texBytes": {
+   "median": 66864,
+   "p95": 66864,
+   "max": 77388,
+   "mean": 60023.05
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 18,
+   "p95": 18,
+   "max": 25,
+   "mean": 15.83
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "area": {
+   "median": 2524356.5176148736,
+   "p95": 2782377.0024467804,
+   "max": 2817746.072058356,
+   "mean": 2553468.68
+  },
+  "tris": {
+   "median": 1912,
+   "p95": 2493,
+   "max": 2495,
+   "mean": 2043.83
+  },
+  "clipped": {
+   "median": 1491791.1344436307,
+   "p95": 1585477.8625638746,
+   "max": 1602801.5735852725,
+   "mean": 1495397.93
+  }
+ },
+ "phoneErrors": []
+}

@@ -1,0 +1,23 @@
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   1.30s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   1.30s  signal: "↓downWreck survey beacon89 mTracking" (ArrowDown)
+   2.30s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (ArrowDown)
+   2.30s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   2.30s  signal: "↓downWreck survey beacon79 mSignal nearby" (ArrowDown)
+   3.30s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   3.30s  signal: "↓downWreck survey beacon69 mSignal nearby" (ArrowDown)
+   4.15s  signal: "↓downWreck survey beacon99 mTracking" (idle)
+   4.40s  parked 0.25 tile off-centre at rigX=20.75 (shaft centre 20.5)
+   4.40s  SHOT R8-shaft-reentry-004.4s-offcentre-before-down.png
+   5.40s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   5.40s  signal: "↓downWreck survey beacon89 mTracking" (ArrowDown)
+   5.90s  Down while off-centre: rigX 20.75 -> 21.5, depth 10 m
+   5.90s  row 0 tiles (0=open) 18:1 19:1 20:0 21:0 22:1 · row 1 19:1 20:0 21:1 22:1
+   6.20s  message: "" (idle)
+   6.20s  SHOT R8-shaft-reentry-006.2s-offcentre-after-down.png
+
+MARKS {}
+ERRORS ["console: Failed to load resource: the server responded with a status of 404 (Not Found)"]

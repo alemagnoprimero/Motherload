@@ -1,0 +1,155 @@
+{
+ "text": [
+  {
+   "element": "Body text (#e9efdf)",
+   "where": "panel",
+   "size": "13px",
+   "opacity": 1.0,
+   "ratio": 14.48,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": ".muted copy (#a0b3b7)",
+   "where": "pause menu",
+   "size": "12px",
+   "opacity": 1.0,
+   "ratio": 7.8,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": ".eyebrow (#c6b488)",
+   "where": "panel header",
+   "size": "12px",
+   "opacity": 1.0,
+   "ratio": 7.46,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Equipment eyebrow (#9eb7ad)",
+   "where": "terminal cards",
+   "size": "12px",
+   "opacity": 1.0,
+   "ratio": 7.96,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Equipment <small> (#90a9a2)",
+   "where": "terminal cards",
+   "size": "12px",
+   "opacity": 1.0,
+   "ratio": 6.79,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Upgrade preview (#e6c48f)",
+   "where": "terminal cards",
+   "size": "13px bold",
+   "opacity": 1.0,
+   "ratio": 10.25,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Inactive tab (#9eb5ae)",
+   "where": "terminal tabs",
+   "size": "12px bold",
+   "opacity": 1.0,
+   "ratio": 7.1,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Dock feedback line (#d2c5a6)",
+   "where": "terminal footer",
+   "size": "12px",
+   "opacity": 1.0,
+   "ratio": 8.72,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Record <dt> (#96b0ad)",
+   "where": "flight record",
+   "size": "13px",
+   "opacity": 1.0,
+   "ratio": 7.38,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Enabled button label",
+   "where": "button",
+   "size": "12-13px bold",
+   "opacity": 1.0,
+   "ratio": 10.89,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Enabled primary label",
+   "where": "primary button",
+   "size": "12-13px bold",
+   "opacity": 1.0,
+   "ratio": 5.51,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "DISABLED button label (opacity .38)",
+   "where": "button",
+   "size": "12px bold",
+   "opacity": 0.38,
+   "ratio": 2.88,
+   "AA_normal_4.5": false,
+   "AA_large_3": false
+  },
+  {
+   "element": "DISABLED primary label (opacity .38)",
+   "where": "primary button",
+   "size": "12px bold",
+   "opacity": 0.38,
+   "ratio": 1.86,
+   "AA_normal_4.5": false,
+   "AA_large_3": false
+  },
+  {
+   "element": "Locked milestone copy (#a2b9b3, opacity .52)",
+   "where": "lander tab",
+   "size": "12px",
+   "opacity": 0.52,
+   "ratio": 3.21,
+   "AA_normal_4.5": false,
+   "AA_large_3": true
+  },
+  {
+   "element": "Locked milestone title (#e9efdf, opacity .52)",
+   "where": "lander tab",
+   "size": "14px bold",
+   "opacity": 0.52,
+   "ratio": 4.84,
+   "AA_normal_4.5": true,
+   "AA_large_3": true
+  },
+  {
+   "element": "Disabled \"Bank without sale\" link (#abc0b6, .38)",
+   "where": "service card",
+   "size": "12px bold",
+   "opacity": 0.38,
+   "ratio": 2.42,
+   "AA_normal_4.5": false,
+   "AA_large_3": false
+  }
+ ],
+ "non_text": {
+  "enabled button fill vs panel": 1.34,
+  "disabled button fill vs panel": 1.11,
+  "enabled primary fill vs panel": 5.34,
+  "disabled primary fill vs panel": 1.84,
+  "disabled primary fill vs enabled button fill": 1.37
+ }
+}

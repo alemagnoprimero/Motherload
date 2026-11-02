@@ -1,0 +1,110 @@
+{
+ "backstack": {
+  "start": "dock",
+  "afterNavigationTab": "map",
+  "mapCloseLabel": "Return to mine",
+  "afterReturnFromMap": null,
+  "pauseThenMap": "map",
+  "afterEscapeFromMap": null
+ },
+ "phoneDock": {
+  "service": {
+   "sheetHeight": 570,
+   "viewport": 851,
+   "contentHeight": 414,
+   "scrollHeight": 562,
+   "cardHeights": [
+    174,
+    140,
+    140
+   ],
+   "fullyVisibleCards": 2,
+   "navOverflow": true,
+   "navScroll": [
+    361,
+    353
+   ]
+  },
+  "hardware": {
+   "sheetHeight": 570,
+   "viewport": 851,
+   "contentHeight": 414,
+   "scrollHeight": 1023,
+   "cardHeights": [
+    206,
+    188,
+    188,
+    188,
+    206
+   ],
+   "fullyVisibleCards": 1,
+   "navOverflow": true,
+   "navScroll": [
+    361,
+    353
+   ]
+  },
+  "tools": {
+   "sheetHeight": 570,
+   "viewport": 851,
+   "contentHeight": 414,
+   "scrollHeight": 647,
+   "cardHeights": [
+    182,
+    200,
+    182
+   ],
+   "fullyVisibleCards": 1,
+   "navOverflow": true,
+   "navScroll": [
+    361,
+    353
+   ]
+  },
+  "lander": {
+   "sheetHeight": 570,
+   "viewport": 851,
+   "contentHeight": 414,
+   "scrollHeight": 548,
+   "cardHeights": [
+    149,
+    201,
+    150
+   ],
+   "fullyVisibleCards": 2,
+   "navOverflow": true,
+   "navScroll": [
+    361,
+    353
+   ]
+  },
+  "cargo": {
+   "sheetHeight": 570,
+   "viewport": 851,
+   "contentHeight": 414,
+   "scrollHeight": 414,
+   "cardHeights": [],
+   "fullyVisibleCards": 0,
+   "navOverflow": true,
+   "navScroll": [
+    361,
+    353
+   ]
+  }
+ },
+ "phoneNavTabs": {
+  "tabs": [
+   "Service",
+   "Hardware",
+   "Attachments",
+   "Lander",
+   "Cargo",
+   "Navigation"
+  ],
+  "scrollWidth": 442,
+  "clientWidth": 353,
+  "hiddenTabs": [
+   "Navigation"
+  ]
+ }
+}

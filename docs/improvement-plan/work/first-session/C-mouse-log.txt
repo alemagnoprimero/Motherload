@@ -1,0 +1,178 @@
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   0.50s  rig at screen (720,422.16)
+   0.80s  callout: "Ironium · 30 CR · 1 bulk" (click ore-below-rig)
+   0.80s  short click ore-below-rig at (720,482) -> overlay= callout="Ironium · 30 CR · 1 bulk"
+   0.80s  SHOT C-mouse-000.8s-inspect-ore.png
+   1.10s  callout: "" (click on-rig)
+   1.10s  short click on-rig at (720,422) -> overlay= callout=""
+   2.15s  mouse hold-15px-below at offset (0,15) · rig screen drift samples [0,0,0,0]
+   2.15s  after hold 15px below: E 6.0 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 20
+   3.40s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+   3.40s  signal: "↓downWreck survey beacon89 mTracking" (mouse hold-below)
+   4.40s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (mouse hold-below)
+   4.40s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+   4.40s  signal: "↓downWreck survey beacon79 mSignal nearby" (mouse hold-below)
+   5.15s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+   5.15s  signal: "↓downWreck survey beacon69 mSignal nearby" (mouse hold-below)
+   6.15s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+   6.15s  signal: "↓downWreck survey beacon59 mSignal nearby" (mouse hold-below)
+   7.15s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+   7.15s  signal: "↓downWreck survey beacon49 mSignal nearby" (mouse hold-below)
+   7.90s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+   7.90s  signal: "↓downWreck survey beacon39 mSignal nearby" (mouse hold-below)
+   8.40s  message: "" (mouse hold-below)
+   8.90s  message: "Wreck survey beacon · Very close. Approach the wreck beacon to survey." (mouse hold-below)
+   8.90s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+   8.90s  signal: "↓downWreck survey beacon29 mVery close" (mouse hold-below)
+   9.90s  signal: "↓downWreck survey beacon19 mVery close" (mouse hold-below)
+  10.90s  message: "Beacon surveyed · Return to the lander" (mouse hold-below)
+  10.90s  tasks: "✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (mouse hold-below)
+  10.90s  next: "Return to lander → Bank ore" (mouse hold-below)
+  10.90s  signal: "↖up and leftSalvage lander175 mTracking" (mouse hold-below)
+  10.95s  mouse hold-below at offset (0,160) · rig screen drift samples [4,7,7,7,7,7,7,7,7,7,7,7]
+  10.95s  MARK beacon-mouse
+  10.95s  SHOT C-mouse-00011s-mouse-drilled.png
+  11.95s  signal: "↖up and leftSalvage lander180 mTracking" (mouse hold-above)
+  12.20s  signal: "↖up and leftSalvage lander174 mTracking" (mouse hold-above)
+  12.45s  signal: "↖up and leftSalvage lander169 mTracking" (mouse hold-above)
+  12.70s  signal: "←leftSalvage lander161 mTracking" (mouse hold-above)
+  12.95s  signal: "←leftSalvage lander157 mTracking" (mouse hold-above)
+  13.20s  signal: "←leftSalvage lander153 mTracking" (mouse hold-above)
+  13.45s  signal: "←leftSalvage lander151 mTracking" (mouse hold-above)
+  13.70s  signal: "←leftSalvage lander150 mTracking" (mouse hold-above)
+  13.95s  signal: "←leftSalvage lander151 mTracking" (mouse hold-above)
+  14.00s  mouse hold-above at offset (0,-160) · rig screen drift samples [0,0,0,-8,-33,-44,-46,-46,-46,-46,-46,-46]
+  14.00s  SHOT C-mouse-00014s-mouse-out-of-shaft.png
+  14.25s  signal: "←leftSalvage lander152 mTracking" (mouse hold-up-left)
+  14.50s  signal: "←leftSalvage lander148 mTracking" (mouse hold-up-left)
+  14.75s  signal: "←leftSalvage lander138 mTracking" (mouse hold-up-left)
+  15.00s  message: "" (mouse hold-up-left)
+  15.00s  danger: "Low energy · return to the lander" (mouse hold-up-left)
+  15.00s  signal: "↙down and leftSalvage lander126 mTracking" (mouse hold-up-left)
+  15.25s  signal: "↙down and leftSalvage lander117 mTracking" (mouse hold-up-left)
+  15.50s  signal: "↙down and leftSalvage lander104 mTracking" (mouse hold-up-left)
+  15.75s  signal: "↙down and leftSalvage lander95 mTracking" (mouse hold-up-left)
+  16.00s  signal: "↙down and leftSalvage lander83 mTracking" (mouse hold-up-left)
+  16.25s  signal: "↙down and leftSalvage lander76 mSignal nearby" (mouse hold-up-left)
+  16.50s  signal: "↙down and leftSalvage lander65 mSignal nearby" (mouse hold-up-left)
+  16.55s  mouse hold-up-left at offset (-200,-120) · rig screen drift samples [7,0,27,37,39,39,39,39,39,39]
+  16.55s  SHOT C-mouse-016.6s-mouse-flying-left.png
+  16.80s  signal: "↙down and leftSalvage lander55 mSignal nearby" (mouse hold-left)
+  17.05s  signal: "↓downSalvage lander47 mSignal nearby" (mouse hold-left)
+  17.30s  signal: "↓downSalvage lander35 mSignal nearby" (mouse hold-left)
+  17.55s  signal: "↓downSalvage lander28 mVery close" (mouse hold-left)
+  17.80s  signal: "↘down and rightSalvage lander27 mVery close" (mouse hold-left)
+  18.05s  signal: "→rightSalvage lander34 mSignal nearby" (mouse hold-left)
+  18.30s  signal: "→rightSalvage lander49 mSignal nearby" (mouse hold-left)
+  18.55s  signal: "→rightSalvage lander59 mSignal nearby" (mouse hold-left)
+  18.80s  signal: "→rightSalvage lander74 mSignal nearby" (mouse hold-left)
+  19.05s  signal: "→rightSalvage lander84 mTracking" (mouse hold-left)
+  19.30s  signal: "→rightSalvage lander99 mTracking" (mouse hold-left)
+  19.55s  signal: "→rightSalvage lander109 mTracking" (mouse hold-left)
+  19.80s  signal: "→rightSalvage lander124 mTracking" (mouse hold-left)
+  20.05s  signal: "→rightSalvage lander134 mTracking" (mouse hold-left)
+  20.30s  signal: "→rightSalvage lander149 mTracking" (mouse hold-left)
+  20.55s  signal: "→rightSalvage lander159 mTracking" (mouse hold-left)
+  20.80s  signal: "→rightSalvage lander174 mTracking" (mouse hold-left)
+  21.05s  signal: "→rightSalvage lander184 mTracking" (mouse hold-left)
+  21.30s  signal: "→rightSalvage lander199 mTracking" (mouse hold-left)
+  21.55s  danger: "Energy critical · return to the lander" (mouse hold-left)
+  21.55s  signal: "←leftSalvage lander191 mTracking" (mouse hold-left)
+  21.80s  signal: "←leftSalvage lander176 mTracking" (mouse hold-left)
+  22.05s  signal: "←leftSalvage lander166 mTracking" (mouse hold-left)
+  22.30s  signal: "←leftSalvage lander151 mTracking" (mouse hold-left)
+  22.55s  signal: "←leftSalvage lander141 mTracking" (mouse hold-left)
+  22.60s  signal: "←leftSalvage lander137 mTracking" (mouse up)
+  22.60s  mouse hold-left at offset (-220,0) · rig screen drift samples [7,15,21,26,31,32,4,0,0,0,0,0]
+  22.85s  signal: "←leftSalvage lander130 mTracking" (idle)
+  23.10s  signal: "←leftSalvage lander126 mTracking" (idle)
+  23.35s  signal: "←leftSalvage lander125 mTracking" (mouse nudge)
+  23.40s  signal: "←leftSalvage lander122 mTracking" (mouse up)
+  23.40s  mouse nudge at offset (-220,0) · rig screen drift samples [0]
+  23.65s  signal: "←leftSalvage lander119 mTracking" (idle)
+  23.70s  signal: "←leftSalvage lander118 mTracking" (idle)
+  23.95s  signal: "←leftSalvage lander117 mTracking" (mouse nudge)
+  24.00s  signal: "←leftSalvage lander114 mTracking" (mouse up)
+  24.00s  mouse nudge at offset (-220,0) · rig screen drift samples [0]
+  24.25s  signal: "←leftSalvage lander111 mTracking" (idle)
+  24.30s  signal: "←leftSalvage lander110 mTracking" (idle)
+  24.55s  signal: "←leftSalvage lander109 mTracking" (mouse nudge)
+  24.60s  signal: "←leftSalvage lander107 mTracking" (mouse up)
+  24.60s  mouse nudge at offset (-220,0) · rig screen drift samples [0]
+  24.85s  signal: "←leftSalvage lander103 mTracking" (idle)
+  25.15s  signal: "←leftSalvage lander101 mTracking" (mouse nudge)
+  25.20s  signal: "←leftSalvage lander99 mTracking" (mouse up)
+  25.20s  mouse nudge at offset (-220,0) · rig screen drift samples [0]
+  25.45s  signal: "←leftSalvage lander96 mTracking" (idle)
+  25.50s  signal: "←leftSalvage lander95 mTracking" (idle)
+  25.75s  signal: "←leftSalvage lander93 mTracking" (mouse nudge)
+  25.80s  signal: "←leftSalvage lander91 mTracking" (mouse up)
+  25.80s  mouse nudge at offset (-220,0) · rig screen drift samples [0]
+  26.05s  signal: "←leftSalvage lander88 mTracking" (idle)
+  26.10s  signal: "←leftSalvage lander87 mTracking" (idle)
+  26.35s  signal: "←leftSalvage lander85 mTracking" (mouse nudge)
+  26.40s  signal: "←leftSalvage lander83 mTracking" (mouse up)
+  26.40s  mouse nudge at offset (-220,0) · rig screen drift samples [0]
+  26.65s  signal: "←leftSalvage lander80 mTracking" (idle)
+  26.70s  signal: "←leftSalvage lander79 mSignal nearby" (idle)
+  26.70s  dock prompt visible=false after nudges=6 · E 1.3 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20
+  26.70s  SHOT C-mouse-026.7s-mouse-at-lander.png
+  27.00s  signal: "←leftSalvage lander78 mSignal nearby" (click on-lander)
+  27.00s  short click on-lander at (717,362) -> overlay= callout=""
+  27.00s  SHOT C-mouse-00027s-mouse-click-lander.png
+  27.25s  signal: "←leftSalvage lander77 mSignal nearby" (mouse to-shaft)
+  27.50s  signal: "←leftSalvage lander88 mTracking" (mouse to-shaft)
+  27.55s  mouse to-shaft at offset (220,0) · rig screen drift samples [0,0]
+  27.80s  signal: "←leftSalvage lander97 mTracking" (idle)
+  28.05s  signal: "←leftSalvage lander101 mTracking" (mouse to-shaft)
+  28.30s  signal: "←leftSalvage lander113 mTracking" (mouse to-shaft)
+  28.35s  mouse to-shaft at offset (220,0) · rig screen drift samples [0,0]
+  28.60s  signal: "←leftSalvage lander122 mTracking" (idle)
+  28.85s  signal: "←leftSalvage lander126 mTracking" (mouse to-shaft)
+  28.90s  signal: "←leftSalvage lander128 mTracking" (mouse up)
+  28.90s  mouse to-shaft at offset (220,0) · rig screen drift samples [0]
+  29.15s  signal: "←leftSalvage lander132 mTracking" (idle)
+  29.40s  signal: "←leftSalvage lander136 mTracking" (mouse to-shaft)
+  29.45s  mouse to-shaft at offset (220,0) · rig screen drift samples [0]
+  29.70s  signal: "←leftSalvage lander141 mTracking" (idle)
+  29.95s  signal: "←leftSalvage lander144 mTracking" (mouse to-shaft)
+  30.00s  signal: "←leftSalvage lander145 mTracking" (mouse up)
+  30.00s  mouse to-shaft at offset (220,0) · rig screen drift samples [0]
+  30.25s  signal: "←leftSalvage lander148 mTracking" (idle)
+  30.25s  at shaft? rigX=20.3728
+  30.50s  signal: "←leftSalvage lander150 mTracking" (mouse drop-into-shaft)
+  30.75s  signal: "←leftSalvage lander151 mTracking" (mouse drop-into-shaft)
+  31.25s  signal: "←leftSalvage lander152 mTracking" (mouse drop-into-shaft)
+  31.50s  signal: "←leftSalvage lander154 mTracking" (mouse drop-into-shaft)
+  31.75s  signal: "←leftSalvage lander156 mTracking" (mouse drop-into-shaft)
+  32.00s  signal: "←leftSalvage lander161 mTracking" (mouse drop-into-shaft)
+  32.25s  signal: "↖up and leftSalvage lander165 mTracking" (mouse drop-into-shaft)
+  32.50s  signal: "↖up and leftSalvage lander173 mTracking" (mouse drop-into-shaft)
+  32.75s  signal: "↖up and leftSalvage lander179 mTracking" (mouse drop-into-shaft)
+  33.00s  signal: "↖up and leftSalvage lander181 mTracking" (mouse drop-into-shaft)
+  33.30s  mouse drop-into-shaft at offset (0,160) · rig screen drift samples [1,9,16,23,28,32,35,38,39,40,12,7]
+  33.30s  after drop: E 0.8 / 10 H 10 / 10 D 100 m C 7 / 7 haul 380 CR CR 20
+  33.80s  signal: "↖up and leftSalvage lander186 mTracking" (mouse rise-in-shaft)
+  34.05s  signal: "↖up and leftSalvage lander183 mTracking" (mouse rise-in-shaft)
+  34.10s  signal: "↖up and leftSalvage lander181 mTracking" (mouse up)
+  34.10s  mouse rise-in-shaft at offset (0,-160) · rig screen drift samples [0,-2,-25]
+  34.35s  signal: "↖up and leftSalvage lander178 mTracking" (mouse airborne-right-wall)
+  34.60s  signal: "↖up and leftSalvage lander177 mTracking" (mouse airborne-right-wall)
+  35.10s  signal: "↖up and leftSalvage lander180 mTracking" (mouse airborne-right-wall)
+  35.35s  signal: "↖up and leftSalvage lander184 mTracking" (mouse airborne-right-wall)
+  35.60s  signal: "↖up and leftSalvage lander187 mTracking" (mouse airborne-right-wall)
+  35.65s  mouse airborne-right-wall at offset (220,0) · rig screen drift samples [4,15,26,34,41,28]
+  35.65s  airborne side hold: message="" (before "") depth=110 m
+  35.65s  SHOT C-mouse-035.7s-airborne-side-hold.png
+  36.40s  signal: "↖up and leftSalvage lander194 mTracking" (idle)
+  37.65s  danger: "Energy depleted · request recovery" (mouse grounded-right-wall)
+  37.65s  disabled: true (mouse grounded-right-wall)
+  38.70s  mouse grounded-right-wall at offset (220,0) · rig screen drift samples [0,0,0,0,0,0]
+  38.70s  grounded side hold: E 0.0 / 10 H 10 / 10 D 110 m C 7 / 7 haul 380 CR CR 20 rigX=21.5
+  38.70s  SHOT C-mouse-038.7s-grounded-side-cut.png
+
+MARKS {"beacon-mouse":10.95}
+ERRORS ["console: Failed to load resource: the server responded with a status of 404 (Not Found)"]

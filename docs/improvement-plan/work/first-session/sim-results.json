@@ -1,0 +1,2413 @@
+{
+ "generated": "2026-11-02T14:49:24.975Z",
+ "naive": [
+  {
+   "seed": 10,
+   "startEnergy": 6,
+   "disabledAt": {
+    "t": 19.37,
+    "depth": 190,
+    "energy": 0
+   },
+   "firstOre": 0.9,
+   "holdFull": {
+    "t": 6.57,
+    "depth": 70,
+    "energy": 4
+   },
+   "beacon": {
+    "t": 8.55,
+    "depth": 90,
+    "energy": 3.38
+   },
+   "crossings": {
+    "warn25": {
+     "t": 11.38,
+     "depth": 110,
+     "energy": 2.5
+    },
+    "warn15": {
+     "t": 14.57,
+     "depth": 140,
+     "energy": 1.5
+    },
+    "warn08": {
+     "t": 16.82,
+     "depth": 160,
+     "energy": 0.8
+    }
+   },
+   "lastSafeTurnaround": {
+    "depth": 160,
+    "t": 15.82,
+    "energy": 1.11,
+    "returnCost": 0.76
+   },
+   "cargoAtFailure": 7,
+   "haulAtFailure": 380,
+   "rows": [
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "cargo": 1,
+     "returnDriveCost": 0.28,
+     "returnDriveTime": 4.17,
+     "returnFlyCost": 0.28,
+     "returnFlyTime": 4.22,
+     "marginDrive": 5.5,
+     "signal": "↓ Wreck survey beacon 89 m distant",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "cargo": 2,
+     "returnDriveCost": 0.29,
+     "returnDriveTime": 4.37,
+     "returnFlyCost": 0.33,
+     "returnFlyTime": 4.55,
+     "marginDrive": 5.2,
+     "signal": "↓ Wreck survey beacon 79 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "cargo": 4,
+     "returnDriveCost": 0.35,
+     "returnDriveTime": 4.7,
+     "returnFlyCost": 0.38,
+     "returnFlyTime": 4.68,
+     "marginDrive": 4.55,
+     "signal": "↓ Wreck survey beacon 59 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "cargo": 5,
+     "returnDriveCost": 0.42,
+     "returnDriveTime": 4.95,
+     "returnFlyCost": 0.42,
+     "returnFlyTime": 4.87,
+     "marginDrive": 4.19,
+     "signal": "↓ Wreck survey beacon 49 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "cargo": 7,
+     "returnDriveCost": 0.47,
+     "returnDriveTime": 5.27,
+     "returnFlyCost": 0.47,
+     "returnFlyTime": 5.25,
+     "marginDrive": 3.53,
+     "signal": "↓ Wreck survey beacon 29 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 7.55,
+     "depth": 80,
+     "energy": 3.7,
+     "cargo": 7,
+     "returnDriveCost": 0.51,
+     "returnDriveTime": 5.43,
+     "returnFlyCost": 0.5,
+     "returnFlyTime": 5.42,
+     "marginDrive": 3.19,
+     "signal": "↓ Wreck survey beacon 19 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 9.55,
+     "depth": 100,
+     "energy": 3.07,
+     "cargo": 7,
+     "returnDriveCost": 0.57,
+     "returnDriveTime": 5.77,
+     "returnFlyCost": 0.57,
+     "returnFlyTime": 5.75,
+     "marginDrive": 2.5,
+     "signal": "↖ Salvage lander 180 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 10.57,
+     "depth": 110,
+     "energy": 2.75,
+     "cargo": 7,
+     "returnDriveCost": 0.6,
+     "returnDriveTime": 5.93,
+     "returnFlyCost": 0.6,
+     "returnFlyTime": 5.92,
+     "marginDrive": 2.15,
+     "signal": "↖ Salvage lander 186 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 12.63,
+     "depth": 130,
+     "energy": 2.1,
+     "cargo": 7,
+     "returnDriveCost": 0.66,
+     "returnDriveTime": 6.27,
+     "returnFlyCost": 0.66,
+     "returnFlyTime": 6.25,
+     "marginDrive": 1.44,
+     "signal": "↖ Salvage lander 198 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 13.68,
+     "depth": 140,
+     "energy": 1.78,
+     "cargo": 7,
+     "returnDriveCost": 0.7,
+     "returnDriveTime": 6.43,
+     "returnFlyCost": 0.69,
+     "returnFlyTime": 6.42,
+     "marginDrive": 1.08,
+     "signal": "↖ Salvage lander 205 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 15.82,
+     "depth": 160,
+     "energy": 1.11,
+     "cargo": 7,
+     "returnDriveCost": 0.76,
+     "returnDriveTime": 6.77,
+     "returnFlyCost": 0.76,
+     "returnFlyTime": 6.75,
+     "marginDrive": 0.35,
+     "signal": "↖ Salvage lander 219 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 16.9,
+     "depth": 170,
+     "energy": 0.77,
+     "cargo": 7,
+     "returnDriveCost": 0.79,
+     "returnDriveTime": 6.93,
+     "returnFlyCost": 0.79,
+     "returnFlyTime": 6.92,
+     "marginDrive": -0.02,
+     "signal": "↖ Salvage lander 227 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 0.08,
+     "cargo": 7,
+     "returnDriveCost": 0.85,
+     "returnDriveTime": 7.27,
+     "returnFlyCost": 0.85,
+     "returnFlyTime": 7.25,
+     "marginDrive": -0.77,
+     "signal": "↖ Salvage lander 242 m distant",
+     "next": "Return to lander → Bank ore"
+    }
+   ],
+   "events": [
+    {
+     "t": 0.02,
+     "depth": 0,
+     "energy": 6,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "msg": "Ironium secured. 1/7 bulk."
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "msg": "Ironium secured. 2/7 bulk."
+    },
+    {
+     "t": 2.75,
+     "depth": 30,
+     "energy": 5.2,
+     "msg": "Ironium secured. 3/7 bulk."
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "msg": "Ironium secured. 4/7 bulk."
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "msg": "Bronzium secured. 5/7 bulk."
+    },
+    {
+     "t": 5.6,
+     "depth": 60,
+     "energy": 4.31,
+     "msg": "Silverium secured. 6/7 bulk."
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "t": 8.55,
+     "depth": 90,
+     "energy": 3.38,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 0.08,
+     "msg": "Hold full: Ironium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 19.37,
+     "depth": 190,
+     "energy": 0,
+     "msg": "Energy depleted. Request surface recovery."
+    }
+   ],
+   "recovery": {
+    "preview": {
+     "cost": 200,
+     "remaining": 0,
+     "energy": 5,
+     "hull": 10
+    },
+    "creditsBefore": 20,
+    "creditsAfter": 0,
+    "energyAfter": 5,
+    "hullAfter": 10,
+    "lostPackages": 7,
+    "lostValue": 380,
+    "emergencySalvage": [],
+    "message": "Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+   }
+  },
+  {
+   "seed": 4,
+   "startEnergy": 6,
+   "disabledAt": {
+    "t": 19.37,
+    "depth": 190,
+    "energy": 0
+   },
+   "firstOre": 0.9,
+   "holdFull": {
+    "t": 6.57,
+    "depth": 70,
+    "energy": 4
+   },
+   "beacon": {
+    "t": 8.55,
+    "depth": 90,
+    "energy": 3.38
+   },
+   "crossings": {
+    "warn25": {
+     "t": 11.38,
+     "depth": 110,
+     "energy": 2.5
+    },
+    "warn15": {
+     "t": 14.57,
+     "depth": 140,
+     "energy": 1.5
+    },
+    "warn08": {
+     "t": 16.82,
+     "depth": 160,
+     "energy": 0.8
+    }
+   },
+   "lastSafeTurnaround": {
+    "depth": 160,
+    "t": 15.82,
+    "energy": 1.11,
+    "returnCost": 0.76
+   },
+   "cargoAtFailure": 7,
+   "haulAtFailure": 380,
+   "rows": [
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "cargo": 1,
+     "returnDriveCost": 0.28,
+     "returnDriveTime": 4.17,
+     "returnFlyCost": 0.28,
+     "returnFlyTime": 4.22,
+     "marginDrive": 5.5,
+     "signal": "↓ Wreck survey beacon 89 m distant",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "cargo": 2,
+     "returnDriveCost": 0.29,
+     "returnDriveTime": 4.37,
+     "returnFlyCost": 0.33,
+     "returnFlyTime": 4.55,
+     "marginDrive": 5.2,
+     "signal": "↓ Wreck survey beacon 79 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "cargo": 4,
+     "returnDriveCost": 0.35,
+     "returnDriveTime": 4.7,
+     "returnFlyCost": 0.38,
+     "returnFlyTime": 4.68,
+     "marginDrive": 4.55,
+     "signal": "↓ Wreck survey beacon 59 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "cargo": 5,
+     "returnDriveCost": 0.42,
+     "returnDriveTime": 4.95,
+     "returnFlyCost": 0.42,
+     "returnFlyTime": 4.87,
+     "marginDrive": 4.19,
+     "signal": "↓ Wreck survey beacon 49 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "cargo": 7,
+     "returnDriveCost": 0.47,
+     "returnDriveTime": 5.27,
+     "returnFlyCost": 0.47,
+     "returnFlyTime": 5.25,
+     "marginDrive": 3.53,
+     "signal": "↓ Wreck survey beacon 29 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 7.55,
+     "depth": 80,
+     "energy": 3.7,
+     "cargo": 7,
+     "returnDriveCost": 0.51,
+     "returnDriveTime": 5.43,
+     "returnFlyCost": 0.5,
+     "returnFlyTime": 5.42,
+     "marginDrive": 3.19,
+     "signal": "↓ Wreck survey beacon 19 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 9.55,
+     "depth": 100,
+     "energy": 3.07,
+     "cargo": 7,
+     "returnDriveCost": 0.57,
+     "returnDriveTime": 5.77,
+     "returnFlyCost": 0.57,
+     "returnFlyTime": 5.75,
+     "marginDrive": 2.5,
+     "signal": "↖ Salvage lander 180 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 10.57,
+     "depth": 110,
+     "energy": 2.75,
+     "cargo": 7,
+     "returnDriveCost": 0.6,
+     "returnDriveTime": 5.93,
+     "returnFlyCost": 0.6,
+     "returnFlyTime": 5.92,
+     "marginDrive": 2.15,
+     "signal": "↖ Salvage lander 186 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 12.63,
+     "depth": 130,
+     "energy": 2.1,
+     "cargo": 7,
+     "returnDriveCost": 0.66,
+     "returnDriveTime": 6.27,
+     "returnFlyCost": 0.66,
+     "returnFlyTime": 6.25,
+     "marginDrive": 1.44,
+     "signal": "↖ Salvage lander 198 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 13.68,
+     "depth": 140,
+     "energy": 1.78,
+     "cargo": 7,
+     "returnDriveCost": 0.7,
+     "returnDriveTime": 6.43,
+     "returnFlyCost": 0.69,
+     "returnFlyTime": 6.42,
+     "marginDrive": 1.08,
+     "signal": "↖ Salvage lander 205 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 15.82,
+     "depth": 160,
+     "energy": 1.11,
+     "cargo": 7,
+     "returnDriveCost": 0.76,
+     "returnDriveTime": 6.77,
+     "returnFlyCost": 0.76,
+     "returnFlyTime": 6.75,
+     "marginDrive": 0.35,
+     "signal": "↖ Salvage lander 219 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 16.9,
+     "depth": 170,
+     "energy": 0.77,
+     "cargo": 7,
+     "returnDriveCost": 0.79,
+     "returnDriveTime": 6.93,
+     "returnFlyCost": 0.79,
+     "returnFlyTime": 6.92,
+     "marginDrive": -0.02,
+     "signal": "↖ Salvage lander 227 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 0.08,
+     "cargo": 7,
+     "returnDriveCost": 0.85,
+     "returnDriveTime": 7.27,
+     "returnFlyCost": 0.85,
+     "returnFlyTime": 7.25,
+     "marginDrive": -0.77,
+     "signal": "↖ Salvage lander 242 m distant",
+     "next": "Return to lander → Bank ore"
+    }
+   ],
+   "events": [
+    {
+     "t": 0.02,
+     "depth": 0,
+     "energy": 6,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "msg": "Ironium secured. 1/7 bulk."
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "msg": "Ironium secured. 2/7 bulk."
+    },
+    {
+     "t": 2.75,
+     "depth": 30,
+     "energy": 5.2,
+     "msg": "Ironium secured. 3/7 bulk."
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "msg": "Ironium secured. 4/7 bulk."
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "msg": "Bronzium secured. 5/7 bulk."
+    },
+    {
+     "t": 5.6,
+     "depth": 60,
+     "energy": 4.31,
+     "msg": "Silverium secured. 6/7 bulk."
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "t": 8.55,
+     "depth": 90,
+     "energy": 3.38,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "t": 19.37,
+     "depth": 190,
+     "energy": 0,
+     "msg": "Energy depleted. Request surface recovery."
+    }
+   ],
+   "recovery": {
+    "preview": {
+     "cost": 200,
+     "remaining": 0,
+     "energy": 5,
+     "hull": 10
+    },
+    "creditsBefore": 20,
+    "creditsAfter": 0,
+    "energyAfter": 5,
+    "hullAfter": 10,
+    "lostPackages": 7,
+    "lostValue": 380,
+    "emergencySalvage": [],
+    "message": "Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+   }
+  },
+  {
+   "seed": 73021,
+   "startEnergy": 6,
+   "disabledAt": {
+    "t": 19.37,
+    "depth": 190,
+    "energy": 0
+   },
+   "firstOre": 0.9,
+   "holdFull": {
+    "t": 6.57,
+    "depth": 70,
+    "energy": 4
+   },
+   "beacon": {
+    "t": 8.55,
+    "depth": 90,
+    "energy": 3.38
+   },
+   "crossings": {
+    "warn25": {
+     "t": 11.38,
+     "depth": 110,
+     "energy": 2.5
+    },
+    "warn15": {
+     "t": 14.57,
+     "depth": 140,
+     "energy": 1.5
+    },
+    "warn08": {
+     "t": 16.82,
+     "depth": 160,
+     "energy": 0.8
+    }
+   },
+   "lastSafeTurnaround": {
+    "depth": 160,
+    "t": 15.82,
+    "energy": 1.11,
+    "returnCost": 0.76
+   },
+   "cargoAtFailure": 7,
+   "haulAtFailure": 380,
+   "rows": [
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "cargo": 1,
+     "returnDriveCost": 0.28,
+     "returnDriveTime": 4.17,
+     "returnFlyCost": 0.28,
+     "returnFlyTime": 4.22,
+     "marginDrive": 5.5,
+     "signal": "↓ Wreck survey beacon 89 m distant",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "cargo": 2,
+     "returnDriveCost": 0.29,
+     "returnDriveTime": 4.37,
+     "returnFlyCost": 0.33,
+     "returnFlyTime": 4.55,
+     "marginDrive": 5.2,
+     "signal": "↓ Wreck survey beacon 79 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "cargo": 4,
+     "returnDriveCost": 0.35,
+     "returnDriveTime": 4.7,
+     "returnFlyCost": 0.38,
+     "returnFlyTime": 4.68,
+     "marginDrive": 4.55,
+     "signal": "↓ Wreck survey beacon 59 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "cargo": 5,
+     "returnDriveCost": 0.42,
+     "returnDriveTime": 4.95,
+     "returnFlyCost": 0.42,
+     "returnFlyTime": 4.87,
+     "marginDrive": 4.19,
+     "signal": "↓ Wreck survey beacon 49 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "cargo": 7,
+     "returnDriveCost": 0.47,
+     "returnDriveTime": 5.27,
+     "returnFlyCost": 0.47,
+     "returnFlyTime": 5.25,
+     "marginDrive": 3.53,
+     "signal": "↓ Wreck survey beacon 29 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 7.55,
+     "depth": 80,
+     "energy": 3.7,
+     "cargo": 7,
+     "returnDriveCost": 0.51,
+     "returnDriveTime": 5.43,
+     "returnFlyCost": 0.5,
+     "returnFlyTime": 5.42,
+     "marginDrive": 3.19,
+     "signal": "↓ Wreck survey beacon 19 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 9.55,
+     "depth": 100,
+     "energy": 3.07,
+     "cargo": 7,
+     "returnDriveCost": 0.57,
+     "returnDriveTime": 5.77,
+     "returnFlyCost": 0.57,
+     "returnFlyTime": 5.75,
+     "marginDrive": 2.5,
+     "signal": "↖ Salvage lander 180 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 10.57,
+     "depth": 110,
+     "energy": 2.75,
+     "cargo": 7,
+     "returnDriveCost": 0.6,
+     "returnDriveTime": 5.93,
+     "returnFlyCost": 0.6,
+     "returnFlyTime": 5.92,
+     "marginDrive": 2.15,
+     "signal": "↖ Salvage lander 186 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 12.63,
+     "depth": 130,
+     "energy": 2.1,
+     "cargo": 7,
+     "returnDriveCost": 0.66,
+     "returnDriveTime": 6.27,
+     "returnFlyCost": 0.66,
+     "returnFlyTime": 6.25,
+     "marginDrive": 1.44,
+     "signal": "↖ Salvage lander 198 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 13.68,
+     "depth": 140,
+     "energy": 1.78,
+     "cargo": 7,
+     "returnDriveCost": 0.7,
+     "returnDriveTime": 6.43,
+     "returnFlyCost": 0.69,
+     "returnFlyTime": 6.42,
+     "marginDrive": 1.08,
+     "signal": "↖ Salvage lander 205 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 15.82,
+     "depth": 160,
+     "energy": 1.11,
+     "cargo": 7,
+     "returnDriveCost": 0.76,
+     "returnDriveTime": 6.77,
+     "returnFlyCost": 0.76,
+     "returnFlyTime": 6.75,
+     "marginDrive": 0.35,
+     "signal": "↖ Salvage lander 219 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 16.9,
+     "depth": 170,
+     "energy": 0.77,
+     "cargo": 7,
+     "returnDriveCost": 0.79,
+     "returnDriveTime": 6.93,
+     "returnFlyCost": 0.79,
+     "returnFlyTime": 6.92,
+     "marginDrive": -0.02,
+     "signal": "↖ Salvage lander 227 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 0.08,
+     "cargo": 7,
+     "returnDriveCost": 0.85,
+     "returnDriveTime": 7.27,
+     "returnFlyCost": 0.85,
+     "returnFlyTime": 7.25,
+     "marginDrive": -0.77,
+     "signal": "↖ Salvage lander 242 m distant",
+     "next": "Return to lander → Bank ore"
+    }
+   ],
+   "events": [
+    {
+     "t": 0.02,
+     "depth": 0,
+     "energy": 6,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "msg": "Ironium secured. 1/7 bulk."
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "msg": "Ironium secured. 2/7 bulk."
+    },
+    {
+     "t": 2.75,
+     "depth": 30,
+     "energy": 5.2,
+     "msg": "Ironium secured. 3/7 bulk."
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "msg": "Ironium secured. 4/7 bulk."
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "msg": "Bronzium secured. 5/7 bulk."
+    },
+    {
+     "t": 5.6,
+     "depth": 60,
+     "energy": 4.31,
+     "msg": "Silverium secured. 6/7 bulk."
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "t": 8.55,
+     "depth": 90,
+     "energy": 3.38,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "t": 12.63,
+     "depth": 130,
+     "energy": 2.1,
+     "msg": "Hold full: Ironium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 0.08,
+     "msg": "Hold full: Bronzium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 19.37,
+     "depth": 190,
+     "energy": 0,
+     "msg": "Energy depleted. Request surface recovery."
+    }
+   ],
+   "recovery": {
+    "preview": {
+     "cost": 200,
+     "remaining": 0,
+     "energy": 5,
+     "hull": 10
+    },
+    "creditsBefore": 20,
+    "creditsAfter": 0,
+    "energyAfter": 5,
+    "hullAfter": 10,
+    "lostPackages": 7,
+    "lostValue": 380,
+    "emergencySalvage": [],
+    "message": "Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+   }
+  },
+  {
+   "seed": 999,
+   "startEnergy": 6,
+   "disabledAt": {
+    "t": 19.37,
+    "depth": 190,
+    "energy": 0
+   },
+   "firstOre": 0.9,
+   "holdFull": {
+    "t": 6.57,
+    "depth": 70,
+    "energy": 4
+   },
+   "beacon": {
+    "t": 8.55,
+    "depth": 90,
+    "energy": 3.38
+   },
+   "crossings": {
+    "warn25": {
+     "t": 11.38,
+     "depth": 110,
+     "energy": 2.5
+    },
+    "warn15": {
+     "t": 14.57,
+     "depth": 140,
+     "energy": 1.5
+    },
+    "warn08": {
+     "t": 16.82,
+     "depth": 160,
+     "energy": 0.8
+    }
+   },
+   "lastSafeTurnaround": {
+    "depth": 160,
+    "t": 15.82,
+    "energy": 1.11,
+    "returnCost": 0.76
+   },
+   "cargoAtFailure": 7,
+   "haulAtFailure": 380,
+   "rows": [
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "cargo": 1,
+     "returnDriveCost": 0.28,
+     "returnDriveTime": 4.17,
+     "returnFlyCost": 0.28,
+     "returnFlyTime": 4.22,
+     "marginDrive": 5.5,
+     "signal": "↓ Wreck survey beacon 89 m distant",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "cargo": 2,
+     "returnDriveCost": 0.29,
+     "returnDriveTime": 4.37,
+     "returnFlyCost": 0.33,
+     "returnFlyTime": 4.55,
+     "marginDrive": 5.2,
+     "signal": "↓ Wreck survey beacon 79 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "cargo": 4,
+     "returnDriveCost": 0.35,
+     "returnDriveTime": 4.7,
+     "returnFlyCost": 0.38,
+     "returnFlyTime": 4.68,
+     "marginDrive": 4.55,
+     "signal": "↓ Wreck survey beacon 59 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "cargo": 5,
+     "returnDriveCost": 0.42,
+     "returnDriveTime": 4.95,
+     "returnFlyCost": 0.42,
+     "returnFlyTime": 4.87,
+     "marginDrive": 4.19,
+     "signal": "↓ Wreck survey beacon 49 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "cargo": 7,
+     "returnDriveCost": 0.47,
+     "returnDriveTime": 5.27,
+     "returnFlyCost": 0.47,
+     "returnFlyTime": 5.25,
+     "marginDrive": 3.53,
+     "signal": "↓ Wreck survey beacon 29 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 7.55,
+     "depth": 80,
+     "energy": 3.7,
+     "cargo": 7,
+     "returnDriveCost": 0.51,
+     "returnDriveTime": 5.43,
+     "returnFlyCost": 0.5,
+     "returnFlyTime": 5.42,
+     "marginDrive": 3.19,
+     "signal": "↓ Wreck survey beacon 19 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 9.55,
+     "depth": 100,
+     "energy": 3.07,
+     "cargo": 7,
+     "returnDriveCost": 0.57,
+     "returnDriveTime": 5.77,
+     "returnFlyCost": 0.57,
+     "returnFlyTime": 5.75,
+     "marginDrive": 2.5,
+     "signal": "↖ Salvage lander 180 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 10.57,
+     "depth": 110,
+     "energy": 2.75,
+     "cargo": 7,
+     "returnDriveCost": 0.6,
+     "returnDriveTime": 5.93,
+     "returnFlyCost": 0.6,
+     "returnFlyTime": 5.92,
+     "marginDrive": 2.15,
+     "signal": "↖ Salvage lander 186 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 12.63,
+     "depth": 130,
+     "energy": 2.1,
+     "cargo": 7,
+     "returnDriveCost": 0.66,
+     "returnDriveTime": 6.27,
+     "returnFlyCost": 0.66,
+     "returnFlyTime": 6.25,
+     "marginDrive": 1.44,
+     "signal": "↖ Salvage lander 198 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 13.68,
+     "depth": 140,
+     "energy": 1.78,
+     "cargo": 7,
+     "returnDriveCost": 0.7,
+     "returnDriveTime": 6.43,
+     "returnFlyCost": 0.69,
+     "returnFlyTime": 6.42,
+     "marginDrive": 1.08,
+     "signal": "↖ Salvage lander 205 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 15.82,
+     "depth": 160,
+     "energy": 1.11,
+     "cargo": 7,
+     "returnDriveCost": 0.76,
+     "returnDriveTime": 6.77,
+     "returnFlyCost": 0.76,
+     "returnFlyTime": 6.75,
+     "marginDrive": 0.35,
+     "signal": "↖ Salvage lander 219 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 16.9,
+     "depth": 170,
+     "energy": 0.77,
+     "cargo": 7,
+     "returnDriveCost": 0.79,
+     "returnDriveTime": 6.93,
+     "returnFlyCost": 0.79,
+     "returnFlyTime": 6.92,
+     "marginDrive": -0.02,
+     "signal": "↖ Salvage lander 227 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 0.08,
+     "cargo": 7,
+     "returnDriveCost": 0.85,
+     "returnDriveTime": 7.27,
+     "returnFlyCost": 0.85,
+     "returnFlyTime": 7.25,
+     "marginDrive": -0.77,
+     "signal": "↖ Salvage lander 242 m distant",
+     "next": "Return to lander → Bank ore"
+    }
+   ],
+   "events": [
+    {
+     "t": 0.02,
+     "depth": 0,
+     "energy": 6,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 5.78,
+     "msg": "Ironium secured. 1/7 bulk."
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 5.49,
+     "msg": "Ironium secured. 2/7 bulk."
+    },
+    {
+     "t": 2.75,
+     "depth": 30,
+     "energy": 5.2,
+     "msg": "Ironium secured. 3/7 bulk."
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 4.9,
+     "msg": "Ironium secured. 4/7 bulk."
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 4.61,
+     "msg": "Bronzium secured. 5/7 bulk."
+    },
+    {
+     "t": 5.6,
+     "depth": 60,
+     "energy": 4.31,
+     "msg": "Silverium secured. 6/7 bulk."
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 4,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "t": 8.55,
+     "depth": 90,
+     "energy": 3.38,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 0.08,
+     "msg": "Hold full: Ironium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 19.37,
+     "depth": 190,
+     "energy": 0,
+     "msg": "Energy depleted. Request surface recovery."
+    }
+   ],
+   "recovery": {
+    "preview": {
+     "cost": 200,
+     "remaining": 0,
+     "energy": 5,
+     "hull": 10
+    },
+    "creditsBefore": 20,
+    "creditsAfter": 0,
+    "energyAfter": 5,
+    "hullAfter": 10,
+    "lostPackages": 7,
+    "lostValue": 380,
+    "emergencySalvage": [],
+    "message": "Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+   }
+  }
+ ],
+ "naiveFullTank": [
+  {
+   "seed": 10,
+   "startEnergy": 10,
+   "disabledAt": {
+    "t": 32.13,
+    "depth": 300,
+    "energy": 0
+   },
+   "firstOre": 0.9,
+   "holdFull": {
+    "t": 6.57,
+    "depth": 70,
+    "energy": 8
+   },
+   "beacon": {
+    "t": 8.55,
+    "depth": 90,
+    "energy": 7.38
+   },
+   "crossings": {
+    "warn25": {
+     "t": 24.15,
+     "depth": 230,
+     "energy": 2.5
+    },
+    "warn15": {
+     "t": 27.35,
+     "depth": 260,
+     "energy": 1.5
+    },
+    "warn08": {
+     "t": 29.58,
+     "depth": 280,
+     "energy": 0.8
+    }
+   },
+   "lastSafeTurnaround": {
+    "depth": 240,
+    "t": 24.8,
+    "energy": 2.3,
+    "returnCost": 1.01
+   },
+   "cargoAtFailure": 7,
+   "haulAtFailure": 380,
+   "rows": [
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 9.78,
+     "cargo": 1,
+     "returnDriveCost": 0.28,
+     "returnDriveTime": 4.17,
+     "returnFlyCost": 0.28,
+     "returnFlyTime": 4.22,
+     "marginDrive": 9.5,
+     "signal": "↓ Wreck survey beacon 89 m distant",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 9.49,
+     "cargo": 2,
+     "returnDriveCost": 0.29,
+     "returnDriveTime": 4.37,
+     "returnFlyCost": 0.33,
+     "returnFlyTime": 4.55,
+     "marginDrive": 9.2,
+     "signal": "↓ Wreck survey beacon 79 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 8.9,
+     "cargo": 4,
+     "returnDriveCost": 0.35,
+     "returnDriveTime": 4.7,
+     "returnFlyCost": 0.38,
+     "returnFlyTime": 4.68,
+     "marginDrive": 8.55,
+     "signal": "↓ Wreck survey beacon 59 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 8.61,
+     "cargo": 5,
+     "returnDriveCost": 0.42,
+     "returnDriveTime": 4.95,
+     "returnFlyCost": 0.42,
+     "returnFlyTime": 4.87,
+     "marginDrive": 8.19,
+     "signal": "↓ Wreck survey beacon 49 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 8,
+     "cargo": 7,
+     "returnDriveCost": 0.47,
+     "returnDriveTime": 5.27,
+     "returnFlyCost": 0.47,
+     "returnFlyTime": 5.25,
+     "marginDrive": 7.53,
+     "signal": "↓ Wreck survey beacon 29 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 7.55,
+     "depth": 80,
+     "energy": 7.7,
+     "cargo": 7,
+     "returnDriveCost": 0.51,
+     "returnDriveTime": 5.43,
+     "returnFlyCost": 0.5,
+     "returnFlyTime": 5.42,
+     "marginDrive": 7.19,
+     "signal": "↓ Wreck survey beacon 19 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 9.55,
+     "depth": 100,
+     "energy": 7.07,
+     "cargo": 7,
+     "returnDriveCost": 0.57,
+     "returnDriveTime": 5.77,
+     "returnFlyCost": 0.57,
+     "returnFlyTime": 5.75,
+     "marginDrive": 6.5,
+     "signal": "↖ Salvage lander 180 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 10.57,
+     "depth": 110,
+     "energy": 6.75,
+     "cargo": 7,
+     "returnDriveCost": 0.6,
+     "returnDriveTime": 5.93,
+     "returnFlyCost": 0.6,
+     "returnFlyTime": 5.92,
+     "marginDrive": 6.15,
+     "signal": "↖ Salvage lander 186 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 12.63,
+     "depth": 130,
+     "energy": 6.1,
+     "cargo": 7,
+     "returnDriveCost": 0.66,
+     "returnDriveTime": 6.27,
+     "returnFlyCost": 0.66,
+     "returnFlyTime": 6.25,
+     "marginDrive": 5.44,
+     "signal": "↖ Salvage lander 198 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 13.68,
+     "depth": 140,
+     "energy": 5.78,
+     "cargo": 7,
+     "returnDriveCost": 0.7,
+     "returnDriveTime": 6.43,
+     "returnFlyCost": 0.69,
+     "returnFlyTime": 6.42,
+     "marginDrive": 5.08,
+     "signal": "↖ Salvage lander 205 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 15.82,
+     "depth": 160,
+     "energy": 5.11,
+     "cargo": 7,
+     "returnDriveCost": 0.76,
+     "returnDriveTime": 6.77,
+     "returnFlyCost": 0.76,
+     "returnFlyTime": 6.75,
+     "marginDrive": 4.35,
+     "signal": "↖ Salvage lander 219 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 16.9,
+     "depth": 170,
+     "energy": 4.77,
+     "cargo": 7,
+     "returnDriveCost": 0.79,
+     "returnDriveTime": 6.93,
+     "returnFlyCost": 0.79,
+     "returnFlyTime": 6.92,
+     "marginDrive": 3.98,
+     "signal": "↖ Salvage lander 227 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 4.08,
+     "cargo": 7,
+     "returnDriveCost": 0.85,
+     "returnDriveTime": 7.27,
+     "returnFlyCost": 0.85,
+     "returnFlyTime": 7.25,
+     "marginDrive": 3.23,
+     "signal": "↖ Salvage lander 242 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 20.22,
+     "depth": 200,
+     "energy": 3.73,
+     "cargo": 7,
+     "returnDriveCost": 0.88,
+     "returnDriveTime": 7.43,
+     "returnFlyCost": 0.88,
+     "returnFlyTime": 7.42,
+     "marginDrive": 2.85,
+     "signal": "↖ Salvage lander 250 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 22.48,
+     "depth": 220,
+     "energy": 3.02,
+     "cargo": 7,
+     "returnDriveCost": 0.95,
+     "returnDriveTime": 7.77,
+     "returnFlyCost": 0.95,
+     "returnFlyTime": 7.75,
+     "marginDrive": 2.07,
+     "signal": "↖ Salvage lander 266 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 23.63,
+     "depth": 230,
+     "energy": 2.66,
+     "cargo": 7,
+     "returnDriveCost": 0.98,
+     "returnDriveTime": 7.93,
+     "returnFlyCost": 0.98,
+     "returnFlyTime": 7.92,
+     "marginDrive": 1.68,
+     "signal": "↖ Salvage lander 275 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 24.8,
+     "depth": 240,
+     "energy": 2.3,
+     "cargo": 7,
+     "returnDriveCost": 1.01,
+     "returnDriveTime": 8.1,
+     "returnFlyCost": 1.01,
+     "returnFlyTime": 8.08,
+     "marginDrive": 1.29,
+     "signal": "↖ Salvage lander 283 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 29.57,
+     "depth": 280,
+     "energy": 0.8,
+     "cargo": 7,
+     "returnDriveCost": 1.14,
+     "returnDriveTime": 8.77,
+     "returnFlyCost": 1.13,
+     "returnFlyTime": 8.75,
+     "marginDrive": -0.34,
+     "signal": "↖ Salvage lander 318 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 30.78,
+     "depth": 290,
+     "energy": 0.42,
+     "cargo": 7,
+     "returnDriveCost": 1.17,
+     "returnDriveTime": 8.93,
+     "returnFlyCost": 1.17,
+     "returnFlyTime": 8.92,
+     "marginDrive": -0.75,
+     "signal": "↖ Salvage lander 326 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 32.02,
+     "depth": 300,
+     "energy": 0.03,
+     "cargo": 7,
+     "returnDriveCost": 1.2,
+     "returnDriveTime": 9.1,
+     "returnFlyCost": 1.2,
+     "returnFlyTime": 9.08,
+     "marginDrive": -1.17,
+     "signal": "↖ Salvage lander 335 m distant",
+     "next": "Return to lander → Bank ore"
+    }
+   ],
+   "events": [
+    {
+     "t": 0.02,
+     "depth": 0,
+     "energy": 10,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 9.78,
+     "msg": "Ironium secured. 1/7 bulk."
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 9.49,
+     "msg": "Ironium secured. 2/7 bulk."
+    },
+    {
+     "t": 2.75,
+     "depth": 30,
+     "energy": 9.2,
+     "msg": "Ironium secured. 3/7 bulk."
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 8.9,
+     "msg": "Ironium secured. 4/7 bulk."
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 8.61,
+     "msg": "Bronzium secured. 5/7 bulk."
+    },
+    {
+     "t": 5.6,
+     "depth": 60,
+     "energy": 8.31,
+     "msg": "Silverium secured. 6/7 bulk."
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 8,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "t": 8.55,
+     "depth": 90,
+     "energy": 7.38,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 4.08,
+     "msg": "Hold full: Ironium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 22.48,
+     "depth": 220,
+     "energy": 3.02,
+     "msg": "Hold full: Bronzium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 23.63,
+     "depth": 230,
+     "energy": 2.66,
+     "msg": "Hold full: Silverium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 25.98,
+     "depth": 250,
+     "energy": 1.93,
+     "msg": "Lander pressure valve recovered. Bank it safely at the lander."
+    },
+    {
+     "t": 28.37,
+     "depth": 270,
+     "energy": 1.18,
+     "msg": "Hold full: Bronzium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 30.78,
+     "depth": 290,
+     "energy": 0.42,
+     "msg": "Hold full: Ironium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 32.13,
+     "depth": 300,
+     "energy": 0,
+     "msg": "Energy depleted. Request surface recovery."
+    }
+   ],
+   "recovery": {
+    "preview": {
+     "cost": 200,
+     "remaining": 0,
+     "energy": 5,
+     "hull": 10
+    },
+    "creditsBefore": 20,
+    "creditsAfter": 0,
+    "energyAfter": 5,
+    "hullAfter": 10,
+    "lostPackages": 7,
+    "lostValue": 380,
+    "emergencySalvage": [],
+    "message": "Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+   }
+  },
+  {
+   "seed": 4,
+   "startEnergy": 10,
+   "disabledAt": {
+    "t": 32.13,
+    "depth": 300,
+    "energy": 0
+   },
+   "firstOre": 0.9,
+   "holdFull": {
+    "t": 6.57,
+    "depth": 70,
+    "energy": 8
+   },
+   "beacon": {
+    "t": 8.55,
+    "depth": 90,
+    "energy": 7.38
+   },
+   "crossings": {
+    "warn25": {
+     "t": 24.15,
+     "depth": 230,
+     "energy": 2.5
+    },
+    "warn15": {
+     "t": 27.35,
+     "depth": 260,
+     "energy": 1.5
+    },
+    "warn08": {
+     "t": 29.58,
+     "depth": 280,
+     "energy": 0.8
+    }
+   },
+   "lastSafeTurnaround": {
+    "depth": 240,
+    "t": 24.8,
+    "energy": 2.3,
+    "returnCost": 1.01
+   },
+   "cargoAtFailure": 7,
+   "haulAtFailure": 380,
+   "rows": [
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 9.78,
+     "cargo": 1,
+     "returnDriveCost": 0.28,
+     "returnDriveTime": 4.17,
+     "returnFlyCost": 0.28,
+     "returnFlyTime": 4.22,
+     "marginDrive": 9.5,
+     "signal": "↓ Wreck survey beacon 89 m distant",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 9.49,
+     "cargo": 2,
+     "returnDriveCost": 0.29,
+     "returnDriveTime": 4.37,
+     "returnFlyCost": 0.33,
+     "returnFlyTime": 4.55,
+     "marginDrive": 9.2,
+     "signal": "↓ Wreck survey beacon 79 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 8.9,
+     "cargo": 4,
+     "returnDriveCost": 0.35,
+     "returnDriveTime": 4.7,
+     "returnFlyCost": 0.38,
+     "returnFlyTime": 4.68,
+     "marginDrive": 8.55,
+     "signal": "↓ Wreck survey beacon 59 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 8.61,
+     "cargo": 5,
+     "returnDriveCost": 0.42,
+     "returnDriveTime": 4.95,
+     "returnFlyCost": 0.42,
+     "returnFlyTime": 4.87,
+     "marginDrive": 8.19,
+     "signal": "↓ Wreck survey beacon 49 m near",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 8,
+     "cargo": 7,
+     "returnDriveCost": 0.47,
+     "returnDriveTime": 5.27,
+     "returnFlyCost": 0.47,
+     "returnFlyTime": 5.25,
+     "marginDrive": 7.53,
+     "signal": "↓ Wreck survey beacon 29 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 7.55,
+     "depth": 80,
+     "energy": 7.7,
+     "cargo": 7,
+     "returnDriveCost": 0.51,
+     "returnDriveTime": 5.43,
+     "returnFlyCost": 0.5,
+     "returnFlyTime": 5.42,
+     "marginDrive": 7.19,
+     "signal": "↓ Wreck survey beacon 19 m close",
+     "next": "Survey the beacon at 100 m"
+    },
+    {
+     "t": 9.55,
+     "depth": 100,
+     "energy": 7.07,
+     "cargo": 7,
+     "returnDriveCost": 0.57,
+     "returnDriveTime": 5.77,
+     "returnFlyCost": 0.57,
+     "returnFlyTime": 5.75,
+     "marginDrive": 6.5,
+     "signal": "↖ Salvage lander 180 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 10.57,
+     "depth": 110,
+     "energy": 6.75,
+     "cargo": 7,
+     "returnDriveCost": 0.6,
+     "returnDriveTime": 5.93,
+     "returnFlyCost": 0.6,
+     "returnFlyTime": 5.92,
+     "marginDrive": 6.15,
+     "signal": "↖ Salvage lander 186 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 12.63,
+     "depth": 130,
+     "energy": 6.1,
+     "cargo": 7,
+     "returnDriveCost": 0.66,
+     "returnDriveTime": 6.27,
+     "returnFlyCost": 0.66,
+     "returnFlyTime": 6.25,
+     "marginDrive": 5.44,
+     "signal": "↖ Salvage lander 198 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 13.68,
+     "depth": 140,
+     "energy": 5.78,
+     "cargo": 7,
+     "returnDriveCost": 0.7,
+     "returnDriveTime": 6.43,
+     "returnFlyCost": 0.69,
+     "returnFlyTime": 6.42,
+     "marginDrive": 5.08,
+     "signal": "↖ Salvage lander 205 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 15.82,
+     "depth": 160,
+     "energy": 5.11,
+     "cargo": 7,
+     "returnDriveCost": 0.76,
+     "returnDriveTime": 6.77,
+     "returnFlyCost": 0.76,
+     "returnFlyTime": 6.75,
+     "marginDrive": 4.35,
+     "signal": "↖ Salvage lander 219 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 16.9,
+     "depth": 170,
+     "energy": 4.77,
+     "cargo": 7,
+     "returnDriveCost": 0.79,
+     "returnDriveTime": 6.93,
+     "returnFlyCost": 0.79,
+     "returnFlyTime": 6.92,
+     "marginDrive": 3.98,
+     "signal": "↖ Salvage lander 227 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 19.1,
+     "depth": 190,
+     "energy": 4.08,
+     "cargo": 7,
+     "returnDriveCost": 0.85,
+     "returnDriveTime": 7.27,
+     "returnFlyCost": 0.85,
+     "returnFlyTime": 7.25,
+     "marginDrive": 3.23,
+     "signal": "↖ Salvage lander 242 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 20.22,
+     "depth": 200,
+     "energy": 3.73,
+     "cargo": 7,
+     "returnDriveCost": 0.88,
+     "returnDriveTime": 7.43,
+     "returnFlyCost": 0.88,
+     "returnFlyTime": 7.42,
+     "marginDrive": 2.85,
+     "signal": "↖ Salvage lander 250 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 22.48,
+     "depth": 220,
+     "energy": 3.02,
+     "cargo": 7,
+     "returnDriveCost": 0.95,
+     "returnDriveTime": 7.77,
+     "returnFlyCost": 0.95,
+     "returnFlyTime": 7.75,
+     "marginDrive": 2.07,
+     "signal": "↖ Salvage lander 266 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 23.63,
+     "depth": 230,
+     "energy": 2.66,
+     "cargo": 7,
+     "returnDriveCost": 0.98,
+     "returnDriveTime": 7.93,
+     "returnFlyCost": 0.98,
+     "returnFlyTime": 7.92,
+     "marginDrive": 1.68,
+     "signal": "↖ Salvage lander 275 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 24.8,
+     "depth": 240,
+     "energy": 2.3,
+     "cargo": 7,
+     "returnDriveCost": 1.01,
+     "returnDriveTime": 8.1,
+     "returnFlyCost": 1.01,
+     "returnFlyTime": 8.08,
+     "marginDrive": 1.29,
+     "signal": "↖ Salvage lander 283 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 29.57,
+     "depth": 280,
+     "energy": 0.8,
+     "cargo": 7,
+     "returnDriveCost": 1.14,
+     "returnDriveTime": 8.77,
+     "returnFlyCost": 1.13,
+     "returnFlyTime": 8.75,
+     "marginDrive": -0.34,
+     "signal": "↖ Salvage lander 318 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 30.78,
+     "depth": 290,
+     "energy": 0.42,
+     "cargo": 7,
+     "returnDriveCost": 1.17,
+     "returnDriveTime": 8.93,
+     "returnFlyCost": 1.17,
+     "returnFlyTime": 8.92,
+     "marginDrive": -0.75,
+     "signal": "↖ Salvage lander 326 m distant",
+     "next": "Return to lander → Bank ore"
+    },
+    {
+     "t": 32.02,
+     "depth": 300,
+     "energy": 0.03,
+     "cargo": 7,
+     "returnDriveCost": 1.2,
+     "returnDriveTime": 9.1,
+     "returnFlyCost": 1.2,
+     "returnFlyTime": 9.08,
+     "marginDrive": -1.17,
+     "signal": "↖ Salvage lander 335 m distant",
+     "next": "Return to lander → Bank ore"
+    }
+   ],
+   "events": [
+    {
+     "t": 0.02,
+     "depth": 0,
+     "energy": 10,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "t": 0.9,
+     "depth": 10,
+     "energy": 9.78,
+     "msg": "Ironium secured. 1/7 bulk."
+    },
+    {
+     "t": 1.82,
+     "depth": 20,
+     "energy": 9.49,
+     "msg": "Ironium secured. 2/7 bulk."
+    },
+    {
+     "t": 2.75,
+     "depth": 30,
+     "energy": 9.2,
+     "msg": "Ironium secured. 3/7 bulk."
+    },
+    {
+     "t": 3.68,
+     "depth": 40,
+     "energy": 8.9,
+     "msg": "Ironium secured. 4/7 bulk."
+    },
+    {
+     "t": 4.63,
+     "depth": 50,
+     "energy": 8.61,
+     "msg": "Bronzium secured. 5/7 bulk."
+    },
+    {
+     "t": 5.6,
+     "depth": 60,
+     "energy": 8.31,
+     "msg": "Silverium secured. 6/7 bulk."
+    },
+    {
+     "t": 6.57,
+     "depth": 70,
+     "energy": 8,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "t": 8.55,
+     "depth": 90,
+     "energy": 7.38,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "t": 21.35,
+     "depth": 210,
+     "energy": 3.38,
+     "msg": "Hold full: Ironium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 25.98,
+     "depth": 250,
+     "energy": 1.93,
+     "msg": "Lander pressure valve recovered. Bank it safely at the lander."
+    },
+    {
+     "t": 30.78,
+     "depth": 290,
+     "energy": 0.42,
+     "msg": "Hold full: Ironium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 32.02,
+     "depth": 300,
+     "energy": 0.03,
+     "msg": "Hold full: Bronzium remains here (1 bulk). Return or eject a package."
+    },
+    {
+     "t": 32.13,
+     "depth": 300,
+     "energy": 0,
+     "msg": "Energy depleted. Request surface recovery."
+    }
+   ],
+   "recovery": {
+    "preview": {
+     "cost": 200,
+     "remaining": 0,
+     "energy": 5,
+     "hull": 10
+    },
+    "creditsBefore": 20,
+    "creditsAfter": 0,
+    "energyAfter": 5,
+    "hullAfter": 10,
+    "lostPackages": 7,
+    "lostValue": 380,
+    "emergencySalvage": [],
+    "message": "Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+   }
+  }
+ ],
+ "cautious": [
+  {
+   "seed": 10,
+   "atDock": true,
+   "trip1Seconds": 15.97,
+   "totalSeconds": 33.48,
+   "log": [
+    {
+     "label": "deploy",
+     "t": 0,
+     "depth": 0,
+     "energy": 6,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 20,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "label": "beacon surveyed (Down held)",
+     "t": 8.55,
+     "depth": 90,
+     "energy": 3.38,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "back at surface",
+     "t": 11.4,
+     "depth": 0,
+     "energy": 2.72,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "parked at lander",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "sold trip 1",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 400,
+     "msg": "Sold stored cargo for 380 CR."
+    },
+    {
+     "label": "M1 paid=true",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 200,
+     "msg": "M1 complete. Construction installed and new blueprints unlocked."
+    },
+    {
+     "label": "refuelled cost=7.5",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 10,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 192.5,
+     "msg": "Energy replenished for 7.5 CR."
+    },
+    {
+     "label": "at column 21",
+     "t": 20.77,
+     "depth": 0,
+     "energy": 9.73,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 192.5,
+     "msg": "Energy replenished for 7.5 CR."
+    },
+    {
+     "label": "trip 2 hold",
+     "t": 27.33,
+     "depth": 70,
+     "energy": 7.73,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 192.5,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "label": "parked trip 2",
+     "t": 33.48,
+     "depth": 0,
+     "energy": 7.24,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 192.5,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "label": "sold trip 2",
+     "t": 33.48,
+     "depth": 0,
+     "energy": 7.24,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 672.5,
+     "msg": "Sold stored cargo for 480 CR."
+    }
+   ],
+   "affordableAfterTrip2": 672.5
+  },
+  {
+   "seed": 4,
+   "atDock": true,
+   "trip1Seconds": 15.97,
+   "totalSeconds": 33.48,
+   "log": [
+    {
+     "label": "deploy",
+     "t": 0,
+     "depth": 0,
+     "energy": 6,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 20,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "label": "beacon surveyed (Down held)",
+     "t": 8.55,
+     "depth": 90,
+     "energy": 3.38,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "back at surface",
+     "t": 11.4,
+     "depth": 0,
+     "energy": 2.72,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "parked at lander",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "sold trip 1",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 400,
+     "msg": "Sold stored cargo for 380 CR."
+    },
+    {
+     "label": "M1 paid=true",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 200,
+     "msg": "M1 complete. Construction installed and new blueprints unlocked."
+    },
+    {
+     "label": "refuelled cost=7.5",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 10,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 192.5,
+     "msg": "Energy replenished for 7.5 CR."
+    },
+    {
+     "label": "at column 21",
+     "t": 20.77,
+     "depth": 0,
+     "energy": 9.73,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 192.5,
+     "msg": "Energy replenished for 7.5 CR."
+    },
+    {
+     "label": "trip 2 hold",
+     "t": 27.33,
+     "depth": 70,
+     "energy": 7.73,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 192.5,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "label": "parked trip 2",
+     "t": 33.48,
+     "depth": 0,
+     "energy": 7.24,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 192.5,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "label": "sold trip 2",
+     "t": 33.48,
+     "depth": 0,
+     "energy": 7.24,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 672.5,
+     "msg": "Sold stored cargo for 480 CR."
+    }
+   ],
+   "affordableAfterTrip2": 672.5
+  },
+  {
+   "seed": 73021,
+   "atDock": true,
+   "trip1Seconds": 15.97,
+   "totalSeconds": 33.48,
+   "log": [
+    {
+     "label": "deploy",
+     "t": 0,
+     "depth": 0,
+     "energy": 6,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 20,
+     "msg": "Salvaged auger installed. Mine the marked seam, then bank your haul at the lander."
+    },
+    {
+     "label": "beacon surveyed (Down held)",
+     "t": 8.55,
+     "depth": 90,
+     "energy": 3.38,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "back at surface",
+     "t": 11.4,
+     "depth": 0,
+     "energy": 2.72,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "parked at lander",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 20,
+     "msg": "Wreck beacon surveyed. Bank three ore packages at the lander."
+    },
+    {
+     "label": "sold trip 1",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 400,
+     "msg": "Sold stored cargo for 380 CR."
+    },
+    {
+     "label": "M1 paid=true",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 2.5,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 200,
+     "msg": "M1 complete. Construction installed and new blueprints unlocked."
+    },
+    {
+     "label": "refuelled cost=7.5",
+     "t": 15.97,
+     "depth": 0,
+     "energy": 10,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 192.5,
+     "msg": "Energy replenished for 7.5 CR."
+    },
+    {
+     "label": "at column 21",
+     "t": 20.77,
+     "depth": 0,
+     "energy": 9.73,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 192.5,
+     "msg": "Energy replenished for 7.5 CR."
+    },
+    {
+     "label": "trip 2 hold",
+     "t": 27.33,
+     "depth": 70,
+     "energy": 7.73,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 192.5,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "label": "parked trip 2",
+     "t": 33.48,
+     "depth": 0,
+     "energy": 7.24,
+     "hull": 10,
+     "cargo": 7,
+     "credits": 192.5,
+     "msg": "Hold full: 7/7 bulk. Return to the lander to bank your haul."
+    },
+    {
+     "label": "sold trip 2",
+     "t": 33.48,
+     "depth": 0,
+     "energy": 7.24,
+     "hull": 10,
+     "cargo": 0,
+     "credits": 672.5,
+     "msg": "Sold stored cargo for 480 CR."
+    }
+   ],
+   "affordableAfterTrip2": 672.5
+  }
+ ],
+ "spawn": {
+  "spawnX": 20.5,
+  "dockX": 5.5,
+  "distanceMeters": 150,
+  "driveToDockFromSpawn": {
+   "ok": true,
+   "t": 3.78,
+   "spent": 0.27,
+   "hull": 10
+  },
+  "flyToDockFromSpawn": {
+   "ok": true,
+   "t": 3.83,
+   "spent": 0.22,
+   "hull": 10
+  }
+ }
+}

@@ -1,0 +1,38 @@
+[
+ {
+  "band": "0-100 m",
+  "densityPct": 16,
+  "meanValue": 39.8,
+  "valuePerCell": 6.37
+ },
+ {
+  "band": "100-200 m",
+  "densityPct": 11.8,
+  "meanValue": 40.3,
+  "valuePerCell": 4.77
+ },
+ {
+  "band": "200-300 m",
+  "densityPct": 13.6,
+  "meanValue": 44,
+  "valuePerCell": 5.97
+ },
+ {
+  "band": "300-400 m",
+  "densityPct": 14.6,
+  "meanValue": 49.8,
+  "valuePerCell": 7.27
+ },
+ {
+  "band": "400-500 m",
+  "densityPct": 20.7,
+  "meanValue": 50.1,
+  "valuePerCell": 10.37
+ },
+ {
+  "band": "500-600 m",
+  "densityPct": 23.3,
+  "meanValue": 54.8,
+  "valuePerCell": 12.75
+ }
+]

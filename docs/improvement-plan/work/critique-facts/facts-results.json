@@ -1,0 +1,331 @@
+{
+ "holdDown6": {
+  "depths": [
+   190
+  ],
+  "times": [
+   19.37,
+   19.37
+  ],
+  "firstOre": [
+   0.9
+  ],
+  "warn25": [
+   11.38
+  ],
+  "cargo": [
+   7
+  ],
+  "cargoValueCR": [
+   380
+  ],
+  "recoveryCostCR": [
+   20
+  ],
+  "creditsAfterRecoveryCR": [
+   0
+  ],
+  "cargoAfterRecovery": [
+   0
+  ]
+ },
+ "holdDown10": {
+  "depths": [
+   300
+  ],
+  "times": [
+   32.13,
+   32.13
+  ],
+  "firstOre": [
+   0.9
+  ],
+  "warn25": [
+   24.15
+  ],
+  "cargo": [
+   7
+  ],
+  "cargoValueCR": [
+   380
+  ],
+  "recoveryCostCR": [
+   null
+  ],
+  "creditsAfterRecoveryCR": [
+   null
+  ],
+  "cargoAfterRecovery": [
+   null
+  ]
+ },
+ "turnaround": {
+  "lastSafeTurnSeconds": 16.9,
+  "warn25Seconds": 11.38,
+  "gap": 5.52
+ },
+ "relics": {
+  "W01_1_50": {
+   "n": 50,
+   "none": 15,
+   "one": 25,
+   "two": 10,
+   "noneShare": 0.3
+  },
+  "W01_1_200": {
+   "n": 200,
+   "none": 56,
+   "one": 119,
+   "two": 25,
+   "noneShare": 0.28
+  },
+  "W01_0_199": {
+   "n": 200,
+   "none": 57,
+   "one": 118,
+   "two": 25,
+   "noneShare": 0.28
+  },
+  "W01_1_2000": {
+   "n": 2000,
+   "none": 533,
+   "one": 1176,
+   "two": 291,
+   "noneShare": 0.27
+  },
+  "W01_random2000": {
+   "n": 2000,
+   "none": 511,
+   "one": 1202,
+   "two": 287,
+   "noneShare": 0.26
+  },
+  "W02_1_200": {
+   "n": 200,
+   "none": 55,
+   "one": 104,
+   "two": 41,
+   "noneShare": 0.28
+  },
+  "W02_1_2000": {
+   "n": 2000,
+   "none": 512,
+   "one": 1176,
+   "two": 312,
+   "noneShare": 0.26
+  }
+ },
+ "valuePerCell": [
+  {
+   "band": "0-100 m",
+   "valuePerCell": 9.97,
+   "density": 0.2,
+   "meanValue": 49.83
+  },
+  {
+   "band": "100-200 m",
+   "valuePerCell": 8.17,
+   "density": 0.17,
+   "meanValue": 47.08
+  },
+  {
+   "band": "200-300 m",
+   "valuePerCell": 7.98,
+   "density": 0.17,
+   "meanValue": 47.33
+  },
+  {
+   "band": "300-400 m",
+   "valuePerCell": 7.42,
+   "density": 0.16,
+   "meanValue": 46.95
+  },
+  {
+   "band": "400-500 m",
+   "valuePerCell": 6.69,
+   "density": 0.14,
+   "meanValue": 46.25
+  },
+  {
+   "band": "500-600 m",
+   "valuePerCell": 7.29,
+   "density": 0.16,
+   "meanValue": 46.87
+  }
+ ],
+ "totalOrdinaryCR": [
+  19000,
+  19000
+ ],
+ "typeCounts": [
+  "{\"W01-O1\":240,\"W01-O2\":120,\"W01-O3\":36,\"W01-O4\":4}"
+ ],
+ "cutTimeRatioRow59": 1.74,
+ "fallDamage": [
+  {
+   "engine": 0,
+   "drop": 10,
+   "hull": 10,
+   "vmax": 6,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 0,
+   "drop": 14,
+   "hull": 10,
+   "vmax": 6,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 0,
+   "drop": 15,
+   "hull": 10,
+   "vmax": 6,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 0,
+   "drop": 16,
+   "hull": 10,
+   "vmax": 6,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 0,
+   "drop": 17,
+   "hull": 10,
+   "vmax": 6,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 0,
+   "drop": 20,
+   "hull": 10,
+   "vmax": 6,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 0,
+   "drop": 30,
+   "hull": 10,
+   "vmax": 6,
+   "message": "Lander pressure valve recovered. Bank it safely at the lander."
+  },
+  {
+   "engine": 1,
+   "drop": 10,
+   "hull": 10,
+   "vmax": 6.46,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 1,
+   "drop": 14,
+   "hull": 10,
+   "vmax": 6.66,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 1,
+   "drop": 15,
+   "hull": 10,
+   "vmax": 6.66,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 1,
+   "drop": 16,
+   "hull": 10,
+   "vmax": 6.66,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 1,
+   "drop": 17,
+   "hull": 10,
+   "vmax": 6.66,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 1,
+   "drop": 20,
+   "hull": 10,
+   "vmax": 6.66,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 1,
+   "drop": 30,
+   "hull": 10,
+   "vmax": 6.66,
+   "message": "Lander pressure valve recovered. Bank it safely at the lander."
+  },
+  {
+   "engine": 2,
+   "drop": 10,
+   "hull": 10,
+   "vmax": 6.46,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 2,
+   "drop": 14,
+   "hull": 10,
+   "vmax": 6.87,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 2,
+   "drop": 15,
+   "hull": 10,
+   "vmax": 6.95,
+   "message": "Wreck beacon surveyed. Bank three ore packages at the lander."
+  },
+  {
+   "engine": 2,
+   "drop": 16,
+   "hull": 9,
+   "vmax": 7.01,
+   "message": "Hard landing: −1 hull. Return for service."
+  },
+  {
+   "engine": 2,
+   "drop": 17,
+   "hull": 9,
+   "vmax": 7.07,
+   "message": "Hard landing: −1 hull. Return for service."
+  },
+  {
+   "engine": 2,
+   "drop": 20,
+   "hull": 9,
+   "vmax": 7.19,
+   "message": "Hard landing: −1 hull. Return for service."
+  },
+  {
+   "engine": 2,
+   "drop": 30,
+   "hull": 9,
+   "vmax": 7.4,
+   "message": "Hard landing: −1 hull. Return for service."
+  }
+ ],
+ "depthReadout": {
+  "row9-bottom": 100,
+  "row9-centre": 99,
+  "row24-bottom": 250,
+  "row24-centre": 249,
+  "row29-bottom": 300,
+  "row29-centre": 299,
+  "row30-bottom": 310,
+  "row30-centre": 309,
+  "row31-bottom": 320,
+  "row31-centre": 319,
+  "row32-bottom": 330,
+  "row32-centre": 329,
+  "row39-bottom": 400,
+  "row39-centre": 399,
+  "row59-bottom": 600,
+  "row59-centre": 599
+ }
+}

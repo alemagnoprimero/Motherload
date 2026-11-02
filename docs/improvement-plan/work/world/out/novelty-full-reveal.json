@@ -1,0 +1,295 @@
+{
+ "W01": [
+  {
+   "band": "0-50 m",
+   "newContentTypes": 5.4,
+   "firsts": {
+    "material:base": "100%",
+    "material:rock": "100%",
+    "ore:O1": "100%",
+    "ore:O2": "100%",
+    "ore:O3": "100%",
+    "ore:O4": "30%",
+    "relic": "10%"
+   },
+   "distinctNonCommonKindsPresent": 1.4
+  },
+  {
+   "band": "50-100 m",
+   "newContentTypes": 2.29,
+   "firsts": {
+    "cave": "97%",
+    "landmark:beacon": "100%",
+    "ore:O4": "25%",
+    "relic": "7%"
+   },
+   "distinctNonCommonKindsPresent": 3.35
+  },
+  {
+   "band": "100-150 m",
+   "newContentTypes": 1.24,
+   "firsts": {
+    "hazard:shelf": "100%",
+    "relic": "6%",
+    "ore:O4": "15%",
+    "cave": "3%"
+   },
+   "distinctNonCommonKindsPresent": 3.28
+  },
+  {
+   "band": "150-200 m",
+   "newContentTypes": 0.19,
+   "firsts": {
+    "ore:O4": "13%",
+    "relic": "7%"
+   },
+   "distinctNonCommonKindsPresent": 2.31
+  },
+  {
+   "band": "200-250 m",
+   "newContentTypes": 1.16,
+   "firsts": {
+    "landmark:W01-VALVE": "100%",
+    "ore:O4": "8%",
+    "relic": "8%"
+   },
+   "distinctNonCommonKindsPresent": 3.33
+  },
+  {
+   "band": "250-300 m",
+   "newContentTypes": 0.11,
+   "firsts": {
+    "ore:O4": "7%",
+    "relic": "5%"
+   },
+   "distinctNonCommonKindsPresent": 3.36
+  },
+  {
+   "band": "300-350 m",
+   "newContentTypes": 0.07,
+   "firsts": {
+    "relic": "4%",
+    "ore:O4": "4%"
+   },
+   "distinctNonCommonKindsPresent": 2.29
+  },
+  {
+   "band": "350-400 m",
+   "newContentTypes": 1.06,
+   "firsts": {
+    "landmark:W01-ANTENNA": "100%",
+    "relic": "5%",
+    "ore:O4": "1%"
+   },
+   "distinctNonCommonKindsPresent": 3.25
+  },
+  {
+   "band": "400-450 m",
+   "newContentTypes": 0.06,
+   "firsts": {
+    "relic": "6%"
+   },
+   "distinctNonCommonKindsPresent": 2.23
+  },
+  {
+   "band": "450-500 m",
+   "newContentTypes": 0.08,
+   "firsts": {
+    "relic": "8%"
+   },
+   "distinctNonCommonKindsPresent": 3.23
+  },
+  {
+   "band": "500-550 m",
+   "newContentTypes": 0.05,
+   "firsts": {
+    "relic": "5%"
+   },
+   "distinctNonCommonKindsPresent": 2.19
+  },
+  {
+   "band": "550-600 m",
+   "newContentTypes": 1.05,
+   "firsts": {
+    "landmark:W01-Q": "100%",
+    "relic": "5%"
+   },
+   "distinctNonCommonKindsPresent": 3
+  }
+ ],
+ "W02": [
+  {
+   "band": "0-50 m",
+   "newContentTypes": 4,
+   "firsts": {
+    "material:rock": "100%",
+    "material:base": "100%",
+    "ore:O1": "100%",
+    "ore:O2": "100%"
+   },
+   "distinctNonCommonKindsPresent": 0
+  },
+  {
+   "band": "50-100 m",
+   "newContentTypes": 0,
+   "firsts": {},
+   "distinctNonCommonKindsPresent": 0
+  },
+  {
+   "band": "100-150 m",
+   "newContentTypes": 2,
+   "firsts": {
+    "cave": "100%",
+    "landmark:samples": "100%"
+   },
+   "distinctNonCommonKindsPresent": 2
+  },
+  {
+   "band": "150-200 m",
+   "newContentTypes": 0,
+   "firsts": {},
+   "distinctNonCommonKindsPresent": 1
+  },
+  {
+   "band": "200-250 m",
+   "newContentTypes": 1.07,
+   "firsts": {
+    "ore:O3": "100%",
+    "relic": "7%"
+   },
+   "distinctNonCommonKindsPresent": 2.07
+  },
+  {
+   "band": "250-300 m",
+   "newContentTypes": 1.04,
+   "firsts": {
+    "hazard:cold": "100%",
+    "relic": "4%"
+   },
+   "distinctNonCommonKindsPresent": 2.7
+  },
+  {
+   "band": "300-350 m",
+   "newContentTypes": 0.06,
+   "firsts": {
+    "relic": "6%"
+   },
+   "distinctNonCommonKindsPresent": 1.81
+  },
+  {
+   "band": "350-400 m",
+   "newContentTypes": 0.05,
+   "firsts": {
+    "relic": "5%"
+   },
+   "distinctNonCommonKindsPresent": 1.74
+  },
+  {
+   "band": "400-450 m",
+   "newContentTypes": 1.07,
+   "firsts": {
+    "landmark:cryo-vein": "100%",
+    "relic": "7%"
+   },
+   "distinctNonCommonKindsPresent": 3.08
+  },
+  {
+   "band": "450-500 m",
+   "newContentTypes": 1.05,
+   "firsts": {
+    "hazard:vent": "100%",
+    "relic": "5%"
+   },
+   "distinctNonCommonKindsPresent": 3.06
+  },
+  {
+   "band": "500-550 m",
+   "newContentTypes": 0.06,
+   "firsts": {
+    "relic": "6%"
+   },
+   "distinctNonCommonKindsPresent": 1.71
+  },
+  {
+   "band": "550-600 m",
+   "newContentTypes": 0.05,
+   "firsts": {
+    "relic": "5%"
+   },
+   "distinctNonCommonKindsPresent": 1.69
+  },
+  {
+   "band": "600-650 m",
+   "newContentTypes": 0.15,
+   "firsts": {
+    "ore:O4": "9%",
+    "relic": "7%"
+   },
+   "distinctNonCommonKindsPresent": 2.84
+  },
+  {
+   "band": "650-700 m",
+   "newContentTypes": 0.27,
+   "firsts": {
+    "ore:O4": "25%",
+    "relic": "2%"
+   },
+   "distinctNonCommonKindsPresent": 2.03
+  },
+  {
+   "band": "700-750 m",
+   "newContentTypes": 0.24,
+   "firsts": {
+    "ore:O4": "21%",
+    "relic": "4%"
+   },
+   "distinctNonCommonKindsPresent": 2.03
+  },
+  {
+   "band": "750-800 m",
+   "newContentTypes": 0.21,
+   "firsts": {
+    "ore:O4": "17%",
+    "relic": "5%"
+   },
+   "distinctNonCommonKindsPresent": 2.05
+  },
+  {
+   "band": "800-850 m",
+   "newContentTypes": 0.18,
+   "firsts": {
+    "relic": "3%",
+    "ore:O4": "15%"
+   },
+   "distinctNonCommonKindsPresent": 3.1
+  },
+  {
+   "band": "850-900 m",
+   "newContentTypes": 0.12,
+   "firsts": {
+    "ore:O4": "9%",
+    "relic": "3%"
+   },
+   "distinctNonCommonKindsPresent": 2.08
+  },
+  {
+   "band": "900-950 m",
+   "newContentTypes": 0.07,
+   "firsts": {
+    "ore:O4": "5%",
+    "relic": "2%"
+   },
+   "distinctNonCommonKindsPresent": 2.06
+  },
+  {
+   "band": "950-1000 m",
+   "newContentTypes": 1.06,
+   "firsts": {
+    "landmark:catalyst": "100%",
+    "relic": "5%",
+    "ore:O4": "1%"
+   },
+   "distinctNonCommonKindsPresent": 2.08
+  }
+ ]
+}

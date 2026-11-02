@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HUD redesign mock</title>
+<style>
+/* ---- Proposed HUD tokens (HUD-P1) ---- */
+:root {
+  --hud-font: "Inter", "Arial", sans-serif;
+  --hud-num: "Inter Display", "Inter", "Arial", sans-serif;
+  --hud-scale: 1;                      /* Larger text = 1.2 */
+  --hud-plate: rgba(10, 22, 28, 0.85); /* simulated: min contrast 6.9:1 worst case */
+  --hud-plate-edge: rgba(150, 190, 185, 0.22);
+  --hud-radius: 6px;
+  --hud-gap: 8px;
+  --hud-text: #eef5ee;
+  --hud-dim: #b4c6bd;
+  --hud-label: #9fb4aa;
+  --energy: #7fd8e0;
+  --hull: #e8a28f;
+  --credit: #f0c27e;
+  --ok: #8fe0b8;
+  --caution: #ffc55c;
+  --danger: #ff6b4f;
+  --mission: #f6cf8f;
+  --t-label: calc(11px * var(--hud-scale));
+  --t-body: calc(14px * var(--hud-scale));
+  --t-value: calc(20px * var(--hud-scale));
+  --t-value-s: calc(16px * var(--hud-scale));
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #101920; }
+body { font-family: var(--hud-font); color: var(--hud-text); font-variant-numeric: tabular-nums; }
+#bg { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.plate { position: fixed; background: var(--hud-plate); border: 1px solid var(--hud-plate-edge);
+  border-radius: var(--hud-radius); box-shadow: 0 4px 18px rgba(0,0,0,.35); }
+.label { font-size: var(--t-label); letter-spacing: .08em; color: var(--hud-label); font-weight: 600; }
+.value { font-family: var(--hud-num); font-size: var(--t-value); font-weight: 700; line-height: 1; }
+.value small { font-size: 12px; color: var(--hud-dim); font-weight: 600; }
+.row { display: flex; align-items: center; gap: 8px; }
+.icon { width: 22px; height: 22px; flex: 0 0 22px; }
+/* Energy gauge with home notch and margin zones */
+.gauge { position: relative; height: 12px; border-radius: 3px; background: rgba(255,255,255,.08); overflow: visible; }
+.gauge .fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--energy); }
+.gauge .seg { position: absolute; inset: 0; border-radius: 3px;
+  background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 2px), rgba(10,22,28,.9) calc(10% - 2px) 10%); }
+.gauge .zone-home { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px 0 0 3px;
+  background: repeating-linear-gradient(135deg, rgba(255,107,79,.55) 0 3px, transparent 3px 6px); }
+.gauge .zone-turn { position: absolute; top: 0; bottom: 0;
+  background: repeating-linear-gradient(135deg, rgba(255,197,92,.45) 0 3px, transparent 3px 6px); }
+.gauge .notch { position: absolute; top: -5px; bottom: -5px; width: 3px; margin-left: -1px; background: #fff;
+  box-shadow: 0 0 0 1px #0a161c; border-radius: 1px; }
+.gauge .notch::after { content: "⌂"; position: absolute; top: -15px; left: -5px; font-size: 12px; color: #fff; }
+.hullbar { height: 6px; border-radius: 2px; background: rgba(255,255,255,.08); position: relative; }
+.hullbar i { position: absolute; inset: 0 auto 0 0; background: var(--hull); border-radius: 2px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 7px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+.chip.home { background: rgba(127,216,224,.14); color: var(--energy); }
+.chip.warn { background: rgba(255,197,92,.18); color: var(--caution); }
+.chip.bad { background: rgba(255,107,79,.22); color: #ffb3a3; }
+/* Cargo pips */
+.pips { display: flex; gap: 3px; }
+.pips i { width: 10px; height: 14px; border-radius: 2px; background: rgba(255,255,255,.12); }
+.pips i.t1 { background: #c9d2d6; } .pips i.t2 { background: #d9935f; } .pips i.t3 { background: #9fd2ee; } .pips i.t4 { background: #f3cf5a; }
+/* Depth rail */
+.rail { position: fixed; width: 10px; border-radius: 5px; background: rgba(10,22,28,.75); border: 1px solid var(--hud-plate-edge); }
+.rail .safe { position: absolute; left: 1px; right: 1px; top: 0; border-radius: 4px 4px 0 0; background: rgba(143,224,184,.35); }
+.rail .unsafe { position: absolute; left: 1px; right: 1px; bottom: 0;
+  background: repeating-linear-gradient(135deg, rgba(255,107,79,.45) 0 3px, transparent 3px 6px); border-radius: 0 0 4px 4px; }
+.rail .mark { position: absolute; right: 14px; transform: translateY(-50%); white-space: nowrap; font-size: 11px; font-weight: 700;
+  color: var(--hud-dim); background: var(--hud-plate); padding: 1px 5px; border-radius: 3px; }
+.rail .mark::after { content: ""; position: absolute; right: -12px; top: 50%; width: 10px; height: 2px; background: currentColor; }
+.rail .mark.mission { color: var(--mission); } .rail .mark.rig { color: #fff; font-size: 12px; }
+.rail .mark.home { color: var(--energy); }
+/* Objective chip */
+.objective .title { font-size: var(--t-body); font-weight: 700; }
+.objective .step { color: var(--mission); font-weight: 800; font-size: 12px; }
+.objective .loc { font-size: 13px; color: var(--hud-dim); }
+.objective .loc b { color: var(--hud-text); }
+.arrow { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(246,207,143,.16); color: var(--mission); font-size: 14px; font-weight: 800; }
+.kbd { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 3px;
+  border: 1px solid rgba(220,230,220,.35); font-size: 10px; font-weight: 800; color: var(--hud-dim); }
+/* Toasts */
+.toast { position: fixed; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; font-size: var(--t-body); font-weight: 600; white-space: nowrap; }
+.toast .pri { width: 4px; align-self: stretch; border-radius: 2px; }
+/* Alert banner */
+.alert { position: fixed; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; font-size: 16px; font-weight: 800; white-space: nowrap; background: rgba(60,14,10,.9); border: 1px solid #ff6b4f;
+  border-radius: 6px; color: #ffe1d8; box-shadow: 0 0 0 3px rgba(255,107,79,.18), 0 6px 22px rgba(0,0,0,.45); }
+.alert small { font-weight: 600; font-size: 13px; color: #ffc2b4; }
+/* Tool dock */
+.pause { position: fixed; display: grid; place-items: center; width: 44px; height: 44px; font-size: 18px; font-weight: 900; }
+.tool { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 6px; position: relative;
+  background: rgba(255,255,255,.04); border: 1px solid var(--hud-plate-edge); }
+.tool img { width: 26px; height: 26px; }
+.tool .kbd { position: absolute; right: -4px; bottom: -6px; background: #0a161c; }
+/* World-space indicators (DOM, crisp at any DPR) */
+.wlabel { position: fixed; transform: translate(-50%, -100%); font-size: 12px; font-weight: 700; padding: 3px 7px;
+  border-radius: 4px; background: rgba(10,22,28,.8); white-space: nowrap; }
+.edge { position: fixed; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; padding: 4px 8px 4px 6px;
+  border-radius: 14px; background: rgba(10,22,28,.86); border: 1px solid; white-space: nowrap; }
+.edge .tri { font-size: 13px; }
+.popup { position: fixed; transform: translate(-50%, -100%); font-size: 13px; font-weight: 800; color: var(--credit);
+  text-shadow: 0 1px 2px #000, 0 0 6px #000; white-space: nowrap; }
+.popup span { color: var(--hud-text); font-weight: 600; }
+.cap { position: fixed; left: 8px; bottom: 6px; font: 600 10px var(--hud-font); color: rgba(255,255,255,.55); }
+</style>
+</head>
+<body>
+<img id="bg" alt="">
+<div id="hud"></div>
+<script>
+const q = new URLSearchParams(location.search);
+const form = q.get("form") || "desktop";
+const state = q.get("state") || "normal";
+document.getElementById("bg").src = q.get("bg");
+const ICON = (n) => `/icons/${n}.png`;
+const W = innerWidth, H = innerHeight;
+const critical = state === "critical";
+// Example numbers for the dive scene (stock rig, W01 M1 at 90 m; return cost from FTUE-P3 formula ≈ 0.31 L + 0.0305 L/row)
+const E = critical ? 1.2 : 2.9, CAP = 10, HOME = critical ? 0.9 : 0.6, TURN = HOME + 1.0;
+const spare = (E - HOME).toFixed(1);
+const pct = (v) => (v / CAP * 100).toFixed(1) + "%";
+function gauge(width) {
+  return `<div class="gauge" style="width:${width}px">
+    <div class="fill" style="width:${pct(E)};background:${critical ? "var(--danger)" : E <= TURN ? "var(--caution)" : "var(--energy)"}"></div>
+    <div class="zone-home" style="width:${pct(HOME)}"></div>
+    <div class="zone-turn" style="left:${pct(HOME)};width:${pct(TURN - HOME)}"></div>
+    <div class="seg"></div>
+    <div class="notch" style="left:${pct(HOME)}"></div></div>`;
+}
+const homeChip = critical
+  ? `<span class="chip bad">TURN BACK · ${spare} L spare</span>`
+  : `<span class="chip home">⌂ HOME ${HOME.toFixed(1)} L · spare ${spare}</span>`;
+const pips = `<div class="pips"><i class="t1"></i><i class="t2"></i><i></i><i></i><i></i><i></i><i></i></div>`;
+let html = "";
+const patch = (x, y, w, h, c) => `<div style="position:fixed;left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:${c}"></div>`;
+if (form === "desktop") html += patch(205, 236, 120, 18, "#111c24") + patch(686, 207, 70, 18, "#2c3a43");
+if (form === "portrait") html += patch(255, 222, 115, 22, "#141f27");
+if (form === "desktop") {
+  html += `<div class="plate" style="left:16px;top:12px;width:392px;padding:10px 12px 11px">
+    <div class="row" style="justify-content:space-between"><div class="row"><img class="icon" src="${ICON("ui-energy-48")}"><span class="label">ENERGY</span>
+      <span class="value" style="color:${critical ? "#ffb3a3" : "var(--hud-text)"}">${E.toFixed(1)}<small> / ${CAP} L</small></span></div>${homeChip}</div>
+    <div style="margin:20px 0 10px 30px">${gauge(350)}</div>
+    <div class="row"><img class="icon" src="${ICON("ui-hull-48")}"><span class="label">HULL</span><span class="value" style="font-size:16px">10<small> / 10</small></span>
+      <div class="hullbar" style="flex:1"><i style="width:100%"></i></div></div></div>`;
+  html += `<div class="plate" style="right:68px;top:12px;padding:10px 12px;display:flex;gap:18px;align-items:center">
+    <div><div class="label">DEPTH</div><div class="value">90<small> m</small></div></div>
+    <div><div class="label">CARGO 2/7</div><div style="margin-top:5px">${pips}</div></div>
+    <div><div class="label">HAUL</div><div class="value" style="font-size:16px;color:var(--credit)">90<small> CR</small></div></div>
+    <div><div class="label">CREDITS</div><div class="value" style="font-size:16px">20<small> CR</small></div></div></div>`;
+  html += `<div class="plate pause" style="right:16px;top:12px">II</div>`;
+  // depth rail: 0..600 m mapped to y 110..760
+  const y = (m) => 110 + (m / 600) * 650;
+  const safeTo = critical ? 120 : 230;
+  html += `<div class="rail" style="right:22px;top:110px;height:650px">
+    <div class="safe" style="height:${(safeTo / 600) * 650}px"></div><div class="unsafe" style="height:${650 - (safeTo / 600) * 650}px"></div>
+    <div class="mark home" style="top:0">⌂ LANDER 0 m</div>
+    <div class="mark rig" style="top:${y(90) - 110}px">▶ 90 m</div>
+    <div class="mark mission" style="top:${y(100) - 110 + 14}px">◆ Wreck 100 m</div>
+    <div class="mark" style="top:${y(250) - 110}px">Valve 250 m</div>
+    <div class="mark" style="top:${y(400) - 110}px">Antenna 400 m</div>
+    <div class="mark" style="top:${y(600) - 110}px">Core 600 m</div>
+    <div class="mark" style="top:${y(safeTo) - 110 + (critical ? 18 : 0)}px;color:${critical ? "#ffb3a3" : "var(--ok)"}">safe to ${safeTo} m</div></div>`;
+  html += `<div class="plate objective" style="left:16px;bottom:16px;width:400px;padding:10px 12px">
+    <div class="row" style="justify-content:space-between"><div class="row"><img class="icon" src="${ICON("ui-mission-48")}">
+      <span class="step">1/3</span><span class="title">Survey the wreck</span></div>
+      <span class="row" style="gap:6px;color:var(--hud-dim);font-size:12px">●○○ <span class="kbd">O</span></span></div>
+    <div class="row loc" style="margin-top:8px;margin-left:30px"><span class="arrow">←</span><b>Wreck beacon</b> 72 m · <span style="color:var(--mission)">nearby</span></div></div>`;
+  if (critical)
+    html += `<div class="alert" style="top:100px"><img class="icon" src="${ICON("ui-warning-48")}">TURN BACK NOW <small>· home needs ${HOME.toFixed(1)} L · ${spare} L spare</small></div>`;
+  html += `<div class="plate toast" style="bottom:86px"><span class="pri" style="background:var(--credit)"></span><img class="icon" src="${ICON("ui-cargo-48")}">Bronzium secured <b style="color:var(--credit)">+60 CR</b><span style="color:var(--hud-dim);font-weight:500">· hold 2/7</span></div>`;
+  html += `<div class="plate" style="right:16px;bottom:16px;padding:6px;display:flex;gap:8px">
+    <div class="tool"><img src="/icons/icon-drill-64.png"></div>
+    <div class="tool" style="opacity:.45"><img src="/icons/icon-feet-64.png"><span class="kbd">␣</span></div>
+    <div class="tool" style="opacity:.45"><img src="${ICON("ui-map-48")}"><span class="kbd">Tab</span></div></div>`;
+  // world-space: home beacon on the top edge of the play area, POI label, pickup popup
+  html += `<div class="edge" style="left:${W / 2 + 120}px;top:${critical ? 156 : 104}px;color:var(--energy);border-color:rgba(127,216,224,.5)"><span class="tri">↗</span>LANDER 190 m · ${HOME.toFixed(1)} L</div>`;
+  html += `<div class="wlabel" style="left:265px;top:300px;color:var(--mission)">WRECK SIGNAL · 72 m</div>`;
+  html += `<div class="popup" style="left:740px;top:400px">+60 CR <span>Bronzium</span></div>`;
+} else if (form === "portrait") {
+  html += `<div class="plate" style="left:8px;right:60px;top:8px;padding:8px 10px">
+    <div class="row" style="justify-content:space-between"><div class="row"><img class="icon" src="${ICON("ui-energy-48")}">
+      <span class="value" style="font-size:18px;color:${critical ? "#ffb3a3" : "var(--hud-text)"}">${E.toFixed(1)}<small> / ${CAP} L</small></span></div>${critical ? `<span class="chip bad">TURN BACK</span>` : `<span class="chip home">⌂ ${HOME.toFixed(1)} L</span>`}</div>
+    <div style="margin:12px 0 8px 30px">${gauge(270)}</div>
+    <div class="row" style="justify-content:space-between;font-size:13px;font-weight:700">
+      <span class="row" style="gap:5px"><img class="icon" style="width:18px;height:18px" src="${ICON("ui-hull-48")}">10/10</span>
+      <span class="row" style="gap:5px"><img class="icon" style="width:18px;height:18px" src="${ICON("ui-depth-48")}">90 m</span>
+      <span class="row" style="gap:5px">${pips}</span>
+      <span style="color:var(--credit)">20 CR</span></div></div>`;
+  html += `<div class="plate pause" style="right:8px;top:8px">II</div>`;
+  html += `<div class="plate objective" style="left:8px;right:8px;top:116px;padding:7px 10px">
+    <div class="row" style="justify-content:space-between"><span class="row"><span class="step">1/3</span><span class="title" style="font-size:13px">Survey the wreck</span></span>
+    <span class="row loc" style="gap:6px"><span class="arrow" style="width:20px;height:20px">←</span><b>72 m</b> <span style="color:var(--hud-dim)">▾</span></span></div></div>`;
+  if (critical)
+    html += `<div class="alert" style="top:162px;font-size:15px;padding:8px 12px"><img class="icon" src="${ICON("ui-warning-48")}">TURN BACK NOW <small>${spare} L spare</small></div>`;
+  else
+    html += `<div class="plate toast" style="top:162px;font-size:13px;padding:6px 10px"><span class="pri" style="background:var(--credit)"></span>Bronzium <b style="color:var(--credit)">+60 CR</b></div>`;
+  const y = (m) => 210 + (m / 600) * 470;
+  html += `<div class="rail" style="right:6px;top:210px;height:470px;width:8px">
+    <div class="safe" style="height:${((critical ? 120 : 230) / 600) * 470}px"></div><div class="unsafe" style="height:${470 - ((critical ? 120 : 230) / 600) * 470}px"></div>
+    <div class="mark rig" style="top:${y(90) - 210}px">▶ 90 m</div><div class="mark mission" style="top:${y(100) - 210 + 14}px">◆ 100</div></div>`;
+  html += `<div class="plate" style="right:8px;bottom:12px;padding:5px;display:flex;gap:6px">
+    <div class="tool"><img src="/icons/icon-drill-64.png"></div><div class="tool" style="opacity:.45"><img src="${ICON("ui-map-48")}"></div></div>`;
+  html += `<div class="edge" style="left:${W / 2 + 40}px;top:${critical ? 222 : 206}px;color:var(--energy);border-color:rgba(127,216,224,.5)"><span class="tri">↗</span>LANDER 180 m</div>`;
+  html += `<div class="wlabel" style="left:70px;top:880px;color:var(--mission)">WRECK · 72 m</div>`;
+} else {
+  // short landscape 568x320 / 844x390
+  html += `<div class="plate" style="left:8px;top:8px;width:208px;padding:7px 9px">
+    <div class="row" style="justify-content:space-between"><span class="row" style="gap:5px"><img class="icon" style="width:18px;height:18px" src="${ICON("ui-energy-48")}">
+      <span class="value" style="font-size:16px;color:${critical ? "#ffb3a3" : "var(--hud-text)"}">${E.toFixed(1)}<small>/${CAP}</small></span></span>
+      ${critical ? `<span class="chip bad" style="font-size:11px">TURN BACK</span>` : `<span class="chip home" style="font-size:11px">⌂ ${HOME.toFixed(1)} L</span>`}</div>
+    <div style="margin:9px 0 6px 0">${gauge(190)}</div>
+    <div class="row" style="gap:10px;font-size:12px;font-weight:700"><span class="row" style="gap:4px"><img class="icon" style="width:15px;height:15px" src="${ICON("ui-hull-48")}">10/10</span>
+      <span class="row" style="gap:4px"><img class="icon" style="width:15px;height:15px" src="${ICON("ui-depth-48")}">90 m</span><span>2/7</span></div></div>`;
+  html += `<div class="plate objective" style="left:224px;top:8px;width:${W - 224 - 60}px;padding:7px 9px">
+    <div class="row" style="justify-content:space-between"><span class="row" style="gap:6px"><span class="step">1/3</span><span class="title" style="font-size:13px">Survey the wreck</span></span><span style="color:var(--hud-dim)">▾</span></div>
+    <div class="row loc" style="margin-top:5px;font-size:12px"><span class="arrow" style="width:18px;height:18px;font-size:12px">←</span><b>Wreck beacon</b> 72 m · nearby</div></div>`;
+  html += `<div class="plate pause" style="right:8px;top:8px">II</div>`;
+  if (critical)
+    html += `<div class="alert" style="top:78px;font-size:14px;padding:6px 10px"><img class="icon" style="width:18px;height:18px" src="${ICON("ui-warning-48")}">TURN BACK NOW <small>${spare} L spare</small></div>`;
+  else
+    html += `<div class="plate toast" style="top:78px;font-size:12px;padding:5px 9px"><span class="pri" style="background:var(--credit)"></span>Bronzium <b style="color:var(--credit)">+60 CR</b></div>`;
+  html += `<div class="rail" style="right:6px;top:70px;height:${H - 140}px;width:8px"><div class="safe" style="height:${(H - 140) * 0.38}px"></div><div class="unsafe" style="height:${(H - 140) * 0.62}px"></div></div>`;
+  html += `<div class="plate" style="right:8px;bottom:8px;padding:4px;display:flex;gap:6px">
+    <div class="tool"><img src="/icons/icon-drill-64.png"></div><div class="tool" style="opacity:.45"><img src="${ICON("ui-map-48")}"></div></div>`;
+}
+html += `<div class="cap">Mock · HUD redesign proposal (${form}, ${state}) · world frame is a real HUD-off capture; numbers illustrative</div>`;
+document.getElementById("hud").innerHTML = html;
+</script>
+</body>
+</html>

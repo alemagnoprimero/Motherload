@@ -1,0 +1,21 @@
+{
+ "above": {
+  "meanAbsDiff": 1.77,
+  "p95": 7.0,
+  "max": 13.3,
+  "pctPixelsDiff>4": 12.8,
+  "pctPixelsDiff>8": 2.7
+ },
+ "below": {
+  "meanAbsDiff": 2.36,
+  "p95": 6.33,
+  "max": 9.7,
+  "pctPixelsDiff>4": 19.5,
+  "pctPixelsDiff>8": 0.6
+ },
+ "highContrastVsNormal": {
+  "meanAbsDiff": 0.0,
+  "maxDiff": 0.0,
+  "pctPixelsDiff>2": 0.0
+ }
+}

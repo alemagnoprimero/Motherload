@@ -1,0 +1,377 @@
+{
+ "deepFacts": {
+  "dpr": 1,
+  "canvasBacking": [
+   1440,
+   900
+  ],
+  "canvasCss": [
+   1440,
+   900
+  ],
+  "glContexts": [
+   {
+    "type": "webgl",
+    "w": 1,
+    "h": 1,
+    "attrs": "{}"
+   },
+   {
+    "type": "webgl",
+    "w": 1440,
+    "h": 900,
+    "attrs": "{\"alpha\":false,\"desynchronized\":false,\"depth\":true,\"antialias\":true,\"premultipliedAlpha\":true,\"stencil\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"default\",\"preserveDrawingBuffer\":false,\"willReadFrequently\":false}"
+   }
+  ],
+  "twoDContexts": 20,
+  "dataset": {
+   "rigScreenX": "720.00",
+   "worldTexture": "campaign-w01"
+  }
+ },
+ "deepIdle": {
+  "frames": 9,
+  "ms": {
+   "median": 3,
+   "p95": 4.7,
+   "max": 4.7,
+   "mean": 3.02
+  },
+  "draws": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "verts": {
+   "median": 11403,
+   "p95": 11403,
+   "max": 11403,
+   "mean": 11403
+  },
+  "tex": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "texBytes": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  }
+ },
+ "deepMovingRight": {
+  "frames": 18,
+  "ms": {
+   "median": 3.6,
+   "p95": 10.7,
+   "max": 10.7,
+   "mean": 4.18
+  },
+  "draws": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "verts": {
+   "median": 12738,
+   "p95": 13224,
+   "max": 13224,
+   "mean": 12808.33
+  },
+  "tex": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "texBytes": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 4,
+   "p95": 4,
+   "max": 4,
+   "mean": 4
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  }
+ },
+ "deepProfileTop": {
+  "totalMs": 5299.7,
+  "top": [
+   {
+    "fn": "(program) @ :0",
+    "selfMs": 5172.3,
+    "pct": 97.6
+   },
+   {
+    "fn": "update @ scene.ts:515",
+    "selfMs": 10.8,
+    "pct": 0.2
+   },
+   {
+    "fn": "render @ phaser.js:130339",
+    "selfMs": 5.7,
+    "pct": 0.11
+   },
+   {
+    "fn": "tile @ model.ts:190",
+    "selfMs": 5.7,
+    "pct": 0.11
+   },
+   {
+    "fn": "(garbage collector) @ :0",
+    "selfMs": 5.5,
+    "pct": 0.1
+   },
+   {
+    "fn": "(anon) @ :37",
+    "selfMs": 5.4,
+    "pct": 0.1
+   },
+   {
+    "fn": "batchLine @ phaser.js:133438",
+    "selfMs": 5,
+    "pct": 0.1
+   },
+   {
+    "fn": "window.requestAnimationFrame @ :36",
+    "selfMs": 4.3,
+    "pct": 0.08
+   },
+   {
+    "fn": "batchSprite @ phaser.js:133048",
+    "selfMs": 3.7,
+    "pct": 0.07
+   },
+   {
+    "fn": "indexCurve @ phaser.js:68809",
+    "selfMs": 3.4,
+    "pct": 0.06
+   },
+   {
+    "fn": "wrapCampaignX @ model.ts:4",
+    "selfMs": 3.3,
+    "pct": 0.06
+   },
+   {
+    "fn": "GraphicsWebGLRenderer @ phaser.js:38592",
+    "selfMs": 3.1,
+    "pct": 0.06
+   },
+   {
+    "fn": "has @ phaser.js:153736",
+    "selfMs": 3.1,
+    "pct": 0.06
+   },
+   {
+    "fn": "visibleFace @ model.ts:205",
+    "selfMs": 2.9,
+    "pct": 0.06
+   },
+   {
+    "fn": "solid @ scene.ts:717",
+    "selfMs": 2.8,
+    "pct": 0.05
+   },
+   {
+    "fn": "set @ phaser.js:34274",
+    "selfMs": 2.5,
+    "pct": 0.05
+   },
+   {
+    "fn": "batchQuad @ phaser.js:127466",
+    "selfMs": 2.3,
+    "pct": 0.04
+   },
+   {
+    "fn": "matchMedia @ :0",
+    "selfMs": 2.1,
+    "pct": 0.04
+   },
+   {
+    "fn": "set @ phaser.js:33025",
+    "selfMs": 2.1,
+    "pct": 0.04
+   },
+   {
+    "fn": "bufferSubData @ :0",
+    "selfMs": 2,
+    "pct": 0.04
+   },
+   {
+    "fn": "formatCredits @ config.ts:641",
+    "selfMs": 2,
+    "pct": 0.04
+   },
+   {
+    "fn": "isEarHashed @ phaser.js:68698",
+    "selfMs": 1.8,
+    "pct": 0.03
+   },
+   {
+    "fn": "sortByDepth @ phaser.js:24734",
+    "selfMs": 1.8,
+    "pct": 0.03
+   },
+   {
+    "fn": "image @ scene.ts:219",
+    "selfMs": 1.7,
+    "pct": 0.03
+   },
+   {
+    "fn": "step @ model.ts:243",
+    "selfMs": 1.6,
+    "pct": 0.03
+   },
+   {
+    "fn": "condition @ main.ts:211",
+    "selfMs": 1.6,
+    "pct": 0.03
+   },
+   {
+    "fn": "batchFillPath @ phaser.js:133356",
+    "selfMs": 1.5,
+    "pct": 0.03
+   },
+   {
+    "fn": "updateObjects @ model.ts:454",
+    "selfMs": 1.4,
+    "pct": 0.03
+   },
+   {
+    "fn": "earcutLinked @ phaser.js:68659",
+    "selfMs": 1.4,
+    "pct": 0.03
+   },
+   {
+    "fn": "render @ phaser.js:8634",
+    "selfMs": 1.4,
+    "pct": 0.03
+   },
+   {
+    "fn": "syncHUD @ main.ts:458",
+    "selfMs": 1.4,
+    "pct": 0.03
+   },
+   {
+    "fn": "(anon) @ phaser.js:8660",
+    "selfMs": 1.3,
+    "pct": 0.03
+   },
+   {
+    "fn": "getBoundingClientRect @ :0",
+    "selfMs": 1.2,
+    "pct": 0.02
+   },
+   {
+    "fn": "isVisible @ model.ts:199",
+    "selfMs": 1.2,
+    "pct": 0.02
+   },
+   {
+    "fn": "refreshVisibility @ model.ts:202",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "setOrigin @ phaser.js:31409",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "clear @ :0",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "(idle) @ :0",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "requestAnimationFrame @ :0",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "isKnown @ model.ts:196",
+    "selfMs": 1.1,
+    "pct": 0.02
+   },
+   {
+    "fn": "get currentMilestone @ model.ts:177",
+    "selfMs": 1,
+    "pct": 0.02
+   },
+   {
+    "fn": "ImageWebGLRenderer @ phaser.js:40238",
+    "selfMs": 1,
+    "pct": 0.02
+   },
+   {
+    "fn": "earcut @ phaser.js:68611",
+    "selfMs": 0.9,
+    "pct": 0.02
+   },
+   {
+    "fn": "onUpdate @ main.ts:1095",
+    "selfMs": 0.8,
+    "pct": 0.01
+   },
+   {
+    "fn": "setQuad @ phaser.js:34107",
+    "selfMs": 0.8,
+    "pct": 0.01
+   }
+  ]
+ },
+ "deepErrors": []
+}

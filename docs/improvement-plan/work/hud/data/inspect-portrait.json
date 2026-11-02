@@ -1,0 +1,13 @@
+{
+ "errors": [],
+ "rig": {
+  "x": 196.5,
+  "y": 458.86
+ },
+ "target": {
+  "x": 196.5,
+  "y": 500.14
+ },
+ "inspection": "Ironium · 30 CR · 1 bulk",
+ "worldCallout": "true"
+}

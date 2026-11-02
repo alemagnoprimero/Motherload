@@ -1,0 +1,241 @@
+{
+ "w01-interior-variant-MAD-vs-0": {
+  "soil-1": 5.9,
+  "soil-2": 7.24,
+  "soil-3": 4.13,
+  "soil-4": 6.46,
+  "soil-5": 9.21,
+  "soil-6": 5.3,
+  "soil-7": 8.14
+ },
+ "w01-interior-variant-pct-pixels-differing>8": {
+  "soil-1": 29.5,
+  "soil-2": 35.2,
+  "soil-3": 21.0,
+  "soil-4": 31.5,
+  "soil-5": 42.2,
+  "soil-6": 27.1,
+  "soil-7": 37.7
+ },
+ "w01-hard-variant-pct-pixels-differing>8": {
+  "stone-1": 3.2,
+  "stone-2": 4.7,
+  "stone-3": 6.2
+ },
+ "w01:soil-0:meanRGB": [
+  85,
+  97,
+  107
+ ],
+ "w01:soil-0:meanRelLum": 0.1216,
+ "w01:stone-0:meanRGB": [
+  78,
+  91,
+  101
+ ],
+ "w01:stone-0:meanRelLum": 0.1162,
+ "w01-edge0-vs-interior0-pct-differing>8": 0.0,
+ "w01:ore-o1": {
+  "meanRGB": [
+   126,
+   138,
+   141
+  ],
+  "hueDeg": 192,
+  "sat": 0.06,
+  "relLum": 0.387
+ },
+ "w01:ore-o2": {
+  "meanRGB": [
+   125,
+   105,
+   87
+  ],
+  "hueDeg": 28,
+  "sat": 0.18,
+  "relLum": 0.2508
+ },
+ "w01:ore-o3": {
+  "meanRGB": [
+   125,
+   142,
+   144
+  ],
+  "hueDeg": 185,
+  "sat": 0.08,
+  "relLum": 0.4314
+ },
+ "w01:ore-o4": {
+  "meanRGB": [
+   123,
+   111,
+   75
+  ],
+  "hueDeg": 45,
+  "sat": 0.24,
+  "relLum": 0.289
+ },
+ "w02-interior-variant-MAD-vs-0": {
+  "ice-1": 16.15,
+  "ice-2": 21.0,
+  "ice-3": 10.39,
+  "ice-4": 19.48,
+  "ice-5": 15.69,
+  "ice-6": 14.55,
+  "ice-7": 13.24
+ },
+ "w02-interior-variant-pct-pixels-differing>8": {
+  "ice-1": 31.2,
+  "ice-2": 38.5,
+  "ice-3": 23.1,
+  "ice-4": 36.6,
+  "ice-5": 29.9,
+  "ice-6": 29.8,
+  "ice-7": 27.0
+ },
+ "w02-hard-variant-pct-pixels-differing>8": {
+  "frozen-rock-1": 28.4,
+  "frozen-rock-2": 36.1,
+  "frozen-rock-3": 20.3
+ },
+ "w02:ice-0:meanRGB": [
+  99,
+  164,
+  178
+ ],
+ "w02:ice-0:meanRelLum": 0.3513,
+ "w02:frozen-rock-0:meanRGB": [
+  71,
+  108,
+  126
+ ],
+ "w02:frozen-rock-0:meanRelLum": 0.1494,
+ "w02-edge0-vs-interior0-pct-differing>8": 0.0,
+ "w02:ore-o1": {
+  "meanRGB": [
+   112,
+   145,
+   157
+  ],
+  "hueDeg": 196,
+  "sat": 0.19,
+  "relLum": 0.3638
+ },
+ "w02:ore-o2": {
+  "meanRGB": [
+   96,
+   132,
+   148
+  ],
+  "hueDeg": 198,
+  "sat": 0.21,
+  "relLum": 0.3323
+ },
+ "w02:ore-o3": {
+  "meanRGB": [
+   76,
+   141,
+   140
+  ],
+  "hueDeg": 179,
+  "sat": 0.3,
+  "relLum": 0.3317
+ },
+ "w02:ore-o4": {
+  "meanRGB": [
+   70,
+   126,
+   135
+  ],
+  "hueDeg": 188,
+  "sat": 0.32,
+  "relLum": 0.2788
+ },
+ "rig-body-frame-pct-differing-from-0": {
+  "rig-body-1": 2.69,
+  "rig-body-2": 3.04,
+  "rig-body-3": 1.54,
+  "rig-body-4": 1.79,
+  "rig-body-5": 3.03,
+  "rig-body-6": 2.66,
+  "rig-body-7": 0.31
+ },
+ "rig-drill-down-frame-pct-differing-from-0": {
+  "rig-drill-down-1": 0.31,
+  "rig-drill-down-2": 0.4,
+  "rig-drill-down-3": 0.48,
+  "rig-drill-down-4": 0.0,
+  "rig-drill-down-5": 0.31,
+  "rig-drill-down-6": 0.4,
+  "rig-drill-down-7": 0.48
+ },
+ "thrust-frame-pct-differing": {
+  "thrust-1": 2.72,
+  "thrust-2": 3.81,
+  "thrust-3": 0.0,
+  "thrust-4": 2.72,
+  "thrust-5": 3.81
+ },
+ "rig-bboxes(src px of 128)": {
+  "rig-body-0": [
+   18,
+   57,
+   109,
+   99
+  ],
+  "rig-cabin": [
+   44,
+   22,
+   106,
+   71
+  ],
+  "rig-engine-0": [
+   23,
+   38,
+   48,
+   74
+  ],
+  "rig-energy-0": [
+   15,
+   34,
+   32,
+   72
+  ],
+  "rig-bay-0": [
+   24,
+   55,
+   47,
+   76
+  ],
+  "rig-hull-0": [
+   44,
+   64,
+   102,
+   73
+  ],
+  "rig-drill-idle": [
+   89,
+   55,
+   125,
+   80
+  ],
+  "rig-drill-down-0": [
+   51,
+   89,
+   76,
+   125
+  ],
+  "rig-drill-right-0": [
+   89,
+   55,
+   125,
+   80
+  ],
+  "thrust-0": [
+   30,
+   95,
+   90,
+   117
+  ]
+ }
+}

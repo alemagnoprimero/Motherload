@@ -1,0 +1,178 @@
+{
+ "pauseWithPad": [
+  [
+   "Start",
+   {
+    "overlay": "menu",
+    "active": "BUTTON 'Resume expedition'",
+    "dockTab": null,
+    "credits": "20 CR"
+   }
+  ],
+  [
+   "D-pad down",
+   {
+    "overlay": "menu",
+    "active": "BUTTON 'Resume expedition'",
+    "dockTab": null,
+    "credits": "20 CR"
+   }
+  ],
+  [
+   "Stick down",
+   {
+    "overlay": "menu",
+    "active": "BUTTON 'Resume expedition'",
+    "dockTab": null,
+    "credits": "20 CR"
+   }
+  ],
+  [
+   "A",
+   {
+    "overlay": "menu",
+    "active": "BUTTON 'Resume expedition'",
+    "dockTab": null,
+    "credits": "20 CR"
+   }
+  ],
+  [
+   "B",
+   {
+    "overlay": "menu",
+    "active": "BUTTON 'Resume expedition'",
+    "dockTab": null,
+    "credits": "20 CR"
+   }
+  ],
+  [
+   "Start",
+   {
+    "overlay": null,
+    "active": "DIV ''",
+    "dockTab": null,
+    "credits": "20 CR"
+   }
+  ]
+ ],
+ "dockWithPad": [
+  [
+   "LB",
+   {
+    "overlay": "dock",
+    "active": "BUTTON 'Undock'",
+    "dockTab": "service",
+    "credits": "2,500 CR"
+   }
+  ],
+  [
+   "RB",
+   {
+    "overlay": "dock",
+    "active": "BUTTON 'Undock'",
+    "dockTab": "service",
+    "credits": "2,500 CR"
+   }
+  ],
+  [
+   "D-pad right",
+   {
+    "overlay": "dock",
+    "active": "BUTTON 'Undock'",
+    "dockTab": "service",
+    "credits": "2,500 CR"
+   }
+  ],
+  [
+   "D-pad down",
+   {
+    "overlay": "dock",
+    "active": "BUTTON 'Undock'",
+    "dockTab": "service",
+    "credits": "2,500 CR"
+   }
+  ],
+  [
+   "A",
+   {
+    "overlay": "dock",
+    "active": "BUTTON 'Undock'",
+    "dockTab": "service",
+    "credits": "2,500 CR"
+   }
+  ],
+  [
+   "B",
+   {
+    "overlay": "dock",
+    "active": "BUTTON 'Undock'",
+    "dockTab": "service",
+    "credits": "2,500 CR"
+   }
+  ],
+  [
+   "Start",
+   {
+    "overlay": null,
+    "active": "DIV ''",
+    "dockTab": "service",
+    "credits": "2,500 CR"
+   }
+  ]
+ ],
+ "dockPrompt": "LBDock",
+ "disabled_desktop": {
+  "visible": true,
+  "box": {
+   "w": 390,
+   "h": 165
+  },
+  "title": "Energy depleted",
+  "copy": "Cost 100 CR · Energy 5/10 L · Hull 10/10 HP. Carried cargo lost; mission objects returned.",
+  "buttons": [
+   "Request recovery",
+   "Pause / save"
+  ],
+  "dangerText": "Energy depleted · request recovery"
+ },
+ "recoveryConfirm_desktop": {
+  "eyebrow": "EXPEDITION DECISION",
+  "title": "Call surface recovery?",
+  "copy": "Recovery costs 100 CR; 240 CR remains. Energy 5/10 L · Hull 10/10 HP. Healthy resources above half capacity are preserved. Carried ordinary cargo and relics are lost; unbanked mission objects return to their marked sources. Banked cargo, equipment and progress are kept.",
+  "words": 43,
+  "accept": "Confirm",
+  "cancel": "Cancel"
+ },
+ "afterRecovery_desktop": {
+  "overlay": "menu",
+  "menuTitle": "Expedition restored · paused",
+  "message": "Recovered for 100 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+ },
+ "disabled_phone": {
+  "visible": true,
+  "box": {
+   "w": 369,
+   "h": 165
+  },
+  "title": "Energy depleted",
+  "copy": "Cost 100 CR · Energy 5/10 L · Hull 10/10 HP. Carried cargo lost; mission objects returned.",
+  "buttons": [
+   "Request recovery",
+   "Pause / save"
+  ],
+  "dangerText": "Energy depleted · request recovery"
+ },
+ "recoveryConfirm_phone": {
+  "eyebrow": "EXPEDITION DECISION",
+  "title": "Call surface recovery?",
+  "copy": "Recovery costs 100 CR; 240 CR remains. Energy 5/10 L · Hull 10/10 HP. Healthy resources above half capacity are preserved. Carried ordinary cargo and relics are lost; unbanked mission objects return to their marked sources. Banked cargo, equipment and progress are kept.",
+  "words": 43,
+  "accept": "Confirm",
+  "cancel": "Cancel"
+ },
+ "afterRecovery_phone": {
+  "overlay": "menu",
+  "menuTitle": "Expedition restored · paused",
+  "message": "Recovered for 100 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%."
+ }
+}

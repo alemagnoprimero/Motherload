@@ -1,0 +1,823 @@
+{
+ "probe": {
+  "viewport": {
+   "w": 393,
+   "h": 851,
+   "dpr": 2
+  },
+  "named": {
+   "hud": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 10,
+     "w": 323,
+     "h": 45
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY5.9 / 10 HULL10 / 10 Depth120 m Cargo2 / 7 HAUL120 CR CRCredits100,000"
+   },
+   "energyVital": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 10,
+     "w": 137,
+     "h": 19
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY5.9 / 10"
+   },
+   "hullVital": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 36,
+     "w": 137,
+     "h": 19
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HULL10 / 10"
+   },
+   "energyValue": {
+    "visible": true,
+    "box": {
+     "x": 107,
+     "y": 10,
+     "w": 40,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "5.9 / 10"
+   },
+   "hullValue": {
+    "visible": true,
+    "box": {
+     "x": 110.3,
+     "y": 36,
+     "w": 36.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "10 / 10"
+   },
+   "energyMeter": {
+    "visible": true,
+    "box": {
+     "x": 34,
+     "y": 27,
+     "w": 113,
+     "h": 2
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "hullMeter": {
+    "visible": true,
+    "box": {
+     "x": 34,
+     "y": 53,
+     "w": 113,
+     "h": 2
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "rightCluster": {
+    "visible": true,
+    "box": {
+     "x": 167.8,
+     "y": 10,
+     "w": 165.3,
+     "h": 40
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Depth120 m Cargo2 / 7 HAUL120 CR CRCredits100,000"
+   },
+   "depth": {
+    "visible": true,
+    "box": {
+     "x": 190.8,
+     "y": 13.5,
+     "w": 34,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "120 m"
+   },
+   "cargo": {
+    "visible": true,
+    "box": {
+     "x": 277.4,
+     "y": 13.5,
+     "w": 23.4,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "2 / 7"
+   },
+   "haul": {
+    "visible": true,
+    "box": {
+     "x": 205.7,
+     "y": 36,
+     "w": 40.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "120 CR"
+   },
+   "credits": {
+    "visible": true,
+    "box": {
+     "x": 275.7,
+     "y": 36,
+     "w": 43.4,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "100,000"
+   },
+   "objective": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 72,
+     "w": 302.1,
+     "h": 118.1
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "01 / 03Sample the thermal seam○Helion samples · 0/5 banked◇Construction · 400 CR ready↙down and leftHelion thermal sample 549 mSignal nearbyExcavate the marked "
+   },
+   "objectiveTitle": {
+    "visible": true,
+    "box": {
+     "x": 81.7,
+     "y": 72,
+     "w": 144.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Sample the thermal seam"
+   },
+   "tasks": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 91,
+     "w": 275.1,
+     "h": 35.4
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "○Helion samples · 0/5 banked◇Construction · 400 CR ready"
+   },
+   "signal": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 133.4,
+     "w": 275.1,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(197, 216, 202)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "↙down and leftHelion thermal sample 549 mSignal nearby"
+   },
+   "next": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 154.6,
+     "w": 275.1,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Excavate the marked Helion sample pods"
+   },
+   "reward": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 172.8,
+     "w": 275.1,
+     "h": 17.4
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(168, 188, 176)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Unlock: vapour condenser + heated refuge"
+   },
+   "toolbar": {
+    "visible": true,
+    "box": {
+     "x": 105.1,
+     "y": 739,
+     "w": 182.7,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLSalvaged auger MOBILITYNo attachment HOLDPrecision UTILITYCondenser active PROCESSOROpen cargo bay"
+   },
+   "drillSlot": {
+    "visible": true,
+    "box": {
+     "x": 105.1,
+     "y": 739,
+     "w": 128.7,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLSalvaged auger"
+   },
+   "feet": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "MOBILITYNo attachment"
+   },
+   "precision": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HOLDPrecision"
+   },
+   "map": {
+    "visible": true,
+    "box": {
+     "x": 243.9,
+     "y": 739,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "menuButton": {
+    "visible": true,
+    "box": {
+     "x": 345,
+     "y": 4,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(212, 224, 213)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "message": {
+    "visible": false,
+    "box": {
+     "x": 14,
+     "y": 693.4,
+     "w": 365,
+     "h": 33.6
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(240, 220, 169)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Helion thermal sample 5 · Signal nearby. Excavate the marked Helion sample pods."
+   },
+   "danger": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(255, 213, 175)",
+    "background": "rgba(20, 33, 39, 0.875)",
+    "text": ""
+   },
+   "extraction": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(215, 243, 232)",
+    "background": "rgba(10, 32, 41, 0.91)",
+    "text": "Release drill"
+   },
+   "release": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(22, 43, 49)",
+    "background": "rgb(230, 182, 101)",
+    "text": "Release drill"
+   },
+   "dockPrompt": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(244, 210, 149)",
+    "background": "rgba(13, 26, 27, 0.44)",
+    "text": "TAPDock"
+   },
+   "disabled": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(233, 239, 223)",
+    "background": "rgba(16, 30, 37, 0.95)",
+    "text": "Rig disabledRequest recoveryLander servicesPause / save"
+   }
+  },
+  "leaves": [
+   {
+    "id": "SPAN",
+    "root": "campaign-hud",
+    "text": "ENERGY",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(195, 209, 201)",
+    "box": {
+     "x": 34,
+     "y": 10,
+     "w": 50.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-energy",
+    "root": "campaign-hud",
+    "text": "5.9 / 10",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 106.96875,
+     "y": 10,
+     "w": 40.03125,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-hud",
+    "text": "HULL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(195, 209, 201)",
+    "box": {
+     "x": 34,
+     "y": 36,
+     "w": 30.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-hull",
+    "root": "campaign-hud",
+    "text": "10 / 10",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 110.296875,
+     "y": 36,
+     "w": 36.703125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-depth",
+    "root": "campaign-hud",
+    "text": "120 m",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 190.75,
+     "y": 13.5,
+     "w": 34.03125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-cargo",
+    "root": "campaign-hud",
+    "text": "2 / 7",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 277.375,
+     "y": 13.5,
+     "w": 23.359375,
+     "h": 14
+    }
+   },
+   {
+    "id": "hud-mini-label",
+    "root": "campaign-hud",
+    "text": "HAUL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(184, 202, 194)",
+    "box": {
+     "x": 167.75,
+     "y": 36,
+     "w": 33.9375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-haul",
+    "root": "campaign-hud",
+    "text": "120 CR",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 205.6875,
+     "y": 36,
+     "w": 40.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "credit-mark",
+    "root": "campaign-hud",
+    "text": "CR",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(234, 194, 140)",
+    "box": {
+     "x": 254.375,
+     "y": 36,
+     "w": 17.34375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-credits",
+    "root": "campaign-hud",
+    "text": "100,000",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 275.71875,
+     "y": 36,
+     "w": 43.390625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-step",
+    "root": "campaign-objective",
+    "text": "01 / 03",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(212, 185, 130)",
+    "box": {
+     "x": 37,
+     "y": 72,
+     "w": 36.703125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-title",
+    "root": "campaign-objective",
+    "text": "Sample the thermal seam",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 81.703125,
+     "y": 72,
+     "w": 144.734375,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 39.375,
+     "y": 92,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Helion samples · 0/5 banked",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 55,
+     "y": 92,
+     "w": 152.09375,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "◇",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(240, 197, 132)",
+    "box": {
+     "x": 37,
+     "y": 111.1875,
+     "w": 12.734375,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Construction · 400 CR ready",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 55.734375,
+     "y": 111.1875,
+     "w": 152.078125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-direction",
+    "root": "campaign-objective",
+    "text": "↙",
+    "fontSize": 16,
+    "fontWeight": "400",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 38.796875,
+     "y": 132.46875,
+     "w": 12.40625,
+     "h": 17
+    }
+   },
+   {
+    "id": "campaign-signal-target",
+    "root": "campaign-objective",
+    "text": "Helion thermal sample 5",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(197, 216, 202)",
+    "box": {
+     "x": 60,
+     "y": 134.375,
+     "w": 138.046875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-distance",
+    "root": "campaign-objective",
+    "text": "49 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(175, 195, 183)",
+    "box": {
+     "x": 205.046875,
+     "y": 134.375,
+     "w": 26.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-proximity",
+    "root": "campaign-objective",
+    "text": "Signal nearby",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(240, 204, 141)",
+    "box": {
+     "x": 238.734375,
+     "y": 134.375,
+     "w": 73.390625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-next",
+    "root": "campaign-objective",
+    "text": "Excavate the marked Helion sample pods",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "box": {
+     "x": 37,
+     "y": 155.5625,
+     "w": 221.453125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-reward",
+    "root": "campaign-objective",
+    "text": "Unlock: vapour condenser + heated refuge",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(168, 188, 176)",
+    "box": {
+     "x": 37,
+     "y": 173.75,
+     "w": 227.15625,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-toolbar",
+    "text": "DRILL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(159, 181, 171)",
+    "box": {
+     "x": 142.140625,
+     "y": 746,
+     "w": 34.015625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-drill-name",
+    "root": "campaign-toolbar",
+    "text": "Salvaged auger",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(230, 236, 221)",
+    "box": {
+     "x": 142.140625,
+     "y": 762,
+     "w": 88.71875,
+     "h": 14
+    }
+   }
+  ],
+  "game": {
+   "campaignArt": "ready",
+   "pointerActive": "false",
+   "pointerDirections": "",
+   "joystickVisible": "false",
+   "joystickCenterX": "",
+   "joystickCenterY": "",
+   "joystickKnobX": "",
+   "joystickKnobY": "",
+   "rigScreenX": "196.50",
+   "rigScreenY": "458.86",
+   "rigWorldX": "30.5000",
+   "rigWorldY": "11.6400",
+   "campaignWorld": "W02",
+   "worldWidth": "48",
+   "worldRows": "100",
+   "worldTexture": "campaign-w02",
+   "volatileCue": "false",
+   "volatileRemaining": "",
+   "precisionActive": "false",
+   "coldWarning": "false",
+   "poiLandmarks": "W02-SAMPLE-4,W02-SAMPLE-5",
+   "poiSourceMarkers": "W02-SAMPLE-4,W02-SAMPLE-5",
+   "poiScreenTargets": "[{\"id\":\"W02-SAMPLE-4\",\"x\":-43,\"y\":596,\"known\":true,\"status\":\"source\",\"lit\":false},{\"id\":\"W02-SAMPLE-5\",\"x\":5,\"y\":596,\"known\":true,\"status\":\"source\",\"lit\":false}]",
+   "poiSignalTarget": "W02-SAMPLE-5",
+   "poiSignalBand": "near",
+   "poiTargetKnown": "true",
+   "poiTargetVisible": "false",
+   "poiMarkerVisible": "true",
+   "poiMarkerX": "26.00",
+   "poiMarkerY": "596.14",
+   "worldCallout": "false",
+   "inspection": ""
+  },
+  "canvas": {
+   "width": 393,
+   "height": 851,
+   "cssW": 393,
+   "cssH": 851
+  },
+  "body": {
+   "mode": "campaign",
+   "campaignDanger": "false",
+   "campaignDisabled": "false",
+   "campaignResumeRequired": "false",
+   "campaignWorld": "W02",
+   "campaignExtraction": "false",
+   "campaignVolatile": "none",
+   "campaignPrecision": "false",
+   "campaignPaused": "false",
+   "campaignBusy": "false",
+   "classes": ""
+  }
+ },
+ "errors": []
+}

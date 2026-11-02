@@ -1,0 +1,93 @@
+{
+ "name": "R8-shaft-reentry",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "marks": {},
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "log": [
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 1.3,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 1.3,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 2.3,
+   "text": "message: \"Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey.\" (ArrowDown)"
+  },
+  {
+   "t": 2.3,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 2.3,
+   "text": "signal: \"↓downWreck survey beacon79 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 3.3,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 3.3,
+   "text": "signal: \"↓downWreck survey beacon69 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 4.15,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (idle)"
+  },
+  {
+   "t": 4.4,
+   "text": "parked 0.25 tile off-centre at rigX=20.75 (shaft centre 20.5)"
+  },
+  {
+   "t": 4.4,
+   "text": "SHOT R8-shaft-reentry-004.4s-offcentre-before-down.png"
+  },
+  {
+   "t": 5.4,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 5.4,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 5.9,
+   "text": "Down while off-centre: rigX 20.75 -> 21.5, depth 10 m"
+  },
+  {
+   "t": 5.9,
+   "text": "row 0 tiles (0=open) 18:1 19:1 20:0 21:0 22:1 · row 1 19:1 20:0 21:1 22:1"
+  },
+  {
+   "t": 6.2,
+   "text": "message: \"\" (idle)"
+  },
+  {
+   "t": 6.2,
+   "text": "SHOT R8-shaft-reentry-006.2s-offcentre-after-down.png"
+  }
+ ]
+}

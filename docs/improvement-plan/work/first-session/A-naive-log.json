@@ -1,0 +1,319 @@
+{
+ "name": "A-naive",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "marks": {
+  "first-ore": 1.5,
+  "hold-full": 7.25,
+  "beacon-surveyed": 9.25,
+  "danger-low": 12,
+  "disabled": 20
+ },
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "log": [
+  {
+   "t": 0,
+   "text": "Title screen: THE FRONTIER MOTHERLOAD BROKEN ASTEROID 600 m Recover the core. Restore the lander. DEPLOY RIG › Touch: press to place your joystick, then drag. Up flies · Down drills · Mouse or Arrows / WASD"
+  },
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 0.5,
+   "text": "SHOT A-naive-000.5s-first-frame.png"
+  },
+  {
+   "t": 1.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 1.5,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 1.5,
+   "text": "MARK first-ore"
+  },
+  {
+   "t": 1.5,
+   "text": "SHOT A-naive-001.5s-first-ore.png"
+  },
+  {
+   "t": 2.5,
+   "text": "message: \"Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey.\" (ArrowDown)"
+  },
+  {
+   "t": 2.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 2.5,
+   "text": "signal: \"↓downWreck survey beacon79 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 3.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 3.5,
+   "text": "signal: \"↓downWreck survey beacon69 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 4.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 4.25,
+   "text": "signal: \"↓downWreck survey beacon59 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 5.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 5.25,
+   "text": "signal: \"↓downWreck survey beacon49 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 6.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 6.25,
+   "text": "signal: \"↓downWreck survey beacon39 mSignal nearby\" (ArrowDown)"
+  },
+  {
+   "t": 6.5,
+   "text": "message: \"\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "message: \"Wreck survey beacon · Very close. Approach the wreck beacon to survey.\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "signal: \"↓downWreck survey beacon29 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 7.25,
+   "text": "MARK hold-full"
+  },
+  {
+   "t": 7.25,
+   "text": "SHOT A-naive-007.3s-hold-full.png"
+  },
+  {
+   "t": 8.25,
+   "text": "signal: \"↓downWreck survey beacon19 mVery close\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "message: \"Beacon surveyed · Return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "tasks: \"✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "next: \"Return to lander → Bank ore\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "signal: \"↖up and leftSalvage lander175 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 9.25,
+   "text": "MARK beacon-surveyed"
+  },
+  {
+   "t": 9.25,
+   "text": "SHOT A-naive-009.3s-beacon-surveyed.png"
+  },
+  {
+   "t": 10.25,
+   "text": "signal: \"↖up and leftSalvage lander180 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 11.25,
+   "text": "message: \"Hold full: Bronzium remains here (1 bulk). Return or eject a package.\" (ArrowDown)"
+  },
+  {
+   "t": 11.25,
+   "text": "signal: \"↖up and leftSalvage lander186 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 12,
+   "text": "danger: \"Low energy · return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 12,
+   "text": "MARK danger-low"
+  },
+  {
+   "t": 12.25,
+   "text": "signal: \"↖up and leftSalvage lander192 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 13.25,
+   "text": "signal: \"↖up and leftSalvage lander198 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 14.25,
+   "text": "signal: \"↖up and leftSalvage lander205 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 15.25,
+   "text": "message: \"\" (ArrowDown)"
+  },
+  {
+   "t": 15.25,
+   "text": "danger: \"Energy critical · return to the lander\" (ArrowDown)"
+  },
+  {
+   "t": 15.5,
+   "text": "signal: \"↖up and leftSalvage lander212 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 16.5,
+   "text": "signal: \"↖up and leftSalvage lander219 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 17.5,
+   "text": "signal: \"↖up and leftSalvage lander227 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 18.5,
+   "text": "signal: \"↖up and leftSalvage lander234 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 19.75,
+   "text": "signal: \"↖up and leftSalvage lander242 mTracking\" (ArrowDown)"
+  },
+  {
+   "t": 20,
+   "text": "danger: \"Energy depleted · request recovery\" (ArrowDown)"
+  },
+  {
+   "t": 20,
+   "text": "disabled: true (ArrowDown)"
+  },
+  {
+   "t": 20,
+   "text": "MARK disabled"
+  },
+  {
+   "t": 20,
+   "text": "At failure: E 0.0 / 10 H 10 / 10 D 190 m C 7 / 7 haul 380 CR CR 20"
+  },
+  {
+   "t": 20.5,
+   "text": "SHOT A-naive-020.5s-disabled.png"
+  },
+  {
+   "t": 20.5,
+   "text": "Disabled overlay: Energy depleted Cost 20 CR · Energy 5/10 L · Hull 10/10 HP. Carried cargo lost; mission objects returned. Request recovery Pause / save"
+  },
+  {
+   "t": 20.5,
+   "text": "SHOT A-naive-020.5s-recovery-confirm.png"
+  },
+  {
+   "t": 20.5,
+   "text": "Confirm dialog: EXPEDITION DECISION Call surface recovery? Recovery costs 20 CR; 0 CR remains. Energy 5/10 L · Hull 10/10 HP. Healthy resources above half capacity are preserved. Carried ordinary cargo and relics are lost; unbanked mission objects return to their marked sources. Banked cargo, equipment and progress are kept. Cancel Confirm"
+  },
+  {
+   "t": 20.5,
+   "text": "message: \"Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%.\" (after recovery confirm)"
+  },
+  {
+   "t": 20.5,
+   "text": "danger: \"\" (after recovery confirm)"
+  },
+  {
+   "t": 20.5,
+   "text": "tasks: \"✓Beacon surveyed | ○Bank ore · 0/3 | ○Construction · 0/200 CR\" (after recovery confirm)"
+  },
+  {
+   "t": 20.5,
+   "text": "next: \"Mine 3 ore packages and bank them\" (after recovery confirm)"
+  },
+  {
+   "t": 20.5,
+   "text": "signal: \"\" (after recovery confirm)"
+  },
+  {
+   "t": 20.5,
+   "text": "overlay: \"menu\" (after recovery confirm)"
+  },
+  {
+   "t": 20.5,
+   "text": "disabled: false (after recovery confirm)"
+  },
+  {
+   "t": 20.5,
+   "text": "SHOT A-naive-020.5s-after-recovery-menu.png"
+  },
+  {
+   "t": 20.5,
+   "text": "Menu header: PILOT CONSOLE Expedition restored · paused Resume expedition Energy 5/10 L · Hull 10/10 HP · Cargo 0/7"
+  },
+  {
+   "t": 20.75,
+   "text": "dockPrompt: true (idle)"
+  },
+  {
+   "t": 20.75,
+   "text": "overlay: \"\" (idle)"
+  },
+  {
+   "t": 21.5,
+   "text": "SHOT A-naive-021.5s-after-recovery-world.png"
+  },
+  {
+   "t": 21.5,
+   "text": "After recovery: E 5.0 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 0"
+  },
+  {
+   "t": 21.5,
+   "text": "Guidance after recovery: next=Mine 3 ore packages and bank them | signal= | tasks=✓Beacon surveyed | ○Bank ore · 0/3 | ○Construction · 0/200 CR"
+  },
+  {
+   "t": 22,
+   "text": "dockPrompt: false (ArrowDown)"
+  },
+  {
+   "t": 24.5,
+   "text": "message: \"\" (ArrowDown)"
+  },
+  {
+   "t": 24.5,
+   "text": "SHOT A-naive-024.5s-drill-at-lander.png"
+  },
+  {
+   "t": 24.5,
+   "text": "Drilling at the lander: E 4.1 / 10 H 10 / 10 D 30 m C 0 / 7 haul 0 CR CR 0"
+  }
+ ]
+}

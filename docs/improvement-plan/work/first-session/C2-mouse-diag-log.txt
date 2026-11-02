@@ -1,0 +1,158 @@
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   0.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"-0.25","sx":720,"sy":426} E=6.0 / 10
+   1.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"0.03","sx":720,"sy":429} E=5.9 / 10
+   1.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"0.31","sx":720,"sy":429} E=5.9 / 10
+   1.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"0.58","sx":720,"sy":429} E=5.8 / 10
+   1.75s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (below)
+   1.75s  signal: "↓downWreck survey beacon89 mTracking" (below)
+   1.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"0.86","sx":720,"sy":429} E=5.7 / 10
+   2.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"1.13","sx":720,"sy":429} E=5.7 / 10
+   2.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"1.41","sx":720,"sy":429} E=5.6 / 10
+   2.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"1.68","sx":720,"sy":429} E=5.5 / 10
+   2.75s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (below)
+   2.75s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (below)
+   2.75s  signal: "↓downWreck survey beacon79 mSignal nearby" (below)
+   2.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"1.95","sx":720,"sy":429} E=5.4 / 10
+   3.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"2.22","sx":720,"sy":429} E=5.3 / 10
+   3.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"2.49","sx":720,"sy":429} E=5.2 / 10
+   3.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (below)
+   3.50s  signal: "↓downWreck survey beacon69 mSignal nearby" (below)
+   3.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"2.76","sx":720,"sy":429} E=5.2 / 10
+   3.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"3.02","sx":720,"sy":429} E=5.1 / 10
+   4.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"3.29","sx":720,"sy":429} E=5.0 / 10
+   4.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"3.56","sx":720,"sy":429} E=4.9 / 10
+   4.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (below)
+   4.50s  signal: "↓downWreck survey beacon59 mSignal nearby" (below)
+   4.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"3.82","sx":720,"sy":429} E=4.9 / 10
+   4.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"4.08","sx":720,"sy":429} E=4.8 / 10
+   5.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"4.35","sx":720,"sy":429} E=4.7 / 10
+   5.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"4.61","sx":720,"sy":429} E=4.6 / 10
+   5.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR" (below)
+   5.50s  signal: "↓downWreck survey beacon49 mSignal nearby" (below)
+   5.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"4.87","sx":720,"sy":429} E=4.6 / 10
+   5.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"5.13","sx":720,"sy":429} E=4.5 / 10
+   6.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"5.39","sx":720,"sy":429} E=4.4 / 10
+   6.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR" (below)
+   6.25s  signal: "↓downWreck survey beacon39 mSignal nearby" (below)
+   6.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"5.65","sx":720,"sy":429} E=4.3 / 10
+   6.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"5.91","sx":720,"sy":429} E=4.2 / 10
+   6.75s  message: "" (below)
+   6.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"6.17","sx":720,"sy":429} E=4.1 / 10
+   7.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"6.42","sx":720,"sy":429} E=4.1 / 10
+   7.25s  message: "Wreck survey beacon · Very close. Approach the wreck beacon to survey." (below)
+   7.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (below)
+   7.25s  signal: "↓downWreck survey beacon29 mVery close" (below)
+   7.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"6.67","sx":720,"sy":429} E=4.0 / 10
+   7.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"6.93","sx":720,"sy":429} E=3.9 / 10
+   7.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"7.18","sx":720,"sy":429} E=3.8 / 10
+   8.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"7.44","sx":720,"sy":429} E=3.8 / 10
+   8.25s  signal: "↓downWreck survey beacon19 mVery close" (below)
+   8.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"7.69","sx":720,"sy":429} E=3.7 / 10
+   8.50s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"7.94","sx":720,"sy":429} E=3.6 / 10
+   8.75s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"8.20","sx":720,"sy":429} E=3.5 / 10
+   9.00s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"8.45","sx":720,"sy":429} E=3.5 / 10
+   9.25s  message: "Beacon surveyed · Return to the lander" (below)
+   9.25s  tasks: "✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (below)
+   9.25s  next: "Return to lander → Bank ore" (below)
+   9.25s  signal: "↖up and leftSalvage lander175 mTracking" (below)
+   9.25s  below mouse=(720,582) {"active":"true","dirs":"down","rx":"20.50","ry":"8.70","sx":720,"sy":429} E=3.4 / 10
+   9.55s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"9.00","sx":720,"sy":429} E=3.3 / 10
+   9.80s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"9.25","sx":720,"sy":429} E=3.2 / 10
+  10.05s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"9.50","sx":720,"sy":429} E=3.1 / 10
+  10.30s  signal: "↖up and leftSalvage lander180 mTracking" (above)
+  10.30s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"9.54","sx":720,"sy":421} E=3.1 / 10
+  10.55s  signal: "↖up and leftSalvage lander174 mTracking" (above)
+  10.55s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"8.55","sx":720,"sy":396} E=3.0 / 10
+  10.80s  signal: "↖up and leftSalvage lander169 mTracking" (above)
+  10.80s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"7.05","sx":720,"sy":384} E=3.0 / 10
+  11.05s  signal: "←leftSalvage lander161 mTracking" (above)
+  11.05s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"5.55","sx":720,"sy":383} E=2.9 / 10
+  11.30s  signal: "←leftSalvage lander157 mTracking" (above)
+  11.30s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"4.05","sx":720,"sy":383} E=2.9 / 10
+  11.55s  signal: "←leftSalvage lander153 mTracking" (above)
+  11.55s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"2.55","sx":720,"sy":383} E=2.8 / 10
+  11.80s  signal: "←leftSalvage lander151 mTracking" (above)
+  11.80s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"1.05","sx":720,"sy":383} E=2.8 / 10
+  12.05s  signal: "←leftSalvage lander150 mTracking" (above)
+  12.05s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"-0.45","sx":720,"sy":383} E=2.7 / 10
+  12.30s  signal: "←leftSalvage lander151 mTracking" (above)
+  12.30s  above mouse=(720,269) {"active":"true","dirs":"up","rx":"20.50","ry":"-1.95","sx":720,"sy":383} E=2.7 / 10
+  12.60s  signal: "←leftSalvage lander152 mTracking" (upleft)
+  12.60s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"20.41","ry":"-3.40","sx":719,"sy":390} E=2.7 / 10
+  12.85s  signal: "←leftSalvage lander148 mTracking" (upleft)
+  12.85s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"19.54","ry":"-4.89","sx":711,"sy":384} E=2.6 / 10
+  13.10s  signal: "←leftSalvage lander140 mTracking" (upleft)
+  13.10s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"18.29","ry":"-5.50","sx":707,"sy":410} E=2.6 / 10
+  13.35s  message: "" (upleft)
+  13.35s  danger: "Low energy · return to the lander" (upleft)
+  13.35s  signal: "↙down and leftSalvage lander126 mTracking" (upleft)
+  13.35s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"17.04","ry":"-5.50","sx":707,"sy":421} E=2.5 / 10
+  13.60s  signal: "↙down and leftSalvage lander117 mTracking" (upleft)
+  13.60s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"15.79","ry":"-5.50","sx":706,"sy":422} E=2.4 / 10
+  13.85s  signal: "↙down and leftSalvage lander104 mTracking" (upleft)
+  13.85s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"14.54","ry":"-5.50","sx":706,"sy":422} E=2.3 / 10
+  14.10s  signal: "↙down and leftSalvage lander95 mTracking" (upleft)
+  14.10s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"13.29","ry":"-5.50","sx":706,"sy":422} E=2.3 / 10
+  14.35s  signal: "↙down and leftSalvage lander83 mTracking" (upleft)
+  14.35s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"12.04","ry":"-5.50","sx":706,"sy":422} E=2.2 / 10
+  14.60s  signal: "↙down and leftSalvage lander76 mSignal nearby" (upleft)
+  14.60s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"10.79","ry":"-5.50","sx":706,"sy":422} E=2.2 / 10
+  14.85s  signal: "↙down and leftSalvage lander65 mSignal nearby" (upleft)
+  14.85s  upleft mouse=(520,263) {"active":"true","dirs":"left,up","rx":"9.54","ry":"-5.50","sx":706,"sy":422} E=2.1 / 10
+  14.90s  SHOT C2-mouse-diag-014.9s-upleft-end.png
+  15.15s  signal: "↙down and leftSalvage lander55 mSignal nearby" (left)
+  15.15s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"8.14","ry":"-5.23","sx":707,"sy":429} E=2.1 / 10
+  15.40s  signal: "↓downSalvage lander47 mSignal nearby" (left)
+  15.40s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"6.89","ry":"-4.66","sx":707,"sy":437} E=2.1 / 10
+  15.65s  signal: "↓downSalvage lander35 mSignal nearby" (left)
+  15.65s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"5.64","ry":"-3.84","sx":706,"sy":444} E=2.0 / 10
+  15.90s  signal: "↓downSalvage lander28 mVery close" (left)
+  15.90s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"4.39","ry":"-2.82","sx":706,"sy":449} E=2.0 / 10
+  16.15s  signal: "↘down and rightSalvage lander27 mVery close" (left)
+  16.15s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"3.14","ry":"-1.63","sx":706,"sy":453} E=2.0 / 10
+  16.40s  signal: "→rightSalvage lander34 mSignal nearby" (left)
+  16.40s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"1.89","ry":"-0.36","sx":706,"sy":455} E=1.9 / 10
+  16.65s  signal: "→rightSalvage lander49 mSignal nearby" (left)
+  16.65s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"0.64","ry":"-0.36","sx":706,"sy":427} E=1.9 / 10
+  16.90s  signal: "→rightSalvage lander59 mSignal nearby" (left)
+  16.90s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"39.39","ry":"-0.36","sx":706,"sy":423} E=1.9 / 10
+  17.15s  signal: "→rightSalvage lander74 mSignal nearby" (left)
+  17.15s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"38.14","ry":"-0.36","sx":706,"sy":422} E=1.8 / 10
+  17.40s  signal: "→rightSalvage lander84 mTracking" (left)
+  17.40s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"36.89","ry":"-0.36","sx":706,"sy":422} E=1.8 / 10
+  17.65s  signal: "→rightSalvage lander99 mTracking" (left)
+  17.65s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"35.64","ry":"-0.36","sx":706,"sy":422} E=1.8 / 10
+  17.90s  signal: "→rightSalvage lander109 mTracking" (left)
+  17.90s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"34.39","ry":"-0.36","sx":706,"sy":422} E=1.7 / 10
+  18.15s  signal: "→rightSalvage lander124 mTracking" (left)
+  18.15s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"33.14","ry":"-0.36","sx":706,"sy":422} E=1.7 / 10
+  18.40s  signal: "→rightSalvage lander134 mTracking" (left)
+  18.40s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"31.89","ry":"-0.36","sx":706,"sy":422} E=1.7 / 10
+  18.65s  signal: "→rightSalvage lander149 mTracking" (left)
+  18.65s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"30.64","ry":"-0.36","sx":706,"sy":422} E=1.6 / 10
+  18.90s  signal: "→rightSalvage lander159 mTracking" (left)
+  18.90s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"29.39","ry":"-0.36","sx":706,"sy":422} E=1.6 / 10
+  19.15s  signal: "→rightSalvage lander174 mTracking" (left)
+  19.15s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"28.14","ry":"-0.36","sx":706,"sy":422} E=1.6 / 10
+  19.40s  signal: "→rightSalvage lander184 mTracking" (left)
+  19.40s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"26.89","ry":"-0.36","sx":706,"sy":422} E=1.6 / 10
+  19.65s  signal: "→rightSalvage lander199 mTracking" (left)
+  19.65s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"25.64","ry":"-0.36","sx":706,"sy":422} E=1.5 / 10
+  19.90s  danger: "Energy critical · return to the lander" (left)
+  19.90s  signal: "←leftSalvage lander191 mTracking" (left)
+  19.90s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"24.39","ry":"-0.36","sx":706,"sy":422} E=1.5 / 10
+  20.15s  signal: "←leftSalvage lander176 mTracking" (left)
+  20.15s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"23.14","ry":"-0.36","sx":706,"sy":422} E=1.5 / 10
+  20.40s  signal: "←leftSalvage lander166 mTracking" (left)
+  20.40s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"21.89","ry":"-0.36","sx":706,"sy":422} E=1.4 / 10
+  20.65s  signal: "←leftSalvage lander151 mTracking" (left)
+  20.65s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"20.64","ry":"-0.36","sx":706,"sy":422} E=1.4 / 10
+  20.90s  signal: "←leftSalvage lander141 mTracking" (left)
+  20.90s  left mouse=(486,423) {"active":"true","dirs":"left","rx":"19.39","ry":"-0.36","sx":706,"sy":422} E=1.4 / 10
+  20.95s  SHOT C2-mouse-diag-00021s-left-end.png
+
+MARKS {}
+ERRORS ["console: Failed to load resource: the server responded with a status of 404 (Not Found)"]

@@ -1,0 +1,23 @@
+{
+ "g04-w01-depth-row4": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "10.5000",
+  "rigWorldY": "4.6400",
+  "world": "W01"
+ },
+ "g04-w01-depth-row30": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "10.5000",
+  "rigWorldY": "30.6400",
+  "world": "W01"
+ },
+ "g04-w01-depth-row56": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "10.5000",
+  "rigWorldY": "56.6400",
+  "world": "W01"
+ }
+}

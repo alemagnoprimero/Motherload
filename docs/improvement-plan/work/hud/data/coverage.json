@@ -1,0 +1,217 @@
+[
+ {
+  "scene": "desktop-first",
+  "viewport": "1440x900",
+  "coverage_pct": 5.0,
+  "parts_pct": {
+   "energyVital": 0.3,
+   "hullVital": 0.3,
+   "rightCluster": 0.7,
+   "menuButton": 0.15,
+   "objective": 2.88,
+   "toolbar": 0.64
+  },
+  "text_elements": 26,
+  "words": 63,
+  "font_sizes": [
+   12,
+   13,
+   14,
+   16
+  ],
+  "share_12px_or_less": 69,
+  "tile": 65,
+  "camera_safe_top_bottom": [
+   56,
+   48
+  ],
+  "camera_reserved_pct": 11.6,
+  "rig_y": 422,
+  "rows_visible_below_rig": 7.4,
+  "rows_clear_below_rig_in_rig_column": 7.4,
+  "rows_clear_above_rig_in_rig_column": 6.5
+ },
+ {
+  "scene": "portrait-first",
+  "viewport": "393x851",
+  "coverage_pct": 16.9,
+  "parts_pct": {
+   "energyVital": 0.78,
+   "hullVital": 0.78,
+   "rightCluster": 1.66,
+   "menuButton": 0.58,
+   "objective": 10.73,
+   "toolbar": 2.41
+  },
+  "text_elements": 26,
+  "words": 63,
+  "font_sizes": [
+   12,
+   16
+  ],
+  "share_12px_or_less": 96,
+  "tile": 48,
+  "camera_safe_top_bottom": [
+   210,
+   100
+  ],
+  "camera_reserved_pct": 36.4,
+  "rig_y": 459,
+  "rows_visible_below_rig": 8.2,
+  "rows_clear_below_rig_in_rig_column": 5.8,
+  "rows_clear_above_rig_in_rig_column": 5.2
+ },
+ {
+  "scene": "landscape-first",
+  "viewport": "844x390",
+  "coverage_pct": 15.1,
+  "parts_pct": {
+   "energyVital": 0.61,
+   "hullVital": 0.61,
+   "rightCluster": 1.52,
+   "menuButton": 0.59,
+   "objective": 9.48,
+   "toolbar": 2.33
+  },
+  "text_elements": 22,
+  "words": 51,
+  "font_sizes": [
+   12,
+   16
+  ],
+  "share_12px_or_less": 95,
+  "tile": 48,
+  "camera_safe_top_bottom": [
+   152,
+   64
+  ],
+  "camera_reserved_pct": 55.4,
+  "rig_y": 232,
+  "rows_visible_below_rig": 3.3,
+  "rows_clear_below_rig_in_rig_column": 2.2,
+  "rows_clear_above_rig_in_rig_column": 2.0
+ },
+ {
+  "scene": "small-first",
+  "viewport": "568x320",
+  "coverage_pct": 27.4,
+  "parts_pct": {
+   "energyVital": 1.11,
+   "hullVital": 1.11,
+   "rightCluster": 2.75,
+   "menuButton": 1.07,
+   "objective": 17.17,
+   "toolbar": 4.21
+  },
+  "text_elements": 22,
+  "words": 51,
+  "font_sizes": [
+   12,
+   16
+  ],
+  "share_12px_or_less": 95,
+  "tile": 48,
+  "camera_safe_top_bottom": [
+   152,
+   64
+  ],
+  "camera_reserved_pct": 67.5,
+  "rig_y": 200,
+  "rows_visible_below_rig": 2.5,
+  "rows_clear_below_rig_in_rig_column": 1.4,
+  "rows_clear_above_rig_in_rig_column": 1.3
+ },
+ {
+  "scene": "portrait-dive",
+  "viewport": "393x851",
+  "coverage_pct": 21.8,
+  "parts_pct": {
+   "energyVital": 0.78,
+   "hullVital": 0.78,
+   "rightCluster": 1.66,
+   "menuButton": 0.58,
+   "objective": 11.88,
+   "toolbar": 2.41,
+   "message": 3.71
+  },
+  "text_elements": 27,
+  "words": 76,
+  "font_sizes": [
+   12,
+   16
+  ],
+  "share_12px_or_less": 96,
+  "tile": 48,
+  "camera_safe_top_bottom": [
+   210,
+   100
+  ],
+  "camera_reserved_pct": 36.4,
+  "rig_y": 462,
+  "rows_visible_below_rig": 8.1,
+  "rows_clear_below_rig_in_rig_column": 4.8,
+  "rows_clear_above_rig_in_rig_column": 5.3
+ },
+ {
+  "scene": "landscape-dive",
+  "viewport": "844x390",
+  "coverage_pct": 17.7,
+  "parts_pct": {
+   "energyVital": 0.61,
+   "hullVital": 0.61,
+   "rightCluster": 1.66,
+   "menuButton": 0.59,
+   "objective": 9.76,
+   "toolbar": 2.33,
+   "message": 2.11
+  },
+  "text_elements": 23,
+  "words": 67,
+  "font_sizes": [
+   12,
+   16
+  ],
+  "share_12px_or_less": 96,
+  "tile": 48,
+  "camera_safe_top_bottom": [
+   152,
+   64
+  ],
+  "camera_reserved_pct": 55.4,
+  "rig_y": 234,
+  "rows_visible_below_rig": 3.2,
+  "rows_clear_below_rig_in_rig_column": 1.5,
+  "rows_clear_above_rig_in_rig_column": 2.0
+ },
+ {
+  "scene": "small-dive",
+  "viewport": "568x320",
+  "coverage_pct": 31.2,
+  "parts_pct": {
+   "energyVital": 1.11,
+   "hullVital": 1.11,
+   "rightCluster": 2.75,
+   "menuButton": 1.07,
+   "objective": 17.17,
+   "toolbar": 4.21,
+   "message": 3.82
+  },
+  "text_elements": 23,
+  "words": 64,
+  "font_sizes": [
+   12,
+   16
+  ],
+  "share_12px_or_less": 96,
+  "tile": 48,
+  "camera_safe_top_bottom": [
+   152,
+   64
+  ],
+  "camera_reserved_pct": 67.5,
+  "rig_y": 203,
+  "rows_visible_below_rig": 2.4,
+  "rows_clear_below_rig_in_rig_column": 0.7,
+  "rows_clear_above_rig_in_rig_column": 1.4
+ }
+]

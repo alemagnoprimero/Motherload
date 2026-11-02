@@ -1,0 +1,44 @@
+{
+ "energy normal vs critical (#8bdce2 vs #ffce78)": {
+  "normal": 67.1,
+  "deuteranopia": 63.2,
+  "protanopia": 56.1,
+  "tritanopia": 60.7
+ },
+ "hull normal vs critical (#e5a494 vs #ed957f)": {
+  "normal": 12.0,
+  "deuteranopia": 8.8,
+  "protanopia": 7.3,
+  "tritanopia": 13.5
+ },
+ "hull bar vs energy-critical bar (#e5a494 vs #ffce78)": {
+  "normal": 36.5,
+  "deuteranopia": 31.7,
+  "protanopia": 37.2,
+  "tritanopia": 15.4
+ },
+ "mission pending vs carried glyph (#a6bcb1 vs #f0c584)": {
+  "normal": 39.8,
+  "deuteranopia": 38.1,
+  "protanopia": 33.5,
+  "tritanopia": 37.5
+ },
+ "mission complete vs pending glyph (#9cdec6 vs #a6bcb1)": {
+  "normal": 18.8,
+  "deuteranopia": 8.5,
+  "protanopia": 11.3,
+  "tritanopia": 20.1
+ },
+ "signal tracking vs nearby (#a1b8aa vs #f0cc8d)": {
+  "normal": 36.7,
+  "deuteranopia": 35.5,
+  "protanopia": 30.9,
+  "tritanopia": 35.3
+ },
+ "signal nearby vs very close (#f0cc8d vs #c2eada)": {
+  "normal": 38.9,
+  "deuteranopia": 34.9,
+  "protanopia": 31.2,
+  "tritanopia": 41.0
+ }
+}

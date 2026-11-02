@@ -1,0 +1,12 @@
+
+ RUN  v5.0.5 /home/user/Motherload
+
+
+ Test Files  12 passed (12)
+      Tests  107 passed (107)
+   Start at  18:51:11
+   Duration  5.25s (tests 97%, import 2%, transform 1%)
+
+    Isolate  12 workers spawned · ~117ms startup each (spawn + environment, per file)
+             at least ~352ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,85 @@
+{
+ "name": "R1-unload-mission-only",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "marks": {},
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "log": [
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 0.55,
+   "text": "message: \"Salvage lander · Dock available. Dock and bank mission cargo.\" (idle)"
+  },
+  {
+   "t": 0.55,
+   "text": "objective: \"02 / 03 Recover the lander parts\" (idle)"
+  },
+  {
+   "t": 0.55,
+   "text": "tasks: \"↑Pressure valve · onboard, bank at lander | ○Antenna · 400 m | ○Construction · 192.3/300 CR\" (idle)"
+  },
+  {
+   "t": 0.55,
+   "text": "next: \"Return to lander → Bank mission cargo\" (idle)"
+  },
+  {
+   "t": 0.55,
+   "text": "signal: \"◉At your positionSalvage lander0 mDock available\" (idle)"
+  },
+  {
+   "t": 0.55,
+   "text": "dockPrompt: true (idle)"
+  },
+  {
+   "t": 0.8,
+   "text": "Service before: CARGO TRANSFER Mission objects stay protected. ONBOARD + STORED 0 CR 0 carried · 0 banked Unload hold Bank mission objects; sell minerals and relics. Unload & sell Bank without sale Energy reserve 6 → 10 / 10 L. Cost 4 CR · 188.3 CR remains. 1 CR per litre. Refuel · 4 CR Hull repair 10 → 10 / 10 HP."
+  },
+  {
+   "t": 0.8,
+   "text": "R1 dock message after Unload & sell with only the valve aboard: \"Bank your carried packages before selling them.\""
+  },
+  {
+   "t": 0.8,
+   "text": "SHOT R1-unload-mission-only-000.8s-unload-mission-only.png"
+  },
+  {
+   "t": 1.05,
+   "text": "message: \"Bank your carried packages before selling them.\" (idle)"
+  },
+  {
+   "t": 1.05,
+   "text": "tasks: \"✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 192.3/300 CR\" (idle)"
+  },
+  {
+   "t": 1.05,
+   "text": "next: \"Excavate the marked debris\" (idle)"
+  },
+  {
+   "t": 1.05,
+   "text": "signal: \"↓downLander antenna430 mTracking\" (idle)"
+  },
+  {
+   "t": 1.1,
+   "text": "R1 tracker after: ✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 192.3/300 CR"
+  }
+ ]
+}

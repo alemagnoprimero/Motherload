@@ -1,0 +1,683 @@
+{
+  "ground": {
+    "engine0_cargo0": {
+      "topSpeedTilesPerS": 5,
+      "massFactor": 1,
+      "t50": 0.117,
+      "t90": 0.267,
+      "tTop": 0.3,
+      "releaseFromV": 5,
+      "stopTimeTo0_05": 1.45,
+      "coastTiles": 1.542,
+      "reverseTo90pct": 0.417,
+      "distanceIn2s": 9.391
+    },
+    "engine0_cargo7": {
+      "topSpeedTilesPerS": 5,
+      "massFactor": 1.057,
+      "t50": 0.133,
+      "t90": 0.283,
+      "tTop": 0.333,
+      "releaseFromV": 5,
+      "stopTimeTo0_05": 1.45,
+      "coastTiles": 1.542,
+      "reverseTo90pct": 0.417,
+      "distanceIn2s": 9.341
+    },
+    "engine1_cargo0": {
+      "topSpeedTilesPerS": 5.553,
+      "massFactor": 1,
+      "t50": 0.117,
+      "t90": 0.217,
+      "tTop": 0.267,
+      "releaseFromV": 5.553,
+      "stopTimeTo0_05": 1.483,
+      "coastTiles": 1.712,
+      "reverseTo90pct": 0.367,
+      "distanceIn2s": 10.521
+    },
+    "engine1_cargo7": {
+      "topSpeedTilesPerS": 5.553,
+      "massFactor": 1.057,
+      "t50": 0.117,
+      "t90": 0.25,
+      "tTop": 0.283,
+      "releaseFromV": 5.553,
+      "stopTimeTo0_05": 1.483,
+      "coastTiles": 1.712,
+      "reverseTo90pct": 0.367,
+      "distanceIn2s": 10.475
+    },
+    "engine2_cargo0": {
+      "topSpeedTilesPerS": 6.191,
+      "massFactor": 1,
+      "t50": 0.1,
+      "t90": 0.2,
+      "tTop": 0.217,
+      "releaseFromV": 6.191,
+      "stopTimeTo0_05": 1.517,
+      "coastTiles": 1.909,
+      "reverseTo90pct": 0.317,
+      "distanceIn2s": 11.819
+    },
+    "engine2_cargo7": {
+      "topSpeedTilesPerS": 6.191,
+      "massFactor": 1.057,
+      "t50": 0.1,
+      "t90": 0.2,
+      "tTop": 0.233,
+      "releaseFromV": 6.191,
+      "stopTimeTo0_05": 1.517,
+      "coastTiles": 1.909,
+      "reverseTo90pct": 0.317,
+      "distanceIn2s": 11.777
+    }
+  },
+  "air": {
+    "W01": {
+      "airTopSpeed": 5,
+      "airT90": 0.3,
+      "releaseFromV": 5,
+      "airStopTimeTo0_05": 5.433,
+      "airCoastTiles": 5.86,
+      "note": "Up held during coast pins rig at sky ceiling y=-5.5; vertical motion excluded"
+    },
+    "W02": {
+      "airTopSpeed": 5,
+      "airT90": 0.3,
+      "releaseFromV": 5,
+      "airStopTimeTo0_05": 5.433,
+      "airCoastTiles": 5.86,
+      "note": "Up held during coast pins rig at sky ceiling y=-5.5; vertical motion excluded"
+    }
+  },
+  "vertical": {
+    "W01_engine0": {
+      "gravityTilesPerS2": 6.347,
+      "climbTopSpeed": 6,
+      "timeToRise1Tile": 0.333,
+      "timeToClimbTop": 0.35,
+      "releaseToApexS": 0.7,
+      "apexOvershootTiles": 1.849,
+      "fallTerminal": 6,
+      "fallTimeTo95pct": 1.683,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W01_engine1": {
+      "gravityTilesPerS2": 6.347,
+      "climbTopSpeed": 6.663,
+      "timeToRise1Tile": 0.283,
+      "timeToClimbTop": 0.3,
+      "releaseToApexS": 0.75,
+      "apexOvershootTiles": 2.203,
+      "fallTerminal": 6.663,
+      "fallTimeTo95pct": 2.2,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W01_engine2": {
+      "gravityTilesPerS2": 6.347,
+      "climbTopSpeed": 7.43,
+      "timeToRise1Tile": 0.25,
+      "timeToClimbTop": 0.25,
+      "releaseToApexS": 0.817,
+      "apexOvershootTiles": 2.637,
+      "fallTerminal": 7.43,
+      "fallTimeTo95pct": 3.35,
+      "fallFromRow1ToBottomDamage": 1,
+      "damageAtS": 8.883,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W01_engine3": {
+      "gravityTilesPerS2": 6.347,
+      "climbTopSpeed": 8.27,
+      "timeToRise1Tile": 0.217,
+      "timeToClimbTop": 0.217,
+      "releaseToApexS": 0.883,
+      "apexOvershootTiles": 3.139,
+      "fallTerminal": 7.489,
+      "fallTimeTo95pct": 3.517,
+      "fallFromRow1ToBottomDamage": 1,
+      "damageAtS": 8.867,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W01_engine5": {
+      "gravityTilesPerS2": 6.347,
+      "climbTopSpeed": 10.159,
+      "timeToRise1Tile": 0.183,
+      "timeToClimbTop": 0.167,
+      "releaseToApexS": 1.017,
+      "apexOvershootTiles": 4.355,
+      "fallTerminal": 7.489,
+      "fallTimeTo95pct": 3.517,
+      "fallFromRow1ToBottomDamage": 1,
+      "damageAtS": 8.867,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W01_engine9": {
+      "gravityTilesPerS2": 6.347,
+      "climbTopSpeed": 12,
+      "timeToRise1Tile": 0.133,
+      "timeToClimbTop": 0.083,
+      "releaseToApexS": 1.133,
+      "apexOvershootTiles": 5.639,
+      "fallTerminal": 7.489,
+      "fallTimeTo95pct": 3.517,
+      "fallFromRow1ToBottomDamage": 1,
+      "damageAtS": 8.867,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W02_engine0": {
+      "gravityTilesPerS2": 4.039,
+      "climbTopSpeed": 6,
+      "timeToRise1Tile": 0.317,
+      "timeToClimbTop": 0.317,
+      "releaseToApexS": 0.967,
+      "apexOvershootTiles": 2.464,
+      "fallTerminal": 4.768,
+      "fallTimeTo95pct": 3.533,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W02_engine1": {
+      "gravityTilesPerS2": 4.039,
+      "climbTopSpeed": 6.663,
+      "timeToRise1Tile": 0.283,
+      "timeToClimbTop": 0.267,
+      "releaseToApexS": 1.033,
+      "apexOvershootTiles": 2.906,
+      "fallTerminal": 4.768,
+      "fallTimeTo95pct": 3.533,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W02_engine2": {
+      "gravityTilesPerS2": 4.039,
+      "climbTopSpeed": 7.43,
+      "timeToRise1Tile": 0.25,
+      "timeToClimbTop": 0.233,
+      "releaseToApexS": 1.117,
+      "apexOvershootTiles": 3.441,
+      "fallTerminal": 4.768,
+      "fallTimeTo95pct": 3.533,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W02_engine3": {
+      "gravityTilesPerS2": 4.039,
+      "climbTopSpeed": 8.27,
+      "timeToRise1Tile": 0.217,
+      "timeToClimbTop": 0.2,
+      "releaseToApexS": 1.2,
+      "apexOvershootTiles": 4.052,
+      "fallTerminal": 4.768,
+      "fallTimeTo95pct": 3.533,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W02_engine5": {
+      "gravityTilesPerS2": 4.039,
+      "climbTopSpeed": 10.159,
+      "timeToRise1Tile": 0.183,
+      "timeToClimbTop": 0.15,
+      "releaseToApexS": 1.35,
+      "apexOvershootTiles": 5.507,
+      "fallTerminal": 4.768,
+      "fallTimeTo95pct": 3.533,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    },
+    "W02_engine9": {
+      "gravityTilesPerS2": 4.039,
+      "climbTopSpeed": 12,
+      "timeToRise1Tile": 0.117,
+      "timeToClimbTop": 0.083,
+      "releaseToApexS": 1.483,
+      "apexOvershootTiles": 7.013,
+      "fallTerminal": 4.768,
+      "fallTimeTo95pct": 3.533,
+      "fallFromRow1ToBottomDamage": 0,
+      "damageAtS": null,
+      "hardLandingThresholdTilesPerS": 7
+    }
+  },
+  "landingDamageByDrop": {
+    "engine0": {
+      "drop2tiles": 0,
+      "drop4tiles": 0,
+      "drop8tiles": 0,
+      "drop12tiles": 0,
+      "drop16tiles": 0,
+      "drop20tiles": 0,
+      "drop30tiles": 0,
+      "drop50tiles": 0
+    },
+    "engine1": {
+      "drop2tiles": 0,
+      "drop4tiles": 0,
+      "drop8tiles": 0,
+      "drop12tiles": 0,
+      "drop16tiles": 0,
+      "drop20tiles": 0,
+      "drop30tiles": 0,
+      "drop50tiles": 0
+    },
+    "engine2": {
+      "drop2tiles": 0,
+      "drop4tiles": 0,
+      "drop8tiles": 0,
+      "drop12tiles": 0,
+      "drop16tiles": 1,
+      "drop20tiles": 1,
+      "drop30tiles": 1,
+      "drop50tiles": 1
+    },
+    "engine5": {
+      "drop2tiles": 0,
+      "drop4tiles": 0,
+      "drop8tiles": 0,
+      "drop12tiles": 0,
+      "drop16tiles": 1,
+      "drop20tiles": 1,
+      "drop30tiles": 1,
+      "drop50tiles": 1
+    },
+    "engine9": {
+      "drop2tiles": 0,
+      "drop4tiles": 0,
+      "drop8tiles": 0,
+      "drop12tiles": 0,
+      "drop16tiles": 1,
+      "drop20tiles": 1,
+      "drop30tiles": 1,
+      "drop50tiles": 1
+    }
+  },
+  "drill": {
+    "W01_drill0_soil_row0_down": {
+      "seconds": 0.896,
+      "totalFromInput": 0.9,
+      "energy": 0.226
+    },
+    "W01_drill0_soil_row20_down": {
+      "seconds": 1.125,
+      "totalFromInput": 1.129,
+      "energy": 0.355
+    },
+    "W01_drill0_soil_row40_down": {
+      "seconds": 1.346,
+      "totalFromInput": 1.35,
+      "energy": 0.424
+    },
+    "W01_drill0_soil_row59_down": {
+      "seconds": 1.562,
+      "totalFromInput": 1.567,
+      "energy": 0.492
+    },
+    "W01_drill0_soil_row1_side": {
+      "seconds": 0.683,
+      "totalFromInput": 0.687,
+      "energy": 0.216
+    },
+    "W01_drill0_soil_row58_side": {
+      "seconds": 1.162,
+      "totalFromInput": 1.167,
+      "energy": 0.367
+    },
+    "W01_drill0_stone_row0_down": {
+      "seconds": 1.85,
+      "totalFromInput": 1.854,
+      "energy": 0.466
+    },
+    "W01_drill0_stone_row20_down": {
+      "seconds": 2.313,
+      "totalFromInput": 2.317,
+      "energy": 0.729
+    },
+    "W01_drill0_stone_row40_down": {
+      "seconds": 2.771,
+      "totalFromInput": 2.775,
+      "energy": 0.873
+    },
+    "W01_drill0_stone_row59_down": {
+      "seconds": 3.213,
+      "totalFromInput": 3.217,
+      "energy": 1.012
+    },
+    "W01_drill0_stone_row1_side": {
+      "seconds": 1.404,
+      "totalFromInput": 1.408,
+      "energy": 0.443
+    },
+    "W01_drill0_stone_row58_side": {
+      "seconds": 2.392,
+      "totalFromInput": 2.396,
+      "energy": 0.754
+    },
+    "W01_drill1_soil_row0_down": {
+      "seconds": 0.642,
+      "totalFromInput": 0.646,
+      "energy": 0.162
+    },
+    "W01_drill1_soil_row20_down": {
+      "seconds": 0.8,
+      "totalFromInput": 0.804,
+      "energy": 0.252
+    },
+    "W01_drill1_soil_row40_down": {
+      "seconds": 0.962,
+      "totalFromInput": 0.967,
+      "energy": 0.303
+    },
+    "W01_drill1_soil_row59_down": {
+      "seconds": 1.117,
+      "totalFromInput": 1.121,
+      "energy": 0.352
+    },
+    "W01_drill1_soil_row1_side": {
+      "seconds": 0.487,
+      "totalFromInput": 0.492,
+      "energy": 0.154
+    },
+    "W01_drill1_soil_row58_side": {
+      "seconds": 0.829,
+      "totalFromInput": 0.833,
+      "energy": 0.262
+    },
+    "W01_drill1_stone_row0_down": {
+      "seconds": 1.321,
+      "totalFromInput": 1.325,
+      "energy": 0.333
+    },
+    "W01_drill1_stone_row20_down": {
+      "seconds": 1.65,
+      "totalFromInput": 1.654,
+      "energy": 0.52
+    },
+    "W01_drill1_stone_row40_down": {
+      "seconds": 1.979,
+      "totalFromInput": 1.983,
+      "energy": 0.624
+    },
+    "W01_drill1_stone_row59_down": {
+      "seconds": 2.296,
+      "totalFromInput": 2.3,
+      "energy": 0.723
+    },
+    "W01_drill1_stone_row1_side": {
+      "seconds": 1,
+      "totalFromInput": 1.004,
+      "energy": 0.316
+    },
+    "W01_drill1_stone_row58_side": {
+      "seconds": 1.708,
+      "totalFromInput": 1.712,
+      "energy": 0.539
+    },
+    "W02_drill0_soil_row0_down": {
+      "seconds": 1,
+      "totalFromInput": 1.004,
+      "energy": 0.252
+    },
+    "W02_drill0_soil_row20_down": {
+      "seconds": 1.25,
+      "totalFromInput": 1.254,
+      "energy": 0.394
+    },
+    "W02_drill0_soil_row40_down": {
+      "seconds": 1.5,
+      "totalFromInput": 1.504,
+      "energy": 0.473
+    },
+    "W02_drill0_soil_row99_down": {
+      "seconds": 2.233,
+      "totalFromInput": 2.238,
+      "energy": 0.704
+    },
+    "W02_drill0_soil_row1_side": {
+      "seconds": 0.758,
+      "totalFromInput": 0.762,
+      "energy": 0.24
+    },
+    "W02_drill0_soil_row98_side": {
+      "seconds": 1.667,
+      "totalFromInput": 1.671,
+      "energy": 0.526
+    },
+    "W02_drill0_stone_row0_down": {
+      "seconds": 1.85,
+      "totalFromInput": 1.854,
+      "energy": 0.466
+    },
+    "W02_drill0_stone_row20_down": {
+      "seconds": 2.313,
+      "totalFromInput": 2.317,
+      "energy": 0.729
+    },
+    "W02_drill0_stone_row40_down": {
+      "seconds": 2.771,
+      "totalFromInput": 2.775,
+      "energy": 0.873
+    },
+    "W02_drill0_stone_row99_down": {
+      "seconds": 4.138,
+      "totalFromInput": 4.142,
+      "energy": 1.304
+    },
+    "W02_drill0_stone_row1_side": {
+      "seconds": 1.404,
+      "totalFromInput": 1.408,
+      "energy": 0.443
+    },
+    "W02_drill0_stone_row98_side": {
+      "seconds": 3.083,
+      "totalFromInput": 3.088,
+      "energy": 0.972
+    },
+    "W02_drill1_soil_row0_down": {
+      "seconds": 0.712,
+      "totalFromInput": 0.717,
+      "energy": 0.18
+    },
+    "W02_drill1_soil_row20_down": {
+      "seconds": 0.892,
+      "totalFromInput": 0.896,
+      "energy": 0.281
+    },
+    "W02_drill1_soil_row40_down": {
+      "seconds": 1.071,
+      "totalFromInput": 1.075,
+      "energy": 0.338
+    },
+    "W02_drill1_soil_row99_down": {
+      "seconds": 1.596,
+      "totalFromInput": 1.6,
+      "energy": 0.503
+    },
+    "W02_drill1_soil_row1_side": {
+      "seconds": 0.542,
+      "totalFromInput": 0.546,
+      "energy": 0.171
+    },
+    "W02_drill1_soil_row98_side": {
+      "seconds": 1.192,
+      "totalFromInput": 1.196,
+      "energy": 0.376
+    },
+    "W02_drill1_stone_row0_down": {
+      "seconds": 1.321,
+      "totalFromInput": 1.325,
+      "energy": 0.333
+    },
+    "W02_drill1_stone_row20_down": {
+      "seconds": 1.65,
+      "totalFromInput": 1.654,
+      "energy": 0.52
+    },
+    "W02_drill1_stone_row40_down": {
+      "seconds": 1.979,
+      "totalFromInput": 1.983,
+      "energy": 0.624
+    },
+    "W02_drill1_stone_row99_down": {
+      "seconds": 2.954,
+      "totalFromInput": 2.958,
+      "energy": 0.931
+    },
+    "W02_drill1_stone_row1_side": {
+      "seconds": 1,
+      "totalFromInput": 1.004,
+      "energy": 0.316
+    },
+    "W02_drill1_stone_row98_side": {
+      "seconds": 2.204,
+      "totalFromInput": 2.208,
+      "energy": 0.695
+    },
+    "W02_drill2_soil_row0_down": {
+      "seconds": 0.5,
+      "totalFromInput": 0.504,
+      "energy": 0.126
+    },
+    "W02_drill2_soil_row20_down": {
+      "seconds": 0.621,
+      "totalFromInput": 0.625,
+      "energy": 0.196
+    },
+    "W02_drill2_soil_row40_down": {
+      "seconds": 0.75,
+      "totalFromInput": 0.754,
+      "energy": 0.237
+    },
+    "W02_drill2_soil_row99_down": {
+      "seconds": 1.117,
+      "totalFromInput": 1.121,
+      "energy": 0.352
+    },
+    "W02_drill2_soil_row1_side": {
+      "seconds": 0.379,
+      "totalFromInput": 0.383,
+      "energy": 0.12
+    },
+    "W02_drill2_soil_row98_side": {
+      "seconds": 0.833,
+      "totalFromInput": 0.837,
+      "energy": 0.263
+    },
+    "W02_drill2_stone_row0_down": {
+      "seconds": 0.925,
+      "totalFromInput": 0.929,
+      "energy": 0.233
+    },
+    "W02_drill2_stone_row20_down": {
+      "seconds": 1.154,
+      "totalFromInput": 1.158,
+      "energy": 0.364
+    },
+    "W02_drill2_stone_row40_down": {
+      "seconds": 1.383,
+      "totalFromInput": 1.387,
+      "energy": 0.436
+    },
+    "W02_drill2_stone_row99_down": {
+      "seconds": 2.067,
+      "totalFromInput": 2.071,
+      "energy": 0.651
+    },
+    "W02_drill2_stone_row1_side": {
+      "seconds": 0.7,
+      "totalFromInput": 0.704,
+      "energy": 0.221
+    },
+    "W02_drill2_stone_row98_side": {
+      "seconds": 1.542,
+      "totalFromInput": 1.546,
+      "energy": 0.486
+    }
+  },
+  "chaining": {
+    "downCutStartsS": [
+      0.004,
+      0.904,
+      1.817,
+      2.742,
+      3.679
+    ],
+    "downCutCompletionsS": [
+      0.9,
+      1.812,
+      2.738,
+      3.675,
+      4.621
+    ],
+    "gapBetweenCompletionAndNextStartS": [
+      0.004,
+      0.005,
+      0.004,
+      0.004
+    ],
+    "progressAfterFirstFrame": 0.009,
+    "upPressedMidCut_cutContinues": true,
+    "facingBefore": "right",
+    "facingAfterLeftMidCut": "left",
+    "drillDirectionMidCut": "down",
+    "upHeldWaitUntilCutEndsS": 1.587
+  },
+  "sideCut": {
+    "cutBeganAtRigX": 19.464,
+    "gapFromBodyToWallTiles": 0.146,
+    "speedWhenCutBegan": 5,
+    "timeDrivingBeforeCut": 1.121,
+    "hoveringAgainstWallStartsCut": false,
+    "rightPlusUpOnGroundStartsCut": false
+  },
+  "inputBuffer": {
+    "tapEnds0msBeforeLanding": {
+      "cutStarted": false
+    },
+    "tapEnds50msBeforeLanding": {
+      "cutStarted": false
+    },
+    "tapEnds100msBeforeLanding": {
+      "cutStarted": false
+    },
+    "tapEnds150msBeforeLanding": {
+      "cutStarted": false
+    }
+  },
+  "fuelRates": {
+    "idleUndergroundPerS": 0.063,
+    "drivePerS": 0.126,
+    "thrustPerS": 0.126,
+    "drillPerS": 0.252,
+    "sourceLines": "model.ts:398-406",
+    "stockEnergy": 10,
+    "startEnergy": 6
+  },
+  "camera": {
+    "timeConstantS": 0.125,
+    "v1": {
+      "lookAheadTiles": 0.06,
+      "steadyLagTiles": 0.125,
+      "netRigOffsetFromCameraCentreTiles": 0.065
+    },
+    "v5": {
+      "lookAheadTiles": 0.3,
+      "steadyLagTiles": 0.625,
+      "netRigOffsetFromCameraCentreTiles": 0.325
+    },
+    "v6": {
+      "lookAheadTiles": 0.36,
+      "steadyLagTiles": 0.75,
+      "netRigOffsetFromCameraCentreTiles": 0.39
+    }
+  }
+}

@@ -1,0 +1,277 @@
+{
+ "summary": {
+  "scene": "portrait-w02-shaft",
+  "leaves": 24,
+  "median_cr50": 4.03,
+  "min_cr90": 2.14,
+  "below45_at_p90": 24,
+  "below3_at_p90": 14,
+  "below45_at_max": 24
+ },
+ "rows": [
+  {
+   "text": "ENERGY",
+   "fontSize": 12,
+   "color": "rgb(195, 209, 201)",
+   "bgL50": 0.1416,
+   "bgL90": 0.1784,
+   "cr50": 3.47,
+   "cr90": 2.91,
+   "crMax": 2.58,
+   "bgStd": 0.0401
+  },
+  {
+   "text": "5.9 / 10",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.1021,
+   "bgL90": 0.3485,
+   "cr50": 6.21,
+   "cr90": 2.37,
+   "crMax": 2.15,
+   "bgStd": 0.0887
+  },
+  {
+   "text": "HULL",
+   "fontSize": 12,
+   "color": "rgb(195, 209, 201)",
+   "bgL50": 0.1132,
+   "bgL90": 0.1748,
+   "cr50": 4.07,
+   "cr90": 2.95,
+   "crMax": 2.53,
+   "bgStd": 0.0375
+  },
+  {
+   "text": "10 / 10",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.1021,
+   "bgL90": 0.1688,
+   "cr50": 6.21,
+   "cr90": 4.32,
+   "crMax": 2.58,
+   "bgStd": 0.0458
+  },
+  {
+   "text": "120 m",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.1086,
+   "bgL90": 0.3111,
+   "cr50": 5.95,
+   "cr90": 2.61,
+   "crMax": 2.05,
+   "bgStd": 0.0896
+  },
+  {
+   "text": "2 / 7",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.1544,
+   "bgL90": 0.1688,
+   "cr50": 4.62,
+   "cr90": 4.32,
+   "crMax": 3.83,
+   "bgStd": 0.0283
+  },
+  {
+   "text": "HAUL",
+   "fontSize": 12,
+   "color": "rgb(184, 202, 194)",
+   "bgL50": 0.1688,
+   "bgL90": 0.1787,
+   "cr50": 2.8,
+   "cr90": 2.68,
+   "crMax": 1.68,
+   "bgStd": 0.0394
+  },
+  {
+   "text": "120 CR",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.1156,
+   "bgL90": 0.1739,
+   "cr50": 5.7,
+   "cr90": 4.22,
+   "crMax": 2.58,
+   "bgStd": 0.0392
+  },
+  {
+   "text": "CR",
+   "fontSize": 12,
+   "color": "rgb(234, 194, 140)",
+   "bgL50": 0.1079,
+   "bgL90": 0.1646,
+   "cr50": 3.99,
+   "cr90": 2.93,
+   "crMax": 2.62,
+   "bgStd": 0.025
+  },
+  {
+   "text": "100,000",
+   "fontSize": 12,
+   "color": "rgb(237, 193, 138)",
+   "bgL50": 0.1132,
+   "bgL90": 0.1722,
+   "cr50": 3.86,
+   "cr90": 2.83,
+   "crMax": 2.43,
+   "bgStd": 0.039
+  },
+  {
+   "text": "01 / 03",
+   "fontSize": 12,
+   "color": "rgb(212, 185, 130)",
+   "bgL50": 0.1511,
+   "bgL90": 0.1719,
+   "cr50": 2.75,
+   "cr90": 2.49,
+   "crMax": 2.18,
+   "bgStd": 0.0386
+  },
+  {
+   "text": "Sample the thermal seam",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0982,
+   "bgL90": 0.1776,
+   "cr50": 6.37,
+   "cr90": 4.15,
+   "crMax": 2.31,
+   "bgStd": 0.0559
+  },
+  {
+   "text": "\u25cb",
+   "fontSize": 12,
+   "color": "rgb(166, 188, 177)",
+   "bgL50": 0.1132,
+   "bgL90": 0.1688,
+   "cr50": 3.2,
+   "cr90": 2.39,
+   "crMax": 2.26,
+   "bgStd": 0.0226
+  },
+  {
+   "text": "Helion samples \u00b7 0/5 banked",
+   "fontSize": 12,
+   "color": "rgb(220, 231, 219)",
+   "bgL50": 0.1132,
+   "bgL90": 0.1688,
+   "cr50": 5.05,
+   "cr90": 3.77,
+   "crMax": 3.12,
+   "bgStd": 0.0299
+  },
+  {
+   "text": "\u25c7",
+   "fontSize": 12,
+   "color": "rgb(240, 197, 132)",
+   "bgL50": 0.1688,
+   "bgL90": 0.1886,
+   "cr50": 2.98,
+   "cr90": 2.73,
+   "crMax": 2.53,
+   "bgStd": 0.0288
+  },
+  {
+   "text": "Construction \u00b7 400 CR ready",
+   "fontSize": 12,
+   "color": "rgb(220, 231, 219)",
+   "bgL50": 0.1255,
+   "bgL90": 0.1776,
+   "cr50": 4.7,
+   "cr90": 3.62,
+   "crMax": 3.09,
+   "bgStd": 0.0389
+  },
+  {
+   "text": "\u2199",
+   "fontSize": 16,
+   "color": "rgb(237, 193, 138)",
+   "bgL50": 0.1688,
+   "bgL90": 0.1755,
+   "cr50": 2.88,
+   "cr90": 2.79,
+   "crMax": 2.47,
+   "bgStd": 0.0301
+  },
+  {
+   "text": "Helion thermal sample 5",
+   "fontSize": 12,
+   "color": "rgb(197, 216, 202)",
+   "bgL50": 0.1132,
+   "bgL90": 0.1755,
+   "cr50": 4.3,
+   "cr90": 3.12,
+   "crMax": 2.65,
+   "bgStd": 0.0347
+  },
+  {
+   "text": "49 m",
+   "fontSize": 12,
+   "color": "rgb(175, 195, 183)",
+   "bgL50": 0.1132,
+   "bgL90": 0.1715,
+   "cr50": 3.47,
+   "cr90": 2.55,
+   "crMax": 2.42,
+   "bgStd": 0.0297
+  },
+  {
+   "text": "Signal nearby",
+   "fontSize": 12,
+   "color": "rgb(240, 204, 141)",
+   "bgL50": 0.1132,
+   "bgL90": 0.1715,
+   "cr50": 4.21,
+   "cr90": 3.1,
+   "crMax": 2.65,
+   "bgStd": 0.0339
+  },
+  {
+   "text": "Excavate the marked Helion sample pods",
+   "fontSize": 12,
+   "color": "rgb(240, 208, 153)",
+   "bgL50": 0.1284,
+   "bgL90": 0.1776,
+   "cr50": 3.98,
+   "cr90": 3.12,
+   "crMax": 2.66,
+   "bgStd": 0.039
+  },
+  {
+   "text": "Unlock: vapour condenser + heated refuge",
+   "fontSize": 12,
+   "color": "rgb(168, 188, 176)",
+   "bgL50": 0.1688,
+   "bgL90": 0.1755,
+   "cr50": 2.4,
+   "cr90": 2.32,
+   "crMax": 1.99,
+   "bgStd": 0.0402
+  },
+  {
+   "text": "DRILL",
+   "fontSize": 12,
+   "color": "rgb(159, 181, 171)",
+   "bgL50": 0.114,
+   "bgL90": 0.1759,
+   "cr50": 2.95,
+   "cr90": 2.14,
+   "crMax": 1.91,
+   "bgStd": 0.0402
+  },
+  {
+   "text": "Salvaged auger",
+   "fontSize": 12,
+   "color": "rgb(230, 236, 221)",
+   "bgL50": 0.0889,
+   "bgL90": 0.1657,
+   "cr50": 6.27,
+   "cr90": 4.03,
+   "crMax": 3.39,
+   "bgStd": 0.0372
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+{
+ "current": {
+  "valuePerCell": [
+   9.97,
+   8.17,
+   7.98,
+   7.42,
+   6.68,
+   7.29
+  ],
+  "meanWorldValue": 19000
+ },
+ "steep": {
+  "valuePerCell": [
+   6.35,
+   4.7,
+   6.06,
+   7.34,
+   10.33,
+   12.72
+  ],
+  "meanWorldValue": 19000
+ },
+ "additive": {
+  "valuePerCell": [
+   9.97,
+   8.17,
+   7.98,
+   11.37,
+   12.38,
+   15.84
+  ],
+  "meanWorldValue": 26280
+ }
+}

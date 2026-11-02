@@ -1,0 +1,58 @@
+{
+ "d02-surface-start": {
+  "pctLuma<40": 68.6,
+  "pctLuma<50": 78.7,
+  "meanLuma": 42.9,
+  "p99Luma": 124.7,
+  "meanSat": 0.454
+ },
+ "d04-drilling-shallow": {
+  "pctLuma<40": 89.0,
+  "pctLuma<50": 89.6,
+  "meanLuma": 36.7,
+  "p99Luma": 116.7,
+  "meanSat": 0.448
+ },
+ "d05-underground": {
+  "pctLuma<40": 85.8,
+  "pctLuma<50": 89.2,
+  "meanLuma": 36.1,
+  "p99Luma": 140.2,
+  "meanSat": 0.46
+ },
+ "d19-w02-surface": {
+  "pctLuma<40": 48.6,
+  "pctLuma<50": 74.8,
+  "meanLuma": 48.6,
+  "p99Luma": 188.3,
+  "meanSat": 0.712
+ },
+ "d20-w02-drilling": {
+  "pctLuma<40": 53.2,
+  "pctLuma<50": 92.9,
+  "meanLuma": 45.0,
+  "p99Luma": 183.8,
+  "meanSat": 0.693
+ },
+ "p03-drilling": {
+  "pctLuma<40": 77.4,
+  "pctLuma<50": 78.9,
+  "meanLuma": 43.3,
+  "p99Luma": 192.3,
+  "meanSat": 0.421
+ },
+ "l02-drilling": {
+  "pctLuma<40": 87.0,
+  "pctLuma<50": 88.1,
+  "meanLuma": 38.4,
+  "p99Luma": 195.9,
+  "meanSat": 0.449
+ },
+ "d21-deep-revealed": {
+  "pctLuma<40": 3.0,
+  "pctLuma<50": 16.1,
+  "meanLuma": 68.0,
+  "p99Luma": 138.2,
+  "meanSat": 0.287
+ }
+}

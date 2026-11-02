@@ -1,0 +1,20 @@
+Critique (player lens) - headless results, real model at dbf0b1a, audit pacing harness copied as sim.ts
+
+opening.audit.ts -> opening-results.json (seeds 10/4/999 identical)
+  10 L start, two trips (seam A + beacon, seam B), M1 200 paid:
+    no impact:        676.5 CR before buying; energy R1 650 leaves 26.5 CR
+    3 HP shelf hit:   631.3 CR (refuel 3.7, repair 45); energy R1 650 is 18.7 CR short;
+                      hull 450 leaves 178.5; engine 500 leaves 128.5; A4 brace 250 leaves 378.5
+  6 L start (today): 672.5 / 627.3 CR
+
+additive.audit.ts -> additive-worldstats.json, additive-marginal.json, additive-campaign.json
+  value/cell by 100 m band (50 seeds): current 9.97 8.17 7.98 7.42 6.68 7.29
+                                       steep(A1) 6.35 4.70 6.06 7.34 10.33 12.72
+  mine-only CR/min (6 seeds x 15 min): current base 368.0, all rank 1 508.0
+                                       A1 base 228.2 (-38%), +drill1 287.4, all rank 1 368.4 (= today's base)
+  W01 pacing, A1 + plate gate (6 seeds; worst gap = per-run max, median / max across seeds):
+    fees 200/300/500  : skilled 7.5 min; novice 37.3 min; novice worst gap 7.4 / 8.1 min
+    fees 200/600/1000 : skilled 11.9;    novice 41.1;      worst gap 7.7 / 8.2
+    fees 200/900/1600 : skilled 14.4;    novice 45.8;      worst gap 12.1 / 22.3
+  additive variant (today's shallow + 7,280 CR of extra deep ore) leaves mining depth unchanged (145 m median
+  with all rank 1) - i.e. A1's thinning is what moves behaviour; not recommended as a replacement.

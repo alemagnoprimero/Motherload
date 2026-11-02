@@ -1,0 +1,880 @@
+{
+ "W01": {
+  "world": "W01",
+  "seeds": 200,
+  "size": {
+   "width": 40,
+   "rows": 60,
+   "cells": 2400
+  },
+  "depositCount": {
+   "n": 200,
+   "mean": 400,
+   "min": 400,
+   "p10": 400,
+   "median": 400,
+   "p90": 400,
+   "max": 400
+  },
+  "totalOrdinaryValueCR": {
+   "n": 200,
+   "mean": 19000,
+   "min": 19000,
+   "p10": 19000,
+   "median": 19000,
+   "p90": 19000,
+   "max": 19000
+  },
+  "emptyPct": {
+   "n": 200,
+   "mean": 9.74,
+   "min": 8.33,
+   "p10": 8.96,
+   "median": 9.79,
+   "p90": 10.42,
+   "max": 11.79
+  },
+  "rockPct": {
+   "n": 200,
+   "mean": 9.07,
+   "min": 7.63,
+   "p10": 8.33,
+   "median": 9.08,
+   "p90": 9.75,
+   "max": 10.75
+  },
+  "caves": {
+   "componentsPerWorld": {
+    "n": 200,
+    "mean": 24.43,
+    "min": 21,
+    "p10": 23,
+    "median": 24,
+    "p90": 26,
+    "max": 27
+   },
+   "sizeCells": {
+    "n": 4886,
+    "mean": 9.57,
+    "min": 1,
+    "p10": 6,
+    "median": 9,
+    "p90": 14,
+    "max": 33
+   },
+   "heightRows": {
+    "n": 4886,
+    "mean": 2.32,
+    "min": 1,
+    "p10": 2,
+    "median": 2,
+    "p90": 3,
+    "max": 7
+   },
+   "widthCols": {
+    "n": 4886,
+    "mean": 5.08,
+    "min": 1,
+    "p10": 3,
+    "median": 5,
+    "p90": 7,
+    "max": 10
+   },
+   "largestPerWorld": {
+    "n": 200,
+    "mean": 18.61,
+    "min": 12,
+    "p10": 14,
+    "median": 17,
+    "p90": 26,
+    "max": 33
+   },
+   "componentsAtLeast10Cells": {
+    "n": 200,
+    "mean": 12.18,
+    "min": 5,
+    "p10": 9,
+    "median": 13,
+    "p90": 15,
+    "max": 18
+   },
+   "componentsAtLeast20Cells": {
+    "n": 200,
+    "mean": 0.4,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 1,
+    "max": 3
+   },
+   "centroidRowPhaseHistogram": [
+    1064,
+    3208,
+    526,
+    88
+   ],
+   "oresTouchingEachCave": {
+    "n": 4886,
+    "mean": 2.14,
+    "min": 0,
+    "p10": 0,
+    "median": 2,
+    "p90": 5,
+    "max": 11
+   },
+   "cavesWithNoAdjacentOrePct": 22.5,
+   "oreCellsAdjacentToAirPct": 12.7,
+   "solidCellsAdjacentToAirPct": 14.4
+  },
+  "bands100m": [
+   {
+    "band": "0-100 m",
+    "emptyPct": 1.7,
+    "rockPct": 10.3,
+    "caves": 1.25,
+    "ores": 80,
+    "valueCR": 3973,
+    "rareO3O4": 10.99
+   },
+   {
+    "band": "100-200 m",
+    "emptyPct": 13,
+    "rockPct": 8.7,
+    "caves": 5.1,
+    "ores": 66.7,
+    "valueCR": 3118,
+    "rareO3O4": 5.89
+   },
+   {
+    "band": "200-300 m",
+    "emptyPct": 11,
+    "rockPct": 8.8,
+    "caves": 5.09,
+    "ores": 66.8,
+    "valueCR": 3151,
+    "rareO3O4": 6.02
+   },
+   {
+    "band": "300-400 m",
+    "emptyPct": 12.8,
+    "rockPct": 8.6,
+    "caves": 4.76,
+    "ores": 66.5,
+    "valueCR": 3122,
+    "rareO3O4": 6.01
+   },
+   {
+    "band": "400-500 m",
+    "emptyPct": 11.8,
+    "rockPct": 8.8,
+    "caves": 5.5,
+    "ores": 58.1,
+    "valueCR": 2714,
+    "rareO3O4": 5.37
+   },
+   {
+    "band": "500-600 m",
+    "emptyPct": 8.2,
+    "rockPct": 9.2,
+    "caves": 2.73,
+    "ores": 61.9,
+    "valueCR": 2922,
+    "rareO3O4": 5.74
+   }
+  ],
+  "firstAppearanceRow": {
+   "O1": {
+    "n": 200,
+    "mean": 0,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 0,
+    "max": 0
+   },
+   "O2": {
+    "n": 200,
+    "mean": 0.18,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 1,
+    "max": 1
+   },
+   "O3": {
+    "n": 200,
+    "mean": 1.21,
+    "min": 0,
+    "p10": 0,
+    "median": 1,
+    "p90": 4,
+    "max": 4
+   },
+   "O4": {
+    "n": 200,
+    "mean": 10.72,
+    "min": 0,
+    "p10": 1,
+    "median": 8,
+    "p90": 25,
+    "max": 37
+   }
+  },
+  "relics": {
+   "countHistogram": [
+    56,
+    119,
+    25
+   ],
+   "meanPerWorld": 0.85,
+   "rowSummary": {
+    "n": 169,
+    "mean": 28.59,
+    "min": 0,
+    "p10": 3,
+    "median": 27,
+    "p90": 53,
+    "max": 59
+   },
+   "inMissionCorridorPct": 10.1,
+   "inFirst100mPct": 21.3,
+   "lateralColumnsFromCorridorCentre": {
+    "n": 169,
+    "mean": 10.09,
+    "min": 0.5,
+    "p10": 3.5,
+    "median": 9.5,
+    "p90": 18.5,
+    "max": 19.5
+   }
+  },
+  "corridor": {
+   "columns": [
+    18,
+    23
+   ],
+   "rockCellsPerWorld": {
+    "n": 200,
+    "mean": 0,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 0,
+    "max": 0
+   },
+   "airCellsPerWorld": {
+    "n": 200,
+    "mean": 0,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 0,
+    "max": 0
+   }
+  },
+  "lateralProfile": [
+   {
+    "columnsFromShaft": 0,
+    "valueCR": 773,
+    "depositsPerSolidCell": 0.258
+   },
+   {
+    "columnsFromShaft": 1,
+    "valueCR": 1396,
+    "depositsPerSolidCell": 0.223
+   },
+   {
+    "columnsFromShaft": 2,
+    "valueCR": 1019,
+    "depositsPerSolidCell": 0.183
+   },
+   {
+    "columnsFromShaft": 3,
+    "valueCR": 1023,
+    "depositsPerSolidCell": 0.182
+   },
+   {
+    "columnsFromShaft": 4,
+    "valueCR": 995,
+    "depositsPerSolidCell": 0.181
+   },
+   {
+    "columnsFromShaft": 5,
+    "valueCR": 961,
+    "depositsPerSolidCell": 0.18
+   },
+   {
+    "columnsFromShaft": 6,
+    "valueCR": 939,
+    "depositsPerSolidCell": 0.182
+   },
+   {
+    "columnsFromShaft": 7,
+    "valueCR": 887,
+    "depositsPerSolidCell": 0.178
+   },
+   {
+    "columnsFromShaft": 8,
+    "valueCR": 874,
+    "depositsPerSolidCell": 0.184
+   },
+   {
+    "columnsFromShaft": 9,
+    "valueCR": 827,
+    "depositsPerSolidCell": 0.179
+   },
+   {
+    "columnsFromShaft": 10,
+    "valueCR": 829,
+    "depositsPerSolidCell": 0.184
+   },
+   {
+    "columnsFromShaft": 11,
+    "valueCR": 818,
+    "depositsPerSolidCell": 0.181
+   },
+   {
+    "columnsFromShaft": 12,
+    "valueCR": 815,
+    "depositsPerSolidCell": 0.178
+   },
+   {
+    "columnsFromShaft": 13,
+    "valueCR": 819,
+    "depositsPerSolidCell": 0.181
+   },
+   {
+    "columnsFromShaft": 14,
+    "valueCR": 817,
+    "depositsPerSolidCell": 0.176
+   },
+   {
+    "columnsFromShaft": 15,
+    "valueCR": 838,
+    "depositsPerSolidCell": 0.174
+   },
+   {
+    "columnsFromShaft": 16,
+    "valueCR": 905,
+    "depositsPerSolidCell": 0.178
+   },
+   {
+    "columnsFromShaft": 17,
+    "valueCR": 947,
+    "depositsPerSolidCell": 0.178
+   },
+   {
+    "columnsFromShaft": 18,
+    "valueCR": 1048,
+    "depositsPerSolidCell": 0.19
+   },
+   {
+    "columnsFromShaft": 19,
+    "valueCR": 983,
+    "depositsPerSolidCell": 0.177
+   },
+   {
+    "columnsFromShaft": 20,
+    "valueCR": 486,
+    "depositsPerSolidCell": 0.17
+   }
+  ],
+  "valueWithin3ColumnsOfShaftPct": 22.2,
+  "shelves": {
+   "distinctPositionsAcrossSeeds": [
+    "8,14",
+    "31,29",
+    "11,46"
+   ],
+   "airAbovePct": 15.7,
+   "airRegionBelowSize": {
+    "n": 600,
+    "mean": 8.8,
+    "min": 3,
+    "p10": 3,
+    "median": 9,
+    "p90": 15,
+    "max": 31
+   },
+   "lateralFromCorridor": {
+    "n": 600,
+    "mean": 8.33,
+    "min": 7,
+    "p10": 7,
+    "median": 8,
+    "p90": 10,
+    "max": 10
+   }
+  }
+ },
+ "W02": {
+  "world": "W02",
+  "seeds": 200,
+  "size": {
+   "width": 48,
+   "rows": 100,
+   "cells": 4800
+  },
+  "depositCount": {
+   "n": 200,
+   "mean": 600,
+   "min": 600,
+   "p10": 600,
+   "median": 600,
+   "p90": 600,
+   "max": 600
+  },
+  "totalOrdinaryValueCR": {
+   "n": 200,
+   "mean": 63000,
+   "min": 63000,
+   "p10": 63000,
+   "median": 63000,
+   "p90": 63000,
+   "max": 63000
+  },
+  "emptyPct": {
+   "n": 200,
+   "mean": 7.55,
+   "min": 6.4,
+   "p10": 6.98,
+   "median": 7.54,
+   "p90": 8.15,
+   "max": 8.56
+  },
+  "rockPct": {
+   "n": 200,
+   "mean": 9.61,
+   "min": 8.6,
+   "p10": 9.04,
+   "median": 9.6,
+   "p90": 10.19,
+   "max": 10.77
+  },
+  "caves": {
+   "componentsPerWorld": {
+    "n": 200,
+    "mean": 29.09,
+    "min": 26,
+    "p10": 28,
+    "median": 29,
+    "p90": 30,
+    "max": 32
+   },
+   "sizeCells": {
+    "n": 5818,
+    "mean": 12.45,
+    "min": 3,
+    "p10": 7,
+    "median": 12,
+    "p90": 19,
+    "max": 46
+   },
+   "heightRows": {
+    "n": 5818,
+    "mean": 2.94,
+    "min": 1,
+    "p10": 2,
+    "median": 3,
+    "p90": 4,
+    "max": 10
+   },
+   "widthCols": {
+    "n": 5818,
+    "mean": 5.26,
+    "min": 2,
+    "p10": 3,
+    "median": 5,
+    "p90": 7,
+    "max": 12
+   },
+   "largestPerWorld": {
+    "n": 200,
+    "mean": 25.37,
+    "min": 18,
+    "p10": 20,
+    "median": 24,
+    "p90": 32,
+    "max": 46
+   },
+   "componentsAtLeast10Cells": {
+    "n": 200,
+    "mean": 19.82,
+    "min": 13,
+    "p10": 17,
+    "median": 20,
+    "p90": 23,
+    "max": 25
+   },
+   "componentsAtLeast20Cells": {
+    "n": 200,
+    "mean": 2.59,
+    "min": 0,
+    "p10": 1,
+    "median": 3,
+    "p90": 4,
+    "max": 7
+   },
+   "centroidRowPhaseHistogram": [
+    1214,
+    2815,
+    1556,
+    25,
+    102,
+    106
+   ],
+   "oresTouchingEachCave": {
+    "n": 5818,
+    "mean": 1.61,
+    "min": 0,
+    "p10": 0,
+    "median": 1,
+    "p90": 4,
+    "max": 12
+   },
+   "cavesWithNoAdjacentOrePct": 34.6,
+   "oreCellsAdjacentToAirPct": 7.8,
+   "solidCellsAdjacentToAirPct": 9.3
+  },
+  "bands100m": [
+   {
+    "band": "0-100 m",
+    "emptyPct": 0,
+    "rockPct": 10.5,
+    "caves": 0,
+    "ores": 74.7,
+    "valueCR": 5839,
+    "rareO3O4": 0
+   },
+   {
+    "band": "100-200 m",
+    "emptyPct": 8.4,
+    "rockPct": 9.7,
+    "caves": 3.92,
+    "ores": 52.1,
+    "valueCR": 3862,
+    "rareO3O4": 0
+   },
+   {
+    "band": "200-300 m",
+    "emptyPct": 8.5,
+    "rockPct": 9.5,
+    "caves": 2.74,
+    "ores": 56.6,
+    "valueCR": 5124,
+    "rareO3O4": 4.28
+   },
+   {
+    "band": "300-400 m",
+    "emptyPct": 9.7,
+    "rockPct": 9.3,
+    "caves": 3.67,
+    "ores": 56.9,
+    "valueCR": 5532,
+    "rareO3O4": 6.16
+   },
+   {
+    "band": "400-500 m",
+    "emptyPct": 9.9,
+    "rockPct": 9.3,
+    "caves": 4.31,
+    "ores": 63.3,
+    "valueCR": 7672,
+    "rareO3O4": 13.57
+   },
+   {
+    "band": "500-600 m",
+    "emptyPct": 6.7,
+    "rockPct": 9.8,
+    "caves": 2.07,
+    "ores": 59.8,
+    "valueCR": 5665,
+    "rareO3O4": 6.03
+   },
+   {
+    "band": "600-700 m",
+    "emptyPct": 11,
+    "rockPct": 9.2,
+    "caves": 4.16,
+    "ores": 56.4,
+    "valueCR": 6430,
+    "rareO3O4": 6.66
+   },
+   {
+    "band": "700-800 m",
+    "emptyPct": 8.5,
+    "rockPct": 9.4,
+    "caves": 3.88,
+    "ores": 60.1,
+    "valueCR": 7382,
+    "rareO3O4": 7.43
+   },
+   {
+    "band": "800-900 m",
+    "emptyPct": 8.3,
+    "rockPct": 9.4,
+    "caves": 2.36,
+    "ores": 59.3,
+    "valueCR": 7625,
+    "rareO3O4": 7.98
+   },
+   {
+    "band": "900-1000 m",
+    "emptyPct": 4.7,
+    "rockPct": 9.9,
+    "caves": 2,
+    "ores": 60.7,
+    "valueCR": 7870,
+    "rareO3O4": 7.92
+   }
+  ],
+  "firstAppearanceRow": {
+   "O1": {
+    "n": 200,
+    "mean": 0,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 0,
+    "max": 0
+   },
+   "O2": {
+    "n": 200,
+    "mean": 0.5,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 1,
+    "max": 1
+   },
+   "O3": {
+    "n": 200,
+    "mean": 24,
+    "min": 24,
+    "p10": 24,
+    "median": 24,
+    "p90": 24,
+    "max": 24
+   },
+   "O4": {
+    "n": 200,
+    "mean": 74.83,
+    "min": 64,
+    "p10": 65,
+    "median": 74,
+    "p90": 87,
+    "max": 96
+   }
+  },
+  "relics": {
+   "countHistogram": [
+    54,
+    114,
+    32
+   ],
+   "meanPerWorld": 0.89,
+   "rowSummary": {
+    "n": 178,
+    "mean": 57.76,
+    "min": 20,
+    "p10": 28,
+    "median": 55,
+    "p90": 89,
+    "max": 99
+   },
+   "inMissionCorridorPct": 13.5,
+   "inFirst100mPct": 0,
+   "lateralColumnsFromCorridorCentre": {
+    "n": 178,
+    "mean": 12.14,
+    "min": 0.5,
+    "p10": 2.5,
+    "median": 12.5,
+    "p90": 22.5,
+    "max": 23.5
+   }
+  },
+  "corridor": {
+   "columns": [
+    22,
+    27
+   ],
+   "rockCellsPerWorld": {
+    "n": 200,
+    "mean": 0,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 0,
+    "max": 0
+   },
+   "airCellsPerWorld": {
+    "n": 200,
+    "mean": 0,
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 0,
+    "max": 0
+   }
+  },
+  "lateralProfile": [
+   {
+    "columnsFromShaft": 0,
+    "valueCR": 2912,
+    "depositsPerSolidCell": 0.237
+   },
+   {
+    "columnsFromShaft": 1,
+    "valueCR": 4569,
+    "depositsPerSolidCell": 0.187
+   },
+   {
+    "columnsFromShaft": 2,
+    "valueCR": 3317,
+    "depositsPerSolidCell": 0.141
+   },
+   {
+    "columnsFromShaft": 3,
+    "valueCR": 2683,
+    "depositsPerSolidCell": 0.13
+   },
+   {
+    "columnsFromShaft": 4,
+    "valueCR": 2678,
+    "depositsPerSolidCell": 0.129
+   },
+   {
+    "columnsFromShaft": 5,
+    "valueCR": 2686,
+    "depositsPerSolidCell": 0.128
+   },
+   {
+    "columnsFromShaft": 6,
+    "valueCR": 2577,
+    "depositsPerSolidCell": 0.127
+   },
+   {
+    "columnsFromShaft": 7,
+    "valueCR": 2457,
+    "depositsPerSolidCell": 0.128
+   },
+   {
+    "columnsFromShaft": 8,
+    "valueCR": 2338,
+    "depositsPerSolidCell": 0.129
+   },
+   {
+    "columnsFromShaft": 9,
+    "valueCR": 2395,
+    "depositsPerSolidCell": 0.13
+   },
+   {
+    "columnsFromShaft": 10,
+    "valueCR": 2286,
+    "depositsPerSolidCell": 0.128
+   },
+   {
+    "columnsFromShaft": 11,
+    "valueCR": 2272,
+    "depositsPerSolidCell": 0.133
+   },
+   {
+    "columnsFromShaft": 12,
+    "valueCR": 2254,
+    "depositsPerSolidCell": 0.133
+   },
+   {
+    "columnsFromShaft": 13,
+    "valueCR": 2223,
+    "depositsPerSolidCell": 0.13
+   },
+   {
+    "columnsFromShaft": 14,
+    "valueCR": 2126,
+    "depositsPerSolidCell": 0.129
+   },
+   {
+    "columnsFromShaft": 15,
+    "valueCR": 2115,
+    "depositsPerSolidCell": 0.128
+   },
+   {
+    "columnsFromShaft": 16,
+    "valueCR": 2272,
+    "depositsPerSolidCell": 0.13
+   },
+   {
+    "columnsFromShaft": 17,
+    "valueCR": 2392,
+    "depositsPerSolidCell": 0.131
+   },
+   {
+    "columnsFromShaft": 18,
+    "valueCR": 2350,
+    "depositsPerSolidCell": 0.129
+   },
+   {
+    "columnsFromShaft": 19,
+    "valueCR": 2344,
+    "depositsPerSolidCell": 0.13
+   },
+   {
+    "columnsFromShaft": 20,
+    "valueCR": 2470,
+    "depositsPerSolidCell": 0.131
+   },
+   {
+    "columnsFromShaft": 21,
+    "valueCR": 2563,
+    "depositsPerSolidCell": 0.13
+   },
+   {
+    "columnsFromShaft": 22,
+    "valueCR": 2749,
+    "depositsPerSolidCell": 0.138
+   },
+   {
+    "columnsFromShaft": 23,
+    "valueCR": 2744,
+    "depositsPerSolidCell": 0.13
+   },
+   {
+    "columnsFromShaft": 24,
+    "valueCR": 1229,
+    "depositsPerSolidCell": 0.115
+   }
+  ],
+  "valueWithin3ColumnsOfShaftPct": 21.4,
+  "hazards": {
+   "fixed": {
+    "coldPockets": [
+     {
+      "x": 10.5,
+      "y": 28.5
+     },
+     {
+      "x": 37.5,
+      "y": 61.5
+     }
+    ],
+    "vents": [
+     {
+      "x": 8.5,
+      "y": 48.5
+     },
+     {
+      "x": 39.5,
+      "y": 83.5
+     }
+    ]
+   },
+   "lateralFromCorridorEdge": [
+    11.5,
+    9.5,
+    13.5,
+    11.5
+   ]
+  }
+ }
+}

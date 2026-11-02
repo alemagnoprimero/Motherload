@@ -1,0 +1,325 @@
+{
+ "titleFresh": {
+  "overlay": "welcome",
+  "welcomeOpen": true,
+  "titleActions": 1,
+  "h1Font": "Arial, ui-sans-serif, system-ui, sans-serif 900 105px",
+  "hudOpacity": "0.24",
+  "focus": "button#campaign-start 'Deploy rig ›'",
+  "fontsLoaded": []
+ },
+ "returningBoot": {
+  "overlay": "menu",
+  "welcomeOpen": false,
+  "menuOpen": true,
+  "menuTitle": "Expedition restored · paused",
+  "focus": "button#campaign-resume 'Resume expedition'",
+  "errors": [
+   "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+ },
+ "returningBootPhone": {
+  "overlay": "menu",
+  "menuTitle": "Expedition restored · paused",
+  "resumeBox": {
+   "x": 207.796875,
+   "y": 50.5,
+   "width": 149.203125,
+   "height": 44
+  }
+ },
+ "pausePhone": {
+  "box": {
+   "x": 19,
+   "y": 12,
+   "w": 355,
+   "h": 827
+  },
+  "scroller": {
+   "id": "campaign-menu",
+   "clientHeight": 825,
+   "scrollHeight": 2063,
+   "screens": 2.5
+  },
+  "words": 279,
+  "leaves": 52,
+  "sizeHist": {
+   "12": 21,
+   "13": 24,
+   "14": 6,
+   "21": 1
+  },
+  "wordsBySize": {
+   "12": 214,
+   "13": 53,
+   "14": 9,
+   "21": 3
+  },
+  "wordsAtOrBelow12": 214,
+  "families": [
+   "Arial, ui-sans-serif, system-ui, sans-serif"
+  ],
+  "colours": 11,
+  "focusables": 21,
+  "focusOrder": [
+   "Resume expedition",
+   "Save checkpoint",
+   "Load latest autosave",
+   "Export campaign",
+   "Import campaign",
+   "Star map",
+   "Enable sound",
+   "Enter fullscreen",
+   "[range] effects",
+   "[range] ambience",
+   "[range] music",
+   "[checkbox] reducedMotion",
+   "[checkbox] highContrast",
+   "[checkbox] largeText",
+   "[checkbox] showDirectionButtons",
+   "[checkbox] drillToggle",
+   "[checkbox] braceToggle",
+   "Keyboard bindings",
+   "Request recovery",
+   "Start a new campaign",
+   "Ore and hazard legend"
+  ],
+  "disabledButtons": 1,
+  "lowOpacityLeaves": [
+   "Restore backup @0.38"
+  ]
+ },
+ "pauseDesktop": {
+  "box": {
+   "x": 360,
+   "y": 20,
+   "w": 720,
+   "h": 860
+  },
+  "scroller": {
+   "id": "campaign-menu",
+   "clientHeight": 858,
+   "scrollHeight": 1316,
+   "screens": 1.53
+  },
+  "words": 279,
+  "leaves": 52,
+  "sizeHist": {
+   "12": 21,
+   "13": 24,
+   "14": 6,
+   "23": 1
+  },
+  "wordsBySize": {
+   "12": 216,
+   "13": 53,
+   "14": 9,
+   "23": 1
+  },
+  "wordsAtOrBelow12": 216,
+  "families": [
+   "Arial, ui-sans-serif, system-ui, sans-serif"
+  ],
+  "colours": 11,
+  "focusables": 21,
+  "focusOrder": [
+   "Resume expedition",
+   "Save checkpoint",
+   "Load latest autosave",
+   "Export campaign",
+   "Import campaign",
+   "Star map",
+   "Enable sound",
+   "Enter fullscreen",
+   "[range] effects",
+   "[range] ambience",
+   "[range] music",
+   "[checkbox] reducedMotion",
+   "[checkbox] highContrast",
+   "[checkbox] largeText",
+   "[checkbox] showDirectionButtons",
+   "[checkbox] drillToggle",
+   "[checkbox] braceToggle",
+   "Keyboard bindings",
+   "Request recovery",
+   "Start a new campaign",
+   "Ore and hazard legend"
+  ],
+  "disabledButtons": 1,
+  "lowOpacityLeaves": [
+   "Restore backup @0.38"
+  ],
+  "initialFocus": "button#campaign-resume 'Resume expedition'",
+  "tabSequence": [
+   "button 'Save checkpoint'",
+   "button 'Load latest autosave'",
+   "button 'Export campaign'",
+   "button 'Import campaign'",
+   "button 'Star map'",
+   "button#campaign-sound 'Enable sound'",
+   "button#campaign-fullscreen 'Enter fullscreen'",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "summary 'Keyboard bindings'",
+   "button 'Request recovery'",
+   "button 'Start a new campaign'",
+   "summary 'Ore and hazard legend'",
+   "body 'ENERGY6.0 / 10 HULL10 / 10 Depth0 m Carg'",
+   "dialog#campaign-menu 'PILOT CONSOLEPausedRequest recoveryLande'",
+   "button#campaign-resume 'Resume expedition'",
+   "button 'Save checkpoint'",
+   "button 'Load latest autosave'",
+   "button 'Export campaign'",
+   "button 'Import campaign'",
+   "button 'Star map'",
+   "button#campaign-sound 'Enable sound'",
+   "button#campaign-fullscreen 'Enter fullscreen'",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "input",
+   "summary 'Keyboard bindings'",
+   "button 'Request recovery'",
+   "button 'Start a new campaign'",
+   "summary 'Ore and hazard legend'",
+   "body 'ENERGY6.0 / 10 HULL10 / 10 Depth0 m Carg'",
+   "dialog#campaign-menu 'PILOT CONSOLEPausedRequest recoveryLande'"
+  ],
+  "tabsTo": {
+   "save": 1,
+   "enableSound": 6,
+   "reducedMotion": 0,
+   "keyboardBindings": 17,
+   "startNewCampaign": 19,
+   "legend": 20
+  }
+ },
+ "lockedStarMap": {
+  "overlay": "menu",
+  "mapOpen": false,
+  "messageText": "Recover the lander parts and fund M2 to restore the star map.",
+  "messageVisibility": "hidden",
+  "messageOpacity": "1",
+  "buttonDisabled": false
+ },
+ "remap": {
+  "defaultLeft": [
+   "ArrowLeft",
+   "a"
+  ],
+  "prompt": "Press a new key for Steer left. Escape cancels.",
+  "after": [
+   "j"
+  ],
+  "doneMsg": "Steer left is now J.",
+  "conflictMsg": "J is assigned to Steer left. Choose another key.",
+  "menuStillOpenAfterEscape": true,
+  "resetButtons": 0,
+  "gamepadRemap": false
+ },
+ "soundPersisted": {
+  "keys": [
+   "keys",
+   "drillToggle",
+   "braceToggle",
+   "reducedMotion",
+   "highContrast",
+   "largeText",
+   "showDirectionButtons",
+   "effects",
+   "ambience",
+   "music"
+  ],
+  "hasSound": false
+ },
+ "newCampaignConfirm": {
+  "eyebrow": "EXPEDITION DECISION",
+  "title": "Begin a new campaign?",
+  "copy": "This replaces the campaign checkpoint with a new asteroid. The prior valid campaign becomes a backup.",
+  "accept": "Confirm",
+  "acceptClass": "primary",
+  "focus": "Cancel"
+ },
+ "newCampaignNeighbour": {
+  "section": "Recovery",
+  "siblings": [
+   "Request recovery",
+   "Start a new campaign"
+  ],
+  "className": ""
+ },
+ "errorsDesktop": [],
+ "pauseLandscape": {
+  "box": {
+   "x": 19,
+   "y": 8,
+   "w": 806,
+   "h": 374
+  },
+  "scroller": {
+   "id": "campaign-menu",
+   "clientHeight": 372,
+   "scrollHeight": 1297,
+   "screens": 3.49
+  },
+  "words": 279,
+  "leaves": 52,
+  "sizeHist": {
+   "12": 22,
+   "13": 23,
+   "14": 6,
+   "21": 1
+  },
+  "wordsBySize": {
+   "12": 218,
+   "13": 51,
+   "14": 9,
+   "21": 1
+  },
+  "wordsAtOrBelow12": 218,
+  "families": [
+   "Arial, ui-sans-serif, system-ui, sans-serif"
+  ],
+  "colours": 11,
+  "focusables": 21,
+  "focusOrder": [
+   "Resume expedition",
+   "Save checkpoint",
+   "Load latest autosave",
+   "Export campaign",
+   "Import campaign",
+   "Star map",
+   "Enable sound",
+   "Enter fullscreen",
+   "[range] effects",
+   "[range] ambience",
+   "[range] music",
+   "[checkbox] reducedMotion",
+   "[checkbox] highContrast",
+   "[checkbox] largeText",
+   "[checkbox] showDirectionButtons",
+   "[checkbox] drillToggle",
+   "[checkbox] braceToggle",
+   "Keyboard bindings",
+   "Request recovery",
+   "Start a new campaign",
+   "Ore and hazard legend"
+  ],
+  "disabledButtons": 1,
+  "lowOpacityLeaves": [
+   "Restore backup @0.38"
+  ]
+ }
+}

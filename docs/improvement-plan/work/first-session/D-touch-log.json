@@ -1,0 +1,328 @@
+{
+ "name": "D-touch",
+ "viewport": {
+  "width": 393,
+  "height": 851
+ },
+ "marks": {
+  "beacon-touch": 9.55,
+  "touch-docked": 16.65
+ },
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "log": [
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 0.5,
+   "text": "SHOT D-touch-000.5s-first-frame.png"
+  },
+  {
+   "t": 0.5,
+   "text": "rig screen (196.5,458.86)"
+  },
+  {
+   "t": 0.8,
+   "text": "callout: \"Ironium · 30 CR · 1 bulk\" (tap ore-below)"
+  },
+  {
+   "t": 0.8,
+   "text": "tap ore-below at (197,494) -> overlay= callout=\"Ironium · 30 CR · 1 bulk\""
+  },
+  {
+   "t": 0.8,
+   "text": "SHOT D-touch-000.8s-tap-ore.png"
+  },
+  {
+   "t": 1.05,
+   "text": "callout: \"\" (stick down)"
+  },
+  {
+   "t": 1.8,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 1.8,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (stick down)"
+  },
+  {
+   "t": 2.8,
+   "text": "message: \"Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey.\" (stick down)"
+  },
+  {
+   "t": 2.8,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 2.8,
+   "text": "signal: \"↓downWreck survey beacon79 mSignal nearby\" (stick down)"
+  },
+  {
+   "t": 3.55,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 3.55,
+   "text": "signal: \"↓downWreck survey beacon69 mSignal nearby\" (stick down)"
+  },
+  {
+   "t": 4.55,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 4.55,
+   "text": "signal: \"↓downWreck survey beacon59 mSignal nearby\" (stick down)"
+  },
+  {
+   "t": 5.55,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 5.55,
+   "text": "signal: \"↓downWreck survey beacon49 mSignal nearby\" (stick down)"
+  },
+  {
+   "t": 6.55,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 6.55,
+   "text": "signal: \"↓downWreck survey beacon39 mSignal nearby\" (stick down)"
+  },
+  {
+   "t": 6.8,
+   "text": "message: \"\" (stick down)"
+  },
+  {
+   "t": 7.55,
+   "text": "message: \"Wreck survey beacon · Very close. Approach the wreck beacon to survey.\" (stick down)"
+  },
+  {
+   "t": 7.55,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 7.55,
+   "text": "signal: \"↓downWreck survey beacon29 mVery close\" (stick down)"
+  },
+  {
+   "t": 8.55,
+   "text": "signal: \"↓downWreck survey beacon19 mVery close\" (stick down)"
+  },
+  {
+   "t": 9.55,
+   "text": "message: \"Beacon surveyed · Return to the lander\" (stick down)"
+  },
+  {
+   "t": 9.55,
+   "text": "tasks: \"✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (stick down)"
+  },
+  {
+   "t": 9.55,
+   "text": "next: \"Return to lander → Bank ore\" (stick down)"
+  },
+  {
+   "t": 9.55,
+   "text": "signal: \"↖up and leftSalvage lander175 mTracking\" (stick down)"
+  },
+  {
+   "t": 9.55,
+   "text": "stick down (0,45) joystick={\"vis\":\"true\",\"cx\":\"196.00\",\"cy\":\"680.00\",\"kx\":\"196.00\",\"ky\":\"712.00\",\"dirs\":\"down\"}"
+  },
+  {
+   "t": 9.55,
+   "text": "MARK beacon-touch"
+  },
+  {
+   "t": 9.55,
+   "text": "SHOT D-touch-009.6s-touch-drilling.png"
+  },
+  {
+   "t": 10.55,
+   "text": "signal: \"↖up and leftSalvage lander178 mTracking\" (stick up)"
+  },
+  {
+   "t": 10.8,
+   "text": "signal: \"↖up and leftSalvage lander173 mTracking\" (stick up)"
+  },
+  {
+   "t": 11.05,
+   "text": "signal: \"↖up and leftSalvage lander165 mTracking\" (stick up)"
+  },
+  {
+   "t": 11.3,
+   "text": "signal: \"←leftSalvage lander160 mTracking\" (stick up)"
+  },
+  {
+   "t": 11.55,
+   "text": "signal: \"←leftSalvage lander155 mTracking\" (stick up)"
+  },
+  {
+   "t": 11.8,
+   "text": "signal: \"←leftSalvage lander152 mTracking\" (stick up)"
+  },
+  {
+   "t": 12.05,
+   "text": "signal: \"←leftSalvage lander150 mTracking\" (stick up)"
+  },
+  {
+   "t": 12.3,
+   "text": "stick up (0,-45) joystick={\"vis\":\"true\",\"cx\":\"196.00\",\"cy\":\"680.00\",\"kx\":\"196.00\",\"ky\":\"648.00\",\"dirs\":\"up\"}"
+  },
+  {
+   "t": 12.3,
+   "text": "SHOT D-touch-012.3s-touch-out-of-shaft.png"
+  },
+  {
+   "t": 12.55,
+   "text": "signal: \"←leftSalvage lander147 mTracking\" (stick up-left)"
+  },
+  {
+   "t": 12.8,
+   "text": "signal: \"←leftSalvage lander140 mTracking\" (stick up-left)"
+  },
+  {
+   "t": 13.05,
+   "text": "signal: \"↙down and leftSalvage lander131 mTracking\" (stick up-left)"
+  },
+  {
+   "t": 13.3,
+   "text": "danger: \"Low energy · return to the lander\" (stick up-left)"
+  },
+  {
+   "t": 13.3,
+   "text": "signal: \"↙down and leftSalvage lander122 mTracking\" (stick up-left)"
+  },
+  {
+   "t": 13.55,
+   "text": "message: \"\" (stick up-left)"
+  },
+  {
+   "t": 13.55,
+   "text": "signal: \"↙down and leftSalvage lander108 mTracking\" (stick up-left)"
+  },
+  {
+   "t": 13.8,
+   "text": "signal: \"↙down and leftSalvage lander100 mTracking\" (stick up-left)"
+  },
+  {
+   "t": 13.8,
+   "text": "stick up-left (-40,-25) joystick={\"vis\":\"true\",\"cx\":\"196.00\",\"cy\":\"680.00\",\"kx\":\"168.86\",\"ky\":\"663.04\",\"dirs\":\"left,up\"}"
+  },
+  {
+   "t": 13.8,
+   "text": "SHOT D-touch-013.8s-touch-flying.png"
+  },
+  {
+   "t": 14.05,
+   "text": "signal: \"↙down and leftSalvage lander86 mTracking\" (stick left)"
+  },
+  {
+   "t": 14.3,
+   "text": "signal: \"↙down and leftSalvage lander76 mSignal nearby\" (stick left)"
+  },
+  {
+   "t": 14.55,
+   "text": "signal: \"↙down and leftSalvage lander58 mSignal nearby\" (stick left)"
+  },
+  {
+   "t": 14.8,
+   "text": "signal: \"↙down and leftSalvage lander46 mSignal nearby\" (stick left)"
+  },
+  {
+   "t": 15.05,
+   "text": "signal: \"↙down and leftSalvage lander25 mVery close\" (stick left)"
+  },
+  {
+   "t": 15.05,
+   "text": "stick left (-45,0) joystick={\"vis\":\"true\",\"cx\":\"196.00\",\"cy\":\"680.00\",\"kx\":\"164.00\",\"ky\":\"680.00\",\"dirs\":\"left\"}"
+  },
+  {
+   "t": 15.3,
+   "text": "signal: \"↙down and leftSalvage lander12 mVery close\" (stick neutral)"
+  },
+  {
+   "t": 15.55,
+   "text": "signal: \"◉At your positionSalvage lander2 mDock available\" (stick neutral)"
+  },
+  {
+   "t": 15.55,
+   "text": "dockPrompt: true (stick neutral)"
+  },
+  {
+   "t": 15.8,
+   "text": "signal: \"◉At your positionSalvage lander1 mDock available\" (stick neutral)"
+  },
+  {
+   "t": 15.8,
+   "text": "stick neutral (0,0) joystick={\"vis\":\"true\",\"cx\":\"196.00\",\"cy\":\"680.00\",\"kx\":\"196.00\",\"ky\":\"680.00\",\"dirs\":\"\"}"
+  },
+  {
+   "t": 15.85,
+   "text": "signal: \"◉At your positionSalvage lander2 mDock available\" (lift)"
+  },
+  {
+   "t": 16.1,
+   "text": "signal: \"◉At your positionSalvage lander3 mDock available\" (idle)"
+  },
+  {
+   "t": 16.35,
+   "text": "signal: \"◉At your positionSalvage lander4 mDock available\" (idle)"
+  },
+  {
+   "t": 16.35,
+   "text": "dock prompt=true · E 2.2 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20"
+  },
+  {
+   "t": 16.35,
+   "text": "SHOT D-touch-016.4s-touch-at-lander.png"
+  },
+  {
+   "t": 16.65,
+   "text": "dockPrompt: false (tap lander)"
+  },
+  {
+   "t": 16.65,
+   "text": "overlay: \"dock\" (tap lander)"
+  },
+  {
+   "t": 16.65,
+   "text": "tap lander at (196,419) -> overlay=dock callout=\"\""
+  },
+  {
+   "t": 16.65,
+   "text": "MARK touch-docked"
+  },
+  {
+   "t": 16.65,
+   "text": "SHOT D-touch-016.7s-touch-dock-service.png"
+  },
+  {
+   "t": 16.65,
+   "text": "SHOT D-touch-016.7s-touch-dock-sold.png"
+  },
+  {
+   "t": 16.65,
+   "text": "Dock message: Sold stored cargo for 380 CR."
+  },
+  {
+   "t": 16.65,
+   "text": "SHOT D-touch-016.7s-touch-dock-lander.png"
+  }
+ ]
+}

@@ -1,0 +1,268 @@
+{
+ "w1": true,
+ "w2": true,
+ "wall": [
+  2072,
+  5471
+ ],
+ "events": [
+  {
+   "t": 36.6,
+   "world": "W01",
+   "what": "M1",
+   "credits": 196
+  },
+  {
+   "t": 143.7,
+   "world": "W01",
+   "what": "buy cargo1",
+   "credits": 104.9
+  },
+  {
+   "t": 203.9,
+   "world": "W01",
+   "what": "M2",
+   "credits": 87.5
+  },
+  {
+   "t": 316,
+   "world": "W01",
+   "what": "buy energy1",
+   "credits": 322.3
+  },
+  {
+   "t": 542.2,
+   "world": "W01",
+   "what": "M3",
+   "credits": 468.7
+  },
+  {
+   "t": 542.2,
+   "world": "W01",
+   "what": "departed",
+   "credits": 456.7
+  },
+  {
+   "t": 562.2,
+   "world": "W02",
+   "what": "arrive W02",
+   "credits": 456.7
+  },
+  {
+   "t": 619.6,
+   "world": "W02",
+   "what": "M1",
+   "credits": 356.7
+  },
+  {
+   "t": 761,
+   "world": "W02",
+   "what": "M2",
+   "credits": 1685.7
+  },
+  {
+   "t": 761,
+   "world": "W02",
+   "what": "buy W02-R1",
+   "credits": 485.7
+  },
+  {
+   "t": 1003.7,
+   "world": "W02",
+   "what": "buy cargo2",
+   "credits": 471.7
+  },
+  {
+   "t": 1161.9,
+   "world": "W02",
+   "what": "M3",
+   "credits": 517.9
+  }
+ ],
+ "trips": [
+  {
+   "world": "W01",
+   "t": 16.6,
+   "haul": 380,
+   "bulk": 7,
+   "cap": 7,
+   "maxDepth": 90,
+   "energyLeft": 6.47,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 69.9,
+   "haul": 280,
+   "bulk": 6,
+   "cap": 7,
+   "maxDepth": 250,
+   "energyLeft": 2.52,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 123.7,
+   "haul": 340,
+   "bulk": 7,
+   "cap": 7,
+   "maxDepth": 330,
+   "energyLeft": 2.69,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 183.9,
+   "haul": 290,
+   "bulk": 5,
+   "cap": 12,
+   "maxDepth": 400,
+   "energyLeft": 2.64,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 237.6,
+   "haul": 470,
+   "bulk": 9,
+   "cap": 12,
+   "maxDepth": 160,
+   "energyLeft": 2.24,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 296,
+   "haul": 430,
+   "bulk": 8,
+   "cap": 12,
+   "maxDepth": 250,
+   "energyLeft": 2.08,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 371.9,
+   "haul": 270,
+   "bulk": 7,
+   "cap": 12,
+   "maxDepth": 400,
+   "energyLeft": 4.27,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 447.6,
+   "haul": 120,
+   "bulk": 4,
+   "cap": 12,
+   "maxDepth": 420,
+   "energyLeft": 4.21,
+   "kind": "mission"
+  },
+  {
+   "world": "W01",
+   "t": 522.2,
+   "haul": 280,
+   "bulk": 5,
+   "cap": 12,
+   "maxDepth": 600,
+   "energyLeft": 4.04,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 599.6,
+   "haul": 300,
+   "bulk": 12,
+   "cap": 12,
+   "maxDepth": 170,
+   "energyLeft": 6.9,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 670.2,
+   "haul": 650,
+   "bulk": 12,
+   "cap": 12,
+   "maxDepth": 330,
+   "energyLeft": 4.29,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 741,
+   "haul": 1300,
+   "bulk": 12,
+   "cap": 12,
+   "maxDepth": 450,
+   "energyLeft": 5.79,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 826.8,
+   "haul": 1260,
+   "bulk": 12,
+   "cap": 12,
+   "maxDepth": 580,
+   "energyLeft": 4.21,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 902.5,
+   "haul": 510,
+   "bulk": 12,
+   "cap": 12,
+   "maxDepth": 750,
+   "energyLeft": 4.16,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 983.7,
+   "haul": 650,
+   "bulk": 12,
+   "cap": 12,
+   "maxDepth": 880,
+   "energyLeft": 4.29,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 1070.7,
+   "haul": 320,
+   "bulk": 10,
+   "cap": 20,
+   "maxDepth": 1000,
+   "energyLeft": 4.03,
+   "kind": "mission"
+  },
+  {
+   "world": "W02",
+   "t": 1141.9,
+   "haul": 750,
+   "bulk": 20,
+   "cap": 20,
+   "maxDepth": 450,
+   "energyLeft": 5.51,
+   "kind": "mine"
+  }
+ ],
+ "ruptured": 1,
+ "preserved": 8,
+ "credits": 507.4,
+ "hw": {
+  "drill": 0,
+  "energy": 1,
+  "cargo": 2,
+  "hull": 0,
+  "engine": 0
+ },
+ "gear": [
+  "W01-R1",
+  "W02-R1"
+ ]
+}

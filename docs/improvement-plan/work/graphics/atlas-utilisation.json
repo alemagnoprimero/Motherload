@@ -1,0 +1,71 @@
+{
+ "w01": {
+  "atlas": [
+   2048,
+   1344
+  ],
+  "atlasPx": 2752512,
+  "sumFramePx": 2299904,
+  "sumTrimmedBboxPx": 1087521,
+  "nonTransparentPx": 648474,
+  "pageUtilisation%": 83.6,
+  "trimmedVsUntrimmed%": 47.3,
+  "decodedMiB": 10.5
+ },
+ "w02": {
+  "atlas": [
+   1024,
+   1472
+  ],
+  "atlasPx": 1507328,
+  "sumFramePx": 1149952,
+  "sumTrimmedBboxPx": 788588,
+  "nonTransparentPx": 611969,
+  "pageUtilisation%": 76.3,
+  "trimmedVsUntrimmed%": 68.6,
+  "decodedMiB": 5.8
+ },
+ "w01-sky": {
+  "size": [
+   1024,
+   512
+  ],
+  "decodedMiB": 2.0
+ },
+ "w01-ridge-far": {
+  "size": [
+   1024,
+   384
+  ],
+  "decodedMiB": 1.5
+ },
+ "w01-ridge-near": {
+  "size": [
+   1024,
+   384
+  ],
+  "decodedMiB": 1.5
+ },
+ "w02-sky": {
+  "size": [
+   1024,
+   512
+  ],
+  "decodedMiB": 2.0
+ },
+ "w02-ridge-far": {
+  "size": [
+   1024,
+   384
+  ],
+  "decodedMiB": 1.5
+ },
+ "w02-ridge-near": {
+  "size": [
+   1024,
+   384
+  ],
+  "decodedMiB": 1.5
+ },
+ "totalDecodedMiB(all loaded at boot)": 26.3
+}

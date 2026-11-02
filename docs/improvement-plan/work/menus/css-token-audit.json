@@ -1,0 +1,75 @@
+{
+ "lines": 2204,
+ "hex_literals_total": 190,
+ "unique_hex": 176,
+ "custom_properties_defined": [
+  "--console-bg",
+  "--console-edge",
+  "--energy",
+  "--hud-shadow",
+  "--signal"
+ ],
+ "var_uses": {
+  "--hud-shadow": 5,
+  "--energy": 1,
+  "--dock-prompt-x": 1,
+  "--dock-prompt-y": 1,
+  "--console-bg": 1,
+  "--console-edge": 2,
+  "--campaign-menu-header-height": 1
+ },
+ "font_sizes": {
+  "13px": 23,
+  "25px": 2,
+  "17px": 2,
+  "15px": 4,
+  "12px": 73,
+  "14px": 12,
+  "16px": 4,
+  "23px": 1,
+  "21px": 2,
+  "20px": 5,
+  "26px": 1,
+  "22px": 1,
+  "clamp(42px, 7.5vw, 105px)": 1,
+  "clamp(40px, 7vw, 84px)": 1,
+  "18px": 3,
+  "19px": 1,
+  "clamp(36px, 10vw, 65px)": 1,
+  "48px": 1
+ },
+ "letter_spacings": {
+  "0.01em": 1,
+  "0.12em": 2,
+  "0.06em": 3,
+  "0.04em": 2,
+  "0.08em": 2,
+  "0.07em": 1,
+  "0.05em": 2,
+  "0.4em": 1,
+  "-0.045em": 1,
+  "0": 1,
+  "0.3em": 1
+ },
+ "unique_padding_values": 56,
+ "unique_gap_values": 34,
+ "media_queries": [
+  "@media (pointer: fine) and (min-width: 761px) and (min-height: 501px)",
+  "@media (max-width: 1100px)",
+  "@media (pointer: coarse), (max-width: 760px)",
+  "@media (max-height: 500px) and (orientation: landscape)",
+  "@media (pointer: coarse), (max-width: 760px)",
+  "@media (max-width: 360px)",
+  "@media (max-height: 500px) and (orientation: landscape)",
+  "@media (max-height: 500px) and (orientation: landscape)",
+  "@media (max-height: 500px) and (orientation: landscape)",
+  "@media (max-width: 1100px)",
+  "@media (pointer: coarse), (max-width: 760px)",
+  "@media (max-height: 420px) and (orientation: landscape)"
+ ],
+ "keyframes": 0,
+ "font_face": 0,
+ "font_family": [
+  "\"Arial\", ui-sans-serif, system-ui, sans-serif"
+ ]
+}

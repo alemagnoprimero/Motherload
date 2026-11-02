@@ -1,0 +1,542 @@
+[
+ {
+  "startEnergy": 6,
+  "shelfHit": false,
+  "seed": 10,
+  "afterTrip1Sale": 400,
+  "refuel1": 7.5,
+  "repair1": 0,
+  "afterService1": 192.5,
+  "beforeBuy": 672.5,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": true,
+    "reserveAfterBuyAndService": 22.5
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 219.7
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 169.7
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -30.3
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -80.3
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 419.7
+   }
+  }
+ },
+ {
+  "startEnergy": 6,
+  "shelfHit": false,
+  "seed": 4,
+  "afterTrip1Sale": 400,
+  "refuel1": 7.5,
+  "repair1": 0,
+  "afterService1": 192.5,
+  "beforeBuy": 672.5,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": true,
+    "reserveAfterBuyAndService": 22.5
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 219.7
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 169.7
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -30.3
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -80.3
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 419.7
+   }
+  }
+ },
+ {
+  "startEnergy": 6,
+  "shelfHit": false,
+  "seed": 999,
+  "afterTrip1Sale": 400,
+  "refuel1": 7.5,
+  "repair1": 0,
+  "afterService1": 192.5,
+  "beforeBuy": 672.5,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": true,
+    "reserveAfterBuyAndService": 22.5
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 219.7
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 169.7
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -30.3
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -80.3
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 419.7
+   }
+  }
+ },
+ {
+  "startEnergy": 6,
+  "shelfHit": true,
+  "seed": 10,
+  "afterTrip1Sale": 400,
+  "refuel1": 7.7,
+  "repair1": 45,
+  "afterService1": 147.3,
+  "beforeBuy": 627.3,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": false,
+    "reserveAfterBuyAndService": -22.7
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 174.5
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 124.5
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -75.5
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -125.5
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 374.5
+   }
+  }
+ },
+ {
+  "startEnergy": 6,
+  "shelfHit": true,
+  "seed": 4,
+  "afterTrip1Sale": 400,
+  "refuel1": 7.7,
+  "repair1": 45,
+  "afterService1": 147.3,
+  "beforeBuy": 627.3,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": false,
+    "reserveAfterBuyAndService": -22.7
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 174.5
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 124.5
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -75.5
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -125.5
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 374.5
+   }
+  }
+ },
+ {
+  "startEnergy": 6,
+  "shelfHit": true,
+  "seed": 999,
+  "afterTrip1Sale": 400,
+  "refuel1": 7.7,
+  "repair1": 45,
+  "afterService1": 147.3,
+  "beforeBuy": 627.3,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": false,
+    "reserveAfterBuyAndService": -22.7
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 174.5
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 124.5
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -75.5
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -125.5
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 374.5
+   }
+  }
+ },
+ {
+  "startEnergy": 10,
+  "shelfHit": false,
+  "seed": 10,
+  "afterTrip1Sale": 400,
+  "refuel1": 3.5,
+  "repair1": 0,
+  "afterService1": 196.5,
+  "beforeBuy": 676.5,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": true,
+    "reserveAfterBuyAndService": 26.5
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 223.7
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 173.7
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -26.3
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -76.3
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 423.7
+   }
+  }
+ },
+ {
+  "startEnergy": 10,
+  "shelfHit": false,
+  "seed": 4,
+  "afterTrip1Sale": 400,
+  "refuel1": 3.5,
+  "repair1": 0,
+  "afterService1": 196.5,
+  "beforeBuy": 676.5,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": true,
+    "reserveAfterBuyAndService": 26.5
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 223.7
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 173.7
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -26.3
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -76.3
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 423.7
+   }
+  }
+ },
+ {
+  "startEnergy": 10,
+  "shelfHit": false,
+  "seed": 999,
+  "afterTrip1Sale": 400,
+  "refuel1": 3.5,
+  "repair1": 0,
+  "afterService1": 196.5,
+  "beforeBuy": 676.5,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": true,
+    "reserveAfterBuyAndService": 26.5
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 223.7
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 173.7
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -26.3
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -76.3
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 423.7
+   }
+  }
+ },
+ {
+  "startEnergy": 10,
+  "shelfHit": true,
+  "seed": 10,
+  "afterTrip1Sale": 400,
+  "refuel1": 3.7,
+  "repair1": 45,
+  "afterService1": 151.3,
+  "beforeBuy": 631.3,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": false,
+    "reserveAfterBuyAndService": -18.7
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 178.5
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 128.5
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -71.5
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -121.5
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 378.5
+   }
+  }
+ },
+ {
+  "startEnergy": 10,
+  "shelfHit": true,
+  "seed": 4,
+  "afterTrip1Sale": 400,
+  "refuel1": 3.7,
+  "repair1": 45,
+  "afterService1": 151.3,
+  "beforeBuy": 631.3,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": false,
+    "reserveAfterBuyAndService": -18.7
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 178.5
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 128.5
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -71.5
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -121.5
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 378.5
+   }
+  }
+ },
+ {
+  "startEnergy": 10,
+  "shelfHit": true,
+  "seed": 999,
+  "afterTrip1Sale": 400,
+  "refuel1": 3.7,
+  "repair1": 45,
+  "afterService1": 151.3,
+  "beforeBuy": 631.3,
+  "refuel2": 2.8,
+  "repair2": 0,
+  "hull": 10,
+  "options": {
+   "energy": {
+    "price": 650,
+    "affordable": false,
+    "reserveAfterBuyAndService": -18.7
+   },
+   "hull": {
+    "price": 450,
+    "affordable": true,
+    "reserveAfterBuyAndService": 178.5
+   },
+   "engine": {
+    "price": 500,
+    "affordable": true,
+    "reserveAfterBuyAndService": 128.5
+   },
+   "cargo": {
+    "price": 700,
+    "affordable": false,
+    "reserveAfterBuyAndService": -71.5
+   },
+   "drill": {
+    "price": 750,
+    "affordable": false,
+    "reserveAfterBuyAndService": -121.5
+   },
+   "brace(A4 proposal)": {
+    "price": 250,
+    "affordable": true,
+    "reserveAfterBuyAndService": 378.5
+   }
+  }
+ }
+]

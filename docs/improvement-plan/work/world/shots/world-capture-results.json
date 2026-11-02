@@ -1,0 +1,22 @@
+{
+ "shaft": {
+  "row": 13,
+  "depth": 140
+ },
+ "shelfBefore": {
+  "shelf": [
+   8,
+   14
+  ],
+  "message": ""
+ },
+ "shelfWarning": {
+  "shelf": [
+   8,
+   14
+  ],
+  "message": "Brittle shelf cracking! Move clear before it falls."
+ },
+ "relicMessage": "",
+ "relicPickup": ""
+}

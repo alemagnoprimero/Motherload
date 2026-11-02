@@ -1,0 +1,451 @@
+{
+ "dockInitialFocus": "button 'Service'",
+ "serviceBefore": {
+  "credits": "600 CR",
+  "message": "Lander uplink ready.",
+  "haul": "560 CR",
+  "animations": 0,
+  "active": "BUTTON 'Service'",
+  "scrollTop": 0
+ },
+ "serviceMetrics": {
+  "box": {
+   "x": 802,
+   "y": 45,
+   "w": 620,
+   "h": 810
+  },
+  "scroller": null,
+  "words": 90,
+  "leaves": 26,
+  "sizeHist": {
+   "12": 18,
+   "13": 1,
+   "14": 4,
+   "17": 1,
+   "20": 1,
+   "21": 1
+  },
+  "wordsBySize": {
+   "12": 75,
+   "13": 1,
+   "14": 8,
+   "17": 2,
+   "20": 2,
+   "21": 2
+  },
+  "wordsAtOrBelow12": 75,
+  "families": [
+   "Arial, ui-sans-serif, system-ui, sans-serif"
+  ],
+  "colours": 16,
+  "focusables": 10,
+  "focusOrder": [
+   "Undock",
+   "Service",
+   "Hardware",
+   "Attachments",
+   "Lander",
+   "Cargo",
+   "Unload & sell",
+   "Bank without sale",
+   "Refuel · 5.8 CR",
+   "Repair · 45 CR"
+  ],
+  "disabledButtons": 0,
+  "lowOpacityLeaves": []
+ },
+ "cargoTabWithCargo": {
+  "box": {
+   "x": 802,
+   "y": 45,
+   "w": 620,
+   "h": 810
+  },
+  "scroller": {
+   "id": "campaign-dock-content",
+   "clientHeight": 640,
+   "scrollHeight": 746,
+   "screens": 1.17
+  },
+  "words": 102,
+  "leaves": 39,
+  "sizeHist": {
+   "12": 21,
+   "13": 15,
+   "14": 1,
+   "17": 1,
+   "21": 1
+  },
+  "wordsBySize": {
+   "12": 60,
+   "13": 36,
+   "14": 2,
+   "17": 2,
+   "21": 2
+  },
+  "wordsAtOrBelow12": 60,
+  "families": [
+   "Arial, ui-sans-serif, system-ui, sans-serif"
+  ],
+  "colours": 11,
+  "focusables": 14,
+  "focusOrder": [
+   "Undock",
+   "Service",
+   "Hardware",
+   "Attachments",
+   "Lander",
+   "Cargo",
+   "Eject",
+   "Eject",
+   "Eject",
+   "Eject",
+   "Eject",
+   "Eject",
+   "Eject",
+   "Bank carried cargo and missions"
+  ],
+  "disabledButtons": 1,
+  "lowOpacityLeaves": [
+   "Sell stored cargo @0.38"
+  ]
+ },
+ "afterSell": {
+  "immediate": {
+   "credits": "1,160 CR",
+   "message": "Sold stored cargo for 560 CR.",
+   "haul": "0 CR",
+   "animations": 4,
+   "active": "BODY 'ENERGY4.2 / 10\n      HULL7 / 1'",
+   "scrollTop": 0
+  },
+  "after120ms": {
+   "credits": "1,160 CR",
+   "message": "Sold stored cargo for 560 CR.",
+   "haul": "0 CR",
+   "animations": 0,
+   "active": "BODY 'ENERGY4.2 / 10\n      HULL7 / 1'",
+   "scrollTop": 0
+  }
+ },
+ "tabs": {
+  "service": {
+   "box": {
+    "x": 802,
+    "y": 45,
+    "w": 620,
+    "h": 810
+   },
+   "scroller": null,
+   "words": 93,
+   "leaves": 26,
+   "sizeHist": {
+    "12": 18,
+    "13": 1,
+    "14": 4,
+    "17": 1,
+    "20": 1,
+    "21": 1
+   },
+   "wordsBySize": {
+    "12": 78,
+    "13": 1,
+    "14": 8,
+    "17": 2,
+    "20": 2,
+    "21": 2
+   },
+   "wordsAtOrBelow12": 78,
+   "families": [
+    "Arial, ui-sans-serif, system-ui, sans-serif"
+   ],
+   "colours": 16,
+   "focusables": 8,
+   "focusOrder": [
+    "Undock",
+    "Service",
+    "Hardware",
+    "Attachments",
+    "Lander",
+    "Cargo",
+    "Refuel · 5.8 CR",
+    "Repair · 45 CR"
+   ],
+   "disabledButtons": 2,
+   "lowOpacityLeaves": [
+    "Unload & sell @0.38",
+    "Bank without sale @0.38"
+   ]
+  },
+  "hardware": {
+   "box": {
+    "x": 802,
+    "y": 45,
+    "w": 620,
+    "h": 810
+   },
+   "scroller": {
+    "id": "campaign-dock-content",
+    "clientHeight": 640,
+    "scrollHeight": 743,
+    "screens": 1.16
+   },
+   "words": 149,
+   "leaves": 41,
+   "sizeHist": {
+    "12": 27,
+    "13": 6,
+    "14": 6,
+    "17": 1,
+    "21": 1
+   },
+   "wordsBySize": {
+    "12": 109,
+    "13": 21,
+    "14": 15,
+    "17": 2,
+    "21": 2
+   },
+   "wordsAtOrBelow12": 109,
+   "families": [
+    "Arial, ui-sans-serif, system-ui, sans-serif"
+   ],
+   "colours": 13,
+   "focusables": 11,
+   "focusOrder": [
+    "Undock",
+    "Service",
+    "Hardware",
+    "Attachments",
+    "Lander",
+    "Cargo",
+    "Purchase · 750 CR",
+    "Purchase · 650 CR",
+    "Purchase · 700 CR",
+    "Purchase · 450 CR",
+    "Purchase · 500 CR"
+   ],
+   "disabledButtons": 0,
+   "lowOpacityLeaves": []
+  },
+  "tools": {
+   "box": {
+    "x": 802,
+    "y": 45,
+    "w": 620,
+    "h": 810
+   },
+   "scroller": null,
+   "words": 111,
+   "leaves": 27,
+   "sizeHist": {
+    "12": 20,
+    "13": 1,
+    "14": 4,
+    "17": 1,
+    "21": 1
+   },
+   "wordsBySize": {
+    "12": 97,
+    "13": 1,
+    "14": 9,
+    "17": 2,
+    "21": 2
+   },
+   "wordsAtOrBelow12": 97,
+   "families": [
+    "Arial, ui-sans-serif, system-ui, sans-serif"
+   ],
+   "colours": 14,
+   "focusables": 8,
+   "focusOrder": [
+    "Undock",
+    "Service",
+    "Hardware",
+    "Attachments",
+    "Lander",
+    "Cargo",
+    "Unequip",
+    "Purchase · 400 CR"
+   ],
+   "disabledButtons": 1,
+   "lowOpacityLeaves": [
+    "Purchase · 900 CR @0.38"
+   ]
+  },
+  "lander": {
+   "box": {
+    "x": 802,
+    "y": 45,
+    "w": 620,
+    "h": 810
+   },
+   "scroller": null,
+   "words": 117,
+   "leaves": 27,
+   "sizeHist": {
+    "12": 17,
+    "13": 1,
+    "14": 4,
+    "17": 1,
+    "20": 3,
+    "21": 1
+   },
+   "wordsBySize": {
+    "12": 97,
+    "13": 1,
+    "14": 12,
+    "17": 2,
+    "20": 3,
+    "21": 2
+   },
+   "wordsAtOrBelow12": 97,
+   "families": [
+    "Arial, ui-sans-serif, system-ui, sans-serif"
+   ],
+   "colours": 12,
+   "focusables": 6,
+   "focusOrder": [
+    "Undock",
+    "Service",
+    "Hardware",
+    "Attachments",
+    "Lander",
+    "Cargo"
+   ],
+   "disabledButtons": 1,
+   "lowOpacityLeaves": [
+    "Fund construction · 300 CR @0.38",
+    "03 @0.52",
+    "NEXT PROJECT @0.52",
+    "Restore the lander @0.52",
+    "Retrieve the navigation core at 600 m and complete construction. Grant @0.52",
+    "Complete the preceding project to begin. @0.52"
+   ]
+  },
+  "cargo": {
+   "box": {
+    "x": 802,
+    "y": 45,
+    "w": 620,
+    "h": 810
+   },
+   "scroller": null,
+   "words": 53,
+   "leaves": 19,
+   "sizeHist": {
+    "12": 7,
+    "13": 9,
+    "14": 1,
+    "17": 1,
+    "21": 1
+   },
+   "wordsBySize": {
+    "12": 14,
+    "13": 33,
+    "14": 2,
+    "17": 2,
+    "21": 2
+   },
+   "wordsAtOrBelow12": 14,
+   "families": [
+    "Arial, ui-sans-serif, system-ui, sans-serif"
+   ],
+   "colours": 11,
+   "focusables": 6,
+   "focusOrder": [
+    "Undock",
+    "Service",
+    "Hardware",
+    "Attachments",
+    "Lander",
+    "Cargo"
+   ],
+   "disabledButtons": 2,
+   "lowOpacityLeaves": [
+    "Sell stored cargo @0.38",
+    "Bank carried cargo and missions @0.38"
+   ]
+  }
+ },
+ "mousePurchase": {
+  "beforeBuy": {
+   "credits": "1,160 CR",
+   "message": "Sold stored cargo for 560 CR.",
+   "animations": 4,
+   "active": "BUTTON 'Hardware'",
+   "scrollTop": 103
+  },
+  "rightAfter": {
+   "credits": "510 CR",
+   "message": "Salvaged energy installed.",
+   "animations": 1,
+   "active": "BODY 'ENERGY16.0 / 16\n      HULL7 / '",
+   "scrollTop": 0
+  },
+  "after300": {
+   "credits": "510 CR",
+   "message": "Salvaged energy installed.",
+   "animations": 0,
+   "active": "BODY 'ENERGY16.0 / 16\n      HULL7 / '",
+   "scrollTop": 0
+  }
+ },
+ "hardwareCardAfterBuy": [
+  "DRILL · RANK 1 Steel auger assembly 2 speed → 2.8 speed Cut faster and use less energy during each excavation. Need 240 CR more for this upgrade. Reserve after ",
+  "ENERGY · OWNED Riveted reservoir 16 L · rank 1 installed Purchase fills the new capacity. Next rank: land on the Ice comet. Installed",
+  "CARGO · RANK 1 Reinforced cargo bay 7 bulk → 12 bulk Carry more bulk. Package mass still affects handling. Need 190 CR more for this upgrade. Reserve after purc",
+  "HULL · RANK 1 Bolted protection 10 HP → 18 HP Purchase fills the new capacity. Reserve after purchase/basic service: 60 CR. Purchase · 450 CR",
+  "ENGINE · RANK 1 Patched vector motor 150 power → 185 power More thrust and acceleration; movement energy rises slightly. Reserve after purchase/basic service: 0"
+ ],
+ "keyboardPurchase": {
+  "focusBefore": "button 'Purchase · 450 CR'",
+  "focusAfter": "body 'ENERGY16.0 / 16 HULL18 / 18 Depth0 m Car'",
+  "firstTabAfterPurchase": "body 'ENERGY16.0 / 16 HULL18 / 18 Depth0 m Car'",
+  "state": {
+   "credits": "60 CR",
+   "message": "Salvaged hull installed.",
+   "animations": 5,
+   "active": "BODY 'ENERGY16.0 / 16\n      HULL18 /'",
+   "scrollTop": 0
+  }
+ },
+ "dockTabSequence": [
+  "button 'Service'",
+  "button 'Hardware'",
+  "button 'Attachments'",
+  "button 'Lander'",
+  "button 'Cargo'",
+  "div#campaign-dock-content 'Rig systemsDRILL · RANK 1Steel auger ass'",
+  "body 'ENERGY16.0 / 16 HULL18 / 18 Depth0 m Car'",
+  "button 'Undock'",
+  "button 'Service'",
+  "button 'Hardware'",
+  "button 'Attachments'",
+  "button 'Lander'",
+  "button 'Cargo'",
+  "div#campaign-dock-content 'Rig systemsDRILL · RANK 1Steel auger ass'",
+  "body 'ENERGY16.0 / 16 HULL18 / 18 Depth0 m Car'",
+  "button 'Undock'"
+ ],
+ "tablistSemantics": {
+  "navRole": null,
+  "buttonRole": null,
+  "ariaSelected": "false",
+  "ariaControls": null,
+  "panelRole": null
+ },
+ "arrowOnTab": {
+  "focus": "button 'Service'",
+  "selected": "hardware"
+ },
+ "errorsA": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "enterRepeat": {
+  "opened": true,
+  "focusAfterOpen": "button 'Undock'",
+  "stillOpenAfterRepeat": false
+ }
+}

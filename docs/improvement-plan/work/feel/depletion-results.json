@@ -1,0 +1,87 @@
+{
+  "climbDepletion": {
+    "trace": [
+      {
+        "t": 0.017,
+        "y": 29.636,
+        "vy": -0.335,
+        "energy": 0.047
+      },
+      {
+        "t": 0.267,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 0.517,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 0.767,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 1.017,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 1.267,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 1.517,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 1.767,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 2.017,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 2.267,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 2.517,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      },
+      {
+        "t": 2.767,
+        "y": 28.992,
+        "vy": 0,
+        "energy": 0
+      }
+    ],
+    "finalMessage": "Rig disabled. Request surface recovery from the pause menu.",
+    "floorRowBelow": 30
+  },
+  "simSpeedRatio": {
+    "frame16.7ms": 1,
+    "frame33.3ms": 1,
+    "frame50ms": 1,
+    "frame66.7ms": 0.75,
+    "frame100ms": 0.5
+  }
+}

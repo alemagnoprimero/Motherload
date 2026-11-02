@@ -1,0 +1,809 @@
+{
+ "probe": {
+  "viewport": {
+   "w": 568,
+   "h": 320,
+   "dpr": 2
+  },
+  "named": {
+   "hud": {
+    "visible": true,
+    "box": {
+     "x": 9,
+     "y": 9,
+     "w": 502,
+     "h": 36
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY19.9 / 25 HULL20 / 30 Depth120 m Cargo2 / 20 HAUL120 CR CRCredits100,000"
+   },
+   "energyVital": {
+    "visible": true,
+    "box": {
+     "x": 9,
+     "y": 9,
+     "w": 106,
+     "h": 19
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY19.9 / 25"
+   },
+   "hullVital": {
+    "visible": true,
+    "box": {
+     "x": 124,
+     "y": 9,
+     "w": 106,
+     "h": 19
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HULL20 / 30"
+   },
+   "energyValue": {
+    "visible": true,
+    "box": {
+     "x": 68.3,
+     "y": 9,
+     "w": 46.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "19.9 / 25"
+   },
+   "hullValue": {
+    "visible": true,
+    "box": {
+     "x": 193.3,
+     "y": 9,
+     "w": 36.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "20 / 30"
+   },
+   "energyMeter": {
+    "visible": true,
+    "box": {
+     "x": 33,
+     "y": 26,
+     "w": 82,
+     "h": 2
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "hullMeter": {
+    "visible": true,
+    "box": {
+     "x": 148,
+     "y": 26,
+     "w": 82,
+     "h": 2
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "rightCluster": {
+    "visible": true,
+    "box": {
+     "x": 345.8,
+     "y": 9,
+     "w": 165.3,
+     "h": 36
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Depth120 m Cargo2 / 20 HAUL120 CR CRCredits100,000"
+   },
+   "depth": {
+    "visible": true,
+    "box": {
+     "x": 366.8,
+     "y": 11.5,
+     "w": 34,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "120 m"
+   },
+   "cargo": {
+    "visible": true,
+    "box": {
+     "x": 453.4,
+     "y": 11.5,
+     "w": 30,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "2 / 20"
+   },
+   "haul": {
+    "visible": true,
+    "box": {
+     "x": 383.7,
+     "y": 31,
+     "w": 40.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "120 CR"
+   },
+   "credits": {
+    "visible": true,
+    "box": {
+     "x": 453.7,
+     "y": 31,
+     "w": 43.4,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "100,000"
+   },
+   "objective": {
+    "visible": true,
+    "box": {
+     "x": 9,
+     "y": 48,
+     "w": 300,
+     "h": 88.8
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "03 / 03Stabilize the comet fuel○Cryogenic catalyst · 1000 m◇Construction · 1,000 CR ready↓downCryogenic catalyst881 mTrackingExcavate the cryogenic capsuleUnloc"
+   },
+   "objectiveTitle": {
+    "visible": true,
+    "box": {
+     "x": 33,
+     "y": 48,
+     "w": 133.4,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Stabilize the comet fuel"
+   },
+   "tasks": {
+    "visible": true,
+    "box": {
+     "x": 33,
+     "y": 65,
+     "w": 276,
+     "h": 32.4
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "○Cryogenic catalyst · 1000 m◇Construction · 1,000 CR ready"
+   },
+   "signal": {
+    "visible": true,
+    "box": {
+     "x": 33,
+     "y": 101.4,
+     "w": 276,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(197, 216, 202)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "↓downCryogenic catalyst881 mTracking"
+   },
+   "next": {
+    "visible": true,
+    "box": {
+     "x": 33,
+     "y": 120.6,
+     "w": 276,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Excavate the cryogenic capsule"
+   },
+   "reward": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(168, 188, 176)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Unlock: Planetary certificate + Iron planet charted"
+   },
+   "toolbar": {
+    "visible": true,
+    "box": {
+     "x": 124,
+     "y": 268,
+     "w": 320,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLThermal auger MOBILITYAnchoring feet HOLDPrecision UTILITYCondenser active PROCESSORPreservation chamber"
+   },
+   "drillSlot": {
+    "visible": true,
+    "box": {
+     "x": 124,
+     "y": 268,
+     "w": 126,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLThermal auger"
+   },
+   "feet": {
+    "visible": true,
+    "box": {
+     "x": 254,
+     "y": 268,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "MOBILITYAnchoring feet"
+   },
+   "precision": {
+    "visible": true,
+    "box": {
+     "x": 302,
+     "y": 268,
+     "w": 94,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HOLDPrecision"
+   },
+   "map": {
+    "visible": true,
+    "box": {
+     "x": 400,
+     "y": 268,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "menuButton": {
+    "visible": true,
+    "box": {
+     "x": 521,
+     "y": 2,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(212, 224, 213)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "message": {
+    "visible": true,
+    "box": {
+     "x": 62,
+     "y": 235.2,
+     "w": 444,
+     "h": 16.8
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(240, 220, 169)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Ice comet expedition ready. Follow the mission signal and preserve volatile crystals."
+   },
+   "danger": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(255, 213, 175)",
+    "background": "rgba(20, 33, 39, 0.875)",
+    "text": ""
+   },
+   "extraction": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(215, 243, 232)",
+    "background": "rgba(10, 32, 41, 0.91)",
+    "text": "Release drill"
+   },
+   "release": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(22, 43, 49)",
+    "background": "rgb(230, 182, 101)",
+    "text": "Release drill"
+   },
+   "dockPrompt": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(244, 210, 149)",
+    "background": "rgba(13, 26, 27, 0.44)",
+    "text": "TAPDock"
+   },
+   "disabled": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(233, 239, 223)",
+    "background": "rgba(16, 30, 37, 0.95)",
+    "text": "Rig disabledRequest recoveryLander servicesPause / save"
+   }
+  },
+  "leaves": [
+   {
+    "id": "campaign-energy",
+    "root": "campaign-hud",
+    "text": "19.9 / 25",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 68.28125,
+     "y": 9,
+     "w": 46.71875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-hull",
+    "root": "campaign-hud",
+    "text": "20 / 30",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 193.296875,
+     "y": 9,
+     "w": 36.703125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-depth",
+    "root": "campaign-hud",
+    "text": "120 m",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 366.75,
+     "y": 11.5,
+     "w": 34.03125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-cargo",
+    "root": "campaign-hud",
+    "text": "2 / 20",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 453.375,
+     "y": 11.5,
+     "w": 30.03125,
+     "h": 14
+    }
+   },
+   {
+    "id": "hud-mini-label",
+    "root": "campaign-hud",
+    "text": "HAUL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(184, 202, 194)",
+    "box": {
+     "x": 345.75,
+     "y": 31,
+     "w": 33.9375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-haul",
+    "root": "campaign-hud",
+    "text": "120 CR",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 383.6875,
+     "y": 31,
+     "w": 40.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "credit-mark",
+    "root": "campaign-hud",
+    "text": "CR",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(234, 194, 140)",
+    "box": {
+     "x": 432.375,
+     "y": 31,
+     "w": 17.34375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-credits",
+    "root": "campaign-hud",
+    "text": "100,000",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 453.71875,
+     "y": 31,
+     "w": 43.390625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-title",
+    "root": "campaign-objective",
+    "text": "Stabilize the comet fuel",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 33,
+     "y": 48,
+     "w": 133.359375,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 35.375,
+     "y": 66,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Cryogenic catalyst · 1000 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 51,
+     "y": 66,
+     "w": 105.375,
+     "h": 30.1875
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "◇",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(240, 197, 132)",
+    "box": {
+     "x": 177,
+     "y": 66,
+     "w": 12.734375,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Construction · 1,000 CR ready",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 195.734375,
+     "y": 66,
+     "w": 108.0625,
+     "h": 30.1875
+    }
+   },
+   {
+    "id": "campaign-signal-direction",
+    "root": "campaign-objective",
+    "text": "↓",
+    "fontSize": 16,
+    "fontWeight": "400",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 37,
+     "y": 100.46875,
+     "w": 8,
+     "h": 17
+    }
+   },
+   {
+    "id": "campaign-signal-target",
+    "root": "campaign-objective",
+    "text": "Cryogenic catalyst",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(197, 216, 202)",
+    "box": {
+     "x": 56,
+     "y": 102.375,
+     "w": 106.71875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-distance",
+    "root": "campaign-objective",
+    "text": "881 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(175, 195, 183)",
+    "box": {
+     "x": 169.71875,
+     "y": 102.375,
+     "w": 33.359375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-proximity",
+    "root": "campaign-objective",
+    "text": "Tracking",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(161, 184, 170)",
+    "box": {
+     "x": 210.078125,
+     "y": 102.375,
+     "w": 45.578125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-next",
+    "root": "campaign-objective",
+    "text": "Excavate the cryogenic capsule",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "box": {
+     "x": 33,
+     "y": 121.5625,
+     "w": 168.765625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-message",
+    "root": "campaign-message",
+    "text": "Ice comet expedition ready. Follow the mission signal and preserve volatile crys",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(240, 220, 169)",
+    "box": {
+     "x": 62.0078125,
+     "y": 236.203125,
+     "w": 443.984375,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-toolbar",
+    "text": "DRILL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(159, 181, 171)",
+    "box": {
+     "x": 158,
+     "y": 275,
+     "w": 34.015625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-drill-name",
+    "root": "campaign-toolbar",
+    "text": "Thermal auger",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(230, 236, 221)",
+    "box": {
+     "x": 158,
+     "y": 291,
+     "w": 82.703125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-precision-key",
+    "root": "campaign-toolbar",
+    "text": "HOLD",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(159, 181, 171)",
+    "box": {
+     "x": 338,
+     "y": 275,
+     "w": 34,
+     "h": 14
+    }
+   },
+   {
+    "id": "STRONG",
+    "root": "campaign-toolbar",
+    "text": "Precision",
+    "fontSize": 12,
+    "fontWeight": "900",
+    "color": "rgb(230, 236, 221)",
+    "box": {
+     "x": 338,
+     "y": 291,
+     "w": 54.03125,
+     "h": 14
+    }
+   }
+  ],
+  "game": {
+   "campaignArt": "ready",
+   "pointerActive": "false",
+   "pointerDirections": "",
+   "joystickVisible": "false",
+   "joystickCenterX": "",
+   "joystickCenterY": "",
+   "joystickKnobX": "",
+   "joystickKnobY": "",
+   "rigScreenX": "284.00",
+   "rigScreenY": "199.84",
+   "rigWorldX": "30.5000",
+   "rigWorldY": "11.6400",
+   "campaignWorld": "W02",
+   "worldWidth": "48",
+   "worldRows": "100",
+   "worldTexture": "campaign-w02",
+   "volatileCue": "false",
+   "volatileRemaining": "",
+   "precisionActive": "false",
+   "coldWarning": "false",
+   "poiLandmarks": "W02-SAMPLE-4,W02-SAMPLE-5",
+   "poiSourceMarkers": "",
+   "poiScreenTargets": "[{\"id\":\"W02-SAMPLE-4\",\"x\":44,\"y\":337,\"known\":false,\"status\":\"banked\",\"lit\":false},{\"id\":\"W02-SAMPLE-5\",\"x\":92,\"y\":337,\"known\":false,\"status\":\"banked\",\"lit\":false}]",
+   "poiSignalTarget": "W02-Q",
+   "poiSignalBand": "distant",
+   "poiTargetKnown": "false",
+   "poiTargetVisible": "false",
+   "poiMarkerVisible": "false",
+   "poiMarkerX": "",
+   "poiMarkerY": "",
+   "worldCallout": "false",
+   "inspection": ""
+  },
+  "canvas": {
+   "width": 568,
+   "height": 320,
+   "cssW": 568,
+   "cssH": 320
+  },
+  "body": {
+   "mode": "campaign",
+   "campaignDanger": "false",
+   "campaignDisabled": "false",
+   "campaignResumeRequired": "false",
+   "campaignWorld": "W02",
+   "campaignExtraction": "false",
+   "campaignVolatile": "none",
+   "campaignPrecision": "true",
+   "campaignPaused": "false",
+   "campaignBusy": "false",
+   "classes": ""
+  }
+ },
+ "errors": []
+}

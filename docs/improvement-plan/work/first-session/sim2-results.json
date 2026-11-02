@@ -1,0 +1,81 @@
+{
+ "valve": {
+  "targetRow": 24,
+  "ok": true,
+  "energyLeft": 3.06,
+  "log": [
+   {
+    "label": "at shaft",
+    "energy": 9.71,
+    "depth": 0
+   },
+   {
+    "label": "at target row",
+    "energy": 4.12,
+    "depth": 250
+   },
+   {
+    "label": "surface",
+    "energy": 3.3,
+    "depth": 0
+   },
+   {
+    "label": "dock",
+    "energy": 3.06,
+    "depth": 0
+   }
+  ]
+ },
+ "antennaViaColumn20": {
+  "targetRow": 39,
+  "ok": false,
+  "phase": "descent",
+  "log": [
+   {
+    "label": "at shaft",
+    "energy": 9.71,
+    "depth": 0
+   },
+   {
+    "label": "at target row",
+    "energy": 0,
+    "depth": 350
+   }
+  ]
+ },
+ "antennaWithValveShaftOpen": {
+  "energyLeft": 0.77,
+  "log": [
+   {
+    "label": "at shaft",
+    "energy": 9.71,
+    "depth": 0
+   },
+   {
+    "label": "at antenna row true",
+    "energy": 3.46,
+    "depth": 400
+   },
+   {
+    "label": "side cut",
+    "energy": 2.72,
+    "depth": 410
+   },
+   {
+    "label": "back under shaft x=20.39",
+    "energy": 2.3,
+    "depth": 410
+   },
+   {
+    "label": "surface true",
+    "energy": 0.98,
+    "depth": 0
+   },
+   {
+    "label": "dock",
+    "energy": 0.77,
+    "depth": 0
+   }
+  ]
+ }
+}

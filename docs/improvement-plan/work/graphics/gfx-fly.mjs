@@ -1,0 +1,32 @@
+import { readFile } from "node:fs/promises";
+import { chromium } from "/home/user/Motherload/node_modules/playwright-core/index.mjs";
+import { advance, click, freeze, importCheckpoint, keys } from "/home/user/Motherload/scripts/campaign-smoke.mjs";
+const OUT = process.argv[2];
+const SHOTS = "/home/user/Motherload/docs/improvement-plan/shots/";
+const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--no-sandbox", "--disable-dev-shm-usage", "--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"] });
+for (const world of ["w01", "w02"]) {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto("http://127.0.0.1:5173/?mode=campaign");
+  await page.waitForFunction(() => document.querySelector("#campaign-game")?.dataset.campaignArt === "ready", null, { timeout: 30000 });
+  await delay(400);
+  if (await page.locator("#campaign-start").isVisible()) await click(page, "#campaign-start");
+  await delay(300);
+  await freeze(page);
+  const base = JSON.parse(await readFile(SHOTS + (world === "w01" ? "checkpoint-native.json" : "checkpoint-w02.json"), "utf8"));
+  const s = base.state;
+  s.vehicle.energy = 10; s.vehicle.y = -0.36; s.vehicle.x = world === "w01" ? 12.5 : 30.5;
+  await importCheckpoint(page, base);
+  if ((await page.evaluate(() => document.body.dataset.campaignOverlay)) === "menu") await click(page, "#campaign-resume");
+  await advance(page, 300);
+  await keys(page, ["ArrowUp"]);
+  await advance(page, 3500);
+  await keys(page, []);
+  await advance(page, 120);
+  const d = await page.evaluate(() => ({ ...document.querySelector("#campaign-game").dataset }));
+  console.log(world, "rigWorldY", d.rigWorldY, "rigScreenY", d.rigScreenY);
+  await page.screenshot({ path: `${OUT}/g10-${world}-flying-ceiling.png` });
+  await context.close();
+}
+await browser.close();

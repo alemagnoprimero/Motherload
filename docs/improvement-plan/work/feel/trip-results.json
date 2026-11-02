@@ -1,0 +1,60 @@
+{
+  "trips": [
+    {
+      "targetDepthM": 150,
+      "drillRank": 0,
+      "totalS": 22.57,
+      "drillingS": 15.63,
+      "drillingShare": 0.69,
+      "flyingS": 2.87,
+      "drivingS": 3.9,
+      "otherS": 0.17,
+      "cuts": 16,
+      "cutsPerMinuteWhileDrilling": 61.41,
+      "pickups": 7,
+      "reachedDepthM": 0
+    },
+    {
+      "targetDepthM": 300,
+      "drillRank": 0,
+      "totalS": 41.1,
+      "drillingS": 31.68,
+      "drillingShare": 0.77,
+      "flyingS": 5.18,
+      "drivingS": 3.9,
+      "otherS": 0.33,
+      "cuts": 30,
+      "cutsPerMinuteWhileDrilling": 56.81,
+      "pickups": 7,
+      "reachedDepthM": 0
+    },
+    {
+      "targetDepthM": 590,
+      "drillRank": 0,
+      "totalS": 86.5,
+      "drillingS": 71.97,
+      "drillingShare": 0.83,
+      "flyingS": 10.02,
+      "drivingS": 3.9,
+      "otherS": 0.62,
+      "cuts": 59,
+      "cutsPerMinuteWhileDrilling": 49.19,
+      "pickups": 7,
+      "reachedDepthM": 0
+    },
+    {
+      "targetDepthM": 590,
+      "drillRank": 1,
+      "totalS": 67.13,
+      "drillingS": 52.55,
+      "drillingShare": 0.78,
+      "flyingS": 10.2,
+      "drivingS": 3.9,
+      "otherS": 0.48,
+      "cuts": 60,
+      "cutsPerMinuteWhileDrilling": 68.51,
+      "pickups": 7,
+      "reachedDepthM": 0
+    }
+  ]
+}

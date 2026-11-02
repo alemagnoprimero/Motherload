@@ -1,0 +1,2810 @@
+{
+ "drill": [
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 0,
+   "dir": "down",
+   "seconds": 0.9,
+   "energy": 0.2247
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 0,
+   "dir": "right",
+   "seconds": 0.683,
+   "energy": 0.2132
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 10,
+   "dir": "down",
+   "seconds": 1.017,
+   "energy": 0.3182
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 10,
+   "dir": "right",
+   "seconds": 0.767,
+   "energy": 0.2405
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 20,
+   "dir": "down",
+   "seconds": 1.133,
+   "energy": 0.3528
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 20,
+   "dir": "right",
+   "seconds": 0.85,
+   "energy": 0.2667
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 30,
+   "dir": "down",
+   "seconds": 1.25,
+   "energy": 0.3896
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 30,
+   "dir": "right",
+   "seconds": 0.933,
+   "energy": 0.293
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 40,
+   "dir": "down",
+   "seconds": 1.35,
+   "energy": 0.4232
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 40,
+   "dir": "right",
+   "seconds": 1.017,
+   "energy": 0.3192
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 50,
+   "dir": "down",
+   "seconds": 1.467,
+   "energy": 0.4599
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 50,
+   "dir": "right",
+   "seconds": 1.1,
+   "energy": 0.3455
+  },
+  {
+   "drillRank": 0,
+   "material": 1,
+   "row": 59,
+   "dir": "down",
+   "seconds": 1.567,
+   "energy": 0.4914
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 0,
+   "dir": "down",
+   "seconds": 1.867,
+   "energy": 0.4667
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 0,
+   "dir": "right",
+   "seconds": 1.4,
+   "energy": 0.4389
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 10,
+   "dir": "down",
+   "seconds": 2.083,
+   "energy": 0.6542
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 10,
+   "dir": "right",
+   "seconds": 1.567,
+   "energy": 0.4925
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 20,
+   "dir": "down",
+   "seconds": 2.317,
+   "energy": 0.7277
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 20,
+   "dir": "right",
+   "seconds": 1.75,
+   "energy": 0.5492
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 30,
+   "dir": "down",
+   "seconds": 2.55,
+   "energy": 0.8012
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 30,
+   "dir": "right",
+   "seconds": 1.917,
+   "energy": 0.6017
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 40,
+   "dir": "down",
+   "seconds": 2.783,
+   "energy": 0.8726
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 40,
+   "dir": "right",
+   "seconds": 2.083,
+   "energy": 0.6552
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 50,
+   "dir": "down",
+   "seconds": 3.017,
+   "energy": 0.9461
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 50,
+   "dir": "right",
+   "seconds": 2.267,
+   "energy": 0.7119
+  },
+  {
+   "drillRank": 0,
+   "material": 2,
+   "row": 59,
+   "dir": "down",
+   "seconds": 3.217,
+   "energy": 1.0112
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 0,
+   "dir": "down",
+   "seconds": 0.65,
+   "energy": 0.1617
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 0,
+   "dir": "right",
+   "seconds": 0.483,
+   "energy": 0.1512
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 10,
+   "dir": "down",
+   "seconds": 0.733,
+   "energy": 0.2268
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 10,
+   "dir": "right",
+   "seconds": 0.55,
+   "energy": 0.1722
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 20,
+   "dir": "down",
+   "seconds": 0.817,
+   "energy": 0.2531
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 20,
+   "dir": "right",
+   "seconds": 0.617,
+   "energy": 0.1922
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 30,
+   "dir": "down",
+   "seconds": 0.9,
+   "energy": 0.2793
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 30,
+   "dir": "right",
+   "seconds": 0.667,
+   "energy": 0.209
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 40,
+   "dir": "down",
+   "seconds": 0.967,
+   "energy": 0.3024
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 40,
+   "dir": "right",
+   "seconds": 0.733,
+   "energy": 0.2289
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 50,
+   "dir": "down",
+   "seconds": 1.05,
+   "energy": 0.3287
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 50,
+   "dir": "right",
+   "seconds": 0.8,
+   "energy": 0.2499
+  },
+  {
+   "drillRank": 1,
+   "material": 1,
+   "row": 59,
+   "dir": "down",
+   "seconds": 1.133,
+   "energy": 0.3528
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 0,
+   "dir": "down",
+   "seconds": 1.333,
+   "energy": 0.3323
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 0,
+   "dir": "right",
+   "seconds": 1,
+   "energy": 0.3129
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 10,
+   "dir": "down",
+   "seconds": 1.5,
+   "energy": 0.4683
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 10,
+   "dir": "right",
+   "seconds": 1.117,
+   "energy": 0.3507
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 20,
+   "dir": "down",
+   "seconds": 1.667,
+   "energy": 0.5208
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 20,
+   "dir": "right",
+   "seconds": 1.25,
+   "energy": 0.3917
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 30,
+   "dir": "down",
+   "seconds": 1.833,
+   "energy": 0.5733
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 30,
+   "dir": "right",
+   "seconds": 1.367,
+   "energy": 0.4295
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 40,
+   "dir": "down",
+   "seconds": 1.983,
+   "energy": 0.6227
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 40,
+   "dir": "right",
+   "seconds": 1.5,
+   "energy": 0.4704
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 50,
+   "dir": "down",
+   "seconds": 2.15,
+   "energy": 0.6752
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 50,
+   "dir": "right",
+   "seconds": 1.617,
+   "energy": 0.5082
+  },
+  {
+   "drillRank": 1,
+   "material": 2,
+   "row": 59,
+   "dir": "down",
+   "seconds": 2.3,
+   "energy": 0.7224
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 0,
+   "dir": "down",
+   "seconds": 0.467,
+   "energy": 0.1139
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 0,
+   "dir": "right",
+   "seconds": 0.35,
+   "energy": 0.1082
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 10,
+   "dir": "down",
+   "seconds": 0.517,
+   "energy": 0.1586
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 10,
+   "dir": "right",
+   "seconds": 0.383,
+   "energy": 0.1197
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 20,
+   "dir": "down",
+   "seconds": 0.567,
+   "energy": 0.1764
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 20,
+   "dir": "right",
+   "seconds": 0.433,
+   "energy": 0.1344
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 30,
+   "dir": "down",
+   "seconds": 0.633,
+   "energy": 0.1953
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 30,
+   "dir": "right",
+   "seconds": 0.467,
+   "energy": 0.146
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 40,
+   "dir": "down",
+   "seconds": 0.683,
+   "energy": 0.2111
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 40,
+   "dir": "right",
+   "seconds": 0.517,
+   "energy": 0.1607
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 50,
+   "dir": "down",
+   "seconds": 0.733,
+   "energy": 0.2289
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 50,
+   "dir": "right",
+   "seconds": 0.55,
+   "energy": 0.1722
+  },
+  {
+   "drillRank": 2,
+   "material": 1,
+   "row": 59,
+   "dir": "down",
+   "seconds": 0.783,
+   "energy": 0.2447
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 0,
+   "dir": "down",
+   "seconds": 0.933,
+   "energy": 0.2315
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 0,
+   "dir": "right",
+   "seconds": 0.7,
+   "energy": 0.2195
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 10,
+   "dir": "down",
+   "seconds": 1.05,
+   "energy": 0.3266
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 10,
+   "dir": "right",
+   "seconds": 0.783,
+   "energy": 0.2457
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 20,
+   "dir": "down",
+   "seconds": 1.167,
+   "energy": 0.3633
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 20,
+   "dir": "right",
+   "seconds": 0.883,
+   "energy": 0.2762
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 30,
+   "dir": "down",
+   "seconds": 1.283,
+   "energy": 0.4001
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 30,
+   "dir": "right",
+   "seconds": 0.967,
+   "energy": 0.3024
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 40,
+   "dir": "down",
+   "seconds": 1.4,
+   "energy": 0.4368
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 40,
+   "dir": "right",
+   "seconds": 1.05,
+   "energy": 0.3287
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 50,
+   "dir": "down",
+   "seconds": 1.517,
+   "energy": 0.4736
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 50,
+   "dir": "right",
+   "seconds": 1.133,
+   "energy": 0.356
+  },
+  {
+   "drillRank": 2,
+   "material": 2,
+   "row": 59,
+   "dir": "down",
+   "seconds": 1.617,
+   "energy": 0.5051
+  }
+ ],
+ "flight": [
+  {
+   "engine": 0,
+   "depthRows": 10,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 2,
+   "upEnergy": 0.3775,
+   "fallSeconds": 2.55,
+   "fallEnergy": 0.1517,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 10,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 2.017,
+   "upEnergy": 0.3801,
+   "fallSeconds": 2.55,
+   "fallEnergy": 0.1491,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 10,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 2.017,
+   "upEnergy": 0.3806,
+   "fallSeconds": 2.55,
+   "fallEnergy": 0.1517,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 20,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 3.667,
+   "upEnergy": 0.6925,
+   "fallSeconds": 4.217,
+   "fallEnergy": 0.2567,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 20,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 3.683,
+   "upEnergy": 0.6951,
+   "fallSeconds": 4.217,
+   "fallEnergy": 0.2541,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 20,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 3.683,
+   "upEnergy": 0.6956,
+   "fallSeconds": 4.217,
+   "fallEnergy": 0.2567,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 30,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 5.333,
+   "upEnergy": 1.0075,
+   "fallSeconds": 5.883,
+   "fallEnergy": 0.3617,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 30,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 5.35,
+   "upEnergy": 1.0101,
+   "fallSeconds": 5.883,
+   "fallEnergy": 0.3591,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 30,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 5.35,
+   "upEnergy": 1.0106,
+   "fallSeconds": 5.883,
+   "fallEnergy": 0.3617,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 45,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 7.833,
+   "upEnergy": 1.48,
+   "fallSeconds": 8.383,
+   "fallEnergy": 0.5192,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 45,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 7.85,
+   "upEnergy": 1.4826,
+   "fallSeconds": 8.383,
+   "fallEnergy": 0.5166,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 45,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 7.85,
+   "upEnergy": 1.4831,
+   "fallSeconds": 8.383,
+   "fallEnergy": 0.5192,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 59,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 10.167,
+   "upEnergy": 1.921,
+   "fallSeconds": 10.717,
+   "fallEnergy": 0.6662,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 59,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 10.183,
+   "upEnergy": 1.9236,
+   "fallSeconds": 10.717,
+   "fallEnergy": 0.6636,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 0,
+   "depthRows": 59,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 10.183,
+   "upEnergy": 1.9241,
+   "fallSeconds": 10.717,
+   "fallEnergy": 0.6662,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 10,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 1.783,
+   "upEnergy": 0.3433,
+   "fallSeconds": 2.517,
+   "fallEnergy": 0.1543,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 10,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 1.8,
+   "upEnergy": 0.346,
+   "fallSeconds": 2.517,
+   "fallEnergy": 0.1486,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 10,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 1.8,
+   "upEnergy": 0.3466,
+   "fallSeconds": 2.517,
+   "fallEnergy": 0.1512,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 20,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 3.3,
+   "upEnergy": 0.6343,
+   "fallSeconds": 4.033,
+   "fallEnergy": 0.2415,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 20,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 3.3,
+   "upEnergy": 0.6348,
+   "fallSeconds": 4.017,
+   "fallEnergy": 0.2436,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 20,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 3.3,
+   "upEnergy": 0.6353,
+   "fallSeconds": 4.017,
+   "fallEnergy": 0.2462,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 30,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 4.8,
+   "upEnergy": 0.9231,
+   "fallSeconds": 5.533,
+   "fallEnergy": 0.3365,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 30,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 4.8,
+   "upEnergy": 0.9236,
+   "fallSeconds": 5.517,
+   "fallEnergy": 0.3381,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 30,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 4.8,
+   "upEnergy": 0.9241,
+   "fallSeconds": 5.517,
+   "fallEnergy": 0.3412,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 45,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 7.05,
+   "upEnergy": 1.3568,
+   "fallSeconds": 7.783,
+   "fallEnergy": 0.4783,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 45,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 7.05,
+   "upEnergy": 1.3568,
+   "fallSeconds": 7.767,
+   "fallEnergy": 0.4804,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 45,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 7.05,
+   "upEnergy": 1.3573,
+   "fallSeconds": 7.767,
+   "fallEnergy": 0.484,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 59,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 9.15,
+   "upEnergy": 1.7611,
+   "fallSeconds": 9.883,
+   "fallEnergy": 0.6111,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 59,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 9.15,
+   "upEnergy": 1.7616,
+   "fallSeconds": 9.867,
+   "fallEnergy": 0.6132,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 1,
+   "depthRows": 59,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 9.15,
+   "upEnergy": 1.7616,
+   "fallSeconds": 9.867,
+   "fallEnergy": 0.6174,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 2,
+   "depthRows": 10,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 1.6,
+   "upEnergy": 0.3148,
+   "fallSeconds": 2.517,
+   "fallEnergy": 0.1491,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 2,
+   "depthRows": 10,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 1.6,
+   "upEnergy": 0.3153,
+   "fallSeconds": 2.517,
+   "fallEnergy": 0.1522,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 2,
+   "depthRows": 10,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 1.617,
+   "upEnergy": 0.3181,
+   "fallSeconds": 2.533,
+   "fallEnergy": 0.147,
+   "hullAfterFall": 10
+  },
+  {
+   "engine": 2,
+   "depthRows": 20,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 2.95,
+   "upEnergy": 0.5808,
+   "fallSeconds": 3.95,
+   "fallEnergy": 0.2373,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 20,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 2.95,
+   "upEnergy": 0.5813,
+   "fallSeconds": 3.95,
+   "fallEnergy": 0.2399,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 20,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 2.95,
+   "upEnergy": 0.5813,
+   "fallSeconds": 3.95,
+   "fallEnergy": 0.2431,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 30,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 4.3,
+   "upEnergy": 0.8463,
+   "fallSeconds": 5.317,
+   "fallEnergy": 0.3218,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 30,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 4.3,
+   "upEnergy": 0.8469,
+   "fallSeconds": 5.317,
+   "fallEnergy": 0.3239,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 30,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 4.3,
+   "upEnergy": 0.8474,
+   "fallSeconds": 5.317,
+   "fallEnergy": 0.3265,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 45,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 6.317,
+   "upEnergy": 1.2443,
+   "fallSeconds": 7.333,
+   "fallEnergy": 0.4494,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 45,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 6.317,
+   "upEnergy": 1.2443,
+   "fallSeconds": 7.333,
+   "fallEnergy": 0.4525,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 45,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 6.317,
+   "upEnergy": 1.2448,
+   "fallSeconds": 7.333,
+   "fallEnergy": 0.4546,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 59,
+   "cargoPackages": 0,
+   "cargoMass": 0,
+   "upSeconds": 8.2,
+   "upEnergy": 1.6154,
+   "fallSeconds": 9.217,
+   "fallEnergy": 0.5686,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 59,
+   "cargoPackages": 7,
+   "cargoMass": 7.85,
+   "upSeconds": 8.2,
+   "upEnergy": 1.6154,
+   "fallSeconds": 9.217,
+   "fallEnergy": 0.5717,
+   "hullAfterFall": 9
+  },
+  {
+   "engine": 2,
+   "depthRows": 59,
+   "cargoPackages": 12,
+   "cargoMass": 13.5,
+   "upSeconds": 8.2,
+   "upEnergy": 1.6159,
+   "fallSeconds": 9.217,
+   "fallEnergy": 0.5743,
+   "hullAfterFall": 9
+  }
+ ],
+ "surfaceDrive": [
+  {
+   "engine": 0,
+   "tiles": 15,
+   "seconds": 3.933,
+   "energy": 0.3129,
+   "docked": true
+  },
+  {
+   "engine": 1,
+   "tiles": 15,
+   "seconds": 3.8,
+   "energy": 0.2763,
+   "docked": true
+  },
+  {
+   "engine": 2,
+   "tiles": 15,
+   "seconds": 4.083,
+   "energy": 0.286,
+   "docked": true
+  }
+ ],
+ "tunnelMove": [
+  {
+   "engine": 0,
+   "tiles": 1,
+   "seconds": 1.167,
+   "energy": 0.0882
+  },
+  {
+   "engine": 0,
+   "tiles": 2,
+   "seconds": 1.15,
+   "energy": 0.1628
+  },
+  {
+   "engine": 0,
+   "tiles": 3,
+   "seconds": 1.5,
+   "energy": 0.1575
+  },
+  {
+   "engine": 1,
+   "tiles": 1,
+   "seconds": 0.85,
+   "energy": 0.0838
+  },
+  {
+   "engine": 1,
+   "tiles": 2,
+   "seconds": 1.133,
+   "energy": 0.1405
+  },
+  {
+   "engine": 1,
+   "tiles": 3,
+   "seconds": 1.333,
+   "energy": 0.1704
+  },
+  {
+   "engine": 2,
+   "tiles": 1,
+   "seconds": 1.083,
+   "energy": 0.2045
+  },
+  {
+   "engine": 2,
+   "tiles": 2,
+   "seconds": 1.25,
+   "energy": 0.2285
+  },
+  {
+   "engine": 2,
+   "tiles": 3,
+   "seconds": 1.317,
+   "energy": 0.2081
+  }
+ ],
+ "freshDive": [
+  {
+   "seed": 0,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 1,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 2,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 3,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 4,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 5,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 6,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 7,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 8,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 9,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 10,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 11,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 12,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 13,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 14,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 15,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 16,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 17,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 18,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 19,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 20,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 21,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 22,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 23,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 24,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 25,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 26,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 27,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 28,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 29,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 30,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 31,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 32,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 33,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 34,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 35,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 36,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 37,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 38,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  },
+  {
+   "seed": 39,
+   "seconds": 19.37,
+   "depth": 190,
+   "cargo": 7,
+   "haul": 380,
+   "beacon": true,
+   "mined": 19
+  }
+ ],
+ "safeDive": [
+  {
+   "seed": 0,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 0,
+   "depthReached": 140,
+   "diveSeconds": 14.48,
+   "flySeconds": 2.93,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.736,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 0,
+   "depthReached": 140,
+   "diveSeconds": 14.48,
+   "flySeconds": 2.93,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.736,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 0,
+   "depthReached": 140,
+   "diveSeconds": 14.48,
+   "flySeconds": 2.93,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.736,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 0,
+   "depthReached": 140,
+   "diveSeconds": 14.48,
+   "flySeconds": 2.93,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.736,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 0,
+   "depthReached": 140,
+   "diveSeconds": 14.48,
+   "flySeconds": 2.93,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.736,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 1,
+   "depthReached": 190,
+   "diveSeconds": 13.93,
+   "flySeconds": 4.03,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.664,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 1,
+   "depthReached": 190,
+   "diveSeconds": 13.93,
+   "flySeconds": 4.03,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.664,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 1,
+   "depthReached": 190,
+   "diveSeconds": 13.93,
+   "flySeconds": 4.03,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.664,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 1,
+   "depthReached": 190,
+   "diveSeconds": 13.93,
+   "flySeconds": 4.03,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.664,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 1,
+   "depthReached": 190,
+   "diveSeconds": 13.93,
+   "flySeconds": 4.03,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.664,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 2,
+   "depthReached": 250,
+   "diveSeconds": 13.28,
+   "flySeconds": 4.88,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.727,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 2,
+   "depthReached": 250,
+   "diveSeconds": 13.28,
+   "flySeconds": 4.88,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.727,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 2,
+   "depthReached": 250,
+   "diveSeconds": 13.28,
+   "flySeconds": 4.88,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.727,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 2,
+   "depthReached": 250,
+   "diveSeconds": 13.28,
+   "flySeconds": 4.88,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.727,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 0,
+   "startEnergy": 6,
+   "drillRank": 2,
+   "depthReached": 250,
+   "diveSeconds": 13.28,
+   "flySeconds": 4.88,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.727,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 0,
+   "depthReached": 250,
+   "diveSeconds": 26.08,
+   "flySeconds": 5.58,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.501,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 0,
+   "depthReached": 250,
+   "diveSeconds": 26.08,
+   "flySeconds": 5.58,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.501,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 0,
+   "depthReached": 250,
+   "diveSeconds": 26.08,
+   "flySeconds": 5.58,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.501,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 0,
+   "depthReached": 250,
+   "diveSeconds": 26.08,
+   "flySeconds": 5.58,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.501,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 0,
+   "depthReached": 250,
+   "diveSeconds": 26.08,
+   "flySeconds": 5.58,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.501,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 1,
+   "depthReached": 320,
+   "diveSeconds": 25.32,
+   "flySeconds": 5.97,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.769,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 1,
+   "depthReached": 320,
+   "diveSeconds": 25.32,
+   "flySeconds": 5.97,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.769,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 1,
+   "depthReached": 320,
+   "diveSeconds": 25.32,
+   "flySeconds": 5.97,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.769,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 1,
+   "depthReached": 320,
+   "diveSeconds": 25.32,
+   "flySeconds": 5.97,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.769,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 1,
+   "depthReached": 320,
+   "diveSeconds": 25.32,
+   "flySeconds": 5.97,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.769,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 2,
+   "depthReached": 420,
+   "diveSeconds": 24.27,
+   "flySeconds": 7.68,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.777,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 2,
+   "depthReached": 420,
+   "diveSeconds": 24.27,
+   "flySeconds": 7.68,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.777,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 2,
+   "depthReached": 420,
+   "diveSeconds": 24.27,
+   "flySeconds": 7.68,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.777,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 2,
+   "depthReached": 420,
+   "diveSeconds": 24.27,
+   "flySeconds": 7.68,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.777,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 0,
+   "startEnergy": 10,
+   "drillRank": 2,
+   "depthReached": 420,
+   "diveSeconds": 24.27,
+   "flySeconds": 7.68,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.777,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 0,
+   "depthReached": 390,
+   "diveSeconds": 43.7,
+   "flySeconds": 8.08,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.489,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 0,
+   "depthReached": 390,
+   "diveSeconds": 43.7,
+   "flySeconds": 8.08,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.489,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 0,
+   "depthReached": 390,
+   "diveSeconds": 43.7,
+   "flySeconds": 8.08,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.489,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 0,
+   "depthReached": 390,
+   "diveSeconds": 43.7,
+   "flySeconds": 8.08,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.489,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 0,
+   "depthReached": 390,
+   "diveSeconds": 43.7,
+   "flySeconds": 8.08,
+   "driveSeconds": 4.02,
+   "energyLeft": 0.489,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 1,
+   "depthReached": 500,
+   "diveSeconds": 42.55,
+   "flySeconds": 9.35,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.689,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 1,
+   "depthReached": 500,
+   "diveSeconds": 42.55,
+   "flySeconds": 9.35,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.689,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 1,
+   "depthReached": 500,
+   "diveSeconds": 42.55,
+   "flySeconds": 9.35,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.689,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 1,
+   "depthReached": 500,
+   "diveSeconds": 42.55,
+   "flySeconds": 9.35,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.689,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 1,
+   "depthReached": 500,
+   "diveSeconds": 42.55,
+   "flySeconds": 9.35,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.689,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 2.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 2.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 2.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 2.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 1,
+   "startEnergy": 16,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 2.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 0,
+   "depthReached": 570,
+   "diveSeconds": 70.45,
+   "flySeconds": 10.42,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.742,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 0,
+   "depthReached": 570,
+   "diveSeconds": 70.45,
+   "flySeconds": 10.42,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.742,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 0,
+   "depthReached": 570,
+   "diveSeconds": 70.45,
+   "flySeconds": 10.42,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.742,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 0,
+   "depthReached": 570,
+   "diveSeconds": 70.45,
+   "flySeconds": 10.42,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.742,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 0,
+   "depthReached": 570,
+   "diveSeconds": 70.45,
+   "flySeconds": 10.42,
+   "driveSeconds": 4.05,
+   "energyLeft": 0.742,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 1,
+   "depthReached": 600,
+   "diveSeconds": 53.05,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 6.329,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 1,
+   "depthReached": 600,
+   "diveSeconds": 53.05,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 6.329,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 1,
+   "depthReached": 600,
+   "diveSeconds": 53.05,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 6.329,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 1,
+   "depthReached": 600,
+   "diveSeconds": 53.05,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 6.329,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 1,
+   "depthReached": 600,
+   "diveSeconds": 53.05,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 6.329,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 0,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 11.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 1,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 11.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 2,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 11.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 3,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 11.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  },
+  {
+   "seed": 4,
+   "energyRank": 2,
+   "startEnergy": 25,
+   "drillRank": 2,
+   "depthReached": 600,
+   "diveSeconds": 37.22,
+   "flySeconds": 10.18,
+   "driveSeconds": 4.02,
+   "energyLeft": 11.304,
+   "docked": true,
+   "haul": 380,
+   "cargo": 7
+  }
+ ],
+ "opening": [
+  {
+   "seed": 0,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 1,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 2,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 3,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 4,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 5,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 6,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 7,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 8,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 9,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 10,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 11,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 12,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 13,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 14,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 15,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 16,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 17,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 18,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  },
+  {
+   "seed": 19,
+   "log": [
+    {
+     "trip": 1,
+     "t": 15.4,
+     "haul": 380,
+     "credits": 192.5,
+     "m1": true,
+     "energy": 10
+    },
+    {
+     "trip": 2,
+     "t": 31.5,
+     "haul": 480,
+     "credits": 669.7,
+     "energy": 10
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,147 @@
+{
+ "desktopFacts": {
+  "dpr": 1,
+  "canvasBacking": [
+   1440,
+   900
+  ],
+  "canvasCss": [
+   1440,
+   900
+  ],
+  "glContexts": [
+   {
+    "type": "webgl",
+    "w": 1,
+    "h": 1,
+    "attrs": "{}"
+   },
+   {
+    "type": "webgl",
+    "w": 1440,
+    "h": 900,
+    "attrs": "{\"alpha\":false,\"desynchronized\":false,\"depth\":true,\"antialias\":true,\"premultipliedAlpha\":true,\"stencil\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"default\",\"preserveDrawingBuffer\":false,\"willReadFrequently\":false}"
+   }
+  ],
+  "twoDContexts": 20,
+  "dataset": {
+   "rigScreenX": "720.00",
+   "worldTexture": "campaign-w01"
+  }
+ },
+ "desktopSurfaceIdle": {
+  "frames": 16,
+  "ms": {
+   "median": 3.6,
+   "p95": 6.4,
+   "max": 6.4,
+   "mean": 3.66
+  },
+  "draws": {
+   "median": 3,
+   "p95": 3,
+   "max": 3,
+   "mean": 3
+  },
+  "verts": {
+   "median": 5130,
+   "p95": 5130,
+   "max": 5130,
+   "mean": 5130
+  },
+  "tex": {
+   "median": 6,
+   "p95": 6,
+   "max": 6,
+   "mean": 6
+  },
+  "texBytes": {
+   "median": 84000,
+   "p95": 84000,
+   "max": 84000,
+   "mean": 84000
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 18,
+   "p95": 18,
+   "max": 18,
+   "mean": 18
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  }
+ },
+ "desktopDrilling": {
+  "frames": 28,
+  "ms": {
+   "median": 3.9,
+   "p95": 6,
+   "max": 6.4,
+   "mean": 4.12
+  },
+  "draws": {
+   "median": 3,
+   "p95": 3,
+   "max": 3,
+   "mean": 3
+  },
+  "verts": {
+   "median": 7704,
+   "p95": 7884,
+   "max": 7884,
+   "mean": 7647.64
+  },
+  "tex": {
+   "median": 9,
+   "p95": 9,
+   "max": 13,
+   "mean": 7.75
+  },
+  "texBytes": {
+   "median": 108528,
+   "p95": 108528,
+   "max": 119052,
+   "mean": 97515.86
+  },
+  "sub": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "programs": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  },
+  "binds": {
+   "median": 26,
+   "p95": 26,
+   "max": 33,
+   "mean": 22.54
+  },
+  "blend": {
+   "median": 0,
+   "p95": 0,
+   "max": 0,
+   "mean": 0
+  }
+ },
+ "desktopErrors": []
+}

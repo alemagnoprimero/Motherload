@@ -1,0 +1,32 @@
+{
+ "errors": [],
+ "warn": {
+  "energy": "8.0 / 10",
+  "hull": "10 / 10",
+  "cargo": "2 / 7",
+  "depth": "290 m",
+  "danger": "",
+  "message": "Cold mist forming. Leave the pocket before it freezes the rig.",
+  "messageVisible": true,
+  "energyCritical": false,
+  "extraction": "Cold mist · move clear",
+  "disabled": "false",
+  "next": "Excavate the marked Helion sample pods",
+  "signal": "↗up and rightHelion thermal sample 1185 mTracking"
+ },
+ "warnLow": {
+  "energy": "2.2 / 10",
+  "hull": "10 / 10",
+  "cargo": "2 / 7",
+  "depth": "290 m",
+  "danger": "Low energy · return to the lander",
+  "message": "Cold mist forming. Leave the pocket before it freezes the rig.",
+  "messageVisible": false,
+  "energyCritical": true,
+  "extraction": "",
+  "disabled": "false",
+  "next": "Excavate the marked Helion sample pods",
+  "signal": "↗up and rightHelion thermal sample 1185 mTracking"
+ },
+ "coldWarningFlag": "true"
+}

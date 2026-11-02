@@ -1,0 +1,51 @@
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   1.00s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   1.00s  signal: "↓downWreck survey beacon89 mTracking" (ArrowDown)
+   2.00s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (ArrowDown)
+   2.00s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   2.00s  signal: "↓downWreck survey beacon79 mSignal nearby" (ArrowDown)
+   2.75s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   2.75s  signal: "↓downWreck survey beacon69 mSignal nearby" (ArrowDown)
+   3.75s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   3.75s  signal: "↓downWreck survey beacon59 mSignal nearby" (ArrowDown)
+   4.75s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   4.75s  signal: "↓downWreck survey beacon49 mSignal nearby" (ArrowDown)
+   5.75s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   5.75s  signal: "↓downWreck survey beacon39 mSignal nearby" (ArrowDown)
+   6.00s  message: "" (ArrowDown)
+   6.75s  message: "Wreck survey beacon · Very close. Approach the wreck beacon to survey." (ArrowDown)
+   6.75s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   6.75s  signal: "↓downWreck survey beacon29 mVery close" (ArrowDown)
+   7.75s  signal: "↓downWreck survey beacon19 mVery close" (ArrowDown)
+   8.75s  message: "Beacon surveyed · Return to the lander" (ArrowDown)
+   8.75s  tasks: "✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   8.75s  next: "Return to lander → Bank ore" (ArrowDown)
+   8.75s  signal: "↖up and leftSalvage lander175 mTracking" (ArrowDown)
+   9.75s  signal: "↖up and leftSalvage lander180 mTracking" (ArrowDown)
+  10.75s  signal: "↖up and leftSalvage lander186 mTracking" (ArrowDown)
+  11.25s  SHOT A2-warn-portrait-011.3s-energy-25pct.png
+  11.25s  25%: danger= message=Beacon surveyed · Return to the lander depth=110 m
+  11.50s  danger: "Low energy · return to the lander" (ArrowDown)
+  11.75s  signal: "↖up and leftSalvage lander192 mTracking" (ArrowDown)
+  12.75s  message: "" (ArrowDown)
+  12.75s  signal: "↖up and leftSalvage lander198 mTracking" (ArrowDown)
+  13.75s  signal: "↖up and leftSalvage lander205 mTracking" (ArrowDown)
+  14.50s  SHOT A2-warn-portrait-014.5s-energy-15pct.png
+  14.50s  15%: danger=Low energy · return to the lander message= depth=140 m
+  14.75s  danger: "Energy critical · return to the lander" (ArrowDown)
+  14.75s  signal: "↖up and leftSalvage lander212 mTracking" (ArrowDown)
+  16.00s  signal: "↖up and leftSalvage lander219 mTracking" (ArrowDown)
+  16.75s  SHOT A2-warn-portrait-016.8s-energy-8pct.png
+  16.75s  8%: danger=Energy critical · return to the lander message= depth=160 m
+  17.00s  signal: "↖up and leftSalvage lander227 mTracking" (ArrowDown)
+  18.25s  signal: "↖up and leftSalvage lander234 mTracking" (ArrowDown)
+  19.25s  signal: "↖up and leftSalvage lander242 mTracking" (ArrowDown)
+  19.50s  danger: "Energy depleted · request recovery" (ArrowDown)
+  19.50s  disabled: true (ArrowDown)
+  19.50s  danger element geometry {"rect":[75,692,243,33],"fontSize":"13px","color":"rgb(255, 213, 175)","bg":"rgba(20, 33, 39, 0.875)"}
+
+MARKS {}
+ERRORS []

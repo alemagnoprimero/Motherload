@@ -1,0 +1,240 @@
+{
+ "W01": {
+  "perWorld": {
+   "deposits": 400,
+   "ordinaryValue": 19000,
+   "relicsMean": 0.76,
+   "relicValueMean": 570,
+   "noRelicPct": 38
+  },
+  "table": [
+   {
+    "band": "0-100 m",
+    "densityPct": 20,
+    "meanValue": 49.1,
+    "valuePerCell": 9.82,
+    "rockPct": 10.1,
+    "openPct": 1.7,
+    "mix": {
+     "Ironium": 58.8,
+     "Bronzium": 27.6,
+     "Silverium": 12.7,
+     "Goldium": 0.9
+    }
+   },
+   {
+    "band": "100-200 m",
+    "densityPct": 16.58,
+    "meanValue": 46.9,
+    "valuePerCell": 7.77,
+    "rockPct": 8.3,
+    "openPct": 12.8,
+    "mix": {
+     "Ironium": 60.4,
+     "Bronzium": 30.8,
+     "Silverium": 7.8,
+     "Goldium": 1
+    }
+   },
+   {
+    "band": "200-300 m",
+    "densityPct": 17.22,
+    "meanValue": 47.1,
+    "valuePerCell": 8.12,
+    "rockPct": 8.8,
+    "openPct": 11.3,
+    "mix": {
+     "Ironium": 60.3,
+     "Silverium": 8.2,
+     "Bronzium": 30.5,
+     "Goldium": 1
+    }
+   },
+   {
+    "band": "300-400 m",
+    "densityPct": 16.2,
+    "meanValue": 46.7,
+    "valuePerCell": 7.56,
+    "rockPct": 8.7,
+    "openPct": 12.9,
+    "mix": {
+     "Ironium": 61.5,
+     "Bronzium": 29.5,
+     "Silverium": 8,
+     "Goldium": 1
+    }
+   },
+   {
+    "band": "400-500 m",
+    "densityPct": 15.38,
+    "meanValue": 47.8,
+    "valuePerCell": 7.35,
+    "rockPct": 8.6,
+    "openPct": 11.5,
+    "mix": {
+     "Bronzium": 31.5,
+     "Ironium": 59.4,
+     "Silverium": 7.7,
+     "Goldium": 1.3
+    }
+   },
+   {
+    "band": "500-600 m",
+    "densityPct": 14.62,
+    "meanValue": 47,
+    "valuePerCell": 6.87,
+    "rockPct": 9.1,
+    "openPct": 7.8,
+    "mix": {
+     "Bronzium": 30.8,
+     "Ironium": 59.7,
+     "Goldium": 0.8,
+     "Silverium": 8.7
+    }
+   }
+  ]
+ },
+ "W02": {
+  "perWorld": {
+   "deposits": 600,
+   "ordinaryValue": 63000,
+   "relicsMean": 0.7,
+   "relicValueMean": 2100,
+   "noRelicPct": 40
+  },
+  "table": [
+   {
+    "band": "0-100 m",
+    "densityPct": 15.71,
+    "meanValue": 78.9,
+    "valuePerCell": 12.4,
+    "rockPct": 10.4,
+    "openPct": 0,
+    "mix": {
+     "Frost iron": 58.7,
+     "Blue nickel": 41.3
+    }
+   },
+   {
+    "band": "100-200 m",
+    "densityPct": 11.66,
+    "meanValue": 71.7,
+    "valuePerCell": 8.36,
+    "rockPct": 9.6,
+    "openPct": 8.8,
+    "mix": {
+     "Blue nickel": 31,
+     "Frost iron": 69
+    }
+   },
+   {
+    "band": "200-300 m",
+    "densityPct": 11.85,
+    "meanValue": 88.3,
+    "valuePerCell": 10.47,
+    "rockPct": 9.5,
+    "openPct": 8.3,
+    "mix": {
+     "Cryosilicate": 7.1,
+     "Blue nickel": 29.2,
+     "Frost iron": 63.6
+    }
+   },
+   {
+    "band": "300-400 m",
+    "densityPct": 11.95,
+    "meanValue": 95,
+    "valuePerCell": 11.36,
+    "rockPct": 9.3,
+    "openPct": 9.8,
+    "mix": {
+     "Cryosilicate": 9.7,
+     "Blue nickel": 29.6,
+     "Frost iron": 60.7
+    }
+   },
+   {
+    "band": "400-500 m",
+    "densityPct": 13.51,
+    "meanValue": 119.7,
+    "valuePerCell": 16.18,
+    "rockPct": 9.2,
+    "openPct": 10,
+    "mix": {
+     "Cryosilicate": 20.1,
+     "Blue nickel": 27.7,
+     "Frost iron": 52.2
+    }
+   },
+   {
+    "band": "500-600 m",
+    "densityPct": 11.96,
+    "meanValue": 100.8,
+    "valuePerCell": 12.06,
+    "rockPct": 9.5,
+    "openPct": 6.7,
+    "mix": {
+     "Cryosilicate": 12.3,
+     "Blue nickel": 28.6,
+     "Frost iron": 59.1
+    }
+   },
+   {
+    "band": "600-700 m",
+    "densityPct": 12.07,
+    "meanValue": 119.3,
+    "valuePerCell": 14.39,
+    "rockPct": 9.1,
+    "openPct": 10.9,
+    "mix": {
+     "Blue nickel": 28.5,
+     "Frost iron": 58,
+     "Helion ice": 1.7,
+     "Cryosilicate": 11.8
+    }
+   },
+   {
+    "band": "700-800 m",
+    "densityPct": 11.96,
+    "meanValue": 135.9,
+    "valuePerCell": 16.25,
+    "rockPct": 9.3,
+    "openPct": 8.4,
+    "mix": {
+     "Cryosilicate": 11.5,
+     "Blue nickel": 27.7,
+     "Frost iron": 57.5,
+     "Helion ice": 3.3
+    }
+   },
+   {
+    "band": "800-900 m",
+    "densityPct": 11.52,
+    "meanValue": 125.9,
+    "valuePerCell": 14.51,
+    "rockPct": 9.4,
+    "openPct": 8.3,
+    "mix": {
+     "Helion ice": 3,
+     "Blue nickel": 27.7,
+     "Frost iron": 60.7,
+     "Cryosilicate": 8.6
+    }
+   },
+   {
+    "band": "900-1000 m",
+    "densityPct": 12.8,
+    "meanValue": 119.3,
+    "valuePerCell": 15.28,
+    "rockPct": 10.2,
+    "openPct": 4.6,
+    "mix": {
+     "Helion ice": 2.3,
+     "Cryosilicate": 9.8,
+     "Blue nickel": 25.7,
+     "Frost iron": 62.2
+    }
+   }
+  ]
+ }
+}

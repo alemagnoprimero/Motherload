@@ -1,0 +1,173 @@
+{
+ "enterRepeat": {
+  "opened": true,
+  "focusAfterOpen": "button 'Undock'",
+  "stillOpenAfterRepeat": false
+ },
+ "error_C": "import failed; save status: An unextracted package is missing its terrain. / locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#campaign-confirm') to be visible\u001b[22m",
+ "nav_desktop": {
+  "metrics": {
+   "box": {
+    "x": 360,
+    "y": 69,
+    "w": 720,
+    "h": 762
+   },
+   "scroller": null,
+   "words": 132,
+   "leaves": 21,
+   "sizeHist": {
+    "12": 12,
+    "13": 4,
+    "16": 4,
+    "23": 1
+   },
+   "wordsBySize": {
+    "12": 72,
+    "13": 51,
+    "16": 8,
+    "23": 1
+   },
+   "wordsAtOrBelow12": 72,
+   "families": [
+    "Arial, ui-sans-serif, system-ui, sans-serif"
+   ],
+   "colours": 6,
+   "focusables": 2,
+   "focusOrder": [
+    "Return to mine",
+    "Travel to Ice comet"
+   ],
+   "disabledButtons": 0,
+   "lowOpacityLeaves": []
+  },
+  "travelButton": {
+   "x": 381,
+   "y": 420.21875,
+   "width": 60,
+   "height": 80
+  },
+  "travelLines": null,
+  "symbols": [
+   "W01:polygon(20% 3%, 75% 0px, 100% |linear-gradient(135deg, rgb(181, 185, 16",
+   "W02:polygon(20% 3%, 75% 0px, 100% |radial-gradient(circle at 32% 28%, rgb(1",
+   "W03:none|repeating-linear-gradient(115deg, rgba(0",
+   "W04:polygon(20% 3%, 75% 0px, 100% |linear-gradient(135deg, rgb(181, 185, 16"
+  ]
+ },
+ "nav_phone": {
+  "metrics": {
+   "box": {
+    "x": 19,
+    "y": 12,
+    "w": 355,
+    "h": 827
+   },
+   "scroller": {
+    "id": "campaign-map",
+    "clientHeight": 825,
+    "scrollHeight": 936,
+    "screens": 1.13
+   },
+   "words": 132,
+   "leaves": 21,
+   "sizeHist": {
+    "12": 12,
+    "13": 4,
+    "16": 4,
+    "21": 1
+   },
+   "wordsBySize": {
+    "12": 72,
+    "13": 51,
+    "16": 8,
+    "21": 1
+   },
+   "wordsAtOrBelow12": 72,
+   "families": [
+    "Arial, ui-sans-serif, system-ui, sans-serif"
+   ],
+   "colours": 6,
+   "focusables": 2,
+   "focusOrder": [
+    "Return to mine",
+    "Travel to Ice comet"
+   ],
+   "disabledButtons": 0,
+   "lowOpacityLeaves": []
+  },
+  "travelButton": {
+   "x": 40,
+   "y": 410.5625,
+   "width": 60,
+   "height": 80
+  },
+  "travelLines": null,
+  "symbols": [
+   "W01:polygon(20% 3%, 75% 0px, 100% |linear-gradient(135deg, rgb(181, 185, 16",
+   "W02:polygon(20% 3%, 75% 0px, 100% |radial-gradient(circle at 32% 28%, rgb(1",
+   "W03:none|repeating-linear-gradient(115deg, rgba(0",
+   "W04:polygon(20% 3%, 75% 0px, 100% |linear-gradient(135deg, rgb(181, 185, 16"
+  ]
+ },
+ "largeTextHardware": {
+  "box": {
+   "x": 802,
+   "y": 45,
+   "w": 620,
+   "h": 810
+  },
+  "scroller": {
+   "id": "campaign-dock-content",
+   "clientHeight": 631,
+   "scrollHeight": 811,
+   "screens": 1.29
+  },
+  "words": 146,
+  "leaves": 41,
+  "sizeHist": {
+   "12": 10,
+   "13": 5,
+   "14": 6,
+   "15": 18,
+   "17": 1,
+   "21": 1
+  },
+  "wordsBySize": {
+   "12": 45,
+   "13": 20,
+   "14": 15,
+   "15": 62,
+   "17": 2,
+   "21": 2
+  },
+  "wordsAtOrBelow12": 45,
+  "families": [
+   "Arial, ui-sans-serif, system-ui, sans-serif"
+  ],
+  "colours": 13,
+  "focusables": 11,
+  "focusOrder": [
+   "Undock",
+   "Service",
+   "Hardware",
+   "Attachments",
+   "Lander",
+   "Cargo",
+   "Purchase · 750 CR",
+   "Purchase · 650 CR",
+   "Purchase · 700 CR",
+   "Purchase · 450 CR",
+   "Purchase · 500 CR"
+  ],
+  "disabledButtons": 0,
+  "lowOpacityLeaves": []
+ },
+ "rankNaming": {
+  "rank0": "DRILL · RANK 1 Steel auger assembly 2 speed → 2.8 speed Cut faster and use less energy during each excavation. Reserve after purchase/basic service: 99,250 CR. Purchase · 750 CR",
+  "msg1": "Salvaged drill installed.",
+  "rank1": "DRILL · RANK 2 Steel auger assembly 2.8 speed → 4 speed Cut faster and use less energy during each excavation. Reserve after purchase/basic service: 97,050 CR. Purchase · 2,200 CR",
+  "msg2": "Salvaged drill installed.",
+  "rank2": "DRILL · OWNED Steel auger assembly 4 speed · rank 2 installed Cut faster and use less energy during each excavation. Further hardware ranks open on later destinations. Installed"
+ }
+}

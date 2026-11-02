@@ -1,0 +1,255 @@
+{
+ "summary": {
+  "scene": "small-first",
+  "leaves": 22,
+  "median_cr50": 9.95,
+  "min_cr90": 3.75,
+  "below45_at_p90": 2,
+  "below3_at_p90": 0,
+  "below45_at_max": 4
+ },
+ "rows": [
+  {
+   "text": "6.0 / 10",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0126,
+   "bgL90": 0.0126,
+   "cr50": 15.09,
+   "cr90": 15.09,
+   "crMax": 14.94,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "10 / 10",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0141,
+   "bgL90": 0.0149,
+   "cr50": 14.73,
+   "cr90": 14.56,
+   "crMax": 14.26,
+   "bgStd": 0.0007
+  },
+  {
+   "text": "0 m",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0126,
+   "bgL90": 0.0133,
+   "cr50": 15.09,
+   "cr90": 14.92,
+   "crMax": 14.75,
+   "bgStd": 0.0004
+  },
+  {
+   "text": "0 / 7",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0126,
+   "bgL90": 0.0132,
+   "cr50": 15.09,
+   "cr90": 14.94,
+   "crMax": 14.92,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "HAUL",
+   "fontSize": 12,
+   "color": "rgb(184, 202, 194)",
+   "bgL50": 0.0154,
+   "bgL90": 0.0163,
+   "cr50": 9.37,
+   "cr90": 9.25,
+   "crMax": 9.03,
+   "bgStd": 0.0008
+  },
+  {
+   "text": "0 CR",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.0133,
+   "bgL90": 0.0146,
+   "cr50": 14.92,
+   "cr90": 14.61,
+   "crMax": 14.43,
+   "bgStd": 0.0006
+  },
+  {
+   "text": "CR",
+   "fontSize": 12,
+   "color": "rgb(234, 194, 140)",
+   "bgL50": 0.0133,
+   "bgL90": 0.0139,
+   "cr50": 9.95,
+   "cr90": 9.85,
+   "crMax": 9.84,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "20",
+   "fontSize": 12,
+   "color": "rgb(237, 193, 138)",
+   "bgL50": 0.0133,
+   "bgL90": 0.0139,
+   "cr50": 9.95,
+   "cr90": 9.85,
+   "crMax": 9.84,
+   "bgStd": 0.0003
+  },
+  {
+   "text": "Survey the wreck",
+   "fontSize": 12,
+   "color": "rgb(237, 245, 237)",
+   "bgL50": 0.014,
+   "bgL90": 0.0146,
+   "cr50": 14.75,
+   "cr90": 14.61,
+   "crMax": 14.43,
+   "bgStd": 0.0004
+  },
+  {
+   "text": "\u25cb",
+   "fontSize": 12,
+   "color": "rgb(166, 188, 177)",
+   "bgL50": 0.0146,
+   "bgL90": 0.0154,
+   "cr50": 8.08,
+   "cr90": 7.99,
+   "crMax": 7.99,
+   "bgStd": 0.0004
+  },
+  {
+   "text": "Survey beacon \u00b7 100 m",
+   "fontSize": 12,
+   "color": "rgb(220, 231, 219)",
+   "bgL50": 0.0154,
+   "bgL90": 0.0188,
+   "cr50": 12.61,
+   "cr90": 11.98,
+   "crMax": 11.56,
+   "bgStd": 0.0017
+  },
+  {
+   "text": "\u25cb",
+   "fontSize": 12,
+   "color": "rgb(166, 188, 177)",
+   "bgL50": 0.0222,
+   "bgL90": 0.0232,
+   "cr50": 7.24,
+   "cr90": 7.14,
+   "crMax": 7.12,
+   "bgStd": 0.0007
+  },
+  {
+   "text": "Bank ore \u00b7 0/3",
+   "fontSize": 12,
+   "color": "rgb(220, 231, 219)",
+   "bgL50": 0.0242,
+   "bgL90": 0.0253,
+   "cr50": 11.11,
+   "cr90": 10.95,
+   "crMax": 10.79,
+   "bgStd": 0.0011
+  },
+  {
+   "text": "\u25cb",
+   "fontSize": 12,
+   "color": "rgb(166, 188, 177)",
+   "bgL50": 0.0154,
+   "bgL90": 0.0227,
+   "cr50": 7.99,
+   "cr90": 7.19,
+   "crMax": 3.99,
+   "bgStd": 0.0138
+  },
+  {
+   "text": "Construction \u00b7 20/200 CR",
+   "fontSize": 12,
+   "color": "rgb(220, 231, 219)",
+   "bgL50": 0.0195,
+   "bgL90": 0.0482,
+   "cr50": 11.87,
+   "cr90": 8.4,
+   "crMax": 6.25,
+   "bgStd": 0.0182
+  },
+  {
+   "text": "\u2193",
+   "fontSize": 16,
+   "color": "rgb(237, 193, 138)",
+   "bgL50": 0.0808,
+   "bgL90": 0.0808,
+   "cr50": 4.82,
+   "cr90": 4.82,
+   "crMax": 4.82,
+   "bgStd": 0.0049
+  },
+  {
+   "text": "Wreck survey beacon",
+   "fontSize": 12,
+   "color": "rgb(197, 216, 202)",
+   "bgL50": 0.0396,
+   "bgL90": 0.0808,
+   "cr50": 7.84,
+   "cr90": 5.37,
+   "crMax": 4.75,
+   "bgStd": 0.0194
+  },
+  {
+   "text": "99 m",
+   "fontSize": 12,
+   "color": "rgb(175, 195, 183)",
+   "bgL50": 0.1003,
+   "bgL90": 0.1009,
+   "cr50": 3.76,
+   "cr90": 3.75,
+   "crMax": 3.7,
+   "bgStd": 0.0206
+  },
+  {
+   "text": "Tracking",
+   "fontSize": 12,
+   "color": "rgb(161, 184, 170)",
+   "bgL50": 0.0648,
+   "bgL90": 0.0681,
+   "cr50": 4.33,
+   "cr90": 4.21,
+   "crMax": 3.35,
+   "bgStd": 0.0166
+  },
+  {
+   "text": "Approach the wreck beacon to survey",
+   "fontSize": 12,
+   "color": "rgb(240, 208, 153)",
+   "bgL50": 0.0648,
+   "bgL90": 0.0939,
+   "cr50": 6.18,
+   "cr90": 4.93,
+   "crMax": 3.49,
+   "bgStd": 0.0223
+  },
+  {
+   "text": "DRILL",
+   "fontSize": 12,
+   "color": "rgb(159, 181, 171)",
+   "bgL50": 0.0149,
+   "bgL90": 0.0157,
+   "cr50": 7.45,
+   "cr90": 7.36,
+   "crMax": 7.27,
+   "bgStd": 0.0004
+  },
+  {
+   "text": "Salvaged auger",
+   "fontSize": 12,
+   "color": "rgb(230, 236, 221)",
+   "bgL50": 0.0128,
+   "bgL90": 0.0142,
+   "cr50": 13.87,
+   "cr90": 13.56,
+   "crMax": 13.4,
+   "bgStd": 0.0008
+  }
+ ]
+}

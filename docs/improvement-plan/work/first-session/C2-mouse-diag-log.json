@@ -1,0 +1,633 @@
+{
+ "name": "C2-mouse-diag",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "marks": {},
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "log": [
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 0.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"-0.25\",\"sx\":720,\"sy\":426} E=6.0 / 10"
+  },
+  {
+   "t": 1,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"0.03\",\"sx\":720,\"sy\":429} E=5.9 / 10"
+  },
+  {
+   "t": 1.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"0.31\",\"sx\":720,\"sy\":429} E=5.9 / 10"
+  },
+  {
+   "t": 1.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"0.58\",\"sx\":720,\"sy\":429} E=5.8 / 10"
+  },
+  {
+   "t": 1.75,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 1.75,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (below)"
+  },
+  {
+   "t": 1.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"0.86\",\"sx\":720,\"sy\":429} E=5.7 / 10"
+  },
+  {
+   "t": 2,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"1.13\",\"sx\":720,\"sy\":429} E=5.7 / 10"
+  },
+  {
+   "t": 2.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"1.41\",\"sx\":720,\"sy\":429} E=5.6 / 10"
+  },
+  {
+   "t": 2.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"1.68\",\"sx\":720,\"sy\":429} E=5.5 / 10"
+  },
+  {
+   "t": 2.75,
+   "text": "message: \"Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey.\" (below)"
+  },
+  {
+   "t": 2.75,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 2.75,
+   "text": "signal: \"↓downWreck survey beacon79 mSignal nearby\" (below)"
+  },
+  {
+   "t": 2.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"1.95\",\"sx\":720,\"sy\":429} E=5.4 / 10"
+  },
+  {
+   "t": 3,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"2.22\",\"sx\":720,\"sy\":429} E=5.3 / 10"
+  },
+  {
+   "t": 3.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"2.49\",\"sx\":720,\"sy\":429} E=5.2 / 10"
+  },
+  {
+   "t": 3.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 3.5,
+   "text": "signal: \"↓downWreck survey beacon69 mSignal nearby\" (below)"
+  },
+  {
+   "t": 3.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"2.76\",\"sx\":720,\"sy\":429} E=5.2 / 10"
+  },
+  {
+   "t": 3.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"3.02\",\"sx\":720,\"sy\":429} E=5.1 / 10"
+  },
+  {
+   "t": 4,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"3.29\",\"sx\":720,\"sy\":429} E=5.0 / 10"
+  },
+  {
+   "t": 4.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"3.56\",\"sx\":720,\"sy\":429} E=4.9 / 10"
+  },
+  {
+   "t": 4.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 4.5,
+   "text": "signal: \"↓downWreck survey beacon59 mSignal nearby\" (below)"
+  },
+  {
+   "t": 4.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"3.82\",\"sx\":720,\"sy\":429} E=4.9 / 10"
+  },
+  {
+   "t": 4.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"4.08\",\"sx\":720,\"sy\":429} E=4.8 / 10"
+  },
+  {
+   "t": 5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"4.35\",\"sx\":720,\"sy\":429} E=4.7 / 10"
+  },
+  {
+   "t": 5.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"4.61\",\"sx\":720,\"sy\":429} E=4.6 / 10"
+  },
+  {
+   "t": 5.5,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 5.5,
+   "text": "signal: \"↓downWreck survey beacon49 mSignal nearby\" (below)"
+  },
+  {
+   "t": 5.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"4.87\",\"sx\":720,\"sy\":429} E=4.6 / 10"
+  },
+  {
+   "t": 5.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"5.13\",\"sx\":720,\"sy\":429} E=4.5 / 10"
+  },
+  {
+   "t": 6,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"5.39\",\"sx\":720,\"sy\":429} E=4.4 / 10"
+  },
+  {
+   "t": 6.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 6.25,
+   "text": "signal: \"↓downWreck survey beacon39 mSignal nearby\" (below)"
+  },
+  {
+   "t": 6.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"5.65\",\"sx\":720,\"sy\":429} E=4.3 / 10"
+  },
+  {
+   "t": 6.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"5.91\",\"sx\":720,\"sy\":429} E=4.2 / 10"
+  },
+  {
+   "t": 6.75,
+   "text": "message: \"\" (below)"
+  },
+  {
+   "t": 6.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"6.17\",\"sx\":720,\"sy\":429} E=4.1 / 10"
+  },
+  {
+   "t": 7,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"6.42\",\"sx\":720,\"sy\":429} E=4.1 / 10"
+  },
+  {
+   "t": 7.25,
+   "text": "message: \"Wreck survey beacon · Very close. Approach the wreck beacon to survey.\" (below)"
+  },
+  {
+   "t": 7.25,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 7.25,
+   "text": "signal: \"↓downWreck survey beacon29 mVery close\" (below)"
+  },
+  {
+   "t": 7.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"6.67\",\"sx\":720,\"sy\":429} E=4.0 / 10"
+  },
+  {
+   "t": 7.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"6.93\",\"sx\":720,\"sy\":429} E=3.9 / 10"
+  },
+  {
+   "t": 7.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"7.18\",\"sx\":720,\"sy\":429} E=3.8 / 10"
+  },
+  {
+   "t": 8,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"7.44\",\"sx\":720,\"sy\":429} E=3.8 / 10"
+  },
+  {
+   "t": 8.25,
+   "text": "signal: \"↓downWreck survey beacon19 mVery close\" (below)"
+  },
+  {
+   "t": 8.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"7.69\",\"sx\":720,\"sy\":429} E=3.7 / 10"
+  },
+  {
+   "t": 8.5,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"7.94\",\"sx\":720,\"sy\":429} E=3.6 / 10"
+  },
+  {
+   "t": 8.75,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"8.20\",\"sx\":720,\"sy\":429} E=3.5 / 10"
+  },
+  {
+   "t": 9,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"8.45\",\"sx\":720,\"sy\":429} E=3.5 / 10"
+  },
+  {
+   "t": 9.25,
+   "text": "message: \"Beacon surveyed · Return to the lander\" (below)"
+  },
+  {
+   "t": 9.25,
+   "text": "tasks: \"✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (below)"
+  },
+  {
+   "t": 9.25,
+   "text": "next: \"Return to lander → Bank ore\" (below)"
+  },
+  {
+   "t": 9.25,
+   "text": "signal: \"↖up and leftSalvage lander175 mTracking\" (below)"
+  },
+  {
+   "t": 9.25,
+   "text": "below mouse=(720,582) {\"active\":\"true\",\"dirs\":\"down\",\"rx\":\"20.50\",\"ry\":\"8.70\",\"sx\":720,\"sy\":429} E=3.4 / 10"
+  },
+  {
+   "t": 9.55,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"9.00\",\"sx\":720,\"sy\":429} E=3.3 / 10"
+  },
+  {
+   "t": 9.8,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"9.25\",\"sx\":720,\"sy\":429} E=3.2 / 10"
+  },
+  {
+   "t": 10.05,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"9.50\",\"sx\":720,\"sy\":429} E=3.1 / 10"
+  },
+  {
+   "t": 10.3,
+   "text": "signal: \"↖up and leftSalvage lander180 mTracking\" (above)"
+  },
+  {
+   "t": 10.3,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"9.54\",\"sx\":720,\"sy\":421} E=3.1 / 10"
+  },
+  {
+   "t": 10.55,
+   "text": "signal: \"↖up and leftSalvage lander174 mTracking\" (above)"
+  },
+  {
+   "t": 10.55,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"8.55\",\"sx\":720,\"sy\":396} E=3.0 / 10"
+  },
+  {
+   "t": 10.8,
+   "text": "signal: \"↖up and leftSalvage lander169 mTracking\" (above)"
+  },
+  {
+   "t": 10.8,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"7.05\",\"sx\":720,\"sy\":384} E=3.0 / 10"
+  },
+  {
+   "t": 11.05,
+   "text": "signal: \"←leftSalvage lander161 mTracking\" (above)"
+  },
+  {
+   "t": 11.05,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"5.55\",\"sx\":720,\"sy\":383} E=2.9 / 10"
+  },
+  {
+   "t": 11.3,
+   "text": "signal: \"←leftSalvage lander157 mTracking\" (above)"
+  },
+  {
+   "t": 11.3,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"4.05\",\"sx\":720,\"sy\":383} E=2.9 / 10"
+  },
+  {
+   "t": 11.55,
+   "text": "signal: \"←leftSalvage lander153 mTracking\" (above)"
+  },
+  {
+   "t": 11.55,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"2.55\",\"sx\":720,\"sy\":383} E=2.8 / 10"
+  },
+  {
+   "t": 11.8,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (above)"
+  },
+  {
+   "t": 11.8,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"1.05\",\"sx\":720,\"sy\":383} E=2.8 / 10"
+  },
+  {
+   "t": 12.05,
+   "text": "signal: \"←leftSalvage lander150 mTracking\" (above)"
+  },
+  {
+   "t": 12.05,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"-0.45\",\"sx\":720,\"sy\":383} E=2.7 / 10"
+  },
+  {
+   "t": 12.3,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (above)"
+  },
+  {
+   "t": 12.3,
+   "text": "above mouse=(720,269) {\"active\":\"true\",\"dirs\":\"up\",\"rx\":\"20.50\",\"ry\":\"-1.95\",\"sx\":720,\"sy\":383} E=2.7 / 10"
+  },
+  {
+   "t": 12.6,
+   "text": "signal: \"←leftSalvage lander152 mTracking\" (upleft)"
+  },
+  {
+   "t": 12.6,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"20.41\",\"ry\":\"-3.40\",\"sx\":719,\"sy\":390} E=2.7 / 10"
+  },
+  {
+   "t": 12.85,
+   "text": "signal: \"←leftSalvage lander148 mTracking\" (upleft)"
+  },
+  {
+   "t": 12.85,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"19.54\",\"ry\":\"-4.89\",\"sx\":711,\"sy\":384} E=2.6 / 10"
+  },
+  {
+   "t": 13.1,
+   "text": "signal: \"←leftSalvage lander140 mTracking\" (upleft)"
+  },
+  {
+   "t": 13.1,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"18.29\",\"ry\":\"-5.50\",\"sx\":707,\"sy\":410} E=2.6 / 10"
+  },
+  {
+   "t": 13.35,
+   "text": "message: \"\" (upleft)"
+  },
+  {
+   "t": 13.35,
+   "text": "danger: \"Low energy · return to the lander\" (upleft)"
+  },
+  {
+   "t": 13.35,
+   "text": "signal: \"↙down and leftSalvage lander126 mTracking\" (upleft)"
+  },
+  {
+   "t": 13.35,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"17.04\",\"ry\":\"-5.50\",\"sx\":707,\"sy\":421} E=2.5 / 10"
+  },
+  {
+   "t": 13.6,
+   "text": "signal: \"↙down and leftSalvage lander117 mTracking\" (upleft)"
+  },
+  {
+   "t": 13.6,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"15.79\",\"ry\":\"-5.50\",\"sx\":706,\"sy\":422} E=2.4 / 10"
+  },
+  {
+   "t": 13.85,
+   "text": "signal: \"↙down and leftSalvage lander104 mTracking\" (upleft)"
+  },
+  {
+   "t": 13.85,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"14.54\",\"ry\":\"-5.50\",\"sx\":706,\"sy\":422} E=2.3 / 10"
+  },
+  {
+   "t": 14.1,
+   "text": "signal: \"↙down and leftSalvage lander95 mTracking\" (upleft)"
+  },
+  {
+   "t": 14.1,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"13.29\",\"ry\":\"-5.50\",\"sx\":706,\"sy\":422} E=2.3 / 10"
+  },
+  {
+   "t": 14.35,
+   "text": "signal: \"↙down and leftSalvage lander83 mTracking\" (upleft)"
+  },
+  {
+   "t": 14.35,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"12.04\",\"ry\":\"-5.50\",\"sx\":706,\"sy\":422} E=2.2 / 10"
+  },
+  {
+   "t": 14.6,
+   "text": "signal: \"↙down and leftSalvage lander76 mSignal nearby\" (upleft)"
+  },
+  {
+   "t": 14.6,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"10.79\",\"ry\":\"-5.50\",\"sx\":706,\"sy\":422} E=2.2 / 10"
+  },
+  {
+   "t": 14.85,
+   "text": "signal: \"↙down and leftSalvage lander65 mSignal nearby\" (upleft)"
+  },
+  {
+   "t": 14.85,
+   "text": "upleft mouse=(520,263) {\"active\":\"true\",\"dirs\":\"left,up\",\"rx\":\"9.54\",\"ry\":\"-5.50\",\"sx\":706,\"sy\":422} E=2.1 / 10"
+  },
+  {
+   "t": 14.9,
+   "text": "SHOT C2-mouse-diag-014.9s-upleft-end.png"
+  },
+  {
+   "t": 15.15,
+   "text": "signal: \"↙down and leftSalvage lander55 mSignal nearby\" (left)"
+  },
+  {
+   "t": 15.15,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"8.14\",\"ry\":\"-5.23\",\"sx\":707,\"sy\":429} E=2.1 / 10"
+  },
+  {
+   "t": 15.4,
+   "text": "signal: \"↓downSalvage lander47 mSignal nearby\" (left)"
+  },
+  {
+   "t": 15.4,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"6.89\",\"ry\":\"-4.66\",\"sx\":707,\"sy\":437} E=2.1 / 10"
+  },
+  {
+   "t": 15.65,
+   "text": "signal: \"↓downSalvage lander35 mSignal nearby\" (left)"
+  },
+  {
+   "t": 15.65,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"5.64\",\"ry\":\"-3.84\",\"sx\":706,\"sy\":444} E=2.0 / 10"
+  },
+  {
+   "t": 15.9,
+   "text": "signal: \"↓downSalvage lander28 mVery close\" (left)"
+  },
+  {
+   "t": 15.9,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"4.39\",\"ry\":\"-2.82\",\"sx\":706,\"sy\":449} E=2.0 / 10"
+  },
+  {
+   "t": 16.15,
+   "text": "signal: \"↘down and rightSalvage lander27 mVery close\" (left)"
+  },
+  {
+   "t": 16.15,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"3.14\",\"ry\":\"-1.63\",\"sx\":706,\"sy\":453} E=2.0 / 10"
+  },
+  {
+   "t": 16.4,
+   "text": "signal: \"→rightSalvage lander34 mSignal nearby\" (left)"
+  },
+  {
+   "t": 16.4,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"1.89\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":455} E=1.9 / 10"
+  },
+  {
+   "t": 16.65,
+   "text": "signal: \"→rightSalvage lander49 mSignal nearby\" (left)"
+  },
+  {
+   "t": 16.65,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"0.64\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":427} E=1.9 / 10"
+  },
+  {
+   "t": 16.9,
+   "text": "signal: \"→rightSalvage lander59 mSignal nearby\" (left)"
+  },
+  {
+   "t": 16.9,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"39.39\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":423} E=1.9 / 10"
+  },
+  {
+   "t": 17.15,
+   "text": "signal: \"→rightSalvage lander74 mSignal nearby\" (left)"
+  },
+  {
+   "t": 17.15,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"38.14\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.8 / 10"
+  },
+  {
+   "t": 17.4,
+   "text": "signal: \"→rightSalvage lander84 mTracking\" (left)"
+  },
+  {
+   "t": 17.4,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"36.89\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.8 / 10"
+  },
+  {
+   "t": 17.65,
+   "text": "signal: \"→rightSalvage lander99 mTracking\" (left)"
+  },
+  {
+   "t": 17.65,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"35.64\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.8 / 10"
+  },
+  {
+   "t": 17.9,
+   "text": "signal: \"→rightSalvage lander109 mTracking\" (left)"
+  },
+  {
+   "t": 17.9,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"34.39\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.7 / 10"
+  },
+  {
+   "t": 18.15,
+   "text": "signal: \"→rightSalvage lander124 mTracking\" (left)"
+  },
+  {
+   "t": 18.15,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"33.14\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.7 / 10"
+  },
+  {
+   "t": 18.4,
+   "text": "signal: \"→rightSalvage lander134 mTracking\" (left)"
+  },
+  {
+   "t": 18.4,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"31.89\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.7 / 10"
+  },
+  {
+   "t": 18.65,
+   "text": "signal: \"→rightSalvage lander149 mTracking\" (left)"
+  },
+  {
+   "t": 18.65,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"30.64\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.6 / 10"
+  },
+  {
+   "t": 18.9,
+   "text": "signal: \"→rightSalvage lander159 mTracking\" (left)"
+  },
+  {
+   "t": 18.9,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"29.39\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.6 / 10"
+  },
+  {
+   "t": 19.15,
+   "text": "signal: \"→rightSalvage lander174 mTracking\" (left)"
+  },
+  {
+   "t": 19.15,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"28.14\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.6 / 10"
+  },
+  {
+   "t": 19.4,
+   "text": "signal: \"→rightSalvage lander184 mTracking\" (left)"
+  },
+  {
+   "t": 19.4,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"26.89\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.6 / 10"
+  },
+  {
+   "t": 19.65,
+   "text": "signal: \"→rightSalvage lander199 mTracking\" (left)"
+  },
+  {
+   "t": 19.65,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"25.64\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.5 / 10"
+  },
+  {
+   "t": 19.9,
+   "text": "danger: \"Energy critical · return to the lander\" (left)"
+  },
+  {
+   "t": 19.9,
+   "text": "signal: \"←leftSalvage lander191 mTracking\" (left)"
+  },
+  {
+   "t": 19.9,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"24.39\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.5 / 10"
+  },
+  {
+   "t": 20.15,
+   "text": "signal: \"←leftSalvage lander176 mTracking\" (left)"
+  },
+  {
+   "t": 20.15,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"23.14\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.5 / 10"
+  },
+  {
+   "t": 20.4,
+   "text": "signal: \"←leftSalvage lander166 mTracking\" (left)"
+  },
+  {
+   "t": 20.4,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"21.89\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.4 / 10"
+  },
+  {
+   "t": 20.65,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (left)"
+  },
+  {
+   "t": 20.65,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"20.64\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.4 / 10"
+  },
+  {
+   "t": 20.9,
+   "text": "signal: \"←leftSalvage lander141 mTracking\" (left)"
+  },
+  {
+   "t": 20.9,
+   "text": "left mouse=(486,423) {\"active\":\"true\",\"dirs\":\"left\",\"rx\":\"19.39\",\"ry\":\"-0.36\",\"sx\":706,\"sy\":422} E=1.4 / 10"
+  },
+  {
+   "t": 20.95,
+   "text": "SHOT C2-mouse-diag-00021s-left-end.png"
+  }
+ ]
+}

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Menu redesign mock</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #070d11; font-family: var(--font-ui); color: var(--text-1); }
+  .frame { position: relative; width: 1440px; height: 900px; overflow: hidden; margin-bottom: 24px; }
+  .caps { font-size: var(--text-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; font-weight: 600; color: var(--text-3); }
+  .display { font-family: var(--font-display); font-weight: 800; letter-spacing: 0.01em; }
+  .num { font-variant-numeric: tabular-nums; }
+  /* ---------- components ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 20px;
+    font: 600 var(--text-md)/1 var(--font-ui); color: var(--text-1); background: var(--surface-3);
+    border: 1px solid var(--line-strong); border-radius: var(--radius-md); }
+  .btn.primary { background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: var(--accent-ink); border-color: var(--accent-hi); box-shadow: var(--glow-accent); }
+  .btn.ghost { background: transparent; }
+  .btn.danger { background: transparent; color: var(--danger-ink); border-color: #8a4a3e; }
+  .btn.locked { background: transparent; color: var(--text-3); border-style: dashed; }
+  .btn.focus { box-shadow: var(--focus); }
+  .key { display: inline-grid; place-items: center; min-width: 26px; height: 24px; padding: 0 6px; border: 1px solid var(--line-strong);
+    border-bottom-width: 3px; border-radius: 5px; font: 700 12px/1 var(--font-ui); color: var(--text-2); background: var(--surface-2); }
+  .pad { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font: 800 12px/1 var(--font-ui); color: #0b1418; }
+  .pad.a { background: #8fe0b8; } .pad.b { background: #ff8f78; } .pad.x { background: #8ec9ff; } .pad.y { background: #ffd56b; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font: 600 12px/1.2 var(--font-ui);
+    background: var(--surface-3); color: var(--text-2); border: 1px solid var(--line); }
+  .chip.ok { color: var(--ok); border-color: #2f6b55; } .chip.lock { color: var(--locked); } .chip.accent { color: var(--accent-hi); border-color: #7a5b2a; }
+  .credits { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 8px; border-radius: 999px; background: #2a2212;
+    border: 1px solid #6a5226; font: 700 var(--text-lg)/1 var(--font-ui); color: var(--credit); }
+  .coin { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe6b0, #e7a646 55%, #8f5e1c);
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,.25); display: inline-grid; place-items: center; font: 800 9px/1 var(--font-ui); color: #5a3a0c; }
+  .panel { background: var(--surface-1); border: 1px solid var(--line); box-shadow: var(--shadow-panel);
+    clip-path: polygon(0 0, calc(100% - var(--chamfer)) 0, 100% var(--chamfer), 100% 100%, var(--chamfer) 100%, 0 calc(100% - var(--chamfer))); }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 24px; background: var(--surface-2);
+    border-bottom: 1px solid var(--line); position: relative; }
+  .panel-head::before { content: ""; position: absolute; left: 24px; top: 0; width: 64px; height: 3px; background: var(--accent); }
+  .tabs { display: flex; gap: 4px; padding: 0 16px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+  .tab { display: flex; align-items: center; gap: 8px; padding: 14px 14px 12px; font: 600 var(--text-sm)/1 var(--font-ui); color: var(--text-3); border-bottom: 3px solid transparent; }
+  .tab img { width: 20px; height: 20px; opacity: .8; }
+  .tab.on { color: var(--text-1); border-bottom-color: var(--accent); background: linear-gradient(180deg, transparent, rgba(242,182,90,.08)); }
+  .tab.off { opacity: .55; }
+  .hintbar { display: flex; gap: 18px; align-items: center; padding: 10px 24px; border-top: 1px solid var(--line); background: var(--surface-2);
+    font: 500 13px/1 var(--font-ui); color: var(--text-3); }
+  .hintbar span { display: inline-flex; gap: 6px; align-items: center; }
+  .bar { position: relative; height: 10px; border-radius: 5px; background: #0a1418; border: 1px solid var(--line); overflow: hidden; }
+  .bar i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 5px; }
+  .bar .now { background: var(--energy); }
+  .bar .gain { background: repeating-linear-gradient(135deg, rgba(255,208,138,.95) 0 6px, rgba(242,182,90,.75) 6px 12px); }
+  /* ---------- frame 1: title ---------- */
+  .sky { position: absolute; inset: 0; background: url(img/w01-sky.png) center top / cover; filter: saturate(1.05); }
+  .ridge { position: absolute; left: 0; right: 0; height: 520px; background-size: 1440px 520px; background-repeat: repeat-x; }
+  .ridge.far { bottom: 250px; background-image: url(img/w01-ridge-far.png); opacity: .9; }
+  .ridge.near { bottom: 170px; background-image: url(img/w01-ridge-near.png); }
+  .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 190px; background: linear-gradient(180deg, #5b6b72 0 8px, #3c4c54 8px 22px, #22323a 22px, #0d171c); }
+  .structure { position: absolute; bottom: 180px; }
+  .title-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,12,16,.92) 0%, rgba(5,12,16,.72) 34%, rgba(5,12,16,0) 62%); }
+  .logo { position: absolute; left: 96px; top: 120px; }
+  .logo .mark { font: 400 118px/0.9 var(--font-logo); color: #f6e7c2; letter-spacing: 0.01em; text-shadow: 0 4px 0 #7a4f17, 0 10px 34px rgba(0,0,0,.6); }
+  .logo .sub { margin-top: 14px; font: 700 26px/1 var(--font-display); letter-spacing: .42em; color: var(--accent-hi); }
+  .logo .rule { width: 220px; height: 3px; margin: 20px 0 0; background: linear-gradient(90deg, var(--accent), transparent); }
+  .menu { position: absolute; left: 96px; top: 380px; width: 430px; display: grid; gap: 10px; }
+  .menu .btn { justify-content: space-between; min-height: 54px; font-size: 17px; }
+  .save-card { display: grid; grid-template-columns: 56px 1fr; gap: 4px 14px; padding: 14px 16px; margin: -2px 0 6px; border-radius: var(--radius-md);
+    background: rgba(21, 40, 49, .88); border: 1px solid var(--line); }
+  .save-card img { grid-row: span 3; width: 56px; height: 56px; }
+  .save-card b { font: 700 16px/1.2 var(--font-ui); }
+  .save-card small { font-size: 13px; color: var(--text-2); }
+  .corner { position: absolute; right: 32px; top: 24px; display: flex; gap: 10px; }
+  .foot { position: absolute; left: 96px; bottom: 28px; font-size: 13px; color: var(--text-3); }
+  .foot-r { position: absolute; right: 32px; bottom: 26px; }
+  /* ---------- frame 2/3: terminal ---------- */
+  .world-bg { position: absolute; inset: 0; background: url(../shots/m05a-service-with-cargo.png) left top / 1440px 900px; }
+  .world-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(4,10,14,0) 30%, rgba(4,10,14,.55) 55%); }
+  .term { position: absolute; top: 28px; right: 28px; bottom: 28px; width: 760px; display: grid; grid-template-rows: auto auto auto 1fr auto; }
+  .next { display: flex; align-items: center; gap: 12px; padding: 10px 24px; background: linear-gradient(90deg, rgba(242,182,90,.16), rgba(242,182,90,.03));
+    border-bottom: 1px solid #5a4422; font: 600 14px/1.3 var(--font-ui); color: var(--accent-hi); }
+  .next .btn { min-height: 34px; padding: 0 12px; font-size: 13px; margin-left: auto; }
+  .workshop { display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
+  .doll { position: relative; padding: 18px; border-right: 1px solid var(--line); background: radial-gradient(circle at 50% 40%, #1b3640, var(--surface-1) 70%); }
+  .doll .rig { position: relative; width: 264px; height: 264px; margin: 6px auto 0; }
+  .doll .rig img { position: absolute; inset: 0; width: 264px; height: 264px; }
+  .doll .rig img.new { filter: drop-shadow(0 0 10px rgba(255,208,138,.9)); }
+  .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .slot { display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 2px 8px; padding: 7px 8px; border-radius: var(--radius-sm);
+    background: var(--surface-2); border: 1px solid var(--line); font-size: 12px; color: var(--text-2); }
+  .slot img { width: 34px; height: 34px; grid-row: span 2; }
+  .slot b { font: 700 13px/1 var(--font-ui); color: var(--text-1); }
+  .slot.sel { background: var(--surface-4); border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+  .slot.empty { border-style: dashed; }
+  .pips { display: inline-flex; gap: 3px; }
+  .pips i { width: 9px; height: 5px; border-radius: 2px; background: #33505a; }
+  .pips i.on { background: var(--accent); }
+  .detail { padding: 20px 24px; overflow: hidden; }
+  .detail-head { display: grid; grid-template-columns: 72px 1fr auto; gap: 4px 16px; align-items: center; }
+  .detail-head img { width: 72px; height: 72px; grid-row: span 2; background: var(--surface-2); border-radius: var(--radius-md); border: 1px solid var(--line); padding: 6px; }
+  .detail h2 { margin: 0; font: 800 var(--text-xl)/1 var(--font-display); letter-spacing: .01em; }
+  .stat { display: grid; grid-template-columns: 112px 1fr 120px; gap: 12px; align-items: center; margin: 16px 0 0; font-size: 14px; color: var(--text-2); }
+  .stat strong { font: 700 15px/1 var(--font-ui); color: var(--text-1); text-align: right; }
+  .stat strong em { font-style: normal; color: var(--accent-hi); }
+  .buyrow { display: flex; align-items: center; gap: 14px; margin: 22px 0 0; padding: 14px 16px; border-radius: var(--radius-md); background: var(--surface-2); border: 1px solid var(--line); }
+  .buyrow .after { font-size: 13px; color: var(--text-3); line-height: 1.5; }
+  .buyrow .btn { margin-left: auto; min-width: 210px; }
+  .others { margin-top: 18px; display: grid; gap: 6px; }
+  .other { display: grid; grid-template-columns: 30px 1fr auto auto; gap: 12px; align-items: center; padding: 8px 12px; border-radius: var(--radius-sm); background: rgba(21,40,49,.6); font-size: 14px; }
+  .other img { width: 30px; height: 30px; }
+  .other .delta { color: var(--accent-hi); font-weight: 600; }
+  .price { font: 700 14px/1 var(--font-ui); color: var(--credit); }
+  .price.short { color: var(--text-3); }
+  .price.short::after { content: " · need 240"; color: var(--caution); font-weight: 600; }
+  .feedback { padding: 10px 24px; border-top: 1px solid var(--line); font-size: 14px; color: var(--text-2); }
+  /* ---------- frame 3: sale summary ---------- */
+  .modal-scrim { position: absolute; inset: 0; background: var(--scrim); }
+  .sale { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 560px; }
+  .sale-body { padding: 22px 26px; }
+  .line { display: grid; grid-template-columns: 40px 1fr 70px 70px 90px; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(46,74,82,.6); font-size: 15px; }
+  .line img { width: 40px; height: 40px; }
+  .line .q { color: var(--text-3); text-align: right; } .line .u { color: var(--text-3); text-align: right; } .line .t { text-align: right; font-weight: 700; color: var(--credit); }
+  .total { display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px; }
+  .total .big { font: 800 52px/1 var(--font-display); color: var(--credit); text-shadow: 0 0 24px rgba(243,196,126,.35); }
+  .mission-line { display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; margin-top: 16px; padding: 10px 12px; border-radius: var(--radius-md);
+    background: rgba(143,224,184,.08); border: 1px solid #2f6b55; }
+  .mission-line img { width: 48px; height: 48px; }
+  .sale-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 0 26px 22px; }
+  /* ---------- frame 4: pause ---------- */
+  .pause-bg { position: absolute; inset: 0; background: url(../../../shots/d05-underground.png) center / cover; filter: blur(3px) brightness(.55); transform: scale(1.03); }
+  .pause { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 980px; height: 760px; display: grid; grid-template-columns: 230px 1fr; }
+  .rail { background: var(--surface-2); border-right: 1px solid var(--line); padding: 22px 14px; display: grid; align-content: start; gap: 4px; }
+  .rail h1 { margin: 0 8px 18px; font: 800 34px/1 var(--font-display); }
+  .rail a { display: flex; align-items: center; gap: 10px; padding: 12px 12px; border-radius: var(--radius-sm); color: var(--text-2); font: 600 15px/1 var(--font-ui); text-decoration: none; }
+  .rail a.on { background: var(--surface-4); color: var(--text-1); box-shadow: inset 3px 0 0 var(--accent); }
+  .rail a img { width: 22px; height: 22px; }
+  .rail .sep { height: 1px; background: var(--line); margin: 12px 8px; }
+  .pause-main { padding: 24px 28px; display: grid; grid-template-rows: auto 1fr auto; gap: 18px; }
+  .resume { display: flex; align-items: center; gap: 14px; }
+  .resume .btn.primary { min-width: 260px; min-height: 56px; font-size: 18px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-content: start; }
+  .card { padding: 16px 18px; border-radius: var(--radius-md); background: var(--surface-2); border: 1px solid var(--line); }
+  .card h3 { margin: 0 0 12px; font: 700 13px/1 var(--font-ui); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--text-3); }
+  .vital { display: grid; grid-template-columns: 22px 64px 1fr 70px; gap: 10px; align-items: center; margin: 8px 0; font-size: 14px; }
+  .vital img { width: 22px; height: 22px; }
+  .vital .bar i { background: var(--energy); }
+  .vital.hull .bar i { background: var(--hull); }
+  .vital.cargo .bar i { background: var(--cargo); }
+  .task { display: flex; gap: 10px; align-items: baseline; margin: 6px 0; font-size: 14px; color: var(--text-2); }
+  .task b { color: var(--ok); width: 14px; } .task.todo b { color: var(--text-3); }
+  .kv { display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 14px; color: var(--text-2); }
+  .kv b { color: var(--text-1); text-align: right; }
+  .danger-zone { display: flex; gap: 10px; align-items: center; padding-top: 14px; border-top: 1px solid var(--line); }
+  .danger-zone .muted { font-size: 13px; color: var(--text-3); margin-right: auto; }
+  .danger-zone .btn { white-space: nowrap; }
+  /* ---------- frame 5: star map ---------- */
+  .space { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, #13303c 0%, #08141b 55%, #04090d 100%); }
+  .space svg { position: absolute; inset: 0; }
+  .node { position: absolute; transform: translate(-50%, -50%); text-align: center; }
+  .node img { display: block; margin: 0 auto 8px; filter: drop-shadow(0 6px 18px rgba(0,0,0,.6)); }
+  .node b { display: block; font: 800 22px/1 var(--font-display); letter-spacing: .02em; }
+  .node small { display: block; margin-top: 5px; }
+  .node.locked img { filter: grayscale(1) brightness(.35) drop-shadow(0 0 0 #000); }
+  .node.locked b { color: var(--text-3); }
+  .here { position: absolute; width: 124px; height: 124px; border-radius: 50%; border: 2px dashed var(--ok); transform: translate(-50%, -70%); }
+  .sel-ring { position: absolute; width: 124px; height: 124px; border-radius: 50%; border: 3px solid var(--accent); box-shadow: 0 0 30px rgba(242,182,90,.45); transform: translate(-50%, -70%); }
+  .route-panel { position: absolute; right: 28px; top: 28px; bottom: 28px; width: 420px; display: grid; grid-template-rows: auto 1fr auto; }
+  .route-body { padding: 22px 24px; display: grid; gap: 14px; align-content: start; font-size: 15px; color: var(--text-2); }
+  .route-body h2 { margin: 0; font: 800 40px/1 var(--font-display); color: var(--text-1); }
+  .check { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--line); font-size: 14px; }
+  .check .btn { min-height: 34px; padding: 0 12px; font-size: 13px; }
+  .route-foot { padding: 18px 24px; border-top: 1px solid var(--line); }
+  .route-foot .btn { width: 100%; min-height: 58px; font-size: 18px; }
+  .legend { position: absolute; left: 32px; bottom: 28px; display: flex; gap: 10px; }
+  .maptitle { position: absolute; left: 40px; top: 30px; }
+  .maptitle h1 { margin: 6px 0 0; font: 800 46px/1 var(--font-display); }
+</style>
+</head>
+<body>
+
+<!-- ===================== FRAME 1: TITLE ===================== -->
+<section class="frame" id="f-title">
+  <div class="sky"></div>
+  <div class="ridge far"></div>
+  <div class="ridge near"></div>
+  <div class="ground"></div>
+  <img class="structure" src="file:///home/user/Motherload/assets/campaign/source/refuge-stage-2.svg" style="left:760px;width:300px;bottom:182px">
+  <img class="structure" src="file:///home/user/Motherload/assets/campaign/source/dock-stage-3.svg" style="left:1010px;width:400px;bottom:176px">
+  <img class="structure" src="file:///home/user/Motherload/assets/campaign/source/relay-stage-2.svg" style="left:1300px;width:190px;bottom:180px">
+  <div class="structure" style="left:600px;bottom:168px;width:150px;height:150px">
+    <img src="file:///home/user/Motherload/assets/campaign/source/rig-engine-0.svg" style="position:absolute;inset:0;width:150px">
+    <img src="file:///home/user/Motherload/assets/campaign/source/rig-energy-0.svg" style="position:absolute;inset:0;width:150px">
+    <img src="file:///home/user/Motherload/assets/campaign/source/rig-bay-0.svg" style="position:absolute;inset:0;width:150px">
+    <img src="file:///home/user/Motherload/assets/campaign/source/rig-body-0.svg" style="position:absolute;inset:0;width:150px">
+    <img src="file:///home/user/Motherload/assets/campaign/source/rig-hull-0.svg" style="position:absolute;inset:0;width:150px">
+    <img src="file:///home/user/Motherload/assets/campaign/source/rig-cabin.svg" style="position:absolute;inset:0;width:150px">
+    <img src="file:///home/user/Motherload/assets/campaign/source/rig-drill-idle.svg" style="position:absolute;inset:0;width:150px">
+  </div>
+  <div class="title-scrim"></div>
+  <div class="corner"><span class="chip">&#9835; Sound on</span><span class="chip">&#x26F6; Fullscreen</span></div>
+  <div class="logo">
+    <div class="mark">MOTHERLOAD</div>
+    <div class="sub">THE DEEP FRONTIER</div>
+    <div class="rule"></div>
+  </div>
+  <div class="menu">
+    <div class="btn primary focus"><span>Continue expedition</span><span>&#8250;</span></div>
+    <div class="save-card">
+      <img src="file:///home/user/Motherload/assets/campaign/source/world-w01.svg">
+      <b>Broken asteroid · Stage 2 of 3</b>
+      <small class="num">1,160 CR · deepest 312 m · 47 min played</small>
+      <small>Saved 2 minutes ago in this browser</small>
+    </div>
+    <div class="btn"><span>New expedition</span><span class="caps">new seed</span></div>
+    <div class="btn"><span>Settings</span></div>
+    <div class="btn"><span>Controls</span></div>
+    <div class="btn ghost"><span>Credits</span></div>
+  </div>
+  <div class="foot">v0.2 · Original campaign · Progress saves in this browser · Export from Settings › Save data</div>
+  <div class="foot-r hintbar" style="background:transparent;border:0;padding:0"><span><span class="key">↑</span><span class="key">↓</span> Select</span><span><span class="key">Enter</span> Confirm</span><span><span class="pad a">A</span> Confirm</span></div>
+</section>
+
+<!-- ===================== FRAME 2: TERMINAL WORKSHOP ===================== -->
+<section class="frame" id="f-workshop">
+  <div class="world-bg"></div>
+  <div class="term panel">
+    <div class="panel-head">
+      <div><div class="caps" style="color:var(--accent-hi)">Lander terminal · W01</div><div class="display" style="font-size:34px;margin-top:6px">Salvage lander</div></div>
+      <div style="display:flex;gap:12px;align-items:center"><span class="credits num"><span class="coin">CR</span>1,160</span><span class="btn ghost" style="min-height:42px">Undock <span class="key">Esc</span></span></div>
+    </div>
+    <div class="next"><span class="caps" style="color:var(--accent-hi)">Next</span> Fund stage 2 · antenna still at 400 m · or upgrade your tank for the trip <span class="btn ghost">Go to Construction ›</span></div>
+    <div class="tabs" role="tablist">
+      <span class="key" style="align-self:center">Q</span>
+      <div class="tab"><img src="img/ui-cargo-48.png">Trade</div>
+      <div class="tab on"><img src="img/ui-shop-48.png">Workshop</div>
+      <div class="tab"><img src="img/ui-mission-48.png">Construction <span class="chip accent" style="padding:2px 7px">1/2</span></div>
+      <div class="tab off"><img src="img/ui-map-48.png">Navigation &#128274;</div>
+      <span class="key" style="align-self:center;margin-left:auto">E</span>
+    </div>
+    <div class="workshop">
+      <div class="doll">
+        <div class="caps">Your rig</div>
+        <div class="rig">
+          <img src="file:///home/user/Motherload/assets/campaign/source/rig-engine-0.svg">
+          <img class="new" src="file:///home/user/Motherload/assets/campaign/source/rig-energy-1.svg">
+          <img src="file:///home/user/Motherload/assets/campaign/source/rig-bay-0.svg">
+          <img src="file:///home/user/Motherload/assets/campaign/source/rig-body-0.svg">
+          <img src="file:///home/user/Motherload/assets/campaign/source/rig-hull-0.svg">
+          <img src="file:///home/user/Motherload/assets/campaign/source/rig-cabin.svg">
+          <img src="file:///home/user/Motherload/assets/campaign/source/rig-drill-idle.svg">
+        </div>
+        <div class="slots">
+          <div class="slot"><img src="file:///home/user/Motherload/assets/campaign/source/icon-drill.svg"><b>Drill</b><span class="pips"><i class="on"></i><i></i><i></i></span></div>
+          <div class="slot sel"><img src="file:///home/user/Motherload/assets/campaign/source/icon-energy.svg"><b>Energy</b><span class="pips"><i class="on"></i><i></i><i></i></span></div>
+          <div class="slot"><img src="file:///home/user/Motherload/assets/campaign/source/icon-cargo.svg"><b>Cargo</b><span class="pips"><i class="on"></i><i></i><i></i></span></div>
+          <div class="slot"><img src="file:///home/user/Motherload/assets/campaign/source/icon-hull.svg"><b>Hull</b><span class="pips"><i class="on"></i><i></i><i></i></span></div>
+          <div class="slot"><img src="file:///home/user/Motherload/assets/campaign/source/icon-engine.svg"><b>Engine</b><span class="pips"><i class="on"></i><i></i><i></i></span></div>
+          <div class="slot empty"><img src="file:///home/user/Motherload/assets/campaign/source/icon-feet.svg" style="opacity:.6"><b>Mobility</b><span>empty</span></div>
+        </div>
+      </div>
+      <div class="detail">
+        <div class="detail-head">
+          <img src="file:///home/user/Motherload/assets/campaign/source/icon-energy.svg">
+          <div class="caps" style="color:var(--energy)">Energy · rank 0 → 1</div>
+          <span class="chip ok">Blueprint ready</span>
+          <h2>Salvaged reservoir</h2>
+        </div>
+        <div class="stat"><span>Capacity</span><div class="bar"><i class="gain" style="width:64%"></i><i class="now" style="width:40%"></i></div><strong class="num">10 → <em>16 L</em></strong></div>
+        <div class="stat"><span>Cutting time</span><div class="bar"><i class="gain" style="width:64%"></i><i class="now" style="width:40%"></i></div><strong class="num">≈32 → <em>51 s</em></strong></div>
+        <div class="stat"><span>Refill cost</span><div class="bar"><i class="now" style="width:22%;background:var(--credit)"></i></div><strong class="num">+6 CR</strong></div>
+        <p style="font-size:15px;line-height:1.5;color:var(--text-2);margin:16px 0 0">A bigger tank. Purchase fills it, so you leave with 16 L tonight.</p>
+        <div class="buyrow">
+          <div class="after num">After purchase <b style="color:var(--text-1)">510 CR</b><br>Full service still affordable · 4 CR</div>
+          <div class="btn primary focus">Install · 650 CR</div>
+        </div>
+        <div class="others">
+          <div class="caps" style="margin-bottom:4px">Other upgrades</div>
+          <div class="other"><img src="file:///home/user/Motherload/assets/campaign/source/icon-hull.svg"><span>Hull · Salvaged plating</span><span class="delta num">+8 HP</span><span class="price num">450 CR</span></div>
+          <div class="other"><img src="file:///home/user/Motherload/assets/campaign/source/icon-engine.svg"><span>Engine · Salvaged motor</span><span class="delta num">+35 power</span><span class="price num">500 CR</span></div>
+          <div class="other"><img src="file:///home/user/Motherload/assets/campaign/source/icon-cargo.svg"><span>Cargo · Salvaged bay</span><span class="delta num">+5 bulk</span><span class="price num">700 CR</span></div>
+          <div class="other"><img src="file:///home/user/Motherload/assets/campaign/source/icon-drill.svg"><span>Drill · Salvaged auger</span><span class="delta num">×1.4 speed</span><span class="price short num">750 CR</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="hintbar"><span><span class="key">Q</span><span class="key">E</span> Tabs</span><span><span class="key">↑</span><span class="key">↓</span> Select slot</span><span><span class="key">Enter</span> Install</span><span><span class="pad a">A</span> Install</span><span><span class="pad b">B</span> Back</span><span style="margin-left:auto;color:var(--text-2)">Uplink ready</span></div>
+  </div>
+</section>
+
+<!-- ===================== FRAME 3: SALE SUMMARY ===================== -->
+<section class="frame" id="f-sale">
+  <div class="world-bg"></div>
+  <div class="modal-scrim"></div>
+  <div class="sale panel">
+    <div class="panel-head"><div><div class="caps" style="color:var(--accent-hi)">Cargo sold · Salvage lander</div><div class="display" style="font-size:34px;margin-top:6px">Haul delivered</div></div><span class="chip ok">+1 mission part banked</span></div>
+    <div class="sale-body">
+      <div class="line"><img src="file:///home/user/Motherload/assets/campaign/source/package-o1.svg"><span>Ironium</span><span class="q num">× 3</span><span class="u num">30</span><span class="t num">90 CR</span></div>
+      <div class="line"><img src="file:///home/user/Motherload/assets/campaign/source/package-o2.svg"><span>Bronzium</span><span class="q num">× 2</span><span class="u num">60</span><span class="t num">120 CR</span></div>
+      <div class="line"><img src="file:///home/user/Motherload/assets/campaign/source/package-o3.svg"><span>Silverium</span><span class="q num">× 1</span><span class="u num">100</span><span class="t num">100 CR</span></div>
+      <div class="line" style="background:linear-gradient(90deg,rgba(242,182,90,.14),transparent)"><img src="file:///home/user/Motherload/assets/campaign/source/package-o4.svg"><span>Goldium <span class="chip accent" style="padding:2px 7px;margin-left:6px">rare</span></span><span class="q num">× 1</span><span class="u num">250</span><span class="t num">250 CR</span></div>
+      <div class="total"><span class="caps">Total · counts up over 0.8 s</span><span class="big num">+560 CR</span></div>
+      <div style="text-align:right;color:var(--text-3);font-size:14px" class="num">Balance 600 → <b style="color:var(--credit)">1,160 CR</b></div>
+      <div class="mission-line"><img src="file:///home/user/Motherload/assets/campaign/source/mission-valve.svg"><div><b>Lander pressure valve banked</b><div style="font-size:13px;color:var(--text-2)">Stage 2 · 1 of 2 parts · antenna still at 400 m</div></div><span class="chip ok">✓ Safe</span></div>
+    </div>
+    <div class="sale-actions"><span class="btn">Stay in Trade</span><span class="btn primary focus">Upgrade the rig ›</span></div>
+  </div>
+</section>
+
+<!-- ===================== FRAME 4: PAUSE ===================== -->
+<section class="frame" id="f-pause">
+  <div class="pause-bg"></div>
+  <div class="modal-scrim" style="background:rgba(4,11,15,.35)"></div>
+  <div class="pause panel">
+    <nav class="rail">
+      <h1>Paused</h1>
+      <a class="on"><img src="img/ui-mission-48.png">Expedition</a>
+      <a><img src="img/ui-cargo-48.png">Cargo</a>
+      <a><img src="img/ui-warning-48.png">Field guide</a>
+      <div class="sep"></div>
+      <a>&#9881;&nbsp; Settings</a>
+      <a>&#9000;&nbsp; Controls</a>
+      <a>&#128190;&nbsp; Save data</a>
+      <div class="sep"></div>
+      <a style="color:var(--text-3)">&#8617;&nbsp; Quit to title</a>
+    </nav>
+    <div class="pause-main">
+      <div class="resume"><span class="btn primary focus">Resume expedition <span class="key" style="background:transparent;color:var(--accent-ink);border-color:#7a5b2a">Esc</span></span><span class="chip ok">&#10003; Saved 12 s ago · this browser</span><span class="chip" style="margin-left:auto">Broken asteroid · 180 m</span></div>
+      <div class="cards">
+        <div class="card">
+          <h3>Rig condition</h3>
+          <div class="vital"><img src="img/ui-energy-48.png"><span>Energy</span><div class="bar"><i style="width:22%;background:var(--caution)"></i></div><b class="num" style="text-align:right;color:var(--caution)">2.2 / 10 L</b></div>
+          <div class="vital hull"><img src="img/ui-hull-48.png"><span>Hull</span><div class="bar"><i style="width:100%"></i></div><b class="num" style="text-align:right">10 / 10</b></div>
+          <div class="vital cargo"><img src="img/ui-cargo-48.png"><span>Cargo</span><div class="bar"><i style="width:28%"></i></div><b class="num" style="text-align:right">2 / 7</b></div>
+          <div style="margin-top:12px;font-size:14px;color:var(--caution)">&#9888; Return trip needs ≈1.9 L. Head home now.</div>
+        </div>
+        <div class="card">
+          <h3>Stage 1 of 3 · Survey the wreck</h3>
+          <div class="task"><b>✓</b>Survey beacon at 100 m</div>
+          <div class="task todo"><b>○</b>Bank 3 ore · 0/3 · 2 aboard</div>
+          <div class="task todo"><b>○</b>Fund construction · 200 CR</div>
+          <div style="margin-top:12px;font-size:13px;color:var(--text-3)">Unlocks: rank-1 hardware · Anchoring feet</div>
+        </div>
+        <div class="card">
+          <h3>Flight record</h3>
+          <div class="kv num"><span>Credits</span><b>20 CR</b><span>Deepest</span><b>180 m</b><span>Stages funded</span><b>0 / 3</b><span>Stored cargo</span><b>0</b></div>
+        </div>
+        <div class="card">
+          <h3>Hold · 2 packages · 60 CR</h3>
+          <div class="other" style="background:transparent;padding:4px 0"><img src="file:///home/user/Motherload/assets/campaign/source/package-o1.svg"><span>Ironium × 2</span><span class="price num">60 CR</span><span class="btn ghost" style="min-height:34px;padding:0 10px;font-size:13px">Eject</span></div>
+        </div>
+        <div class="card" style="grid-column:1 / -1">
+          <h3>Recent</h3>
+          <div class="task"><b style="color:var(--caution)">!</b>Hold full · Bronzium left at 122 m <span style="margin-left:auto;color:var(--text-3)">0:41 ago</span></div>
+          <div class="task"><b>✓</b>Wreck beacon surveyed <span style="margin-left:auto;color:var(--text-3)">1:05 ago</span></div>
+          <div class="task"><b style="color:var(--caution)">!</b>Energy at 25 % · return route 1.9 L <span style="margin-left:auto;color:var(--text-3)">0:12 ago</span></div>
+        </div>
+      </div>
+      <div class="danger-zone"><span class="muted">Stuck or out of energy? Recovery tows you home for 20 CR; carried cargo is lost.</span><span class="btn danger">Request recovery · 20 CR</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FRAME 5: STAR MAP ===================== -->
+<section class="frame" id="f-map">
+  <div class="space"></div>
+  <svg width="1440" height="900" viewBox="0 0 1440 900" style="position:absolute;inset:0">
+    <g fill="#cfe6ee" opacity=".55">
+      <circle cx="120" cy="90" r="1.2"/><circle cx="300" cy="200" r="1"/><circle cx="520" cy="60" r="1.4"/><circle cx="700" cy="160" r="1"/><circle cx="860" cy="80" r="1.3"/><circle cx="960" cy="260" r="1"/><circle cx="60" cy="420" r="1"/><circle cx="240" cy="640" r="1.4"/><circle cx="430" cy="820" r="1"/><circle cx="640" cy="720" r="1.2"/><circle cx="820" cy="860" r="1"/><circle cx="910" cy="560" r="1.1"/>
+    </g>
+    <path d="M230 520 C 330 380, 420 330, 520 310" stroke="#f2b65a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M230 520 C 330 620, 420 660, 520 690" stroke="#56757a" stroke-width="3" fill="none" stroke-dasharray="8 10"/>
+    <path d="M520 310 C 640 360, 700 430, 790 500" stroke="#56757a" stroke-width="3" fill="none" stroke-dasharray="8 10"/>
+    <path d="M520 690 C 640 640, 700 570, 790 500" stroke="#56757a" stroke-width="3" fill="none" stroke-dasharray="8 10"/>
+    <path d="M790 500 C 860 470, 900 430, 950 400" stroke="#2e4a52" stroke-width="3" fill="none" stroke-dasharray="2 10"/>
+    <path d="M790 500 C 860 540, 900 580, 950 610" stroke="#2e4a52" stroke-width="3" fill="none" stroke-dasharray="2 10"/>
+  </svg>
+  <div class="maptitle"><div class="caps" style="color:var(--accent-hi)">Navigation · Frontier era</div><h1>Star map</h1></div>
+  <div class="here" style="left:230px;top:520px"></div>
+  <div class="node" style="left:230px;top:520px"><img src="file:///home/user/Motherload/assets/campaign/source/world-w01.svg" width="104"><b>Broken asteroid</b><small class="chip ok">You are here · 3/3</small></div>
+  <div class="sel-ring" style="left:520px;top:310px"></div>
+  <div class="node" style="left:520px;top:310px"><img src="file:///home/user/Motherload/assets/campaign/w02/world-w02.svg" width="104"><b>Ice comet</b><small class="chip accent">Available</small></div>
+  <div class="node locked" style="left:520px;top:690px"><img src="file:///home/user/Motherload/assets/campaign/source/world-w01.svg" width="90"><b>Fractured moon</b><small class="chip lock">Charted · in development</small></div>
+  <div class="node locked" style="left:790px;top:500px"><img src="file:///home/user/Motherload/assets/campaign/source/world-w01.svg" width="96"><b>Iron planet</b><small class="chip lock">Needs Planetary certificate</small></div>
+  <div class="legend"><span class="chip ok">● visited</span><span class="chip accent">● available</span><span class="chip lock">● locked</span><span class="chip">- - - future route</span></div>
+  <div class="route-panel panel">
+    <div class="panel-head"><div><div class="caps" style="color:var(--accent-hi)">W02 · Frontier branch</div><div class="display" style="font-size:20px;margin-top:6px;color:var(--text-2)">Selected route</div></div><span class="btn ghost" style="min-height:40px">Back <span class="key">Esc</span></span></div>
+    <div class="route-body">
+      <img src="file:///home/user/Motherload/assets/campaign/w02/world-w02.svg" width="120" style="justify-self:center">
+      <h2>Ice comet</h2>
+      <div>Preserve volatile crystals, recover cryogenic samples and build a comet condenser. 0.35 g · 1000 m deep.</div>
+      <div class="check"><span style="color:var(--ok)">✓</span><span>Cargo and mission parts are banked here before launch</span><span class="chip">0 aboard</span></div>
+      <div class="check"><span style="color:var(--caution)">!</span><span class="num">You arrive with energy 6 / 10 L</span><span class="btn">Refuel · 4 CR</span></div>
+      <div class="check"><span style="color:var(--ok)">✓</span><span class="num">Hull 10 / 10 HP</span><span></span></div>
+      <div class="check"><span style="color:var(--ok)">✓</span><span>Rig, credits, attachments and shafts persist</span><span></span></div>
+    </div>
+    <div class="route-foot"><span class="btn primary focus">Launch to Ice comet ›</span></div>
+  </div>
+</section>
+</body>
+</html>

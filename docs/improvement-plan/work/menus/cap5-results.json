@@ -1,0 +1,11 @@
+{
+ "splash": {
+  "visible": true,
+  "text": "FRONTIER CERTIFICATE SECURED Course charted. Ice comet / Fractured moon",
+  "animations": 0
+ },
+ "afterSplash": {
+  "overlay": "map",
+  "copy": "Choose an established destination or continue into the Ice comet. Travel starts at the lander and keeps every excavated route."
+ }
+}

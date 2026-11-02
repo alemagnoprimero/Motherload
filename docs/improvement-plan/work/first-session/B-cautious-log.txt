@@ -1,0 +1,265 @@
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   0.50s  SHOT B-cautious-000.5s-first-frame.png
+   1.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   1.50s  signal: "↓downWreck survey beacon89 mTracking" (ArrowDown)
+   1.50s  MARK first-ore
+   2.50s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (ArrowDown)
+   2.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   2.50s  signal: "↓downWreck survey beacon79 mSignal nearby" (ArrowDown)
+   3.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   3.50s  signal: "↓downWreck survey beacon69 mSignal nearby" (ArrowDown)
+   4.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   4.25s  signal: "↓downWreck survey beacon59 mSignal nearby" (ArrowDown)
+   5.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   5.25s  signal: "↓downWreck survey beacon49 mSignal nearby" (ArrowDown)
+   6.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   6.25s  signal: "↓downWreck survey beacon39 mSignal nearby" (ArrowDown)
+   6.50s  message: "" (ArrowDown)
+   7.25s  message: "Wreck survey beacon · Very close. Approach the wreck beacon to survey." (ArrowDown)
+   7.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   7.25s  signal: "↓downWreck survey beacon29 mVery close" (ArrowDown)
+   7.25s  MARK hold-full
+   8.25s  signal: "↓downWreck survey beacon19 mVery close" (ArrowDown)
+   9.25s  message: "Beacon surveyed · Return to the lander" (ArrowDown)
+   9.25s  tasks: "✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   9.25s  next: "Return to lander → Bank ore" (ArrowDown)
+   9.25s  signal: "↖up and leftSalvage lander175 mTracking" (ArrowDown)
+   9.25s  MARK beacon
+   9.75s  SHOT B-cautious-009.8s-beacon-surveyed.png
+  10.25s  signal: "↖up and leftSalvage lander179 mTracking" (ArrowUp)
+  10.50s  signal: "↖up and leftSalvage lander171 mTracking" (ArrowUp)
+  10.75s  signal: "↖up and leftSalvage lander166 mTracking" (ArrowUp)
+  11.00s  signal: "←leftSalvage lander159 mTracking" (ArrowUp)
+  11.25s  signal: "←leftSalvage lander156 mTracking" (ArrowUp)
+  11.50s  signal: "←leftSalvage lander152 mTracking" (ArrowUp)
+  11.75s  signal: "←leftSalvage lander150 mTracking" (ArrowUp)
+  12.00s  trip1: out of the shaft · E 2.7 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20
+  12.00s  SHOT B-cautious-00012s-trip1-out-of-shaft.png
+  12.25s  signal: "←leftSalvage lander148 mTracking" (ArrowLeft)
+  12.50s  signal: "←leftSalvage lander135 mTracking" (ArrowLeft)
+  12.75s  signal: "←leftSalvage lander125 mTracking" (ArrowLeft)
+  13.00s  signal: "←leftSalvage lander110 mTracking" (ArrowLeft)
+  13.25s  message: "" (ArrowLeft)
+  13.25s  signal: "←leftSalvage lander100 mTracking" (ArrowLeft)
+  13.50s  signal: "←leftSalvage lander83 mTracking" (ArrowLeft)
+  13.75s  message: "Salvage lander · Signal nearby. Return to the lander to bank ore." (ArrowLeft)
+  13.75s  danger: "Low energy · return to the lander" (ArrowLeft)
+  13.75s  signal: "←leftSalvage lander73 mSignal nearby" (ArrowLeft)
+  14.00s  signal: "←leftSalvage lander58 mSignal nearby" (ArrowLeft)
+  14.25s  signal: "←leftSalvage lander48 mSignal nearby" (ArrowLeft)
+  14.50s  signal: "←leftSalvage lander33 mSignal nearby" (ArrowLeft)
+  14.65s  signal: "←leftSalvage lander25 mVery close" (ArrowLeft)
+  14.80s  signal: "←leftSalvage lander18 mVery close" (ArrowLeft)
+  14.95s  signal: "◉At your positionSalvage lander13 mDock available" (ArrowLeft)
+  14.95s  dockPrompt: true (ArrowLeft)
+  15.20s  signal: "◉At your positionSalvage lander2 mDock available" (idle)
+  15.20s  trip1: at lander, dock prompt=true, small corrections=1 · E 2.3 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20
+  15.20s  SHOT B-cautious-015.2s-trip1-at-lander.png
+  15.20s  overlay: "dock" (E)
+  15.20s  MARK trip1-docked
+  15.20s  SHOT B-cautious-015.2s-trip1-dock-service.png
+  15.20s  Dock service tab: LANDER TERMINAL / W01 Salvage lander 20 CR Undock Service Hardware Attachments Lander Cargo CARGO TRANSFER Mission objects stay protected. ONBOARD + STORED 380 CR 7 carried · 0 banked Unload hold Bank mission objects; sell minerals and relics. Unload & sell Bank without sale Energy reserve 2.34 → 10 / 10 L. Cost 7.7 CR · 12.3 CR remains. 1 CR per litre. Refuel · 7.7 CR Hull repair 10 → 10 / 10 HP. Cost 0 CR · 20 CR remains. 15 CR per HP. Repair · 0 CR A full basic service currently costs 7.7 CR. Beacon surveyed · Return to the lander
+  15.20s  tasks: "✓Beacon surveyed | ✓Ore banked · 3/3 | ◇Construction · 200 CR ready" (unload & sell)
+  15.20s  next: "Lander → Fund construction" (unload & sell)
+  15.20s  dockPrompt: false (unload & sell)
+  15.20s  MARK first-sale
+  15.20s  SHOT B-cautious-015.2s-trip1-after-sell.png
+  15.20s  After sell: Sold stored cargo for 380 CR. · credits 400 CR
+  15.20s  SHOT B-cautious-015.2s-trip1-hardware-before-m1.png
+  15.20s  Hardware tab before M1: LANDER TERMINAL / W01 Salvage lander 400 CR Undock Service Hardware Attachments Lander Cargo RIG SYSTEMS DRILL · RANK 1 Steel auger assembly 2 speed → 2.8 speed Cut faster and use less energy during each excavation. Blueprint: complete Survey the wreck. Purchase · 750 CR ENERGY · RANK 1 Riveted reservoir 10 L → 16 L Purchase fills the new capacity. Blueprint: complete Survey the wreck. Purchase · 650 CR CARGO · RANK 1 Reinforced cargo bay 7 bulk → 12 bulk Carry more bulk. Package mass still affects handling. Blueprint: complete Survey the wreck. Purchase · 700 CR HULL · RANK 1 Bolted protection 10 HP → 18 HP Purchase fills the new capacity. Blueprint: complete Survey the wreck. Purchase · 45
+  15.20s  SHOT B-cautious-015.2s-trip1-lander-tab.png
+  15.20s  Lander tab: LANDER TERMINAL / W01 Salvage lander 400 CR Undock Service Hardware Attachments Lander Cargo LANDER RESTORATION 01 CURRENT PROJECT Survey the wreck Reach the marked beacon at 100 m and bank any three ore deposits. Unlock R2 and a surface service dock. Objective discoveries are safely banked. Fund construction · 200 CR 02 NEXT PROJECT Recover the lander parts Recover a valve at 250 m and an antenna at 400 m; bank both. Unlock R3 and the star map. Complete the preceding project to begin. 03 NEXT PROJECT Restore the lander Retrieve the navigation core at 600 m and complete construction. Grant Frontier certificate; open W02 and W03. Complete the preceding project to begin. Sold stored cargo for 380 CR.
+  15.20s  MARK M1-funded
+  15.20s  SHOT B-cautious-015.2s-trip1-after-m1.png
+  15.20s  After M1: M1 complete. Construction installed and new blueprints unlocked.
+  15.20s  After refuel: Energy replenished for 7.7 CR. · credits 192.3 CR
+  15.20s  SHOT B-cautious-015.2s-trip1-hardware-after-m1.png
+  15.20s  Purchasable after trip 1: hardware-drill:disabled:Purchase · 750 CR ; hardware-energy:disabled:Purchase · 650 CR ; hardware-cargo:disabled:Purchase · 700 CR ; hardware-hull:disabled:Purchase · 450 CR ; hardware-engine:disabled:Purchase · 500 CR
+  15.20s  Attachments after trip 1: gear-toggle-W01-R1:ENABLED:Unequip ; gear-buy-W01-R2:disabled:Purchase · 400 CR ; gear-buy-W01-R3:disabled:Purchase · 900 CR
+  15.20s  message: "Energy replenished for 7.7 CR." (undock)
+  15.20s  danger: "" (undock)
+  15.20s  objective: "02 / 03 Recover the lander parts" (undock)
+  15.20s  tasks: "○Pressure valve · 250 m | ○Antenna · 400 m | ○Construction · 192.3/300 CR" (undock)
+  15.20s  next: "Excavate the marked debris" (undock)
+  15.20s  signal: "↘down and rightLander pressure valve289 mTracking" (undock)
+  15.20s  dockPrompt: true (undock)
+  15.20s  overlay: "" (undock)
+  15.45s  signal: "↘down and rightLander pressure valve291 mTracking" (idle)
+  15.70s  signal: "↘down and rightLander pressure valve292 mTracking" (idle)
+  15.70s  SHOT B-cautious-015.7s-trip2-start.png
+  15.70s  Trip 2 guidance: next=Excavate the marked debris | signal=↘down and rightLander pressure valve292 mTracking | tasks=○Pressure valve · 250 m | ○Antenna · 400 m | ○Construction · 192.3/300 CR
+  16.20s  signal: "↘down and rightLander pressure valve283 mTracking" (ArrowRight)
+  16.45s  signal: "↘down and rightLander pressure valve280 mTracking" (idle)
+  16.45s  dockPrompt: false (idle)
+  16.95s  signal: "↘down and rightLander pressure valve271 mTracking" (ArrowRight)
+  17.20s  signal: "↓downLander pressure valve266 mTracking" (idle)
+  17.70s  signal: "↓downLander pressure valve259 mTracking" (ArrowRight)
+  17.95s  signal: "↓downLander pressure valve257 mTracking" (idle)
+  18.45s  signal: "↓downLander pressure valve253 mTracking" (ArrowRight)
+  18.70s  signal: "↓downLander pressure valve251 mTracking" (idle)
+  18.85s  signal: "↓downLander pressure valve250 mTracking" (ArrowRight)
+  19.10s  signal: "↓downLander pressure valve249 mTracking" (idle)
+  19.25s  message: "" (ArrowRight)
+  20.70s  trip2: aligned to column 20 after 4 fine taps (rigX 20.4548)
+  20.70s  SHOT B-cautious-020.7s-trip2-aligned.png
+  20.95s  signal: "↓downLander pressure valve247 mTracking" (ArrowDown)
+  21.20s  signal: "↓downLander pressure valve242 mTracking" (ArrowDown)
+  21.45s  signal: "↓downLander pressure valve236 mTracking" (ArrowDown)
+  21.70s  signal: "↓downLander pressure valve224 mTracking" (ArrowDown)
+  21.95s  signal: "↓downLander pressure valve215 mTracking" (ArrowDown)
+  22.20s  signal: "↓downLander pressure valve200 mTracking" (ArrowDown)
+  22.45s  signal: "↓downLander pressure valve188 mTracking" (ArrowDown)
+  22.70s  signal: "↓downLander pressure valve171 mTracking" (ArrowDown)
+  22.95s  signal: "↓downLander pressure valve159 mTracking" (ArrowDown)
+  23.20s  signal: "↓downLander pressure valve149 mTracking" (ArrowDown)
+  24.20s  signal: "↓downLander pressure valve139 mTracking" (ArrowDown)
+  25.20s  signal: "↓downLander pressure valve129 mTracking" (ArrowDown)
+  26.20s  signal: "↓downLander pressure valve119 mTracking" (ArrowDown)
+  27.20s  signal: "↓downLander pressure valve109 mTracking" (ArrowDown)
+  28.45s  signal: "↓downLander pressure valve99 mTracking" (ArrowDown)
+  29.45s  signal: "↓downLander pressure valve89 mTracking" (ArrowDown)
+  30.70s  message: "Lander pressure valve · Signal nearby. Excavate the marked debris." (ArrowDown)
+  30.70s  signal: "↓downLander pressure valve79 mSignal nearby" (ArrowDown)
+  31.70s  signal: "↓downLander pressure valve69 mSignal nearby" (ArrowDown)
+  32.70s  signal: "↓downLander pressure valve59 mSignal nearby" (ArrowDown)
+  33.95s  signal: "↓downLander pressure valve49 mSignal nearby" (ArrowDown)
+  34.70s  message: "" (ArrowDown)
+  34.95s  signal: "↓downLander pressure valve39 mSignal nearby" (ArrowDown)
+  36.20s  message: "Lander pressure valve · Very close. Excavate the marked debris." (ArrowDown)
+  36.20s  signal: "↓downLander pressure valve29 mVery close" (ArrowDown)
+  37.20s  signal: "↓downLander pressure valve19 mVery close" (ArrowDown)
+  38.45s  message: "Lander pressure valve · At target. Excavate the marked debris." (ArrowDown)
+  38.45s  signal: "◉At your positionLander pressure valve9 mAt target" (ArrowDown)
+  39.70s  message: "Lander pressure valve secured · Return to the lander" (ArrowDown)
+  39.70s  tasks: "↑Pressure valve · onboard, bank at lander | ○Antenna · 400 m | ○Construction · 192.3/300 CR" (ArrowDown)
+  39.70s  next: "Return to lander → Bank mission cargo" (ArrowDown)
+  39.70s  signal: "↖up and leftSalvage lander292 mTracking" (ArrowDown)
+  39.70s  MARK valve-onboard
+  40.20s  SHOT B-cautious-040.2s-trip2-valve.png
+  40.70s  signal: "↖up and leftSalvage lander300 mTracking" (ArrowUp)
+  40.95s  signal: "↖up and leftSalvage lander296 mTracking" (ArrowUp)
+  41.20s  signal: "↖up and leftSalvage lander281 mTracking" (ArrowUp)
+  41.45s  signal: "↖up and leftSalvage lander271 mTracking" (ArrowUp)
+  41.70s  signal: "↖up and leftSalvage lander256 mTracking" (ArrowUp)
+  41.95s  signal: "↖up and leftSalvage lander247 mTracking" (ArrowUp)
+  42.20s  signal: "↖up and leftSalvage lander233 mTracking" (ArrowUp)
+  42.45s  signal: "↖up and leftSalvage lander224 mTracking" (ArrowUp)
+  42.70s  signal: "↖up and leftSalvage lander211 mTracking" (ArrowUp)
+  42.95s  signal: "↖up and leftSalvage lander202 mTracking" (ArrowUp)
+  43.20s  signal: "↖up and leftSalvage lander191 mTracking" (ArrowUp)
+  43.45s  signal: "↖up and leftSalvage lander184 mTracking" (ArrowUp)
+  43.70s  message: "" (ArrowUp)
+  43.70s  signal: "↖up and leftSalvage lander174 mTracking" (ArrowUp)
+  43.95s  signal: "↖up and leftSalvage lander168 mTracking" (ArrowUp)
+  44.20s  signal: "←leftSalvage lander161 mTracking" (ArrowUp)
+  44.45s  signal: "←leftSalvage lander157 mTracking" (ArrowUp)
+  44.70s  signal: "←leftSalvage lander153 mTracking" (ArrowUp)
+  44.95s  signal: "←leftSalvage lander151 mTracking" (ArrowUp)
+  45.20s  signal: "←leftSalvage lander150 mTracking" (ArrowUp)
+  45.45s  signal: "←leftSalvage lander151 mTracking" (ArrowUp)
+  45.45s  trip2: out of the shaft · E 3.1 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 192.3
+  45.70s  signal: "←leftSalvage lander147 mTracking" (ArrowLeft)
+  45.95s  signal: "←leftSalvage lander139 mTracking" (ArrowLeft)
+  46.20s  signal: "←leftSalvage lander125 mTracking" (ArrowLeft)
+  46.45s  signal: "←leftSalvage lander115 mTracking" (ArrowLeft)
+  46.70s  signal: "←leftSalvage lander99 mTracking" (ArrowLeft)
+  46.95s  signal: "←leftSalvage lander87 mTracking" (ArrowLeft)
+  47.20s  signal: "←leftSalvage lander71 mSignal nearby" (ArrowLeft)
+  47.45s  signal: "←leftSalvage lander60 mSignal nearby" (ArrowLeft)
+  47.70s  signal: "←leftSalvage lander45 mSignal nearby" (ArrowLeft)
+  47.95s  signal: "←leftSalvage lander35 mSignal nearby" (ArrowLeft)
+  48.10s  message: "Salvage lander · Very close. Land in the illuminated bay to dock." (ArrowLeft)
+  48.10s  signal: "←leftSalvage lander25 mVery close" (ArrowLeft)
+  48.25s  signal: "←leftSalvage lander20 mVery close" (ArrowLeft)
+  48.40s  message: "Salvage lander · Dock available. Dock and bank mission cargo." (ArrowLeft)
+  48.40s  signal: "◉At your positionSalvage lander10 mDock available" (ArrowLeft)
+  48.40s  dockPrompt: true (ArrowLeft)
+  48.65s  signal: "◉At your positionSalvage lander3 mDock available" (idle)
+  48.65s  trip2: at lander, dock prompt=true, small corrections=1 · E 2.8 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 192.3
+  48.65s  overlay: "dock" (E)
+  48.65s  MARK trip2-docked
+  48.65s  Trip 2 dock opened on tab: Attachments
+  48.65s  SHOT B-cautious-048.7s-trip2-dock-opened.png
+  48.65s  MARK second-sale
+  48.65s  Trip 2 sale: Bank your carried packages before selling them. · credits 192.3 CR
+  48.65s  Trip 2 refuel: Energy replenished for 7.3 CR. · credits 185 CR
+  48.65s  SHOT B-cautious-048.7s-trip2-hardware.png
+  48.65s  Purchasable after trip 2: hardware-drill:disabled:Purchase · 750 CR ; hardware-energy:disabled:Purchase · 650 CR ; hardware-cargo:disabled:Purchase · 700 CR ; hardware-hull:disabled:Purchase · 450 CR ; hardware-engine:disabled:Purchase · 500 CR
+  48.65s  Attachments after trip 2: gear-toggle-W01-R1:ENABLED:Unequip ; gear-buy-W01-R2:disabled:Purchase · 400 CR ; gear-buy-W01-R3:disabled:Purchase · 900 CR
+  48.65s  message: "Energy replenished for 7.3 CR." (undock)
+  48.65s  tasks: "✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 185/300 CR" (undock)
+  48.65s  next: "Excavate the marked debris" (undock)
+  48.65s  signal: "↓downLander antenna429 mTracking" (undock)
+  48.65s  overlay: "" (undock)
+  48.90s  signal: "↓downLander antenna430 mTracking" (idle)
+  49.15s  signal: "↓downLander antenna431 mTracking" (idle)
+  49.15s  Trip 3 guidance: next=Excavate the marked debris | signal=↓downLander antenna431 mTracking | tasks=✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 185/300 CR
+  49.65s  signal: "↓downLander antenna425 mTracking" (ArrowRight)
+  49.90s  signal: "↓downLander antenna422 mTracking" (idle)
+  49.90s  dockPrompt: false (idle)
+  50.40s  signal: "↓downLander antenna415 mTracking" (ArrowRight)
+  50.65s  signal: "↓downLander antenna413 mTracking" (idle)
+  51.15s  signal: "↓downLander antenna408 mTracking" (ArrowRight)
+  51.40s  signal: "↓downLander antenna406 mTracking" (idle)
+  51.90s  signal: "↓downLander antenna402 mTracking" (ArrowRight)
+  52.15s  signal: "↓downLander antenna401 mTracking" (idle)
+  52.65s  signal: "↓downLander antenna399 mTracking" (ArrowRight)
+  52.90s  message: "" (idle)
+  53.30s  trip3: aligned to column 21 after 0 fine taps (rigX 21.5139)
+  54.30s  signal: "↓downLander antenna389 mTracking" (ArrowDown)
+  55.30s  signal: "↓downLander antenna379 mTracking" (ArrowDown)
+  56.30s  signal: "↓downLander antenna369 mTracking" (ArrowDown)
+  57.05s  signal: "↓downLander antenna359 mTracking" (ArrowDown)
+  58.05s  signal: "↓downLander antenna349 mTracking" (ArrowDown)
+  59.05s  signal: "↓downLander antenna339 mTracking" (ArrowDown)
+  60.05s  message: "Hold full: 7/7 bulk. Return to the lander to bank your haul." (ArrowDown)
+  60.05s  signal: "↓downLander antenna329 mTracking" (ArrowDown)
+  60.55s  SHOT B-cautious-060.6s-trip3-hold.png
+  61.05s  signal: "↓downLander antenna321 mTracking" (ArrowUp)
+  61.30s  signal: "↓downLander antenna335 mTracking" (ArrowUp)
+  61.55s  signal: "↓downLander antenna347 mTracking" (ArrowUp)
+  61.80s  signal: "↓downLander antenna365 mTracking" (ArrowUp)
+  62.05s  signal: "↓downLander antenna377 mTracking" (ArrowUp)
+  62.30s  signal: "↓downLander antenna395 mTracking" (ArrowUp)
+  62.55s  signal: "↓downLander antenna407 mTracking" (ArrowUp)
+  62.55s  trip3: out of the shaft · E 7.1 / 10 H 10 / 10 D 0 m C 7 / 7 haul 480 CR CR 185
+  62.80s  signal: "↓downLander antenna422 mTracking" (ArrowLeft)
+  63.05s  signal: "↓downLander antenna427 mTracking" (ArrowLeft)
+  63.30s  signal: "↓downLander antenna430 mTracking" (ArrowLeft)
+  63.55s  signal: "↓downLander antenna429 mTracking" (ArrowLeft)
+  63.80s  signal: "↓downLander antenna424 mTracking" (ArrowLeft)
+  64.05s  message: "" (ArrowLeft)
+  64.05s  signal: "↓downLander antenna419 mTracking" (ArrowLeft)
+  64.30s  signal: "↓downLander antenna410 mTracking" (ArrowLeft)
+  64.55s  signal: "↓downLander antenna409 mTracking" (ArrowLeft)
+  64.80s  signal: "↓downLander antenna412 mTracking" (ArrowLeft)
+  65.05s  signal: "↓downLander antenna415 mTracking" (ArrowLeft)
+  65.30s  signal: "↓downLander antenna419 mTracking" (ArrowLeft)
+  65.55s  signal: "↓downLander antenna422 mTracking" (ArrowLeft)
+  65.70s  signal: "↓downLander antenna426 mTracking" (ArrowLeft)
+  65.70s  dockPrompt: true (ArrowLeft)
+  65.95s  signal: "↓downLander antenna428 mTracking" (idle)
+  65.95s  trip3: at lander, dock prompt=true, small corrections=1 · E 6.7 / 10 H 10 / 10 D 0 m C 7 / 7 haul 480 CR CR 185
+  65.95s  overlay: "dock" (E)
+  65.95s  MARK trip3-docked
+  65.95s  MARK third-sale
+  65.95s  Trip 3 sale: Sold stored cargo for 480 CR. · credits 665 CR
+  65.95s  SHOT B-cautious-00066s-trip3-hardware.png
+  65.95s  Purchasable after trip 3: hardware-drill:disabled:Purchase · 750 CR ; hardware-energy:ENABLED:Purchase · 650 CR ; hardware-cargo:disabled:Purchase · 700 CR ; hardware-hull:ENABLED:Purchase · 450 CR ; hardware-engine:ENABLED:Purchase · 500 CR
+  65.95s  MARK first-upgrade
+  65.95s  SHOT B-cautious-00066s-trip3-first-upgrade.png
+  65.95s  First upgrade: hardware-energy -> Salvaged energy installed. · credits 15 CR
+  66.20s  message: "Salvaged energy installed." (idle)
+  66.20s  tasks: "✓Pressure valve · banked | ○Antenna · 400 m | ○Construction · 15/300 CR" (idle)
+  66.20s  signal: "↓downLander antenna430 mTracking" (idle)
+  66.20s  overlay: "" (idle)
+  66.45s  signal: "↓downLander antenna431 mTracking" (idle)
+  66.75s  SHOT B-cautious-066.8s-after-first-upgrade-world.png
+  66.75s  Checkpoint credits 15 hardware {"drill":0,"energy":1,"cargo":0,"hull":0,"engine":0} completed [1]
+  66.75s  FAILED STEPS []
+
+MARKS {"first-ore":1.5,"hold-full":7.25,"beacon":9.25,"trip1-docked":15.2,"first-sale":15.2,"M1-funded":15.2,"valve-onboard":39.7,"trip2-docked":48.65,"second-sale":48.65,"trip3-docked":65.95,"third-sale":65.95,"first-upgrade":65.95}
+ERRORS ["console: Failed to load resource: the server responded with a status of 404 (Not Found)"]

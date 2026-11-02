@@ -1,0 +1,78 @@
+   0.00s  Title screen: THE FRONTIER MOTHERLOAD BROKEN ASTEROID 600 m Recover the core. Restore the lander. DEPLOY RIG › Touch: press to place your joystick, then drag. Up flies · Down drills · Mouse or Arrows / WASD
+   0.00s  objective: "01 / 03 Survey the wreck" (deploy)
+   0.00s  tasks: "○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR" (deploy)
+   0.00s  next: "Approach the wreck beacon to survey" (deploy)
+   0.00s  signal: "↓downWreck survey beacon99 mTracking" (deploy)
+   0.50s  SHOT A-naive-000.5s-first-frame.png
+   1.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   1.50s  signal: "↓downWreck survey beacon89 mTracking" (ArrowDown)
+   1.50s  MARK first-ore
+   1.50s  SHOT A-naive-001.5s-first-ore.png
+   2.50s  message: "Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey." (ArrowDown)
+   2.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   2.50s  signal: "↓downWreck survey beacon79 mSignal nearby" (ArrowDown)
+   3.50s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   3.50s  signal: "↓downWreck survey beacon69 mSignal nearby" (ArrowDown)
+   4.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   4.25s  signal: "↓downWreck survey beacon59 mSignal nearby" (ArrowDown)
+   5.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   5.25s  signal: "↓downWreck survey beacon49 mSignal nearby" (ArrowDown)
+   6.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   6.25s  signal: "↓downWreck survey beacon39 mSignal nearby" (ArrowDown)
+   6.50s  message: "" (ArrowDown)
+   7.25s  message: "Wreck survey beacon · Very close. Approach the wreck beacon to survey." (ArrowDown)
+   7.25s  tasks: "○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   7.25s  signal: "↓downWreck survey beacon29 mVery close" (ArrowDown)
+   7.25s  MARK hold-full
+   7.25s  SHOT A-naive-007.3s-hold-full.png
+   8.25s  signal: "↓downWreck survey beacon19 mVery close" (ArrowDown)
+   9.25s  message: "Beacon surveyed · Return to the lander" (ArrowDown)
+   9.25s  tasks: "✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR" (ArrowDown)
+   9.25s  next: "Return to lander → Bank ore" (ArrowDown)
+   9.25s  signal: "↖up and leftSalvage lander175 mTracking" (ArrowDown)
+   9.25s  MARK beacon-surveyed
+   9.25s  SHOT A-naive-009.3s-beacon-surveyed.png
+  10.25s  signal: "↖up and leftSalvage lander180 mTracking" (ArrowDown)
+  11.25s  message: "Hold full: Bronzium remains here (1 bulk). Return or eject a package." (ArrowDown)
+  11.25s  signal: "↖up and leftSalvage lander186 mTracking" (ArrowDown)
+  12.00s  danger: "Low energy · return to the lander" (ArrowDown)
+  12.00s  MARK danger-low
+  12.25s  signal: "↖up and leftSalvage lander192 mTracking" (ArrowDown)
+  13.25s  signal: "↖up and leftSalvage lander198 mTracking" (ArrowDown)
+  14.25s  signal: "↖up and leftSalvage lander205 mTracking" (ArrowDown)
+  15.25s  message: "" (ArrowDown)
+  15.25s  danger: "Energy critical · return to the lander" (ArrowDown)
+  15.50s  signal: "↖up and leftSalvage lander212 mTracking" (ArrowDown)
+  16.50s  signal: "↖up and leftSalvage lander219 mTracking" (ArrowDown)
+  17.50s  signal: "↖up and leftSalvage lander227 mTracking" (ArrowDown)
+  18.50s  signal: "↖up and leftSalvage lander234 mTracking" (ArrowDown)
+  19.75s  signal: "↖up and leftSalvage lander242 mTracking" (ArrowDown)
+  20.00s  danger: "Energy depleted · request recovery" (ArrowDown)
+  20.00s  disabled: true (ArrowDown)
+  20.00s  MARK disabled
+  20.00s  At failure: E 0.0 / 10 H 10 / 10 D 190 m C 7 / 7 haul 380 CR CR 20
+  20.50s  SHOT A-naive-020.5s-disabled.png
+  20.50s  Disabled overlay: Energy depleted Cost 20 CR · Energy 5/10 L · Hull 10/10 HP. Carried cargo lost; mission objects returned. Request recovery Pause / save
+  20.50s  SHOT A-naive-020.5s-recovery-confirm.png
+  20.50s  Confirm dialog: EXPEDITION DECISION Call surface recovery? Recovery costs 20 CR; 0 CR remains. Energy 5/10 L · Hull 10/10 HP. Healthy resources above half capacity are preserved. Carried ordinary cargo and relics are lost; unbanked mission objects return to their marked sources. Banked cargo, equipment and progress are kept. Cancel Confirm
+  20.50s  message: "Recovered for 20 CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%." (after recovery confirm)
+  20.50s  danger: "" (after recovery confirm)
+  20.50s  tasks: "✓Beacon surveyed | ○Bank ore · 0/3 | ○Construction · 0/200 CR" (after recovery confirm)
+  20.50s  next: "Mine 3 ore packages and bank them" (after recovery confirm)
+  20.50s  signal: "" (after recovery confirm)
+  20.50s  overlay: "menu" (after recovery confirm)
+  20.50s  disabled: false (after recovery confirm)
+  20.50s  SHOT A-naive-020.5s-after-recovery-menu.png
+  20.50s  Menu header: PILOT CONSOLE Expedition restored · paused Resume expedition Energy 5/10 L · Hull 10/10 HP · Cargo 0/7
+  20.75s  dockPrompt: true (idle)
+  20.75s  overlay: "" (idle)
+  21.50s  SHOT A-naive-021.5s-after-recovery-world.png
+  21.50s  After recovery: E 5.0 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 0
+  21.50s  Guidance after recovery: next=Mine 3 ore packages and bank them | signal= | tasks=✓Beacon surveyed | ○Bank ore · 0/3 | ○Construction · 0/200 CR
+  22.00s  dockPrompt: false (ArrowDown)
+  24.50s  message: "" (ArrowDown)
+  24.50s  SHOT A-naive-024.5s-drill-at-lander.png
+  24.50s  Drilling at the lander: E 4.1 / 10 H 10 / 10 D 30 m C 0 / 7 haul 0 CR CR 0
+
+MARKS {"first-ore":1.5,"hold-full":7.25,"beacon-surveyed":9.25,"danger-low":12,"disabled":20}
+ERRORS ["console: Failed to load resource: the server responded with a status of 404 (Not Found)"]

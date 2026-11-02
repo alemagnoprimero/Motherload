@@ -1,0 +1,851 @@
+{
+ "probe": {
+  "viewport": {
+   "w": 393,
+   "h": 851,
+   "dpr": 2
+  },
+  "named": {
+   "hud": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 10,
+     "w": 323,
+     "h": 45
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY6.0 / 10 HULL10 / 10 Depth0 m Cargo0 / 7 HAUL0 CR CRCredits20"
+   },
+   "energyVital": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 10,
+     "w": 137,
+     "h": 19
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "ENERGY6.0 / 10"
+   },
+   "hullVital": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 36,
+     "w": 137,
+     "h": 19
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HULL10 / 10"
+   },
+   "energyValue": {
+    "visible": true,
+    "box": {
+     "x": 107,
+     "y": 10,
+     "w": 40,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "6.0 / 10"
+   },
+   "hullValue": {
+    "visible": true,
+    "box": {
+     "x": 110.3,
+     "y": 36,
+     "w": 36.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "10 / 10"
+   },
+   "energyMeter": {
+    "visible": true,
+    "box": {
+     "x": 34,
+     "y": 27,
+     "w": 113,
+     "h": 2
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "hullMeter": {
+    "visible": true,
+    "box": {
+     "x": 34,
+     "y": 53,
+     "w": 113,
+     "h": 2
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(196, 212, 211, 0.165)",
+    "text": ""
+   },
+   "rightCluster": {
+    "visible": true,
+    "box": {
+     "x": 194.4,
+     "y": 10,
+     "w": 138.6,
+     "h": 40
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Depth0 m Cargo0 / 7 HAUL0 CR CRCredits20"
+   },
+   "depth": {
+    "visible": true,
+    "box": {
+     "x": 217.4,
+     "y": 13.5,
+     "w": 20.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "0 m"
+   },
+   "cargo": {
+    "visible": true,
+    "box": {
+     "x": 290.7,
+     "y": 13.5,
+     "w": 23.4,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "0 / 7"
+   },
+   "haul": {
+    "visible": true,
+    "box": {
+     "x": 232.4,
+     "y": 36,
+     "w": 27.3,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "0 CR"
+   },
+   "credits": {
+    "visible": true,
+    "box": {
+     "x": 289.1,
+     "y": 36,
+     "w": 13.4,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "20"
+   },
+   "objective": {
+    "visible": true,
+    "box": {
+     "x": 10,
+     "y": 72,
+     "w": 259.5,
+     "h": 137.3
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "01 / 03Survey the wreck○Survey beacon · 100 m○Bank ore · 0/3○Construction · 20/200 CR↓downWreck survey beacon99 mTrackingApproach the wreck beacon to surveyUnlo"
+   },
+   "objectiveTitle": {
+    "visible": true,
+    "box": {
+     "x": 81.7,
+     "y": 72,
+     "w": 98.7,
+     "h": 14
+    },
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Survey the wreck"
+   },
+   "tasks": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 91,
+     "w": 232.5,
+     "h": 54.6
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "○Survey beacon · 100 m○Bank ore · 0/3○Construction · 20/200 CR"
+   },
+   "signal": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 152.6,
+     "w": 232.5,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(197, 216, 202)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "↓downWreck survey beacon99 mTracking"
+   },
+   "next": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 173.8,
+     "w": 232.5,
+     "h": 16.2
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Approach the wreck beacon to survey"
+   },
+   "reward": {
+    "visible": true,
+    "box": {
+     "x": 37,
+     "y": 191.9,
+     "w": 232.5,
+     "h": 17.4
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(168, 188, 176)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "Unlock: rank 1 hardware + anchoring feet"
+   },
+   "toolbar": {
+    "visible": true,
+    "box": {
+     "x": 105.1,
+     "y": 739,
+     "w": 182.7,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLSalvaged auger MOBILITYNo attachment HOLDPrecision UTILITYCondenser active PROCESSOROpen cargo bay"
+   },
+   "drillSlot": {
+    "visible": true,
+    "box": {
+     "x": 105.1,
+     "y": 739,
+     "w": 128.7,
+     "h": 44
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(237, 245, 237)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "DRILLSalvaged auger"
+   },
+   "feet": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "MOBILITYNo attachment"
+   },
+   "precision": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": "HOLDPrecision"
+   },
+   "map": {
+    "visible": true,
+    "box": {
+     "x": 243.9,
+     "y": 739,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(232, 239, 234)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "menuButton": {
+    "visible": true,
+    "box": {
+     "x": 345,
+     "y": 4,
+     "w": 44,
+     "h": 44
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(212, 224, 213)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "message": {
+    "visible": false,
+    "box": {
+     "x": 196.5,
+     "y": 727,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "color": "rgb(240, 220, 169)",
+    "background": "rgba(0, 0, 0, 0)",
+    "text": ""
+   },
+   "danger": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(255, 213, 175)",
+    "background": "rgba(20, 33, 39, 0.875)",
+    "text": ""
+   },
+   "extraction": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(215, 243, 232)",
+    "background": "rgba(10, 32, 41, 0.91)",
+    "text": "Release drill"
+   },
+   "release": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(22, 43, 49)",
+    "background": "rgb(230, 182, 101)",
+    "text": "Release drill"
+   },
+   "dockPrompt": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "13px",
+    "fontWeight": "700",
+    "color": "rgb(244, 210, 149)",
+    "background": "rgba(13, 26, 27, 0.44)",
+    "text": "TAPDock"
+   },
+   "disabled": {
+    "visible": false,
+    "box": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "color": "rgb(233, 239, 223)",
+    "background": "rgba(16, 30, 37, 0.95)",
+    "text": "Rig disabledRequest recoveryLander servicesPause / save"
+   }
+  },
+  "leaves": [
+   {
+    "id": "SPAN",
+    "root": "campaign-hud",
+    "text": "ENERGY",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(195, 209, 201)",
+    "box": {
+     "x": 34,
+     "y": 10,
+     "w": 50.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-energy",
+    "root": "campaign-hud",
+    "text": "6.0 / 10",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 106.96875,
+     "y": 10,
+     "w": 40.03125,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-hud",
+    "text": "HULL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(195, 209, 201)",
+    "box": {
+     "x": 34,
+     "y": 36,
+     "w": 30.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-hull",
+    "root": "campaign-hud",
+    "text": "10 / 10",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 110.296875,
+     "y": 36,
+     "w": 36.703125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-depth",
+    "root": "campaign-hud",
+    "text": "0 m",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 217.4375,
+     "y": 13.5,
+     "w": 20.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-cargo",
+    "root": "campaign-hud",
+    "text": "0 / 7",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 290.71875,
+     "y": 13.5,
+     "w": 23.359375,
+     "h": 14
+    }
+   },
+   {
+    "id": "hud-mini-label",
+    "root": "campaign-hud",
+    "text": "HAUL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(184, 202, 194)",
+    "box": {
+     "x": 194.4375,
+     "y": 36,
+     "w": 33.9375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-haul",
+    "root": "campaign-hud",
+    "text": "0 CR",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 232.375,
+     "y": 36,
+     "w": 27.34375,
+     "h": 14
+    }
+   },
+   {
+    "id": "credit-mark",
+    "root": "campaign-hud",
+    "text": "CR",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(234, 194, 140)",
+    "box": {
+     "x": 267.71875,
+     "y": 36,
+     "w": 17.34375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-credits",
+    "root": "campaign-hud",
+    "text": "20",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 289.0625,
+     "y": 36,
+     "w": 13.359375,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-step",
+    "root": "campaign-objective",
+    "text": "01 / 03",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(212, 185, 130)",
+    "box": {
+     "x": 37,
+     "y": 72,
+     "w": 36.703125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-title",
+    "root": "campaign-objective",
+    "text": "Survey the wreck",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(237, 245, 237)",
+    "box": {
+     "x": 81.703125,
+     "y": 72,
+     "w": 98.71875,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 39.375,
+     "y": 92,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Survey beacon · 100 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 55,
+     "y": 92,
+     "w": 124.078125,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 39.375,
+     "y": 111.1875,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Bank ore · 0/3",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 55,
+     "y": 111.1875,
+     "w": 75.375,
+     "h": 14
+    }
+   },
+   {
+    "id": "mission-status",
+    "root": "campaign-objective",
+    "text": "○",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(166, 188, 177)",
+    "box": {
+     "x": 39.375,
+     "y": 130.375,
+     "w": 7.25,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-objective",
+    "text": "Construction · 20/200 CR",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(220, 231, 219)",
+    "box": {
+     "x": 55,
+     "y": 130.375,
+     "w": 135.40625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-direction",
+    "root": "campaign-objective",
+    "text": "↓",
+    "fontSize": 16,
+    "fontWeight": "400",
+    "color": "rgb(237, 193, 138)",
+    "box": {
+     "x": 41,
+     "y": 151.65625,
+     "w": 8,
+     "h": 17
+    }
+   },
+   {
+    "id": "campaign-signal-target",
+    "root": "campaign-objective",
+    "text": "Wreck survey beacon",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(197, 216, 202)",
+    "box": {
+     "x": 60,
+     "y": 153.5625,
+     "w": 123.1875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-distance",
+    "root": "campaign-objective",
+    "text": "99 m",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(175, 195, 183)",
+    "box": {
+     "x": 190.1875,
+     "y": 153.5625,
+     "w": 26.6875,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-signal-proximity",
+    "root": "campaign-objective",
+    "text": "Tracking",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(161, 184, 170)",
+    "box": {
+     "x": 223.875,
+     "y": 153.5625,
+     "w": 45.578125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-next",
+    "root": "campaign-objective",
+    "text": "Approach the wreck beacon to survey",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(240, 208, 153)",
+    "box": {
+     "x": 37,
+     "y": 174.75,
+     "w": 200.78125,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-objective-reward",
+    "root": "campaign-objective",
+    "text": "Unlock: rank 1 hardware + anchoring feet",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(168, 188, 176)",
+    "box": {
+     "x": 37,
+     "y": 192.9375,
+     "w": 219.796875,
+     "h": 14
+    }
+   },
+   {
+    "id": "SPAN",
+    "root": "campaign-toolbar",
+    "text": "DRILL",
+    "fontSize": 12,
+    "fontWeight": "400",
+    "color": "rgb(159, 181, 171)",
+    "box": {
+     "x": 142.140625,
+     "y": 746,
+     "w": 34.015625,
+     "h": 14
+    }
+   },
+   {
+    "id": "campaign-drill-name",
+    "root": "campaign-toolbar",
+    "text": "Salvaged auger",
+    "fontSize": 12,
+    "fontWeight": "700",
+    "color": "rgb(230, 236, 221)",
+    "box": {
+     "x": 142.140625,
+     "y": 762,
+     "w": 88.71875,
+     "h": 14
+    }
+   }
+  ],
+  "game": {
+   "campaignArt": "ready",
+   "pointerActive": "false",
+   "pointerDirections": "",
+   "joystickVisible": "false",
+   "joystickCenterX": "",
+   "joystickCenterY": "",
+   "joystickKnobX": "",
+   "joystickKnobY": "",
+   "rigScreenX": "196.50",
+   "rigScreenY": "458.86",
+   "rigWorldX": "20.5000",
+   "rigWorldY": "-0.3600",
+   "campaignWorld": "W01",
+   "worldWidth": "40",
+   "worldRows": "60",
+   "worldTexture": "campaign-w01",
+   "volatileCue": "false",
+   "volatileRemaining": "",
+   "precisionActive": "false",
+   "coldWarning": "false",
+   "poiLandmarks": "",
+   "poiSourceMarkers": "",
+   "poiScreenTargets": "[]",
+   "poiSignalTarget": "W01-BEACON",
+   "poiSignalBand": "distant",
+   "poiTargetKnown": "false",
+   "poiTargetVisible": "false",
+   "poiMarkerVisible": "false",
+   "poiMarkerX": "",
+   "poiMarkerY": "",
+   "worldCallout": "false",
+   "inspection": ""
+  },
+  "canvas": {
+   "width": 393,
+   "height": 851,
+   "cssW": 393,
+   "cssH": 851
+  },
+  "body": {
+   "mode": "campaign",
+   "campaignDanger": "false",
+   "campaignDisabled": "false",
+   "campaignResumeRequired": "false",
+   "campaignWorld": "W01",
+   "campaignExtraction": "false",
+   "campaignVolatile": "none",
+   "campaignPrecision": "false",
+   "campaignPaused": "false",
+   "campaignBusy": "false",
+   "classes": "campaign-high-contrast campaign-large-text"
+  }
+ },
+ "errors": []
+}

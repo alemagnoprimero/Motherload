@@ -1,0 +1,26 @@
+{
+ "W01": {
+  "shaft": {
+   "presentPct": 72,
+   "seenPct": 4.5,
+   "seenWhenPresentPct": 6.3
+  },
+  "comb": {
+   "presentPct": 72,
+   "seenPct": 31.5,
+   "seenWhenPresentPct": 43.8
+  }
+ },
+ "W02": {
+  "shaft": {
+   "presentPct": 73,
+   "seenPct": 6,
+   "seenWhenPresentPct": 8.2
+  },
+  "comb": {
+   "presentPct": 73,
+   "seenPct": 26,
+   "seenWhenPresentPct": 35.6
+  }
+ }
+}

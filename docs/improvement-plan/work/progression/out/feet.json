@@ -1,0 +1,20 @@
+{
+ "plain": {
+  "climbSeconds": 5.333,
+  "climbEnergy": 1.0075,
+  "framesWithFeetDeployedWhileClimbing": 0
+ },
+ "feet": {
+  "climbSeconds": 5.333,
+  "climbEnergy": 1.0073,
+  "framesWithFeetDeployedWhileClimbing": 0
+ },
+ "plainStop": {
+  "stopSeconds": 1.45,
+  "slideTiles": 1.527
+ },
+ "feetStop": {
+  "stopSeconds": 0.8,
+  "slideTiles": 1.228
+ }
+}

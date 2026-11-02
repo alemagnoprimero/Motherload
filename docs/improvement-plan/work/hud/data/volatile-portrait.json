@@ -1,0 +1,21 @@
+{
+ "errors": [],
+ "got": {
+  "cutting": true,
+  "release": true
+ },
+ "after": {
+  "energy": "9.5 / 10",
+  "hull": "10 / 10",
+  "cargo": "4 / 7",
+  "depth": "250 m",
+  "danger": "",
+  "message": "Volatile seam complete! Release drilling now to preserve it (0.75 s).",
+  "messageVisible": true,
+  "energyCritical": false,
+  "extraction": "",
+  "disabled": "false",
+  "next": "Excavate the marked Helion sample pods",
+  "signal": "↑upHelion thermal sample 3101 mTracking"
+ }
+}

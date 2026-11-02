@@ -1,0 +1,37 @@
+{
+ "g04-w02-depth-row6": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "10.5000",
+  "rigWorldY": "6.6400",
+  "world": "W02"
+ },
+ "g04-w02-depth-row50": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "10.5000",
+  "rigWorldY": "50.6400",
+  "world": "W02"
+ },
+ "g04-w02-depth-row94": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "10.5000",
+  "rigWorldY": "94.6400",
+  "world": "W02"
+ },
+ "g07-w02-ores-lit": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "11.5000",
+  "rigWorldY": "40.6400",
+  "world": "W02"
+ },
+ "g07-w01-ores-lit": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "11.5000",
+  "rigWorldY": "40.6400",
+  "world": "W01"
+ }
+}

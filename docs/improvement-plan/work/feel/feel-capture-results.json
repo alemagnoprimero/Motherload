@@ -1,0 +1,144 @@
+{
+  "renderer": {
+    "contextRequests": [
+      "2d:false"
+    ],
+    "canvas2dAvailable": false
+  },
+  "soundButtonText": "Enable sound",
+  "surfaceFraming": {
+    "rigScreenX": "720.00",
+    "rigScreenY": "422.16",
+    "rigWorldY": "-0.3600",
+    "viewport": "1440x900",
+    "tile": 65
+  },
+  "drawCallsSurface": {
+    "draws": 60,
+    "frames": 40,
+    "perFrame": 1.5
+  },
+  "midCut": {
+    "rigWorldY": "0.1400"
+  },
+  "drawCallsDrilling": {
+    "draws": 60,
+    "frames": 40,
+    "perFrame": 1.5
+  },
+  "afterDrilling": {
+    "rigWorldY": "4.6400",
+    "rigScreenY": "423.29"
+  },
+  "mouseHoldLatency": [
+    {
+      "t": 0,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 20,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 40,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 60,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 80,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 100,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 120,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 140,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 160,
+      "active": "false",
+      "dirs": ""
+    },
+    {
+      "t": 180,
+      "active": "true",
+      "dirs": "down"
+    },
+    {
+      "t": 200,
+      "active": "true",
+      "dirs": "down"
+    },
+    {
+      "t": 220,
+      "active": "true",
+      "dirs": "down"
+    },
+    {
+      "t": 240,
+      "active": "true",
+      "dirs": "down"
+    },
+    {
+      "t": 260,
+      "active": "true",
+      "dirs": "down"
+    },
+    {
+      "t": 280,
+      "active": "true",
+      "dirs": "down"
+    },
+    {
+      "t": 300,
+      "active": "true",
+      "dirs": "down"
+    }
+  ],
+  "audioContextsBeforeEnable": 0,
+  "audioContextsAfterEnable": 1,
+  "soundButtonAfter": "Mute sound",
+  "preferencesStored": "{\"keys\":{\"left\":[\"ArrowLeft\",\"a\"],\"right\":[\"ArrowRight\",\"d\"],\"up\":[\"ArrowUp\",\"w\"],\"down\":[\"ArrowDown\",\"s\"],\"mobility\":[\" \"],\"primary\":[\"q\"],\"secondary\":[\"r\"],\"interact\":[\"e\",\"Enter\"],\"map\":[\"Tab\"],\"pause\":[\"Escape\",\"p\"]},\"drillToggle\":false,\"braceToggle\":false,\"reducedMotion\":false,\"highContrast\":false,\"largeText\":false,\"showDirectionButtons\":false,\"effects\":0.5,\"ambience\":0.3,\"music\":0.15}",
+  "errors": [],
+  "soundButtonFreshSession": "Enable sound",
+  "audioRender": {
+    "drilling-hum+ambience": {
+      "peakDbfs": -30.3,
+      "rmsDbfs": -37.3,
+      "energyBelow150Hz": "98.7%",
+      "energy150to300Hz": "1.1%",
+      "energyAbove300Hz": "0.2%"
+    },
+    "idle-underground": {
+      "peakDbfs": -38.6,
+      "rmsDbfs": -46.6,
+      "energyBelow150Hz": "99.9%",
+      "energy150to300Hz": "0%",
+      "energyAbove300Hz": "0%"
+    },
+    "music-note-only-trigger": {
+      "peakDbfs": -32.6,
+      "rmsDbfs": -46.4,
+      "energyBelow150Hz": "99.9%",
+      "energy150to300Hz": "0%",
+      "energyAbove300Hz": "0%"
+    }
+  }
+}

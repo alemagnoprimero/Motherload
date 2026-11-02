@@ -1,0 +1,37 @@
+{
+ "g05-surface-2560x1440": {
+  "rigScreenX": "1280.00",
+  "rigScreenY": "670.56",
+  "rigWorldX": "20.5000",
+  "rigWorldY": "-0.3600",
+  "world": "W01"
+ },
+ "g05-surface-1920x1080": {
+  "rigScreenX": "960.00",
+  "rigScreenY": "504.96",
+  "rigWorldX": "20.5000",
+  "rigWorldY": "-0.3600",
+  "world": "W01"
+ },
+ "g05-surface-1280x1024": {
+  "rigScreenX": "640.00",
+  "rigScreenY": "479.20",
+  "rigWorldX": "20.5000",
+  "rigWorldY": "-0.3600",
+  "world": "W01"
+ },
+ "g06-phone-dpr3": {
+  "rigScreenX": "196.50",
+  "rigScreenY": "464.02",
+  "rigWorldX": "20.5000",
+  "rigWorldY": "4.6100",
+  "world": "W01"
+ },
+ "g09-damage-stage3": {
+  "rigScreenX": "720.00",
+  "rigScreenY": "422.16",
+  "rigWorldX": "10.5000",
+  "rigWorldY": "20.6400",
+  "world": "W01"
+ }
+}

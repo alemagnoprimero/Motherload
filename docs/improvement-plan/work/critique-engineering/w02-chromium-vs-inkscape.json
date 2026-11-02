@@ -1,0 +1,66 @@
+{
+ "ice-0": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.22,
+   0.19,
+   0.17
+  ],
+  "share_px_diff_gt24": 0.0
+ },
+ "frozen-rock-0": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.16,
+   0.16,
+   0.14
+  ],
+  "share_px_diff_gt24": 0.0
+ },
+ "ore-o3": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.4,
+   0.49,
+   0.41
+  ],
+  "share_px_diff_gt24": 0.0018
+ },
+ "rig-hull-2": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.06,
+   0.06,
+   0.05
+  ],
+  "share_px_diff_gt24": 0.0
+ },
+ "dock-stage-3": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.16,
+   0.21,
+   0.17
+  ],
+  "share_px_diff_gt24": 0.0007
+ },
+ "w02-sky": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.32,
+   0.33,
+   0.32
+  ],
+  "share_px_diff_gt24": 0.0
+ },
+ "w02-ridge-far": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.01,
+   0.01,
+   0.01
+  ],
+  "share_px_diff_gt24": 0.0
+ },
+ "w02-ridge-near": {
+  "mean_abs_diff_rgb_over_grey": [
+   0.01,
+   0.01,
+   0.01
+  ],
+  "share_px_diff_gt24": 0.0
+ }
+}

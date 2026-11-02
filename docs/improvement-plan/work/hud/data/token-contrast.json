@@ -1,0 +1,42 @@
+{
+ "text": {
+  "on_plate_over_white": 10.67,
+  "on_plate_over_stone": 15.63
+ },
+ "dim": {
+  "on_plate_over_white": 6.63,
+  "on_plate_over_stone": 9.7
+ },
+ "label": {
+  "on_plate_over_white": 5.4,
+  "on_plate_over_stone": 7.91
+ },
+ "energy": {
+  "on_plate_over_white": 7.22,
+  "on_plate_over_stone": 10.57
+ },
+ "hull": {
+  "on_plate_over_white": 5.64,
+  "on_plate_over_stone": 8.25
+ },
+ "credit": {
+  "on_plate_over_white": 7.17,
+  "on_plate_over_stone": 10.5
+ },
+ "mission": {
+  "on_plate_over_white": 8.03,
+  "on_plate_over_stone": 11.76
+ },
+ "ok": {
+  "on_plate_over_white": 7.62,
+  "on_plate_over_stone": 11.16
+ },
+ "caution": {
+  "on_plate_over_white": 7.55,
+  "on_plate_over_stone": 11.06
+ },
+ "danger": {
+  "on_plate_over_white": 4.21,
+  "on_plate_over_stone": 6.17
+ }
+}

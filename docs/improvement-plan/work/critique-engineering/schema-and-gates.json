@@ -1,0 +1,49 @@
+{
+  "additiveProgressField": "accepted",
+  "additiveFieldSurvivesDecode": [
+    "W01"
+  ],
+  "topLevelBalance02": "rejected: This campaign version is unsupported. Its saved data has been kept.",
+  "packageBalance02": "rejected: Campaign cargo package is invalid.",
+  "generatorVersion2": "rejected: This campaign version is unsupported. Its saved data has been kept.",
+  "tile4": "rejected: Campaign terrain or package identities are invalid.",
+  "missingNestedField": "rejected: Campaign progression is invalid.",
+  "storedPackageFields": {
+    "sample": [
+      {
+        "itemId": "W01-O1",
+        "name": "Ironium",
+        "value": 300,
+        "bulk": 1,
+        "mass": 1,
+        "balanceVersion": "0.1"
+      },
+      {
+        "itemId": "W01-O1",
+        "name": "Ironium",
+        "value": 300,
+        "bulk": 1,
+        "mass": 1,
+        "balanceVersion": "0.1"
+      }
+    ],
+    "distinctNames": [
+      "Ironium",
+      "Bronzium",
+      "Silverium",
+      "Goldium"
+    ]
+  },
+  "namesAfterInMemoryRename": [
+    "Ironium"
+  ],
+  "startEnergy": 6,
+  "energyRank0": 10,
+  "gateBaseline": "accepted",
+  "gateA3ConfigOnly": "rejected: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    2000,\n+   9000,\n+   16000\n-   3000,\n-   5000\n  ]\n",
+  "gateA3ConfigAndJson": "rejected: Expected values to be strictly equal:\n\n16050 !== 21150\n",
+  "gateA4FeetPrice": "rejected: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    0,\n+   2500,\n-   4000,\n    9000\n  ]\n",
+  "gateA4CondenserPrice": "rejected: Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      id: 'W02-R1',\n      price: 12000,\n      requires: null,\n...\n      id: 'W02-R2',\n+     price: 16000,\n-     price: 22000,\n      requires: 'W02-R1',\n      slot: 'utility'\n    },\n    {\n      id: 'W02-R3',\n",
+  "gateA5Bulk": "rejected: Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n+     bulk: 1,\n-     bulk: 2,\n      id: 'W02-O1',\n      mass: 2,\n      tags: [\n        'ordinary'\n      ],\n...\n    {\n+     bulk: 1,\n-     bulk: 2,\n      id: 'W02-O2',\n      mass: 2.3,\n      tags: [\n        'ordinary'\n      ],\n",
+  "gateRestored": "accepted"
+}

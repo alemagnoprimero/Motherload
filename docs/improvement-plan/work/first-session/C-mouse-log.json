@@ -1,0 +1,715 @@
+{
+ "name": "C-mouse",
+ "viewport": {
+  "width": 1440,
+  "height": 900
+ },
+ "marks": {
+  "beacon-mouse": 10.95
+ },
+ "errors": [
+  "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "log": [
+  {
+   "t": 0,
+   "text": "objective: \"01 / 03 Survey the wreck\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "tasks: \"○Survey beacon · 100 m | ○Bank ore · 0/3 | ○Construction · 20/200 CR\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "next: \"Approach the wreck beacon to survey\" (deploy)"
+  },
+  {
+   "t": 0,
+   "text": "signal: \"↓downWreck survey beacon99 mTracking\" (deploy)"
+  },
+  {
+   "t": 0.5,
+   "text": "rig at screen (720,422.16)"
+  },
+  {
+   "t": 0.8,
+   "text": "callout: \"Ironium · 30 CR · 1 bulk\" (click ore-below-rig)"
+  },
+  {
+   "t": 0.8,
+   "text": "short click ore-below-rig at (720,482) -> overlay= callout=\"Ironium · 30 CR · 1 bulk\""
+  },
+  {
+   "t": 0.8,
+   "text": "SHOT C-mouse-000.8s-inspect-ore.png"
+  },
+  {
+   "t": 1.1,
+   "text": "callout: \"\" (click on-rig)"
+  },
+  {
+   "t": 1.1,
+   "text": "short click on-rig at (720,422) -> overlay= callout=\"\""
+  },
+  {
+   "t": 2.15,
+   "text": "mouse hold-15px-below at offset (0,15) · rig screen drift samples [0,0,0,0]"
+  },
+  {
+   "t": 2.15,
+   "text": "after hold 15px below: E 6.0 / 10 H 10 / 10 D 0 m C 0 / 7 haul 0 CR CR 20"
+  },
+  {
+   "t": 3.4,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 1 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 3.4,
+   "text": "signal: \"↓downWreck survey beacon89 mTracking\" (mouse hold-below)"
+  },
+  {
+   "t": 4.4,
+   "text": "message: \"Wreck survey beacon · Signal nearby. Approach the wreck beacon to survey.\" (mouse hold-below)"
+  },
+  {
+   "t": 4.4,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 2 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 4.4,
+   "text": "signal: \"↓downWreck survey beacon79 mSignal nearby\" (mouse hold-below)"
+  },
+  {
+   "t": 5.15,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 3 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 5.15,
+   "text": "signal: \"↓downWreck survey beacon69 mSignal nearby\" (mouse hold-below)"
+  },
+  {
+   "t": 6.15,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 4 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 6.15,
+   "text": "signal: \"↓downWreck survey beacon59 mSignal nearby\" (mouse hold-below)"
+  },
+  {
+   "t": 7.15,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 5 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 7.15,
+   "text": "signal: \"↓downWreck survey beacon49 mSignal nearby\" (mouse hold-below)"
+  },
+  {
+   "t": 7.9,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 6 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 7.9,
+   "text": "signal: \"↓downWreck survey beacon39 mSignal nearby\" (mouse hold-below)"
+  },
+  {
+   "t": 8.4,
+   "text": "message: \"\" (mouse hold-below)"
+  },
+  {
+   "t": 8.9,
+   "text": "message: \"Wreck survey beacon · Very close. Approach the wreck beacon to survey.\" (mouse hold-below)"
+  },
+  {
+   "t": 8.9,
+   "text": "tasks: \"○Survey beacon · 100 m | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 8.9,
+   "text": "signal: \"↓downWreck survey beacon29 mVery close\" (mouse hold-below)"
+  },
+  {
+   "t": 9.9,
+   "text": "signal: \"↓downWreck survey beacon19 mVery close\" (mouse hold-below)"
+  },
+  {
+   "t": 10.9,
+   "text": "message: \"Beacon surveyed · Return to the lander\" (mouse hold-below)"
+  },
+  {
+   "t": 10.9,
+   "text": "tasks: \"✓Beacon surveyed | ↑Bank ore · 0/3 · 7 onboard | ○Construction · 20/200 CR\" (mouse hold-below)"
+  },
+  {
+   "t": 10.9,
+   "text": "next: \"Return to lander → Bank ore\" (mouse hold-below)"
+  },
+  {
+   "t": 10.9,
+   "text": "signal: \"↖up and leftSalvage lander175 mTracking\" (mouse hold-below)"
+  },
+  {
+   "t": 10.95,
+   "text": "mouse hold-below at offset (0,160) · rig screen drift samples [4,7,7,7,7,7,7,7,7,7,7,7]"
+  },
+  {
+   "t": 10.95,
+   "text": "MARK beacon-mouse"
+  },
+  {
+   "t": 10.95,
+   "text": "SHOT C-mouse-00011s-mouse-drilled.png"
+  },
+  {
+   "t": 11.95,
+   "text": "signal: \"↖up and leftSalvage lander180 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 12.2,
+   "text": "signal: \"↖up and leftSalvage lander174 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 12.45,
+   "text": "signal: \"↖up and leftSalvage lander169 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 12.7,
+   "text": "signal: \"←leftSalvage lander161 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 12.95,
+   "text": "signal: \"←leftSalvage lander157 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 13.2,
+   "text": "signal: \"←leftSalvage lander153 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 13.45,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 13.7,
+   "text": "signal: \"←leftSalvage lander150 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 13.95,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (mouse hold-above)"
+  },
+  {
+   "t": 14,
+   "text": "mouse hold-above at offset (0,-160) · rig screen drift samples [0,0,0,-8,-33,-44,-46,-46,-46,-46,-46,-46]"
+  },
+  {
+   "t": 14,
+   "text": "SHOT C-mouse-00014s-mouse-out-of-shaft.png"
+  },
+  {
+   "t": 14.25,
+   "text": "signal: \"←leftSalvage lander152 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 14.5,
+   "text": "signal: \"←leftSalvage lander148 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 14.75,
+   "text": "signal: \"←leftSalvage lander138 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 15,
+   "text": "message: \"\" (mouse hold-up-left)"
+  },
+  {
+   "t": 15,
+   "text": "danger: \"Low energy · return to the lander\" (mouse hold-up-left)"
+  },
+  {
+   "t": 15,
+   "text": "signal: \"↙down and leftSalvage lander126 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 15.25,
+   "text": "signal: \"↙down and leftSalvage lander117 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 15.5,
+   "text": "signal: \"↙down and leftSalvage lander104 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 15.75,
+   "text": "signal: \"↙down and leftSalvage lander95 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 16,
+   "text": "signal: \"↙down and leftSalvage lander83 mTracking\" (mouse hold-up-left)"
+  },
+  {
+   "t": 16.25,
+   "text": "signal: \"↙down and leftSalvage lander76 mSignal nearby\" (mouse hold-up-left)"
+  },
+  {
+   "t": 16.5,
+   "text": "signal: \"↙down and leftSalvage lander65 mSignal nearby\" (mouse hold-up-left)"
+  },
+  {
+   "t": 16.55,
+   "text": "mouse hold-up-left at offset (-200,-120) · rig screen drift samples [7,0,27,37,39,39,39,39,39,39]"
+  },
+  {
+   "t": 16.55,
+   "text": "SHOT C-mouse-016.6s-mouse-flying-left.png"
+  },
+  {
+   "t": 16.8,
+   "text": "signal: \"↙down and leftSalvage lander55 mSignal nearby\" (mouse hold-left)"
+  },
+  {
+   "t": 17.05,
+   "text": "signal: \"↓downSalvage lander47 mSignal nearby\" (mouse hold-left)"
+  },
+  {
+   "t": 17.3,
+   "text": "signal: \"↓downSalvage lander35 mSignal nearby\" (mouse hold-left)"
+  },
+  {
+   "t": 17.55,
+   "text": "signal: \"↓downSalvage lander28 mVery close\" (mouse hold-left)"
+  },
+  {
+   "t": 17.8,
+   "text": "signal: \"↘down and rightSalvage lander27 mVery close\" (mouse hold-left)"
+  },
+  {
+   "t": 18.05,
+   "text": "signal: \"→rightSalvage lander34 mSignal nearby\" (mouse hold-left)"
+  },
+  {
+   "t": 18.3,
+   "text": "signal: \"→rightSalvage lander49 mSignal nearby\" (mouse hold-left)"
+  },
+  {
+   "t": 18.55,
+   "text": "signal: \"→rightSalvage lander59 mSignal nearby\" (mouse hold-left)"
+  },
+  {
+   "t": 18.8,
+   "text": "signal: \"→rightSalvage lander74 mSignal nearby\" (mouse hold-left)"
+  },
+  {
+   "t": 19.05,
+   "text": "signal: \"→rightSalvage lander84 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 19.3,
+   "text": "signal: \"→rightSalvage lander99 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 19.55,
+   "text": "signal: \"→rightSalvage lander109 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 19.8,
+   "text": "signal: \"→rightSalvage lander124 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 20.05,
+   "text": "signal: \"→rightSalvage lander134 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 20.3,
+   "text": "signal: \"→rightSalvage lander149 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 20.55,
+   "text": "signal: \"→rightSalvage lander159 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 20.8,
+   "text": "signal: \"→rightSalvage lander174 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 21.05,
+   "text": "signal: \"→rightSalvage lander184 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 21.3,
+   "text": "signal: \"→rightSalvage lander199 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 21.55,
+   "text": "danger: \"Energy critical · return to the lander\" (mouse hold-left)"
+  },
+  {
+   "t": 21.55,
+   "text": "signal: \"←leftSalvage lander191 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 21.8,
+   "text": "signal: \"←leftSalvage lander176 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 22.05,
+   "text": "signal: \"←leftSalvage lander166 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 22.3,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 22.55,
+   "text": "signal: \"←leftSalvage lander141 mTracking\" (mouse hold-left)"
+  },
+  {
+   "t": 22.6,
+   "text": "signal: \"←leftSalvage lander137 mTracking\" (mouse up)"
+  },
+  {
+   "t": 22.6,
+   "text": "mouse hold-left at offset (-220,0) · rig screen drift samples [7,15,21,26,31,32,4,0,0,0,0,0]"
+  },
+  {
+   "t": 22.85,
+   "text": "signal: \"←leftSalvage lander130 mTracking\" (idle)"
+  },
+  {
+   "t": 23.1,
+   "text": "signal: \"←leftSalvage lander126 mTracking\" (idle)"
+  },
+  {
+   "t": 23.35,
+   "text": "signal: \"←leftSalvage lander125 mTracking\" (mouse nudge)"
+  },
+  {
+   "t": 23.4,
+   "text": "signal: \"←leftSalvage lander122 mTracking\" (mouse up)"
+  },
+  {
+   "t": 23.4,
+   "text": "mouse nudge at offset (-220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 23.65,
+   "text": "signal: \"←leftSalvage lander119 mTracking\" (idle)"
+  },
+  {
+   "t": 23.7,
+   "text": "signal: \"←leftSalvage lander118 mTracking\" (idle)"
+  },
+  {
+   "t": 23.95,
+   "text": "signal: \"←leftSalvage lander117 mTracking\" (mouse nudge)"
+  },
+  {
+   "t": 24,
+   "text": "signal: \"←leftSalvage lander114 mTracking\" (mouse up)"
+  },
+  {
+   "t": 24,
+   "text": "mouse nudge at offset (-220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 24.25,
+   "text": "signal: \"←leftSalvage lander111 mTracking\" (idle)"
+  },
+  {
+   "t": 24.3,
+   "text": "signal: \"←leftSalvage lander110 mTracking\" (idle)"
+  },
+  {
+   "t": 24.55,
+   "text": "signal: \"←leftSalvage lander109 mTracking\" (mouse nudge)"
+  },
+  {
+   "t": 24.6,
+   "text": "signal: \"←leftSalvage lander107 mTracking\" (mouse up)"
+  },
+  {
+   "t": 24.6,
+   "text": "mouse nudge at offset (-220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 24.85,
+   "text": "signal: \"←leftSalvage lander103 mTracking\" (idle)"
+  },
+  {
+   "t": 25.15,
+   "text": "signal: \"←leftSalvage lander101 mTracking\" (mouse nudge)"
+  },
+  {
+   "t": 25.2,
+   "text": "signal: \"←leftSalvage lander99 mTracking\" (mouse up)"
+  },
+  {
+   "t": 25.2,
+   "text": "mouse nudge at offset (-220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 25.45,
+   "text": "signal: \"←leftSalvage lander96 mTracking\" (idle)"
+  },
+  {
+   "t": 25.5,
+   "text": "signal: \"←leftSalvage lander95 mTracking\" (idle)"
+  },
+  {
+   "t": 25.75,
+   "text": "signal: \"←leftSalvage lander93 mTracking\" (mouse nudge)"
+  },
+  {
+   "t": 25.8,
+   "text": "signal: \"←leftSalvage lander91 mTracking\" (mouse up)"
+  },
+  {
+   "t": 25.8,
+   "text": "mouse nudge at offset (-220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 26.05,
+   "text": "signal: \"←leftSalvage lander88 mTracking\" (idle)"
+  },
+  {
+   "t": 26.1,
+   "text": "signal: \"←leftSalvage lander87 mTracking\" (idle)"
+  },
+  {
+   "t": 26.35,
+   "text": "signal: \"←leftSalvage lander85 mTracking\" (mouse nudge)"
+  },
+  {
+   "t": 26.4,
+   "text": "signal: \"←leftSalvage lander83 mTracking\" (mouse up)"
+  },
+  {
+   "t": 26.4,
+   "text": "mouse nudge at offset (-220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 26.65,
+   "text": "signal: \"←leftSalvage lander80 mTracking\" (idle)"
+  },
+  {
+   "t": 26.7,
+   "text": "signal: \"←leftSalvage lander79 mSignal nearby\" (idle)"
+  },
+  {
+   "t": 26.7,
+   "text": "dock prompt visible=false after nudges=6 · E 1.3 / 10 H 10 / 10 D 0 m C 7 / 7 haul 380 CR CR 20"
+  },
+  {
+   "t": 26.7,
+   "text": "SHOT C-mouse-026.7s-mouse-at-lander.png"
+  },
+  {
+   "t": 27,
+   "text": "signal: \"←leftSalvage lander78 mSignal nearby\" (click on-lander)"
+  },
+  {
+   "t": 27,
+   "text": "short click on-lander at (717,362) -> overlay= callout=\"\""
+  },
+  {
+   "t": 27,
+   "text": "SHOT C-mouse-00027s-mouse-click-lander.png"
+  },
+  {
+   "t": 27.25,
+   "text": "signal: \"←leftSalvage lander77 mSignal nearby\" (mouse to-shaft)"
+  },
+  {
+   "t": 27.5,
+   "text": "signal: \"←leftSalvage lander88 mTracking\" (mouse to-shaft)"
+  },
+  {
+   "t": 27.55,
+   "text": "mouse to-shaft at offset (220,0) · rig screen drift samples [0,0]"
+  },
+  {
+   "t": 27.8,
+   "text": "signal: \"←leftSalvage lander97 mTracking\" (idle)"
+  },
+  {
+   "t": 28.05,
+   "text": "signal: \"←leftSalvage lander101 mTracking\" (mouse to-shaft)"
+  },
+  {
+   "t": 28.3,
+   "text": "signal: \"←leftSalvage lander113 mTracking\" (mouse to-shaft)"
+  },
+  {
+   "t": 28.35,
+   "text": "mouse to-shaft at offset (220,0) · rig screen drift samples [0,0]"
+  },
+  {
+   "t": 28.6,
+   "text": "signal: \"←leftSalvage lander122 mTracking\" (idle)"
+  },
+  {
+   "t": 28.85,
+   "text": "signal: \"←leftSalvage lander126 mTracking\" (mouse to-shaft)"
+  },
+  {
+   "t": 28.9,
+   "text": "signal: \"←leftSalvage lander128 mTracking\" (mouse up)"
+  },
+  {
+   "t": 28.9,
+   "text": "mouse to-shaft at offset (220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 29.15,
+   "text": "signal: \"←leftSalvage lander132 mTracking\" (idle)"
+  },
+  {
+   "t": 29.4,
+   "text": "signal: \"←leftSalvage lander136 mTracking\" (mouse to-shaft)"
+  },
+  {
+   "t": 29.45,
+   "text": "mouse to-shaft at offset (220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 29.7,
+   "text": "signal: \"←leftSalvage lander141 mTracking\" (idle)"
+  },
+  {
+   "t": 29.95,
+   "text": "signal: \"←leftSalvage lander144 mTracking\" (mouse to-shaft)"
+  },
+  {
+   "t": 30,
+   "text": "signal: \"←leftSalvage lander145 mTracking\" (mouse up)"
+  },
+  {
+   "t": 30,
+   "text": "mouse to-shaft at offset (220,0) · rig screen drift samples [0]"
+  },
+  {
+   "t": 30.25,
+   "text": "signal: \"←leftSalvage lander148 mTracking\" (idle)"
+  },
+  {
+   "t": 30.25,
+   "text": "at shaft? rigX=20.3728"
+  },
+  {
+   "t": 30.5,
+   "text": "signal: \"←leftSalvage lander150 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 30.75,
+   "text": "signal: \"←leftSalvage lander151 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 31.25,
+   "text": "signal: \"←leftSalvage lander152 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 31.5,
+   "text": "signal: \"←leftSalvage lander154 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 31.75,
+   "text": "signal: \"←leftSalvage lander156 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 32,
+   "text": "signal: \"←leftSalvage lander161 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 32.25,
+   "text": "signal: \"↖up and leftSalvage lander165 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 32.5,
+   "text": "signal: \"↖up and leftSalvage lander173 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 32.75,
+   "text": "signal: \"↖up and leftSalvage lander179 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 33,
+   "text": "signal: \"↖up and leftSalvage lander181 mTracking\" (mouse drop-into-shaft)"
+  },
+  {
+   "t": 33.3,
+   "text": "mouse drop-into-shaft at offset (0,160) · rig screen drift samples [1,9,16,23,28,32,35,38,39,40,12,7]"
+  },
+  {
+   "t": 33.3,
+   "text": "after drop: E 0.8 / 10 H 10 / 10 D 100 m C 7 / 7 haul 380 CR CR 20"
+  },
+  {
+   "t": 33.8,
+   "text": "signal: \"↖up and leftSalvage lander186 mTracking\" (mouse rise-in-shaft)"
+  },
+  {
+   "t": 34.05,
+   "text": "signal: \"↖up and leftSalvage lander183 mTracking\" (mouse rise-in-shaft)"
+  },
+  {
+   "t": 34.1,
+   "text": "signal: \"↖up and leftSalvage lander181 mTracking\" (mouse up)"
+  },
+  {
+   "t": 34.1,
+   "text": "mouse rise-in-shaft at offset (0,-160) · rig screen drift samples [0,-2,-25]"
+  },
+  {
+   "t": 34.35,
+   "text": "signal: \"↖up and leftSalvage lander178 mTracking\" (mouse airborne-right-wall)"
+  },
+  {
+   "t": 34.6,
+   "text": "signal: \"↖up and leftSalvage lander177 mTracking\" (mouse airborne-right-wall)"
+  },
+  {
+   "t": 35.1,
+   "text": "signal: \"↖up and leftSalvage lander180 mTracking\" (mouse airborne-right-wall)"
+  },
+  {
+   "t": 35.35,
+   "text": "signal: \"↖up and leftSalvage lander184 mTracking\" (mouse airborne-right-wall)"
+  },
+  {
+   "t": 35.6,
+   "text": "signal: \"↖up and leftSalvage lander187 mTracking\" (mouse airborne-right-wall)"
+  },
+  {
+   "t": 35.65,
+   "text": "mouse airborne-right-wall at offset (220,0) · rig screen drift samples [4,15,26,34,41,28]"
+  },
+  {
+   "t": 35.65,
+   "text": "airborne side hold: message=\"\" (before \"\") depth=110 m"
+  },
+  {
+   "t": 35.65,
+   "text": "SHOT C-mouse-035.7s-airborne-side-hold.png"
+  },
+  {
+   "t": 36.4,
+   "text": "signal: \"↖up and leftSalvage lander194 mTracking\" (idle)"
+  },
+  {
+   "t": 37.65,
+   "text": "danger: \"Energy depleted · request recovery\" (mouse grounded-right-wall)"
+  },
+  {
+   "t": 37.65,
+   "text": "disabled: true (mouse grounded-right-wall)"
+  },
+  {
+   "t": 38.7,
+   "text": "mouse grounded-right-wall at offset (220,0) · rig screen drift samples [0,0,0,0,0,0]"
+  },
+  {
+   "t": 38.7,
+   "text": "grounded side hold: E 0.0 / 10 H 10 / 10 D 110 m C 7 / 7 haul 380 CR CR 20 rigX=21.5"
+  },
+  {
+   "t": 38.7,
+   "text": "SHOT C-mouse-038.7s-grounded-side-cut.png"
+  }
+ ]
+}
