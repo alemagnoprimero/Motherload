@@ -2,6 +2,8 @@
 
 This folder holds the evidence behind the [improvement plan](../IMPROVEMENT_PLAN.md). It contains seven audit reports, the UI mocks that the plan asks the owner to approve, a baseline contact sheet, and the scripts and raw results behind the measurements. Everything was produced against commit `dbf0b1a` on 2026-11-02.
 
+Where a report and the plan disagree, the plan wins: its figures were re-checked after the reports were written (for example, the relic-absence rate and the fee sweep).
+
 Nothing here is part of the game. The build, `npm test`, `npm run format:check`, Docker and the Pages deploy all ignore this folder.
 
 ## Contents

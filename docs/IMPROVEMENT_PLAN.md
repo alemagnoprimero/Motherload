@@ -28,7 +28,7 @@ The engineering base is sound; the loop and its presentation are not.
 
 **Thesis.** Stop what breaks the first hour. Give the economy a spine and make risk legible. In parallel, rebuild rendering and the UI on shared foundations: a view transform, a retained renderer and UI modules. Then deepen both worlds with a content kit before W03.
 
-**For the player.** Phase 0 (≈3 calendar weeks with two developers) keeps the first haul, fixes the warnings and sky, and makes rock and HUD readable. Phase 1 (≈9 weeks more) teaches the loop, shows the way home, pays for depth and upgrades, and adds sound. Phase 2 brings lit, banded rock, sharp phones and a redesigned HUD, terminal and title; Phase 3 fills every band. The core plan is ≈45 developer-weeks (≈52 with 15% contingency), or ≈24 calendar weeks with two developers (≈28 with contingency). §5 gives cut lines at 6 and 12 weeks.
+**For the player.** Phase 0 (≈3 calendar weeks with two developers, including contingency) keeps the first haul, fixes the warnings and sky, and makes rock and HUD readable. Phase 1 (≈9 weeks more) teaches the loop, shows the way home, pays for depth and upgrades, and adds sound. Phase 2 brings lit, banded rock, sharp phones and a redesigned HUD, terminal and title; Phase 3 fills every band. The core plan is ≈45 developer-weeks (≈52 with 15% contingency), or ≈24 calendar weeks with two developers (≈28 with contingency). §5 gives cut lines at 6 and 12 weeks.
 
 ## 2. Experience targets
 
@@ -65,7 +65,7 @@ About 85 audit proposals and the critiques' additions merge into 74 items. Effor
 **Diagnosis (PROG-F1–F8).**
 - Every W01 objective sits in one soil corridor (`world.ts:28-58`), and the starter seams nearly cover the 1,000 CR of fees.
 - Ore ignores depth: value per cell falls from 9.8 to 6.9 CR while cut time rises 1.74×.
-- Hull takes no damage: hard landings need a fall faster than 7 cells/s (`model.ts:586`), but falls cap at 6–6.66.
+- Hull rarely takes damage: only the three fixed brittle shelves deal it (`model.ts:768-791`), and hard landings need a fall faster than 7 cells/s (`model.ts:586`), but falls cap at 6–6.66.
 - Load never slows climbing.
 - In W02, income rises only 4.5% while prices triple.
 
@@ -100,9 +100,9 @@ About 85 audit proposals and the critiques' additions merge into 74 items. Effor
 |---|---|---|---|---|
 | 200/300/500 (pinned) | 7.5 min | 37.3 min | 7.4/8.1 min | 400 |
 | 200/600/1,000 (proposed) | 11.9 | 41.1 | 7.7/8.2 | 400 |
-| 200/900/1,600 (draft) | 14.4 | 45.8 | 12.1/22.3 | 500 |
+| 200/900/1,600 (draft) | 13.3 | 41.8 | 10.1/10.5 | 500 |
 
-The fees feed the pinned ore floor (3 × budget, `check-campaign-data.mjs:125`), and that floor sets the deposit count (`world.ts:154-161`). The proposed set has a 5,950 CR budget and a 17,850 CR floor, so W01 keeps 400 deposits worth 19,000 CR. The draft's 13.6/48.0 min figures used fees of 250/900/1,600 and an abstract gate. H1 re-measures the full set on 100 seeds before OD2 is decided.
+The fees feed the pinned ore floor (3 × budget, `check-campaign-data.mjs:125`), and that floor sets the deposit count (`world.ts:154-161`). The proposed set has a 5,950 CR budget and a 17,850 CR floor, so W01 keeps 400 deposits worth 19,000 CR. The draft set has a 6,850 CR budget and a 20,550 CR floor, which gives 500 deposits worth 23,750 CR; at 400 deposits, which the build would reject, it measures 14.4 / 45.8 min with gaps of 12.1/22.3 min. With the 600 CR tank and a 250 CR brace price also applied (brace mechanics not modelled), the proposed set measures 11.9 / 39.1 min, just under T4's 40-min novice floor, with novice gaps of 7.9/13.1 min. The median meets T5, but one seed's gap reaches 13.1 min. The draft's 13.6/48.0 min figures used fees of 250/900/1,600 and an abstract gate. H1 re-measures the full set on 100 seeds, including the gap tail, before OD2 is decided.
 
 **Inherited values, judged on merit.** Each value below is identical to `docs/RESEARCH.md`:
 
@@ -137,7 +137,7 @@ The fees feed the pinned ore floor (3 × budget, `check-campaign-data.mjs:125`),
 - old saves load, and a malformed `towsUsed` is rejected.
 
 **A3 spec.**
-- Every cell in rows 30–31 becomes tile 4, including air. On 136/200 seeds the row-29 cave slot (`world.ts:74-88`) leaves air there, so a solid-only plate could be bypassed.
+- Every cell in rows 30–31 becomes tile 4, including air. The row-29 cave slot (`world.ts:74-88`) leaves air in these rows on every seed, and on 136/200 seeds that air would let a solid-only plate be bypassed.
 - Shelf 2 (`world.ts:92-99`) moves outside rows 28–32, keeping `tests/campaign-world.test.ts:79-83` passing.
 - The cut start (`model.ts:446-486`) refuses tile 4 below drill rank 1 and cuts it ×2.5 slower otherwise.
 - The plate gets its own art frames; otherwise `scene.ts:1143` draws it as stone.
@@ -445,7 +445,7 @@ A W01 descent that follows the locator discovers 7.8% of the world and sees no c
 - none matches a reference value;
 - the weighted mean stays exactly 47.5 CR;
 - O1 and O2 fall by 7% and 12%, while O3 and O4 rise by 20% and 60%;
-- the seams keep their totals: A = 5 × O1 + 2 × O3 = 380, and B = O1 + 4 × O2 + 2 × O3 = 480.
+- the seams keep their totals by changing mix in `STARTER` (`world.ts:5`): A becomes 5 × O1 + 2 × O3 = 380 (today 4 × O1 + O2 + 2 × O3), and B becomes O1 + 4 × O2 + 2 × O3 = 480 (today 2 × O1 + 2 × O2 + 3 × O3). With today's mixes the new values would pay 405 and 522. The generator places the rest of each ore after the seams, so the 240/120/36/4 totals hold.
 
 The critique's 22/58/140/400 cannot make 480 from 7 packages. Packages store their names (`world.ts:113-131`), so display names come from `names.ts`, and schema 3 rewrites the stored names. *Acceptance:* no reference name appears in the UI or in exports, and old saves show the new names.
 
@@ -527,9 +527,9 @@ The critique's 22/58/140/400 cannot make 480 from 7 packages. Packages store the
 ### 4.9 Merged items and resolved conflicts
 
 - **Merged:** return estimates (PROG-P2a, FTUE-P3, HUD-P2) into B3; first-failure forgiveness (FTUE-P1, PROG-P2b) into A2; messages into E2; shaft entry into B2; mouse into C8; bay assist into C5a; labels into E3; duplicates into E1a/E1b, C4, F2a/F2b, C7a/C7b and A1 + G5.
-- **Fees:** PROG-P3's 250/900/1,600 is replaced by 200/600/1,000, which keeps the gate purchase affordable and novice gaps ≤8 min without contracts.
+- **Fees:** PROG-P3's 250/900/1,600 is replaced by 200/600/1,000, which keeps the gate purchase affordable and the median novice gap ≤8 min without contracts.
 - **Fall damage:** threshold above the fall cap; height-based damage is OD3.
-- **Relic absence:** the code rolls 25% (samples 26–30%); PROG's 38–40% does not reproduce.
+- **Relic absence:** the code rolls 25% (`world.ts:219-220`); samples give 27% over 2,000 seeds and 28–31% over 200. PROG's 38–40% does not reproduce.
 
 ### 4.10 Acceptance for items without a spec
 
@@ -626,7 +626,7 @@ Neither cut line includes the Phase 2 graphics overhaul.
 | # | Decision | Recommendation | Items | Deviation |
 |---|---|---|---|---|
 | OD1 | Chapter length | Keep the 45/75 min targets; Phase 1 aims for W01 in 40–50 min (novice) and 10–18 min (skilled) | A1, A3 | None |
-| OD2 | Balance 0.2 (W01) and 0.3 (W02) | Approve A1, A3 (plate; fees 200/600/1,000; tank 600 CR), A4a, A9 and the G1 values as one H1-checked set. Reject 900/1,600: it causes 12–22 min gaps and 500 deposits. W02 bulk 1 only in new worlds | A1, A3–A5b, A9, G1 | Pinned fees, price, gear, mass and vertical rules, ore values, bulk, 0.75 s window; new material and hazard |
+| OD2 | Balance 0.2 (W01) and 0.3 (W02) | Approve A1, A3 (plate; fees 200/600/1,000; tank 600 CR), A4a, A9 and the G1 values as one H1-checked set. Reject 900/1,600: it forces 500 deposits and still leaves novice gaps of 10–10.5 min. W02 bulk 1 only in new worlds | A1, A3–A5b, A9, G1 | Pinned fees, price, gear, mass and vertical rules, ore values, bulk, 0.75 s window; new material and hazard |
 | OD3 | Opening and recovery | Full 10 L start; one free cargo-keeping tow per world for a disabled rig; voluntary recovery unchanged; no ordinary fall damage | A2, G5 | Research start; pinned recovery rule |
 | OD4 | Controls and feel | Shaft magnet, air brake and bay assist in Phase 1; sound on after Deploy; shake off; no cut-cancel | B2, C1, C5a, C6 | None |
 | OD5 | Title | Choose an original title before the wordmark. "Motherload", `motherload-remake` and the README's "inspired by Motherload's free edition" tie the game to the reference. "The Deep Frontier" could be the working title | F2b | Branding only |
