@@ -108,6 +108,8 @@ describe("W01 campaign expedition and economic transactions", () => {
     });
     const preview = game.recoveryPreview;
     expect(preview).toEqual({
+      freeTow: false,
+      keepsCargo: false,
       cost: 1050,
       remaining: 3950,
       energy: 9,
@@ -279,6 +281,7 @@ describe("W01 campaign expedition and economic transactions", () => {
     });
     game.state.credits = 5000;
     game.state.vehicle.energy = 0;
+    game.state.progress.towsUsed.push("W01");
     expect(game.recover()).toBe(true);
     expect(game.state.credits).toBe(3950);
     expect(game.state.vehicle.energy).toBe(5);

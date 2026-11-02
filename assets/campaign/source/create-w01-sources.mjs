@@ -1,6 +1,13 @@
 /** Original editable W01 drawings. Run explicitly to regenerate source SVGs. */
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import {
+  stars,
+  skyBody,
+  ridges,
+  bedrock,
+  materialRim,
+} from "../phase0-sources.mjs";
 
 const source = new URL("./", import.meta.url);
 const O = "#14232b",
@@ -91,25 +98,24 @@ function soil(i, mask = 0) {
   return s + layer("exposed-edges", e);
 }
 function stone(i) {
+  const facets =
+    path("M0 0 H96 V42 L65 34 L29 58 L0 39 Z", "#354252") +
+    path("M0 39 L29 58 L65 34 L96 42 V96 H0 Z", "#253340") +
+    path("M0 0 H50 L35 25 L29 58 L0 39 Z", "#435266") +
+    path(
+      "M35 25 L65 34 L96 12 M29 58 L45 96 M65 34 L74 70 L96 84",
+      "none",
+      "#192C3A",
+      4,
+    ) +
+    path("M3 3 H45 L33 22 L28 51 M68 39 L78 68", "none", "#75899B", 2.5);
   return layer(
     "stone-body",
-    rect(0, 0, 96, 96, "#46535e", 0, "none", 0) +
-      path(
-        `M0 ${18 + i * 3} L${30 + i * 5} 0 H96 V43 L72 55 L34 44 Z`,
-        "#74818b",
-        O,
-        3,
-      ) +
-      path(`M0 58 L34 44 L72 55 L96 43 V96 H0 Z`, "#414e59", O, 3) +
-      path(
-        "M34 44 L43 24 L77 21 L72 55 M43 24 L32 0 M72 55 L53 96",
-        "none",
-        "#243641",
-        4,
-      ) +
-      path("M4 19 L32 5 L43 24 L35 39", "none", "#a4afb3", 3),
+    rect(0, 0, 96, 96, "#2F3C4A", 0, "none", 0) +
+      `<g transform="translate(48 48) rotate(${i * 90}) translate(-48 -48)">${facets}</g>`,
   );
 }
+
 function cracks(level) {
   let s = path(
     "M49 4 L42 26 L54 42 L38 61 L44 91 M54 42 L74 32 L90 38",
@@ -740,85 +746,17 @@ function glyph(name) {
   };
   return layer(`hud-${name}`, drawings[name]);
 }
-function sky() {
-  let s =
-    `<defs><linearGradient id="space" x2="0" y2="1"><stop stop-color="#101e28"/><stop offset="1" stop-color="#283c46"/></linearGradient></defs>` +
-    rect(0, 0, 1024, 512, "url(#space)", 0, "none", 0);
-  for (let i = 0; i < 75; i++) {
-    let x = (i * 193 + 41) % 1024,
-      y = (i * 79 + 29) % 390;
-    s += circle(
-      x,
-      y,
-      i % 9 === 0 ? 1.6 : 0.8,
-      i % 5 === 0 ? "#baa683" : "#7a969d",
-      "none",
-      0,
-    );
-  }
-  s += layer(
-    "distant-body",
-    circle(815, 148, 83, "#3d5158", "none", 0) +
-      path(
-        "M801 67 Q872 66 895 121 Q915 174 880 208 Q909 148 868 105 Q843 80 801 67 Z",
-        "#987e5b",
-        "none",
-        0,
-      ) +
-      path(
-        "M752 175 Q813 194 878 166 M745 151 Q806 169 889 144",
-        "none",
-        "#52656a",
-        7,
-      ),
-  );
-  s += layer(
-    "dust-band",
-    path(
-      "M0 442 Q205 340 433 431 Q715 520 1024 355 V512 H0 Z",
-      "#314550",
-      "none",
-      0,
-    ),
-  );
-  return s;
-}
-function ridges(near) {
-  let s = "";
-  const fill = near ? "#354a53" : "#2a404b",
-    hi = near ? "#51636a" : "#3b545e";
-  for (let i = 0; i < 8; i++) {
-    let x = i * 155 - 70,
-      y = 130 + ((i * 53) % 100),
-      w = 130 + (i % 3) * 50;
-    s += layer(
-      `asteroid-${i}`,
-      path(
-        `M${x} ${y + 35} L${x + 22} ${y} L${x + w * 0.62} ${y - 12} L${x + w} ${y + 23} L${x + w - 17} ${y + 75} L${x + w * 0.35} ${y + 90} L${x - 9} ${y + 67} Z`,
-        fill,
-        "#1a303b",
-        4,
-      ) +
-        path(
-          `M${x} ${y + 35} L${x + 22} ${y} L${x + w * 0.62} ${y - 12} L${x + w * 0.48} ${y + 33} L${x + 27} ${y + 50} Z`,
-          hi,
-          "none",
-          0,
-        ) +
-        path(
-          `M${x + w * 0.48} ${y + 33} L${x + w * 0.67} ${y + 69} L${x + w * 0.35} ${y + 90}`,
-          "none",
-          "#1e3540",
-          3,
-        ),
-    );
-  }
-  return s;
-}
 
 await mkdir(source, { recursive: true });
 for (let i = 0; i < 8; i++) await save(`soil-${i}`, 96, 96, soil(i));
-for (let i = 0; i < 16; i++) await save(`soil-edge-${i}`, 96, 96, soil(0, i));
+for (let i = 0; i < 16; i++)
+  await save(`soil-edge-${i}`, 96, 96, i ? materialRim(i, "soil") : soil(0));
+for (let i = 1; i < 16; i++) {
+  await save(`stone-edge-${i}`, 96, 96, materialRim(i, "stone"));
+  await save(`bedrock-edge-${i}`, 96, 96, materialRim(i, "bedrock"));
+}
+await save("bedrock-0", 96, 96, bedrock());
+await save("sky-body", 256, 256, skyBody());
 for (let i = 0; i < 4; i++) await save(`stone-${i}`, 96, 96, stone(i));
 for (let i = 1; i <= 3; i++) await save(`crack-${i}`, 96, 96, cracks(i));
 for (let i = 0; i < 4; i++) {
@@ -918,7 +856,7 @@ for (const name of [
 ])
   await save(`ui-${name}`, 96, 96, glyph(name), { category: "glyph" });
 const backgrounds = [
-  { name: "w01-sky", width: 1024, height: 512, body: sky() },
+  { name: "w01-sky", width: 1024, height: 512, body: stars() },
   { name: "w01-ridge-far", width: 1024, height: 384, body: ridges(false) },
   { name: "w01-ridge-near", width: 1024, height: 384, body: ridges(true) },
 ];

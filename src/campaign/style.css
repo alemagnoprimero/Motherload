@@ -9,6 +9,13 @@
   --console-bg: #101e25;
   --signal: #f0bb69;
   --energy: #8bdce2;
+  --hud-plate: rgb(10 22 28 / 85%);
+  --hud-plate-edge: rgb(150 190 185 / 22%);
+  --hud-text: #eef5ee;
+  --hud-dim: #b4c6bd;
+  --hud-label: #9fb4aa;
+  --hud-caution: #ffc55c;
+  --hud-danger: #ffb3a3;
 }
 * {
   box-sizing: border-box;
@@ -77,6 +84,13 @@ summary:focus-visible {
   outline: 2px solid #a8f0e8;
   outline-offset: 3px;
 }
+/* A controller can move focus after a mouse click without changing the
+   browser's keyboard modality. Its selected menu control still needs a ring. */
+dialog :is(button, input, select, summary, a):focus:not(:focus-visible),
+.campaign-disabled button:focus:not(:focus-visible) {
+  outline: 2px solid #a8f0e8;
+  outline-offset: -3px;
+}
 h1,
 h2,
 h3,
@@ -140,7 +154,7 @@ strong {
   touch-action: none;
 }
 
-/* Instruments are projected over the world. No dashboard surfaces or blur. */
+/* Compact translucent plates keep instruments readable over every world. */
 .campaign-hud {
   position: fixed;
   z-index: 10;
@@ -155,10 +169,12 @@ strong {
   text-shadow: var(--hud-shadow);
 }
 .instrument {
-  background: none;
+  background: var(--hud-plate);
   border: 0;
-  box-shadow: none;
+  border-radius: 3px;
+  box-shadow: 0 0 0 5px var(--hud-plate);
   backdrop-filter: none;
+  color: var(--hud-text);
 }
 .instrument-left {
   display: flex;
@@ -266,13 +282,13 @@ strong {
   min-width: 44px;
   height: 44px;
   padding: 10px;
-  background: transparent;
+  background: var(--hud-plate);
   border: 0;
   color: #d4e0d5;
   filter: drop-shadow(0 1px 3px #071017);
 }
 .campaign-menu-button:hover {
-  background: #e4f5df12;
+  background: #253c42;
 }
 .campaign-objective {
   position: fixed;
@@ -285,6 +301,10 @@ strong {
   max-width: min(460px, calc(100vw - 36px));
   pointer-events: none;
   text-shadow: var(--hud-shadow);
+  background: var(--hud-plate);
+  border-radius: 3px;
+  box-shadow: 0 0 0 5px var(--hud-plate);
+  color: var(--hud-text);
 }
 .campaign-objective > .hud-icon {
   width: 26px;
@@ -407,6 +427,9 @@ strong {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.16s;
+  background: var(--hud-plate);
+  border-radius: 3px;
+  box-shadow: 0 0 0 5px var(--hud-plate);
 }
 .campaign-message.visible {
   opacity: 1;
@@ -426,12 +449,12 @@ strong {
   min-height: 44px;
   padding: 5px 9px;
   border: 0;
-  background: #0d1a1b70;
+  background: var(--hud-plate);
   color: #f4d295;
   text-shadow: var(--hud-shadow);
 }
 .campaign-context:hover {
-  background: #142729bb;
+  background: #253c42;
 }
 .interaction-key {
   display: grid;
@@ -455,6 +478,9 @@ strong {
   align-items: center;
   pointer-events: none;
   text-shadow: var(--hud-shadow);
+  background: var(--hud-plate);
+  border-radius: 3px;
+  box-shadow: 0 0 0 5px var(--hud-plate);
 }
 .tool-slot {
   display: flex;
@@ -736,15 +762,18 @@ button.tool-slot:hover {
 }
 .dock-panel[open] {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "header" "tabs" "check" "content" "feedback";
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
 }
 .dock-panel::backdrop {
   background: #020a0e14;
   backdrop-filter: none;
 }
 .dock-panel > header {
+  grid-area: header;
   position: static;
   padding: 16px 18px;
+  flex-wrap: wrap;
 }
 .dock-panel > header h1 {
   font-size: 21px;
@@ -767,6 +796,7 @@ button.tool-slot:hover {
   padding: 7px 10px;
 }
 .dock-panel nav {
+  grid-area: tabs;
   display: flex;
   gap: 0;
   padding: 0 12px;
@@ -791,6 +821,7 @@ button.tool-slot:hover {
   background: #e0c58b08;
 }
 #campaign-dock-content {
+  grid-area: content;
   padding: 16px 18px;
   overflow: auto;
   scrollbar-width: thin;
@@ -1047,6 +1078,7 @@ button.tool-slot:hover {
   padding: 7px 11px;
 }
 .dock-feedback {
+  grid-area: feedback;
   margin: 0;
   padding: 11px 18px;
   border-top: 1px solid #52695f80;
@@ -1194,6 +1226,73 @@ button.tool-slot:hover {
   font-size: 12px;
   margin: 0;
 }
+.world-card > button[data-command="travel"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 8px;
+}
+.campaign-dock-refuel,
+.campaign-undock-check {
+  padding: 10px 12px;
+  border: 1px solid #94774f;
+  background: #302c25;
+  color: #ffe0a8;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.campaign-dock-refuel {
+  flex-basis: 100%;
+  margin: 0;
+}
+.campaign-undock-check {
+  grid-area: check;
+  max-height: 40dvh;
+  overflow: auto;
+}
+.campaign-undock-check > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.campaign-dock-refuel p,
+.campaign-undock-check p {
+  margin: 0 0 8px;
+}
+.campaign-dock-refuel button,
+.campaign-undock-check button {
+  min-height: 44px;
+  width: 100%;
+}
+#campaign-archives {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+.archive-row {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #526a70;
+  background: #152831;
+}
+.archive-row p {
+  margin: 0;
+}
+.archive-row small {
+  color: var(--hud-dim);
+}
+.archive-row button {
+  width: 100%;
+  min-height: 44px;
+}
+.energy-vital.warning-pulse {
+  animation: energy-warning 1s ease-in-out 2;
+}
+@keyframes energy-warning {
+  50% {
+    box-shadow: 0 0 0 2px var(--hud-caution);
+  }
+}
 .planet-symbol {
   background: linear-gradient(135deg, #b5b9a6, #4f6664);
   clip-path: polygon(20% 3%, 75% 0, 100% 40%, 75% 97%, 21% 88%, 0 35%);
@@ -1260,12 +1359,33 @@ body[data-campaign-busy="true"]
     1px 0 2px #000,
     -1px 0 2px #000;
 }
+.campaign-high-contrast {
+  --hud-plate: rgb(10 22 28 / 95%);
+  --hud-plate-edge: #b4c6bd;
+}
+.campaign-high-contrast .instrument,
+.campaign-high-contrast .campaign-objective,
+.campaign-high-contrast .campaign-toolbar,
+.campaign-high-contrast .campaign-message,
+.campaign-high-contrast .campaign-context {
+  outline: 2px solid var(--hud-plate-edge);
+  outline-offset: 5px;
+}
 .campaign-high-contrast .meter {
   outline: 1px solid #c5e1d399;
 }
 .campaign-large-text .campaign-panel p,
 .campaign-large-text .campaign-panel button {
   font-size: 15px;
+}
+
+/* E1a preserves phone geometry; the measured mobile layout is a later step. */
+@media (min-width: 900px) and (min-height: 501px) and (pointer: fine) {
+  .instrument-row strong,
+  .readout strong,
+  .credit-readout strong {
+    font-size: 20px;
+  }
 }
 
 @media (pointer: fine) and (min-width: 761px) and (min-height: 501px) {

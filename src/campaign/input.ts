@@ -11,6 +11,7 @@ export type PilotAction =
   | "interact"
   | "map"
   | "pause";
+export type MenuAction = "previous" | "next" | "activate" | "back";
 export const ACTION_LABELS: Record<PilotAction, string> = {
   left: "Steer left",
   right: "Steer right",
@@ -135,6 +136,9 @@ export class CampaignInput {
   private held = new Map<string, PilotAction>();
   private latched = new Map<PilotAction, string>();
   private gamepadButtons = new Set<number>();
+  private suppressedGamepadButtons = new Set<number>();
+  private gamepadAxesSuppressed = false;
+  private lastCommandAt = -Infinity;
   private remapping?: PilotAction;
   onRemapped?: (message: string) => void;
   constructor(
@@ -145,6 +149,8 @@ export class CampaignInput {
       map: () => void;
       pause: () => void;
       unlockAudio: () => void;
+      menu?: (action: MenuAction) => void;
+      releaseKeyboard?: () => void;
     },
   ) {
     window.addEventListener("keydown", (event) => {
@@ -152,9 +158,21 @@ export class CampaignInput {
       // including while the user is choosing a replacement key binding.
       if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) {
         this.clearKeyboard();
+        this.callbacks.releaseKeyboard?.();
         return;
       }
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      // A held Interact/Enter must not activate the newly focused Undock
+      // button. Space/Enter repeats on focused menu controls are inert too.
+      if (
+        event.repeat &&
+        (key === "Enter" || key === " ") &&
+        event.target instanceof Element &&
+        event.target.closest("button, a, summary")
+      ) {
+        event.preventDefault();
+        return;
+      }
       if (this.remapping) {
         if (editableTarget(event.target) && key !== "Escape") return;
         event.preventDefault();
@@ -200,7 +218,7 @@ export class CampaignInput {
           return;
         if (!event.repeat) {
           event.preventDefault();
-          this.callbacks.pause();
+          this.command(() => this.callbacks.pause());
         }
         return;
       }
@@ -212,7 +230,7 @@ export class CampaignInput {
       event.preventDefault();
       this.callbacks.unlockAudio();
       if (action === "interact" || action === "map") {
-        if (!event.repeat) this.callbacks[action]();
+        if (!event.repeat) this.command(() => this.callbacks[action]());
         return;
       }
       if (!event.repeat) this.press("key:" + key, action);
@@ -223,8 +241,14 @@ export class CampaignInput {
       ),
     );
     window.addEventListener("blur", () => this.clear());
+    let gameplayFocused = gameplayTarget(document.activeElement);
     document.addEventListener("focusin", (event) => {
-      if (!gameplayTarget(event.target)) this.clearKeyboard();
+      const focused = gameplayTarget(event.target);
+      if (!focused) {
+        this.clearKeyboard();
+        if (gameplayFocused) this.callbacks.releaseKeyboard?.();
+      }
+      gameplayFocused = focused;
     });
     document
       .querySelectorAll<HTMLButtonElement>("[data-dir]")
@@ -263,6 +287,12 @@ export class CampaignInput {
       else this.latched.set(action, source);
     } else this.held.set(source, action);
   }
+  private command(action: () => void) {
+    const now = performance.now();
+    if (now - this.lastCommandAt < 300) return;
+    this.lastCommandAt = now;
+    action();
+  }
   private clearKeyboard() {
     for (const source of this.held.keys())
       if (source.startsWith("key:")) this.held.delete(source);
@@ -279,6 +309,15 @@ export class CampaignInput {
   clear() {
     this.held.clear();
     this.latched.clear();
+    const pad = navigator.getGamepads?.().find((entry) => entry?.connected);
+    if (pad) {
+      pad.buttons.forEach((button, index) => {
+        if (button.pressed) this.suppressedGamepadButtons.add(index);
+      });
+      this.gamepadAxesSuppressed ||= pad.axes.some(
+        (value) => Math.abs(value) > 0.25,
+      );
+    }
     document
       .querySelectorAll("[data-dir]")
       .forEach((button) => button.classList.remove("held"));
@@ -288,23 +327,42 @@ export class CampaignInput {
     const pad = navigator.getGamepads?.().find((entry) => entry?.connected);
     if (!pad) {
       this.gamepadButtons.clear();
+      this.suppressedGamepadButtons.clear();
+      this.gamepadAxesSuppressed = false;
       return;
     }
-    for (const [index, action] of [
-      [4, "interact"],
-      [5, "map"],
-      [9, "pause"],
-    ] as const) {
-      const pressed = Boolean(pad.buttons[index]?.pressed);
-      if (
-        pressed &&
-        !this.gamepadButtons.has(index) &&
-        (action === "pause" || !this.callbacks.blocked())
-      )
-        this.callbacks[action]();
-      if (pressed) this.gamepadButtons.add(index);
-      else this.gamepadButtons.delete(index);
-    }
+    for (const index of this.suppressedGamepadButtons)
+      if (!pad.buttons[index]?.pressed)
+        this.suppressedGamepadButtons.delete(index);
+    if (pad.axes.every((value) => Math.abs(value) <= 0.25))
+      this.gamepadAxesSuppressed = false;
+    const pressed = new Set(
+      pad.buttons.flatMap((button, index) => (button.pressed ? [index] : [])),
+    );
+    const fresh = (index: number) =>
+      pressed.has(index) &&
+      !this.gamepadButtons.has(index) &&
+      !this.suppressedGamepadButtons.has(index);
+    // Record every button before callbacks can change the interface. Holding
+    // thrust while docking cannot confirm a transaction on the next frame.
+    const menu = this.callbacks.blocked() && this.callbacks.menu;
+    const action = fresh(9)
+      ? () => this.callbacks.pause()
+      : menu && (fresh(12) || fresh(14))
+        ? () => menu("previous")
+        : menu && (fresh(13) || fresh(15))
+          ? () => menu("next")
+          : menu && fresh(0)
+            ? () => menu("activate")
+            : menu && fresh(1)
+              ? () => menu("back")
+              : !this.callbacks.blocked() && fresh(4)
+                ? () => this.callbacks.interact()
+                : !this.callbacks.blocked() && fresh(5)
+                  ? () => this.callbacks.map()
+                  : undefined;
+    this.gamepadButtons = pressed;
+    if (action) this.command(action);
   }
   getControls(): CampaignControls {
     if (this.callbacks.blocked()) return {};
@@ -318,16 +376,18 @@ export class CampaignInput {
         controls[action as keyof CampaignControls] = true;
     const pad = navigator.getGamepads?.().find((entry) => entry?.connected);
     if (pad) {
-      controls.left ||= pad.axes[0] < -0.25 || pad.buttons[14]?.pressed;
-      controls.right ||= pad.axes[0] > 0.25 || pad.buttons[15]?.pressed;
-      controls.up ||=
-        pad.axes[1] < -0.25 ||
-        pad.buttons[12]?.pressed ||
-        pad.buttons[0]?.pressed;
-      controls.down ||= pad.axes[1] > 0.25 || pad.buttons[13]?.pressed;
-      controls.mobility ||= pad.buttons[2]?.pressed;
-      controls.primary ||= pad.buttons[1]?.pressed;
-      controls.secondary ||= pad.buttons[3]?.pressed;
+      const button = (index: number) =>
+        Boolean(pad.buttons[index]?.pressed) &&
+        !this.suppressedGamepadButtons.has(index);
+      const axis = (index: number) =>
+        this.gamepadAxesSuppressed ? 0 : (pad.axes[index] ?? 0);
+      controls.left ||= axis(0) < -0.25 || button(14);
+      controls.right ||= axis(0) > 0.25 || button(15);
+      controls.up ||= axis(1) < -0.25 || button(12) || button(0);
+      controls.down ||= axis(1) > 0.25 || button(13);
+      controls.mobility ||= button(2);
+      controls.primary ||= button(1);
+      controls.secondary ||= button(3);
     }
     return controls;
   }

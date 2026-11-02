@@ -40,7 +40,7 @@ The ordinary resource mix is 60/30/9/1, with base values **50/120/300/1200 CR**,
 
 Rank-2 drill/energy/cargo/hull/engine purchases cost **2200/1800/2400/1200/1600 CR**. Prices and effects are cross-checked against the unchanged v0.1 source data. Service costs retain W01's fixed-point accounting and exact previews. The pack's 75-minute destination duration remains a tuning target, not a measured human completion time.
 
-Original editable SVGs live in `assets/campaign/w02/`. The 73-frame world atlas is 1024×1472 RGBA (5.75 MiB decoded), with three backgrounds and exported icons. It includes rank-2 modular hardware and surface construction states. The registry traces seventeen implemented design briefs and records remaining art variants explicitly. Author with `npm run frontier:assets` using Inkscape and Pillow; normal builds use only Node and committed outputs.
+Original editable SVGs live in `assets/campaign/w02/`. Following the first improvement batch, the 90-frame world atlas is 1024×1792 RGBA (7 MiB decoded), with three backgrounds and exported icons. It includes rank-2 modular hardware, surface construction states, a separate sky body, material rims and patterned bedrock. The registry traces seventeen implemented design briefs and records remaining art variants explicitly. Author with `npm run frontier:assets` using the same Chromium/Pillow rasterizer as W01; normal builds use only Node and committed outputs.
 
 ## Checkpoints and verification
 

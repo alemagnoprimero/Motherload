@@ -4,6 +4,8 @@ import type { CampaignCheckpoint, CampaignState } from "./types";
 export const CAMPAIGN_DATABASE = "motherload.campaign.v1";
 /** Bounded transport limit; later slices must measure their entity/export size. */
 export const MAX_CAMPAIGN_BYTES = 16 * 1024 * 1024;
+export const MAX_CAMPAIGN_ARCHIVES = 3;
+const ARCHIVE_PREFIX = "archive:";
 
 export type CampaignSaveCode = "conflict" | "blocked" | "invalid" | "storage";
 export class CampaignSaveError extends Error {
@@ -21,13 +23,41 @@ export interface CampaignRecords {
   backup: string | null;
 }
 
-/** One compare-and-swap transaction changes the current and optional backup. */
+export interface CampaignArchiveRecord {
+  id: string;
+  checkpoint: string;
+}
+
+/** Summaries never expose mutable saved state to the menu. */
+export interface CampaignArchive {
+  id: string;
+  archivedAt: string;
+  savedAt: string;
+  campaignId: string;
+  seed: number;
+  currentWorld: CampaignState["currentWorld"];
+  /** Integer tenths, as in the active campaign. */
+  credits: number;
+  elapsed: number;
+}
+
+function archiveTime(id: string): number | undefined {
+  if (!id.startsWith(ARCHIVE_PREFIX)) return;
+  const iso = id.slice(ARCHIVE_PREFIX.length),
+    time = Date.parse(iso);
+  if (Number.isFinite(time) && new Date(time).toISOString() === iso)
+    return time;
+}
+
+/** One compare-and-swap transaction includes backup and optional archive pruning. */
 export interface CampaignBackend {
   read(): Promise<CampaignRecords>;
+  listArchives(): Promise<CampaignArchiveRecord[]>;
   commit(
     expected: string | null,
     current: string,
     backup?: string | null,
+    archive?: string,
   ): Promise<void>;
   close?(): void;
 }
@@ -49,7 +79,7 @@ function storageFailure(error: unknown): CampaignSaveError {
   );
 }
 
-/** IndexedDB current/backup rotation is atomic, including quota/abort failure. */
+/** Checkpoints and archives share a transaction, including quota/abort failure. */
 export class IndexedCampaignBackend implements CampaignBackend {
   private database?: Promise<IDBDatabase>;
 
@@ -116,31 +146,117 @@ export class IndexedCampaignBackend implements CampaignBackend {
     expected: string | null,
     current: string,
     backup?: string | null,
+    archive?: string,
   ): Promise<void> {
+    if (archive !== undefined) {
+      // Archiving a replacement may only retain its validated preceding primary.
+      decodeCheckpoint(archive);
+      if (archive !== expected)
+        throw new CampaignSaveError(
+          "invalid",
+          "The outgoing campaign changed.",
+        );
+    }
     const database = await this.open();
     return new Promise((resolve, reject) => {
       const transaction = database.transaction("checkpoints", "readwrite");
       const store = transaction.objectStore("checkpoints");
       let failure: unknown;
-      const previous = store.get("current");
-      previous.onsuccess = () => {
-        if ((previous.result ?? null) !== expected) {
-          failure = new CampaignSaveError(
-            "conflict",
-            "Another tab changed this campaign. Load its checkpoint before continuing, or export this tab first.",
-          );
-          transaction.abort();
-          return;
-        }
+      const abort = (error: unknown) => {
+        failure = error;
+        transaction.abort();
+      };
+      const writeCheckpoint = () => {
         if (backup !== undefined) {
           if (backup === null) store.delete("backup");
           else store.put(backup, "backup");
         }
         store.put(current, "current");
       };
+      const previous = store.get("current");
+      previous.onsuccess = () => {
+        if ((previous.result ?? null) !== expected) {
+          abort(
+            new CampaignSaveError(
+              "conflict",
+              "Another tab changed this campaign. Load its checkpoint before continuing, or export this tab first.",
+            ),
+          );
+          return;
+        }
+        try {
+          if (archive === undefined) {
+            writeCheckpoint();
+            return;
+          }
+          const archives: { id: string; time: number }[] = [],
+            occupiedIds = new Set<string>();
+          let newestTime = Date.now() - 1;
+          const request = store.openCursor();
+          request.onsuccess = () => {
+            try {
+              const cursor = request.result;
+              if (cursor) {
+                if (typeof cursor.key === "string") {
+                  const time = archiveTime(cursor.key);
+                  if (time !== undefined) {
+                    occupiedIds.add(cursor.key);
+                    // Unsupported/corrupt records are never silently pruned.
+                    if (
+                      typeof cursor.value === "string" &&
+                      validCheckpoint(cursor.value)
+                    ) {
+                      newestTime = Math.max(newestTime, time);
+                      archives.push({ id: cursor.key, time });
+                    }
+                  }
+                }
+                cursor.continue();
+                return;
+              }
+              let id: string;
+              do {
+                id = `${ARCHIVE_PREFIX}${new Date(++newestTime).toISOString()}`;
+              } while (occupiedIds.has(id));
+              store.put(archive, id);
+              archives.sort((a, b) => b.time - a.time);
+              for (const old of archives.slice(MAX_CAMPAIGN_ARCHIVES - 1))
+                store.delete(old.id);
+              writeCheckpoint();
+            } catch (error) {
+              abort(error);
+            }
+          };
+        } catch (error) {
+          abort(error);
+        }
+      };
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(failure ?? transaction.error);
       transaction.onabort = () => reject(failure ?? transaction.error);
+    });
+  }
+
+  async listArchives(): Promise<CampaignArchiveRecord[]> {
+    const database = await this.open();
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction("checkpoints", "readonly"),
+        request = transaction.objectStore("checkpoints").openCursor(),
+        archives: CampaignArchiveRecord[] = [];
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (!cursor) return;
+        if (
+          typeof cursor.key === "string" &&
+          archiveTime(cursor.key) !== undefined &&
+          typeof cursor.value === "string"
+        )
+          archives.push({ id: cursor.key, checkpoint: cursor.value });
+        cursor.continue();
+      };
+      transaction.oncomplete = () => resolve(archives);
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
     });
   }
 
@@ -311,7 +427,11 @@ export class CampaignStore {
     return raw;
   }
 
-  private async write(state: CampaignState, replace: boolean): Promise<void> {
+  private async write(
+    state: CampaignState,
+    replace: boolean,
+    archiveOutgoing = false,
+  ): Promise<void> {
     if (this.expected === undefined)
       throw new CampaignSaveError(
         "blocked",
@@ -323,9 +443,14 @@ export class CampaignStore {
         "This campaign is protected. Restore its backup or explicitly replace it before saving.",
       );
     const raw = this.snapshot(state, this.currentRevision + 1),
-      backup = validCheckpoint(this.expected) ? this.expected : undefined;
+      previous = validCheckpoint(this.expected),
+      backup = previous ? this.expected : undefined,
+      archive =
+        archiveOutgoing && previous && previous.state.id !== state.id
+          ? this.expected!
+          : undefined;
     try {
-      await this.backend.commit(this.expected, raw, backup);
+      await this.backend.commit(this.expected, raw, backup, archive);
     } catch (error) {
       if (error instanceof CampaignSaveError && error.code === "conflict")
         this.protected = true;
@@ -345,10 +470,73 @@ export class CampaignStore {
     return this.queue(() => this.write(snapshot, false));
   }
 
-  /** Call only after the player confirms replacing the loaded campaign. */
+  /** Confirmed replacement archives a different outgoing campaign atomically. */
   async replace(state: CampaignState): Promise<void> {
     const snapshot = decodeCampaign(JSON.stringify(state));
-    return this.queue(() => this.write(snapshot, true));
+    return this.queue(() => this.write(snapshot, true, true));
+  }
+
+  async listArchives(): Promise<CampaignArchive[]> {
+    await this.writes;
+    try {
+      const records = await this.backend.listArchives();
+      return records
+        .flatMap(({ id, checkpoint }) => {
+          const saved = validCheckpoint(checkpoint),
+            time = archiveTime(id);
+          if (!saved || time === undefined) return [];
+          return [
+            {
+              id,
+              archivedAt: new Date(time).toISOString(),
+              savedAt: saved.savedAt,
+              campaignId: saved.state.id,
+              seed: saved.state.seed,
+              currentWorld: saved.state.currentWorld,
+              credits: saved.state.credits,
+              elapsed: saved.state.elapsed,
+            },
+          ];
+        })
+        .sort((a, b) => Date.parse(b.archivedAt) - Date.parse(a.archivedAt));
+    } catch (error) {
+      throw storageFailure(error);
+    }
+  }
+
+  /** Call only after confirmation; callers must restore into a paused UI. */
+  restoreArchive(id: string): Promise<CampaignState> {
+    return this.queue(async () => {
+      if (archiveTime(id) === undefined)
+        throw new CampaignSaveError(
+          "invalid",
+          "This campaign archive is invalid.",
+        );
+      let records: CampaignRecords, archives: CampaignArchiveRecord[];
+      try {
+        [records, archives] = await Promise.all([
+          this.backend.read(),
+          this.backend.listArchives(),
+        ]);
+      } catch (error) {
+        throw storageFailure(error);
+      }
+      if (records.current !== this.expected)
+        throw new CampaignSaveError(
+          "conflict",
+          "Another tab changed this campaign. Reload before restoring an archive.",
+        );
+      const archived = validCheckpoint(
+        archives.find((archive) => archive.id === id)?.checkpoint ?? null,
+      );
+      if (!archived)
+        throw new CampaignSaveError(
+          "invalid",
+          "This archive is unavailable or from an unsupported version. Its saved data was not changed.",
+        );
+      await this.write(archived.state, true, true);
+      return archived.state;
+    });
   }
 
   restoreBackup(): Promise<CampaignState> {

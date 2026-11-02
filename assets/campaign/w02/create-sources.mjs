@@ -1,5 +1,12 @@
 /** Original W02 drawings. Run explicitly to refresh editable SVG sources. */
 import { mkdir, writeFile } from "node:fs/promises";
+import {
+  stars,
+  skyBody,
+  ridges,
+  bedrock,
+  materialRim,
+} from "../phase0-sources.mjs";
 
 const directory = new URL("./", import.meta.url);
 await mkdir(directory, { recursive: true });
@@ -96,11 +103,21 @@ function ice(variant, edges = 0, rock = false) {
   return content + layer("exposed-outline", border);
 }
 for (let i = 0; i < 8; i++) await save(`ice-${i}`, 96, 96, ice(i));
-for (let i = 0; i < 16; i++) await save(`ice-edge-${i}`, 96, 96, ice(0, i));
+for (let i = 0; i < 16; i++)
+  await save(`ice-edge-${i}`, 96, 96, i ? materialRim(i, "ice") : ice(0));
 for (let i = 0; i < 4; i++)
   await save(`frozen-rock-${i}`, 96, 96, ice(i, 0, true));
 for (let i = 0; i < 16; i++)
-  await save(`frozen-rock-edge-${i}`, 96, 96, ice(1, i, true));
+  await save(
+    `frozen-rock-edge-${i}`,
+    96,
+    96,
+    i ? materialRim(i, "frozen-rock") : ice(1, 0, true),
+  );
+for (let i = 1; i < 16; i++)
+  await save(`bedrock-edge-${i}`, 96, 96, materialRim(i, "bedrock"));
+await save("bedrock-0", 96, 96, bedrock(true));
+await save("sky-body", 256, 256, skyBody(true));
 
 function mineral(index) {
   if (index === 0)
@@ -533,82 +550,14 @@ await save(
   { category: "world" },
 );
 
-let sky =
-  '<defs><linearGradient id="space" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#071C2A"/><stop offset="1" stop-color="#163C50"/></linearGradient></defs>' +
-  rect(0, 0, 1024, 512, "url(#space)", 0, "none", 0);
-for (let i = 0; i < 68; i++)
-  sky += circle(
-    (i * 191 + 23) % 1024,
-    (i * 79 + 31) % 390,
-    i % 13 === 0 ? 1.5 : 0.8,
-    i % 11 === 0 ? "#CFBE94" : "#78A9B8",
-    "none",
-    0,
-  );
-sky +=
-  layer(
-    "comet-tail",
-    path("M1024 58 Q815 96 703 177 Q872 121 1024 151 Z", "#285D70", "none", 0) +
-      path(
-        "M1024 84 Q838 114 750 167 Q884 132 1024 127 Z",
-        "#3D7685",
-        "none",
-        0,
-      ),
-  ) +
-  layer(
-    "distant-moon",
-    circle(796, 171, 44, "#456F7D", "none", 0) +
-      path(
-        "M779 130 Q822 127 839 166 Q851 200 822 214 Q844 173 807 146 Z",
-        "#7EAAA9",
-        "none",
-        0,
-      ),
-  );
-await save("w02-sky", 1024, 512, sky, { background: true });
-await save(
-  "w02-ridge-far",
-  1024,
-  384,
-  layer(
-    "distant-comet-facets",
-    path(
-      "M0 307 L57 269 L109 286 L183 223 L247 259 L309 208 L376 251 L447 183 L519 231 L591 198 L654 237 L724 175 L795 218 L868 169 L936 233 L1024 188 V384 H0 Z",
-      "#214E63",
-      "none",
-      0,
-    ) +
-      path(
-        "M183 223 L205 301 L247 259 M447 183 L469 286 L519 231 M724 175 L751 282 L795 218 M868 169 L899 297 L936 233",
-        "none",
-        "#3F6C7A",
-        3,
-      ),
-  ),
-  { background: true },
-);
-await save(
-  "w02-ridge-near",
-  1024,
-  384,
-  layer(
-    "near-ice-fins",
-    path(
-      "M0 329 L69 288 L117 319 L184 268 L234 310 L307 250 L371 306 L451 259 L513 319 L590 275 L654 310 L735 245 L788 293 L870 256 L939 302 L1024 267 V384 H0 Z",
-      "#34677B",
-      "none",
-      0,
-    ) +
-      path(
-        "M69 288 L88 346 L117 319 M184 268 L204 350 L234 310 M307 250 L336 350 L371 306 M451 259 L477 353 L513 319 M735 245 L757 349 L788 293 M870 256 L903 354 L939 302",
-        "none",
-        "#6C9AA6",
-        3,
-      ),
-  ),
-  { background: true },
-);
+await save("w02-sky", 1024, 512, stars(true), { background: true });
+await save("w02-ridge-far", 1024, 384, ridges(false, true), {
+  background: true,
+});
+await save("w02-ridge-near", 1024, 384, ridges(true, true), {
+  background: true,
+});
+
 await writeFile(
   new URL("frames.json", directory),
   JSON.stringify(

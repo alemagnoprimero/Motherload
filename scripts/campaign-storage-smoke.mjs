@@ -186,6 +186,196 @@ export async function runCampaignStorageSmoke(browser, base) {
     console.log(
       `Passed: protected corrupt primary, explicit native backup restore and exact export preserve Legacy bytes (${recovery.exportBytes} byte W01 checkpoint)`,
     );
+
+    const archived = await first.evaluate(async () => {
+      const p = window.storageProbe,
+        now = Date.now;
+      // Replacements at one timestamp, then a clock rollback, must not collide.
+      Date.now = () => Date.UTC(2026, 10, 2, 12);
+      try {
+        for (const seed of [101, 102, 103, 104])
+          await p.store.replace(p.model.createCampaign(seed));
+        Date.now = () => Date.UTC(2026, 10, 1, 12);
+        await p.store.replace(p.model.createCampaign(105));
+      } finally {
+        Date.now = now;
+      }
+      const list = await p.store.listArchives();
+      return {
+        seeds: list.map((archive) => archive.seed),
+        unique: new Set(list.map((archive) => archive.id)).size,
+        ordered: list.every(
+          (archive, i) =>
+            i === 0 ||
+            Date.parse(archive.archivedAt) < Date.parse(list[i - 1].archivedAt),
+        ),
+      };
+    });
+    assert.deepEqual(archived, {
+      seeds: [104, 103, 102],
+      unique: 3,
+      ordered: true,
+    });
+    console.log(
+      "Passed: durable native archives retain three campaigns with collision-free ordering through equal and backward clocks",
+    );
+
+    const archiveAbort = await first.evaluate(async () => {
+      const p = window.storageProbe;
+      const before = {
+        records: await p.backend.read(),
+        archives: await p.backend.listArchives(),
+      };
+      const revision = p.store.revision,
+        put = IDBObjectStore.prototype.put;
+      // Abort after the archive insertion, oldest pruning and backup write have
+      // been queued, proving that no part of replacement commits separately.
+      IDBObjectStore.prototype.put = function (value, key) {
+        const request = put.call(this, value, key);
+        if (key === "current") this.transaction.abort();
+        return request;
+      };
+      let code;
+      try {
+        await p.store.replace(p.model.createCampaign(106));
+        code = "unexpected-success";
+      } catch (error) {
+        code = error.code;
+      } finally {
+        IDBObjectStore.prototype.put = put;
+      }
+      const after = {
+        records: await p.backend.read(),
+        archives: await p.backend.listArchives(),
+      };
+      const sameRevision = p.store.revision === revision;
+      await p.store.replace(p.model.createCampaign(106));
+      return {
+        code,
+        unchanged: JSON.stringify(before) === JSON.stringify(after),
+        sameRevision,
+        retrySeed: (await p.store.load()).state.seed,
+        seeds: (await p.store.listArchives()).map((archive) => archive.seed),
+      };
+    });
+    assert.deepEqual(archiveAbort, {
+      code: "storage",
+      unchanged: true,
+      sameRevision: true,
+      retrySeed: 106,
+      seeds: [105, 104, 103],
+    });
+    console.log(
+      "Passed: abort rolls back current, backup, archive insertion and pruning together; retry succeeds",
+    );
+
+    await second.evaluate(async () => {
+      const p = window.storageProbe;
+      await p.store.load();
+      p.archiveId = (await p.store.listArchives())[0].id;
+    });
+    await first.evaluate(async () => {
+      const p = window.storageProbe;
+      const state = (await p.store.load()).state;
+      state.credits += 10;
+      await p.store.save(state);
+    });
+    const staleArchive = await second.evaluate(async () => {
+      const p = window.storageProbe;
+      const before = {
+        records: await p.backend.read(),
+        archives: await p.backend.listArchives(),
+      };
+      const codes = [];
+      for (const action of [
+        () => p.store.restoreArchive(p.archiveId),
+        () => p.store.replace(p.model.createCampaign(107)),
+      ]) {
+        try {
+          await action();
+          codes.push("unexpected-success");
+        } catch (error) {
+          codes.push(error.code);
+        }
+      }
+      const after = {
+        records: await p.backend.read(),
+        archives: await p.backend.listArchives(),
+      };
+      return {
+        codes,
+        unchanged: JSON.stringify(before) === JSON.stringify(after),
+      };
+    });
+    assert.deepEqual(staleArchive, {
+      codes: ["conflict", "conflict"],
+      unchanged: true,
+    });
+    console.log(
+      "Passed: stale archive restore and new-campaign replacement preserve every native checkpoint and archive byte",
+    );
+
+    const protectedArchives = await first.evaluate(async () => {
+      const p = window.storageProbe;
+      const future = JSON.parse(p.store.export(p.model.createCampaign(108)));
+      future.version = 99;
+      const protectedRecords = [
+        ["archive:2077-01-01T00:00:00.000Z", "{damaged"],
+        ["archive:2077-01-02T00:00:00.000Z", JSON.stringify(future)],
+      ];
+      const database = await new Promise((resolve, reject) => {
+        const request = indexedDB.open(p.CAMPAIGN_DATABASE, 1);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        await new Promise((resolve, reject) => {
+          const transaction = database.transaction("checkpoints", "readwrite"),
+            checkpoints = transaction.objectStore("checkpoints");
+          for (const [id, raw] of protectedRecords) checkpoints.put(raw, id);
+          transaction.oncomplete = () => resolve();
+          transaction.onabort = () => reject(transaction.error);
+        });
+        const invalidVisible = (await p.store.listArchives()).some((archive) =>
+          protectedRecords.some(([id]) => id === archive.id),
+        );
+        let code;
+        try {
+          await p.store.restoreArchive(protectedRecords[1][0]);
+        } catch (error) {
+          code = error.code;
+        }
+        for (const seed of [109, 110, 111, 112])
+          await p.store.replace(p.model.createCampaign(seed));
+        const raw = await p.backend.listArchives(),
+          list = await p.store.listArchives();
+        return {
+          invalidVisible,
+          code,
+          untouched: protectedRecords.every(([id, checkpoint]) =>
+            raw.some(
+              (entry) => entry.id === id && entry.checkpoint === checkpoint,
+            ),
+          ),
+          validSeeds: list.map((archive) => archive.seed),
+          timestampUnaffected: list.every(
+            (archive) => Date.parse(archive.archivedAt) < Date.UTC(2077, 0, 1),
+          ),
+        };
+      } finally {
+        database.close();
+      }
+    });
+    assert.deepEqual(protectedArchives, {
+      invalidVisible: false,
+      code: "invalid",
+      untouched: true,
+      validSeeds: [111, 110, 109],
+      timestampUnaffected: true,
+    });
+    console.log(
+      "Passed: archive listing and three-valid-archive pruning preserve malformed/future records without affecting archive timestamps",
+    );
     assert.deepEqual(errors, []);
     await Promise.all(
       [first, second].map((page) =>

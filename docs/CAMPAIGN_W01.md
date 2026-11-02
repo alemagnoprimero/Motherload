@@ -24,7 +24,7 @@ Packages preserve identity, origin, value, bulk, mass, tags and balance version.
 
 A full hold leaves an exposed package in cleared terrain. Ejection places an intact carried package in nearby open space. Collection, banking and sale move that same identity instead of copying it. Equipping/stowing the rack cannot create an invalid over-capacity save.
 
-Recovery loses carried ordinary cargo/relics and returns unbanked mission objects to their marked sources. Its fee is `min(cash, 25,000, 100 + floor(0.01 × actual equipment spending))` in CR. Equipment spending includes hardware and local tools, excluding construction/services. Hull/energy rise to at least half maximum; healthier resources are preserved. An emergency ordinary salvage package is provided when nearby safe income is depleted; it supplies no story items or blueprints.
+New campaigns start with the full rank-0 tank. The first tow per world, available when energy or hull reaches zero, is free and preserves carried cargo/relics and mission objects. The saved `progress.towsUsed` ledger prevents repeat free tows; old schema-1/2 saves default it to empty without changing their existing energy or world records. Voluntary recovery and subsequent tows lose carried ordinary cargo/relics and return unbanked mission objects to their marked sources. Their fee is `min(cash, 25,000, 100 + floor(0.01 × actual equipment spending))` in CR. Equipment spending includes hardware and local tools, excluding construction/services. Hull/energy rise to at least half maximum; healthier resources are preserved. An emergency ordinary salvage package is provided when nearby safe income is depleted; it supplies no story items or blueprints.
 
 The two starter hauls plus initial cash produce 880 CR before costs. M1 leaves at most 680 CR before services. The opening check therefore targets a useful affordable purchase with a reserve rather than promising a 750 CR drill.
 
@@ -33,6 +33,8 @@ The two starter hauls plus initial cash produce 880 CR before costs. M1 leaves a
 The campaign owns its model, world generation, validation and save namespace under `src/campaign/`. The entry loads it directly. The retired prototype's runtime, assets, routing and tests have been removed.
 
 IndexedDB database `motherload.campaign.v1` keeps current/backup checkpoints in one transaction, with compare-and-swap revision protection. A failed/aborted write rolls back both records. BroadcastChannel notifies other campaign tabs; revision comparison still guards writes without that notification. Corrupt/future records are protected; a valid backup can be reviewed before explicit restoration/replacement.
+
+Campaign replacement also keeps the outgoing valid checkpoint under a separate `archive:<ISO>` key. The three newest valid archives are retained, independently of backup rotation, and are restorable from Pause. Archive insertion, valid-archive pruning and checkpoint/backup replacement share the same transaction. Unsupported/corrupt archive bytes are preserved rather than silently pruned. No database-version upgrade is required.
 
 Checkpoints record schema, balance and generator versions. All current worlds, excavation/discovery, packages, mission state, equipment, paid prices, conditions and construction are included. Velocity, animation and partial cuts are transient. Pausing/backgrounding freezes simulation; background saving is best effort, so explicit Save/Export remains available.
 

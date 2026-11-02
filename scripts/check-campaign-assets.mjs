@@ -12,6 +12,10 @@ const REQUIRED_FRAMES = [
   ...range(8).map((index) => `soil-${index}`),
   ...range(16).map((index) => `soil-edge-${index}`),
   ...range(4).map((index) => `stone-${index}`),
+  ...range(15, 1).map((index) => `stone-edge-${index}`),
+  ...range(15, 1).map((index) => `bedrock-edge-${index}`),
+  "bedrock-0",
+  "sky-body",
   ...range(3, 1).map((index) => `crack-${index}`),
   ...range(4, 1).flatMap((index) => [`ore-o${index}`, `package-o${index}`]),
   "relic",
@@ -55,19 +59,33 @@ const REQUIRED_FRAMES = [
 ];
 
 const expectedFrameSize = (name) =>
-  name.startsWith("dock-stage-")
-    ? { w: 384, h: 288 }
-    : name.startsWith("refuge-stage-")
-      ? { w: 288, h: 192 }
-      : name.startsWith("relay-stage-")
-        ? { w: 192, h: 192 }
-        : name.startsWith("rig-") ||
-            name.startsWith("thrust-") ||
-            name.startsWith("icon-")
-          ? { w: 128, h: 128 }
-          : { w: 96, h: 96 };
+  name === "sky-body"
+    ? { w: 256, h: 256 }
+    : name.startsWith("dock-stage-")
+      ? { w: 384, h: 288 }
+      : name.startsWith("refuge-stage-")
+        ? { w: 288, h: 192 }
+        : name.startsWith("relay-stage-")
+          ? { w: 192, h: 192 }
+          : name.startsWith("rig-") ||
+              name.startsWith("thrust-") ||
+              name.startsWith("icon-")
+            ? { w: 128, h: 128 }
+            : { w: 96, h: 96 };
 
-function decodeAlpha(png, width, height) {
+export function decodeCampaignPixels(
+  png,
+  width = png.readUInt32BE(16),
+  height = png.readUInt32BE(20),
+) {
+  assert.equal(
+    png.subarray(0, 8).toString("hex"),
+    PNG_SIGNATURE,
+    "Invalid PNG signature",
+  );
+  assert.equal(png[24], 8, "Readability checks need 8-bit PNGs");
+  assert.equal(png[25], 6, "Readability checks need RGBA PNGs");
+  assert.equal(png[28], 0, "Interlaced PNG is unsupported");
   const data = [];
   let ended = false;
   for (let offset = 8; offset < png.length;) {
@@ -117,7 +135,7 @@ function decodeAlpha(png, width, height) {
         (packed[y * (rowBytes + 1) + x + 1] + prediction) & 255;
     }
   }
-  return (x, y) => pixels[(y * width + x) * 4 + 3];
+  return pixels;
 }
 
 /** Uses committed output only; no authoring browser or graphics library needed. */
@@ -161,7 +179,8 @@ export function checkCampaignAtlas(
     );
   const frames = Object.entries(atlas.frames);
   assert.ok(frames.length, "Campaign atlas contains no frames");
-  const alpha = decodeAlpha(png, width, height);
+  const pixels = decodeCampaignPixels(png, width, height);
+  const alpha = (x, y) => pixels[(y * width + x) * 4 + 3];
   const bounds = [];
   for (const [name, entry] of frames) {
     const { x, y, w, h } = entry.frame ?? {};
@@ -245,6 +264,140 @@ export function checkCampaignAtlas(
   return { count: frames.length, width, height, bytes: png.length };
 }
 
+/** Pixel checks stay in the normal Node-only production asset audit. */
+export async function checkCampaignReadability(directory, world, png, atlas) {
+  const backgrounds = {};
+  for (const suffix of ["sky", "ridge-far", "ridge-near"]) {
+    const bytes = await readFile(new URL(`${world}-${suffix}.png`, directory));
+    const width = bytes.readUInt32BE(16),
+      height = bytes.readUInt32BE(20);
+    const pixels = decodeCampaignPixels(bytes, width, height);
+    backgrounds[suffix] = { width, height, pixels };
+    for (let y = 0; y < height; y++)
+      for (let channel = 0; channel < 4; channel++)
+        assert.equal(
+          pixels[y * width * 4 + channel],
+          pixels[(y * width + width - 1) * 4 + channel],
+          `${world} ${suffix} has a horizontal wrap seam at row ${y}`,
+        );
+    if (suffix === "sky") {
+      let stars = 0;
+      for (let x = 0; x < width; x++)
+        for (let channel = 0; channel < 4; channel++)
+          assert.equal(
+            pixels[x * 4 + channel],
+            pixels[((height - 1) * width + x) * 4 + channel],
+            `${world} stars have a vertical wrap seam`,
+          );
+      for (let i = 3; i < pixels.length; i += 4) stars += pixels[i] > 0;
+      assert.ok(
+        stars > 0 && stars / (width * height) < 0.015,
+        `${world} stars must stay transparent without a baked gradient or sky body`,
+      );
+    } else {
+      for (let y = Math.floor(height * 0.75); y < height; y++)
+        for (let x = 0; x < width; x++)
+          assert.equal(
+            pixels[(y * width + x) * 4 + 3],
+            255,
+            `${world} ${suffix} needs a continuous opaque ground base`,
+          );
+    }
+  }
+  // Compare the skyline height, not empty sky or the shared solid ground base.
+  // Pixel-mask equality over the entire canvas would count those intentional
+  // common areas and hide identical mountain silhouettes.
+  const skyline = ({ width, height, pixels }, x) => {
+    for (let y = 0; y < height; y++)
+      if (pixels[(y * width + x) * 4 + 3] > 127) return y;
+    return height;
+  };
+  let matchingSkyline = 0;
+  for (let x = 0; x < backgrounds["ridge-far"].width; x++)
+    matchingSkyline +=
+      Math.abs(
+        skyline(backgrounds["ridge-far"], x) -
+          skyline(backgrounds["ridge-near"], x),
+      ) <= 8;
+  const silhouetteAgreement = matchingSkyline / backgrounds["ridge-far"].width;
+  assert.ok(
+    silhouetteAgreement < 0.4,
+    `${world} parallax ridge silhouettes are too similar`,
+  );
+
+  const pixels = decodeCampaignPixels(png);
+  const stride = png.readUInt32BE(16);
+  const sample = (name, x, y) => {
+    const frame = atlas.frames[name]?.frame;
+    assert.ok(frame, `Missing material-readability frame ${world}:${name}`);
+    const at = ((frame.y + y) * stride + frame.x + x) * 4;
+    return [pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]];
+  };
+  const lab = (rgb) => {
+    const c = rgb.map((v) =>
+      v / 255 <= 0.04045 ? v / 255 / 12.92 : ((v / 255 + 0.055) / 1.055) ** 2.4,
+    );
+    const xyz = [
+      (c[0] * 0.4124 + c[1] * 0.3576 + c[2] * 0.1805) / 0.95047,
+      c[0] * 0.2126 + c[1] * 0.7152 + c[2] * 0.0722,
+      (c[0] * 0.0193 + c[1] * 0.1192 + c[2] * 0.9505) / 1.08883,
+    ].map((v) => (v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116));
+    return [
+      116 * xyz[1] - 16,
+      500 * (xyz[0] - xyz[1]),
+      200 * (xyz[1] - xyz[2]),
+    ];
+  };
+  const meanLab = (material, variant, mask) => {
+    const sum = [0, 0, 0];
+    for (let y = 0; y < 96; y++)
+      for (let x = 0; x < 96; x++) {
+        const base = sample(`${material}-${variant}`, x, y);
+        const rim = mask
+          ? sample(`${material}-edge-${mask}`, x, y)
+          : [0, 0, 0, 0];
+        const alpha = rim[3] / 255;
+        const colour = lab(
+          base
+            .slice(0, 3)
+            .map((v, channel) => v * (1 - alpha) + rim[channel] * alpha),
+        );
+        colour.forEach((v, channel) => {
+          sum[channel] += v;
+        });
+      }
+    return sum.map((v) => v / (96 * 96));
+  };
+  const soft = world === "w01" ? "soil" : "ice";
+  const hard = world === "w01" ? "stone" : "frozen-rock";
+  let minimumDeltaE = Infinity,
+    minimumDeltaL = Infinity;
+  for (let mask = 0; mask < 16; mask++) {
+    const softLab = meanLab(soft, 0, mask);
+    for (let variant = 0; variant < 4; variant++) {
+      const hardLab = meanLab(hard, variant, mask);
+      const deltaE = Math.hypot(
+        ...softLab.map((v, channel) => v - hardLab[channel]),
+      );
+      const deltaL = Math.abs(softLab[0] - hardLab[0]);
+      minimumDeltaE = Math.min(minimumDeltaE, deltaE);
+      minimumDeltaL = Math.min(minimumDeltaL, deltaL);
+      assert.ok(
+        deltaE >= 12 && deltaL >= 8,
+        `${world} exposed ${hard}-${variant} mask ${mask} is indistinct: ΔE ${deltaE.toFixed(2)}, ΔL ${deltaL.toFixed(2)}`,
+      );
+    }
+  }
+  for (const material of [soft, hard, "bedrock"])
+    for (let mask = 1; mask < 16; mask++)
+      assert.equal(
+        sample(`${material}-edge-${mask}`, 48, 48)[3],
+        0,
+        `${world} ${material} rim must leave the interior variant visible`,
+      );
+  return { minimumDeltaE, minimumDeltaL, silhouetteAgreement };
+}
+
 if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
@@ -261,6 +414,12 @@ if (
   });
   const result = checkCampaignAtlas(png, JSON.parse(raw));
   const atlas = JSON.parse(raw);
+  const readability = await checkCampaignReadability(
+    directory,
+    "w01",
+    png,
+    atlas,
+  );
   assert.deepEqual(
     atlas.meta?.size,
     { w: result.width, h: result.height },
@@ -411,5 +570,8 @@ if (
   }
   console.log(
     `W01 artwork verified: ${result.count} frames, ${expectedIds.length} design IDs, ${iconCount} sized icons, ${result.width}×${result.height}, ${(result.bytes / 1024).toFixed(0)} KiB PNG.`,
+  );
+  console.log(
+    `W01 readability: material ΔE ≥${readability.minimumDeltaE.toFixed(1)}, ΔL ≥${readability.minimumDeltaL.toFixed(1)}; seamless backgrounds.`,
   );
 }

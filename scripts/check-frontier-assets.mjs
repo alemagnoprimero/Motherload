@@ -2,7 +2,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
-import { checkCampaignAtlas } from "./check-campaign-assets.mjs";
+import {
+  checkCampaignAtlas,
+  checkCampaignReadability,
+} from "./check-campaign-assets.mjs";
 
 const range = (count) => Array.from({ length: count }, (_, index) => index);
 export const FRONTIER_REQUIRED_FRAMES = [
@@ -10,6 +13,9 @@ export const FRONTIER_REQUIRED_FRAMES = [
   ...range(16).map((i) => `ice-edge-${i}`),
   ...range(4).map((i) => `frozen-rock-${i}`),
   ...range(16).map((i) => `frozen-rock-edge-${i}`),
+  ...range(15).map((i) => `bedrock-edge-${i + 1}`),
+  "bedrock-0",
+  "sky-body",
   ...range(4).flatMap((i) => [`ore-o${i + 1}`, `package-o${i + 1}`]),
   "mission-sample",
   "mission-cryovein",
@@ -52,11 +58,14 @@ export async function checkFrontierAssets(
   assert.equal(atlas.meta.framePadding, 2);
   assert.deepEqual(atlas.meta.rigPivot, [64, 64]);
   for (const name of FRONTIER_REQUIRED_FRAMES) {
-    const expected = name.startsWith("dock-stage-")
-      ? { w: 384, h: 288 }
-      : name.startsWith("tool-") || name.startsWith("rig-")
-        ? { w: 128, h: 128 }
-        : { w: 96, h: 96 };
+    const expected =
+      name === "sky-body"
+        ? { w: 256, h: 256 }
+        : name.startsWith("dock-stage-")
+          ? { w: 384, h: 288 }
+          : name.startsWith("tool-") || name.startsWith("rig-")
+            ? { w: 128, h: 128 }
+            : { w: 96, h: 96 };
     assert.deepEqual(
       atlas.frames[name].sourceSize,
       expected,
@@ -147,7 +156,13 @@ export async function checkFrontierAssets(
   assert.deepEqual(registry.pendingBriefs, ["W02-S2"]);
   for (const name of Object.values(registry.gameplayFrames))
     assert.ok(Object.hasOwn(atlas.frames, name));
-  return result;
+  const readability = await checkCampaignReadability(
+    directory,
+    "w02",
+    png,
+    atlas,
+  );
+  return { ...result, readability };
 }
 
 if (
@@ -157,5 +172,8 @@ if (
   const result = await checkFrontierAssets();
   console.log(
     `W02 artwork verified: ${result.count} frames, 17 design briefs, ${result.width}×${result.height}, ${(result.bytes / 1024).toFixed(0)} KiB PNG.`,
+  );
+  console.log(
+    `W02 readability: material ΔE ≥${result.readability.minimumDeltaE.toFixed(1)}, ΔL ≥${result.readability.minimumDeltaL.toFixed(1)}; seamless backgrounds.`,
   );
 }

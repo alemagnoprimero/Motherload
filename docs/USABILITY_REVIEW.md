@@ -2,6 +2,8 @@
 
 The campaign is the sole game. The alternate Legacy runtime, routing, assets and test suites were removed at the user's request during this review. Existing browser save bytes are not converted or deleted; older bookmarked mode URLs open the campaign.
 
+The subsequent [improvement plan](IMPROVEMENT_PLAN.md) identified gaps in the earlier review below. Its [first implementation batch and measurements](IMPROVEMENT_PROGRESS.md) add first-tow protection, durable archives, shaft-entry assistance, warning-band copy, controller menu access and interim terrain/HUD readability. This remains separate from the later full HUD and art redesign.
+
 ## Viewport, warnings and recovery
 
 Active play uses a fixed viewport canvas, persistent energy/hull/cargo gauges, stage guidance and responsive HTML safety messages. Low energy and critical hull warnings persist ahead of routine pickups. Small-screen camera framing preserves readable world labels.
@@ -22,7 +24,7 @@ Dialogs have accessible names/descriptions, important targets are at least 44px,
 
 ## Verification
 
-The project passes **107 automated tests across twelve files**, TypeScript, formatting, source/asset audits and production builds. The preceding usability release passed eight browser checks and five pointer/inspection regressions with no page errors. Four compiled Docker viewport/routing checks passed; a final compiled landscape check verified the visual-only disabled-warning cleanup while retaining its accessible alert.
+The first improvement batch passes **137 automated tests across thirteen files**, TypeScript, source/asset audits and production builds. The preceding Ice comet checkpoint passed 107 tests. The earlier usability release passed eight browser checks and five pointer/inspection regressions with no page errors. Four compiled Docker viewport/routing checks passed; a final compiled landscape check verified the visual-only disabled-warning cleanup while retaining its accessible alert.
 
 The browser checks cover 1440×900 desktop, 393×851 portrait and 568×320 landscape, restored airborne saves, critical conditions, named recovery confirmations and cancellation, healthy-resource preservation, exact service/upgrade previews, cargo-preserving repair at the lander, modifier/focus handling, unchanged-status mutation counts, legends, joystick/inspection and retired-link routing. Old localStorage bytes remain exact. The W01-only production output contained nine campaign files and no retired renderer or atlas. Local output and tested Docker files matched by SHA-256.
 
@@ -30,7 +32,7 @@ The mission-landmark iteration passed five new development browser checks and al
 
 The Ice comet expansion adds 28 unit checks across generation, simulation, guidance and persistence, including 100-seed world/economy and two-world export checks. Nine focused development browser scenarios cover actual departure and travel, schema-1 migration, automatic banking, persistent return visits, native 48-column wrapping, early mining/sale, rank-2/tool purchases, volatile preservation/rupture, diagonal takeoff, pause/load fairness, independent joystick/precision fingers, cold pockets, vents, warnings/recovery, local missions and two-tab travel conflicts. A conflict test disables BroadcastChannel to exercise the actual IndexedDB compare-and-swap fallback; current and backup bytes remain unchanged, and Load/Export stay accessible. The original W01 two-trip opening and all three usability viewport cases also pass.
 
-Phone extraction checks use the full rank-2 rig with anchoring feet, thermal auger, condenser and chamber. The short-landscape release card sits beside the mission tracker, clear of the actual rig; the 44px action remains visible. Late mission and upgrade-funding fixtures isolate mechanics rather than campaign earnings. Original W01 artwork remains byte-identical; the separate W02 atlas and icons reproduce exactly through the authoring pipeline. See [CAMPAIGN_W02.md](CAMPAIGN_W02.md).
+Phone extraction checks use the full rank-2 rig with anchoring feet, thermal auger, condenser and chamber. The short-landscape release card sits beside the mission tracker, clear of the actual rig; the 44px action remains visible. Late mission and upgrade-funding fixtures isolate mechanics rather than campaign earnings. At the Ice comet checkpoint, W01 artwork remained byte-identical. The subsequent improvement batch intentionally revises terrain and sky art in both worlds, using a shared reproducible authoring pipeline. See [CAMPAIGN_W02.md](CAMPAIGN_W02.md).
 
 All nine Frontier scenarios also pass against the final compiled Docker build. Its fourteen production files match the local build by SHA-256. The checks use 1440×900, 393×851 and 568×320 browser viewports; they do not establish physical-device comfort or the design pack's campaign duration.
 

@@ -20,6 +20,8 @@
     "test:usability": "node scripts/usability-smoke.mjs",
     "test:poi": "node scripts/poi-smoke.mjs",
     "test:frontier": "node scripts/frontier-smoke.mjs",
+    "test:improvements": "node scripts/improvement-smoke.mjs",
+    "test:opening": "vitest run tests/campaign-improvements-model.test.ts tests/campaign-model.test.ts",
     "reference": "vite --host 0.0.0.0 --port 4174",
     "format:check": "prettier --check src tests scripts/*.mjs index.html reference/index.html",
     "test:production": "node scripts/production-smoke.mjs"

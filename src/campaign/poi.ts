@@ -403,6 +403,9 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
       ? "Excavate the marked debris"
       : "Approach to recover the mission part";
 
+  if (!returnReason && band === "distant" && poi.buried)
+    action = `Descend to ${poi.depthMeters} m (${arrows[direction]})`;
+
   if (returnReason && !campaign.atDock && cells <= 3 && state.vehicle.y < 0)
     action = "Land in the illuminated bay to dock";
   if (comet && campaign.volatileWindow)

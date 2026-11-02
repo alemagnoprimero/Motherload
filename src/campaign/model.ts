@@ -9,6 +9,7 @@ import {
   W01_GEAR,
   W01_MILESTONES,
   W01_ORES,
+  WORLD_CATALOG,
   formatCredits,
 } from "./config";
 import { createW01, createW02 } from "./world";
@@ -61,7 +62,12 @@ export function createCampaign(seed = 73021): CampaignState {
       processor: null,
       utilities: [],
     },
-    vehicle: { x: W01.spawnX, y: SURFACE_Y, energy: 6, hull: 10 },
+    vehicle: {
+      x: W01.spawnX,
+      y: SURFACE_Y,
+      energy: HARDWARE_LEVELS.energy[0]!,
+      hull: HARDWARE_LEVELS.hull[0]!,
+    },
     currentWorld: "W01",
     worlds: { W01: createW01(seed) },
     progress: {
@@ -70,6 +76,7 @@ export function createCampaign(seed = 73021): CampaignState {
       completed: [],
       unlockedWorlds: ["W01"],
       departed: false,
+      towsUsed: [],
     },
     elapsed: 0,
     stats: {
@@ -110,6 +117,11 @@ export class Campaign {
   private cut: Cut | undefined;
   private visible = new Set<number>();
   private wasDocked = false;
+  private shaftAlignment: { x: number; rim: number; until: number } | undefined;
+  private bufferedCut:
+    { direction: Cut["direction"]; until: number } | undefined;
+  private previousCutIntent: Cut["direction"] | undefined;
+  private nextFootingHintAt = 0;
 
   constructor(state = createCampaign()) {
     this.state = state;
@@ -368,6 +380,38 @@ export class Campaign {
     }
     const horizontal =
       Number(Boolean(controls.right)) - Number(Boolean(controls.left));
+    const supported = this.grounded;
+    const cutIntent: Cut["direction"] | undefined = controls.up
+      ? undefined
+      : controls.down
+        ? "down"
+        : horizontal < 0
+          ? "left"
+          : horizontal > 0
+            ? "right"
+            : undefined;
+    if (controls.up) this.bufferedCut = undefined;
+    else if (
+      !this.cut &&
+      !supported &&
+      cutIntent &&
+      cutIntent !== this.previousCutIntent
+    )
+      this.bufferedCut = {
+        direction: cutIntent,
+        until: state.elapsed + 0.12,
+      };
+    this.previousCutIntent = cutIntent;
+    if (this.bufferedCut && state.elapsed > this.bufferedCut.until)
+      this.bufferedCut = undefined;
+    if (
+      this.shaftAlignment &&
+      (!controls.down ||
+        controls.up ||
+        state.elapsed > this.shaftAlignment.until ||
+        vehicle.y + HALF_Y > this.shaftAlignment.rim + 0.05)
+    )
+      this.shaftAlignment = undefined;
     this.precisionActive = Boolean(
       this.state.equipped.processor === "W02-R3" &&
       (controls.primary || controls.secondary),
@@ -391,8 +435,8 @@ export class Campaign {
         return;
       }
     }
-    if (horizontal) this.facing = horizontal < 0 ? "left" : "right";
-    const supported = this.grounded;
+    if (horizontal && !this.cut)
+      this.facing = horizontal < 0 ? "left" : "right";
     if (controls.mobility && supported && state.equipped.mobility === "W01-R2")
       this.feetTime += dt;
     else this.feetTime = 0;
@@ -427,21 +471,23 @@ export class Campaign {
       this.updateObjects(dt);
       return;
     }
-    if (!controls.up && (controls.down || horizontal) && supported) {
-      const direction = controls.down ? 0 : horizontal;
-      let tx = Math.floor(vehicle.x + direction * (HALF_X + 0.15));
-      const ty = Math.floor(vehicle.y + (controls.down ? HALF_Y + 0.05 : 0));
-      if (controls.down && this.tile(tx, ty) === 0) {
-        const support = [
-          Math.floor(vehicle.x - HALF_X + EPSILON),
-          Math.floor(vehicle.x + HALF_X - EPSILON),
-        ]
-          .sort(
-            (a, b) =>
-              Math.abs(a + 0.5 - vehicle.x) - Math.abs(b + 0.5 - vehicle.x),
-          )
-          .find((column) => this.tile(column, ty) !== 0);
-        if (support !== undefined) tx = support;
+    const cutDirection = controls.up
+      ? undefined
+      : (cutIntent ?? this.bufferedCut?.direction);
+    if (cutDirection && supported) {
+      const down = cutDirection === "down";
+      const direction = down ? 0 : cutDirection === "left" ? -1 : 1;
+      const tx = Math.floor(vehicle.x + direction * (HALF_X + 0.15));
+      const ty = Math.floor(vehicle.y + (down ? HALF_Y + 0.05 : 0));
+      if (down && controls.down && this.tile(tx, ty) === 0) {
+        // A near miss over an existing shaft should enter that shaft, not
+        // excavate the supporting rim. Motion remains collision constrained.
+        if (!this.shaftAlignment)
+          this.shaftAlignment = {
+            x: this.wrap(tx + 0.5),
+            rim: ty,
+            until: state.elapsed + 0.35,
+          };
       }
       const material = this.tile(tx, ty);
       if (material === 3) this.message = "The claim's bedrock ends here.";
@@ -471,10 +517,10 @@ export class Campaign {
           progress: 0,
           spent: 0,
           precision: isVolatile && this.precisionActive,
-          direction: controls.down ? "down" : horizontal < 0 ? "left" : "right",
+          direction: cutDirection,
           seconds: Math.max(
             0.25,
-            ((controls.down ? 1 : 0.75) *
+            ((down ? 1 : 0.75) *
               (material === 2 ? 1.85 : 1) *
               Math.min(5, 1 + Math.max(0, ty) / 80) *
               auger *
@@ -484,6 +530,9 @@ export class Campaign {
               (level(state, "drill") / 2),
           ),
         };
+        if (!down) this.facing = cutDirection as "left" | "right";
+        this.bufferedCut = undefined;
+        this.shaftAlignment = undefined;
         this.velocityX = this.velocityY = 0;
         this.advanceCut(dt);
         this.updateObjects(dt);
@@ -515,6 +564,12 @@ export class Campaign {
       -maxHorizontal,
       maxHorizontal,
     );
+    if (this.shaftAlignment)
+      this.velocityX = clamp(
+        this.delta(vehicle.x, this.shaftAlignment.x) * 14,
+        -3,
+        3,
+      );
     if (this.feetDeployed)
       this.velocityX *= Math.pow(
         W01_EFFECTS.feet.horizontalDriftMultiplier,
@@ -553,6 +608,17 @@ export class Campaign {
     if (controls.up && this.blocked(vehicle.x, vehicle.y - 0.04))
       this.message =
         "Upward rock cannot be drilled. Return through an open shaft.";
+    if (
+      !supported &&
+      horizontal &&
+      !controls.down &&
+      !controls.up &&
+      this.blocked(vehicle.x + horizontal * 0.05, vehicle.y) &&
+      state.elapsed >= this.nextFootingHintAt
+    ) {
+      this.message = "Side drilling needs footing · land on a ledge first.";
+      this.nextFootingHintAt = state.elapsed + 3;
+    }
     this.updateObjects(dt);
   }
   private blocked(x: number, y: number) {
@@ -583,9 +649,13 @@ export class Campaign {
         else free = mid;
       }
       end = free;
-      if (axis === "y" && this.velocityY > 7)
+      const landingThreshold = Math.max(
+        7,
+        Math.min(12, 6 * Math.sqrt(level(this.state, "engine") / 150)) + 0.3,
+      );
+      if (axis === "y" && this.velocityY > landingThreshold)
         this.damage(
-          Math.max(1, Math.round((this.velocityY - 7) * 0.6)),
+          Math.max(1, Math.round((this.velocityY - landingThreshold) * 0.6)),
           "Hard landing",
         );
       if (axis === "x") this.velocityX = 0;
@@ -798,6 +868,12 @@ export class Campaign {
     this.state.vehicle.hull = Math.max(0, this.state.vehicle.hull - amount);
     this.message = `${cause}: −${amount} hull. Return for service.`;
   }
+  /** Forget uncommitted input on pause/focus loss without canceling a cut. */
+  clearInputAssist() {
+    this.shaftAlignment = undefined;
+    this.bufferedCut = undefined;
+    this.previousCutIntent = undefined;
+  }
   private stop() {
     this.velocityX = this.velocityY = 0;
     this.cut = undefined;
@@ -805,6 +881,7 @@ export class Campaign {
     this.feetTime = 0;
     this.feetDeployed = false;
     this.precisionActive = false;
+    this.clearInputAssist();
   }
   private requireDock() {
     if (this.atDock) return true;
@@ -1074,16 +1151,23 @@ export class Campaign {
     return true;
   }
   get recoveryPreview() {
+    const freeTow =
+      (this.state.vehicle.energy <= 0 || this.state.vehicle.hull <= 0) &&
+      !this.state.progress.towsUsed?.includes(this.state.currentWorld);
     const spend = this.state.purchases.reduce(
         (total, purchase) => total + purchase.paid,
         0,
       ),
-      cost = Math.min(
-        this.state.credits,
-        250000,
-        (100 + Math.floor(spend / 1000)) * 10,
-      );
+      cost = freeTow
+        ? 0
+        : Math.min(
+            this.state.credits,
+            250000,
+            (100 + Math.floor(spend / 1000)) * 10,
+          );
     return {
+      freeTow,
+      keepsCargo: freeTow,
       cost,
       remaining: this.state.credits - cost,
       energy: clamp(
@@ -1098,9 +1182,14 @@ export class Campaign {
     const state = this.state,
       preview = this.recoveryPreview;
     if (this.world.volatile) this.finishVolatile(false);
-    for (const item of this.cargo) item.status = "lost";
-    for (const mission of this.world.missions)
-      if (mission.status === "carried") mission.status = "source";
+    if (preview.freeTow) {
+      state.progress.towsUsed ??= [];
+      state.progress.towsUsed.push(state.currentWorld);
+    } else {
+      for (const item of this.cargo) item.status = "lost";
+      for (const mission of this.world.missions)
+        if (mission.status === "carried") mission.status = "source";
+    }
     state.credits = preview.remaining;
     state.vehicle = {
       x: this.activeWorldDefinition.dockX,
@@ -1143,7 +1232,9 @@ export class Campaign {
         processedBy: [],
       });
     }
-    this.message = `Recovered for ${formatCredits(preview.cost)} CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%.`;
+    this.message = preview.freeTow
+      ? "First emergency tow free. Cargo and mission objects kept; unload them at the lander. Energy and hull replenished to at least 50%."
+      : `Recovered for ${formatCredits(preview.cost)} CR. Carried cargo lost; unbanked mission objects returned to their sources. Energy and hull replenished to at least 50%.`;
     this.refreshVisibility();
     return true;
   }
@@ -1280,6 +1371,15 @@ export function decodeCampaign(raw: string): CampaignState {
       !state.progress.unlockedWorlds.includes("W01")
     )
       throw new Error("Campaign progression is invalid.");
+    if (state.progress.towsUsed === undefined) state.progress.towsUsed = [];
+    if (
+      !Array.isArray(state.progress.towsUsed) ||
+      !unique(state.progress.towsUsed) ||
+      state.progress.towsUsed.some(
+        (id) => !WORLD_CATALOG.some((world) => world.id === id),
+      )
+    )
+      throw new Error("Campaign emergency tow history is invalid.");
     const frontier = state.worlds.W02;
     const hardwareCap = frontier && !legacy ? 2 : 1;
     if (

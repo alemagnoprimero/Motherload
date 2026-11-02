@@ -5,6 +5,7 @@ import {
   CampaignSaveError,
   CampaignStore,
   MAX_CAMPAIGN_BYTES,
+  type CampaignArchive,
 } from "./persistence";
 import {
   HARDWARE_KEYS,
@@ -20,6 +21,7 @@ import {
   loadPilotPreferences,
   savePilotPreferences,
   type PilotAction,
+  type MenuAction,
 } from "./input";
 import { CampaignAudio } from "./audio";
 import { campaignMission } from "./missions";
@@ -137,8 +139,17 @@ let initialized = false,
 let savePromise: Promise<boolean> | undefined;
 let previousMessage = "",
   messageUntil = 0;
+let messageHoldUntil = 0;
+let messagePriority = 0;
+let lastCargoBulk = 0;
+let energyPulseUntil = 0;
+let undockCheck = false;
+let archives: CampaignArchive[] = [];
+let archivesRequest: Promise<void> | undefined;
+let archivesKey = "";
 let confirmation: (() => Promise<void> | void) | undefined;
 let confirmBusy = false;
+let storageConflictEpoch = 0;
 let confirmReturn: Overlay;
 let dockAfterConfirmation = false;
 let launchUntil = 0;
@@ -162,7 +173,7 @@ $("app").innerHTML = `
   <div id="campaign-game" tabindex="0" role="application" aria-label="Mining expedition. Touch places a floating joystick: drag from its center to steer, up to fly, down to drill. Mouse holds steer relative to the rig. Tap minerals to inspect. Arrows or WASD drive and drill, Up flies, E enters the lander, Space braces, Escape pauses." aria-busy="true"></div>
   <div class="campaign-hud" aria-label="Vehicle conditions">
     <section class="instrument instrument-left" aria-label="Energy and hull">
-      <div class="vital energy-vital">${hudIcon("energy")}<div><div class="instrument-row"><span>ENERGY</span><strong id="campaign-energy">6 / 10</strong></div><div class="meter energy-meter"><i id="campaign-energy-fill"></i></div></div></div>
+      <div class="vital energy-vital">${hudIcon("energy")}<div><div class="instrument-row"><span>ENERGY</span><strong id="campaign-energy">10 / 10</strong></div><div class="meter energy-meter"><i id="campaign-energy-fill"></i></div></div></div>
       <div class="vital hull-vital">${hudIcon("hull")}<div><div class="instrument-row"><span>HULL</span><strong id="campaign-hull">10 / 10</strong></div><div class="meter hull-meter"><i id="campaign-hull-fill"></i></div></div></div>
     </section>
     <section class="instrument instrument-right" aria-label="Depth and cargo">
@@ -191,7 +202,7 @@ $("app").innerHTML = `
   <div id="campaign-launch" class="campaign-launch" hidden><span class="eyebrow">FRONTIER CERTIFICATE SECURED</span><h1>Course charted.</h1><p>Ice comet / Fractured moon</p></div>
 </main>
 <dialog id="campaign-welcome" class="campaign-welcome" aria-labelledby="campaign-welcome-title"><div class="title-screen"><p class="eyebrow">THE FRONTIER</p><h1 id="campaign-welcome-title">MOTHERLOAD</h1><p class="title-location">BROKEN ASTEROID <span>600 m</span></p><p class="title-mission">Recover the core. Restore the lander.</p><button id="campaign-start" class="primary">Deploy rig <span aria-hidden="true">›</span></button><p class="welcome-hint">Touch: press to place your joystick, then drag.<br>Up flies · Down drills · Mouse or Arrows / WASD</p></div></dialog>
-<dialog id="campaign-menu" class="campaign-panel" aria-labelledby="campaign-menu-title"><header><div><p class="eyebrow">PILOT CONSOLE</p><h1 id="campaign-menu-title">Paused</h1></div><div class="menu-heading-actions"><button id="campaign-menu-recover" data-command="recover" class="primary" hidden>Request recovery</button><button id="campaign-menu-dock" data-command="disabled-dock" hidden>Lander services</button><button id="campaign-resume" data-close="menu" class="return-button">Resume expedition</button></div><p id="campaign-pause-conditions" class="campaign-pause-conditions" aria-label="Vehicle conditions"></p></header><p id="campaign-menu-recovery-preview" class="menu-recovery-preview" hidden></p><div id="campaign-storage-notice" class="campaign-notice" hidden role="alert"></div><div class="pause-grid"><section><h2>Checkpoint</h2><p id="campaign-save-status" role="status">Preparing checkpoint…</p><p id="campaign-autosave-status" role="status">Progress saves in this browser only.</p><p class="muted">Load replaces this session with the latest saved checkpoint, including autosaves. Restored expeditions wait for Resume.</p><div class="action-grid"><button data-command="save">Save checkpoint</button><button data-command="load">Load latest autosave</button><button data-command="export">Export campaign</button><button data-command="import">Import campaign</button><button data-command="restore">Restore backup</button></div><input id="campaign-import" type="file" accept="application/json,.json" hidden></section><section><h2>Flight record</h2><div id="campaign-record"></div><button data-command="map">Star map</button></section><section><h2>Systems</h2><button id="campaign-sound">Enable sound</button><label>Effects <input type="range" data-volume="effects" min="0" max="100"></label><label>Ambience <input type="range" data-volume="ambience" min="0" max="100"></label><label>Music <input type="range" data-volume="music" min="0" max="100"></label><label class="check"><input type="checkbox" data-setting="reducedMotion"> Reduced motion</label><label class="check"><input type="checkbox" data-setting="highContrast"> High-contrast edges</label><label class="check"><input type="checkbox" data-setting="largeText"> Larger text</label></section><section><h2>Pilot controls</h2><p class="muted">Touch: press the world to place your joystick center, then drag from it to steer. Up flies; down drills. Return to center for neutral; lift to release.</p><p class="muted">Mouse: hold or drag toward your direction of travel. Hold above the rig to fly; below it to drill. Release to stop steering. Short taps inspect minerals or enter the nearby lander.</p><p class="muted">Arrows / WASD drive and drill; Up flies. Side drilling needs a ledge. A started cut finishes before ascent. On the Ice comet, release drilling when a volatile cut completes to preserve it. With drilling toggle, press Down again or use Release drill. Hold the primary utility action (Q by default) while beginning a cut to use an equipped preservation chamber.</p><label class="check"><input type="checkbox" data-setting="showDirectionButtons"> Show direction buttons (fallback)</label><label class="check"><input type="checkbox" data-setting="drillToggle"> Toggle downward drilling</label><label class="check"><input type="checkbox" data-setting="braceToggle"> Toggle anchoring feet</label><details><summary>Keyboard bindings</summary><div id="campaign-bindings"></div><p id="campaign-remap-status" role="status"></p></details><p class="muted">Controller: left stick / D-pad drive, A thrust, X mobility, B / Y utilities, LB interact, RB map, Start pause.</p></section><section class="recovery-section"><h2>Recovery</h2><button data-command="recover">Request recovery</button><p class="muted">Carried cargo and relics are lost. Mission objects return to their marked sources. The recovery fee never creates debt.</p><button data-command="new">Start a new campaign</button></section></div></dialog>
+<dialog id="campaign-menu" class="campaign-panel" aria-labelledby="campaign-menu-title"><header><div><p class="eyebrow">PILOT CONSOLE</p><h1 id="campaign-menu-title">Paused</h1></div><div class="menu-heading-actions"><button id="campaign-menu-recover" data-command="recover" class="primary" hidden>Request recovery</button><button id="campaign-menu-dock" data-command="disabled-dock" hidden>Lander services</button><button id="campaign-resume" data-close="menu" class="return-button">Resume expedition</button></div><p id="campaign-pause-conditions" class="campaign-pause-conditions" aria-label="Vehicle conditions"></p></header><p id="campaign-menu-recovery-preview" class="menu-recovery-preview" hidden></p><div id="campaign-storage-notice" class="campaign-notice" hidden role="alert"></div><div class="pause-grid"><section><h2>Checkpoint</h2><p id="campaign-save-status" role="status">Preparing checkpoint…</p><p id="campaign-autosave-status" role="status">Progress saves in this browser only.</p><p class="muted">Load replaces this session with the latest saved checkpoint, including autosaves. Restored expeditions wait for Resume.</p><div class="action-grid"><button data-command="save">Save checkpoint</button><button data-command="load">Load latest autosave</button><button data-command="export">Export campaign</button><button data-command="import">Import campaign</button><button data-command="restore">Restore backup</button></div><input id="campaign-import" type="file" accept="application/json,.json" hidden></section><section><h2>Flight record</h2><div id="campaign-record"></div><button data-command="map">Star map</button></section><section><h2>Systems</h2><button id="campaign-sound">Enable sound</button><label>Effects <input type="range" data-volume="effects" min="0" max="100"></label><label>Ambience <input type="range" data-volume="ambience" min="0" max="100"></label><label>Music <input type="range" data-volume="music" min="0" max="100"></label><label class="check"><input type="checkbox" data-setting="reducedMotion"> Reduced motion</label><label class="check"><input type="checkbox" data-setting="highContrast"> High-contrast edges</label><label class="check"><input type="checkbox" data-setting="largeText"> Larger text</label></section><section><h2>Pilot controls</h2><p class="muted">Touch: press the world to place your joystick center, then drag from it to steer. Up flies; down drills. Return to center for neutral; lift to release.</p><p class="muted">Mouse: hold or drag toward your direction of travel. Hold above the rig to fly; below it to drill. Release to stop steering. Short taps inspect minerals or enter the nearby lander.</p><p class="muted">Arrows / WASD drive and drill; Up flies. Side drilling needs a ledge. A started cut finishes before ascent. On the Ice comet, release drilling when a volatile cut completes to preserve it. With drilling toggle, press Down again or use Release drill. Hold the primary utility action (Q by default) while beginning a cut to use an equipped preservation chamber.</p><label class="check"><input type="checkbox" data-setting="showDirectionButtons"> Show direction buttons (fallback)</label><label class="check"><input type="checkbox" data-setting="drillToggle"> Toggle downward drilling</label><label class="check"><input type="checkbox" data-setting="braceToggle"> Toggle anchoring feet</label><details><summary>Keyboard bindings</summary><div id="campaign-bindings"></div><p id="campaign-remap-status" role="status"></p></details><p class="muted">Controller: left stick / D-pad drive, A thrust, X mobility, B / Y utilities, LB interact, RB map, Start pause. Menus: D-pad selects, A activates, B returns.</p></section><section class="recovery-section"><h2>Recovery</h2><button data-command="recover">Request recovery</button><p class="muted">The first disabled-rig tow in each world is free and keeps carried cargo. Voluntary recovery and later tows lose cargo, return mission objects to their sources and charge a fee without creating debt.</p><button data-command="new">Start a new campaign</button></section></div></dialog>
 <dialog id="campaign-dock" class="campaign-panel dock-panel" aria-labelledby="campaign-dock-title"><header><div><p id="campaign-dock-location" class="eyebrow">LANDER TERMINAL / W01</p><h1 id="campaign-dock-title">The restored lander</h1></div><div class="dock-heading-right"><strong id="campaign-dock-credits">20 CR</strong><button data-close="dock" class="return-button">Undock</button></div></header><nav aria-label="Lander services"><button data-tab="service">Service</button><button data-tab="hardware">Hardware</button><button data-tab="tools">Attachments</button><button data-tab="lander">Lander</button><button data-tab="cargo">Cargo</button><button id="campaign-dock-navigation" data-command="map" hidden>Navigation</button></nav><div id="campaign-dock-content"></div><p id="campaign-dock-message" class="dock-feedback" role="status"></p></dialog>
 <dialog id="campaign-map" class="campaign-panel map-panel" aria-labelledby="campaign-map-title"><header><div><p class="eyebrow">NAVIGATION ARCHIVE</p><h1 id="campaign-map-title">Navigation</h1></div><button data-close="map" class="return-button">Return to mine</button></header><p id="campaign-map-copy"></p><div id="campaign-map-worlds" class="world-cards"></div><p class="muted">Travel banks carried cargo and mission objects before departure. Your rig, credits, owned attachments and excavated routes persist. Travel does not refuel or repair.</p></dialog>
 <dialog id="campaign-confirm" class="campaign-confirm" aria-labelledby="campaign-confirm-title" aria-describedby="campaign-confirm-copy"><p class="eyebrow">EXPEDITION DECISION</p><h2 id="campaign-confirm-title"></h2><p id="campaign-confirm-copy"></p><p id="campaign-confirm-error" role="alert"></p><div><button id="campaign-confirm-cancel">Cancel</button><button id="campaign-confirm-accept" class="primary">Confirm</button></div></dialog>`;
@@ -297,6 +308,23 @@ replaceButton.dataset.command = "replace";
 replaceButton.textContent = "Save this run instead";
 replaceButton.hidden = true;
 document.querySelector(".action-grid")!.append(replaceButton);
+const archiveSection = document.createElement("section");
+archiveSection.innerHTML =
+  '<h2>Campaign archives</h2><p class="muted">The last three replaced campaigns stay here independently of autosave backups. Restores start paused.</p><div id="campaign-archives"></div><p id="campaign-archive-status" role="status"></p>';
+document.querySelector(".pause-grid")!.append(archiveSection);
+const dockRefuel = document.createElement("p");
+dockRefuel.id = "campaign-dock-refuel";
+dockRefuel.className = "campaign-dock-refuel";
+dockRefuel.setAttribute("role", "status");
+$("campaign-dock").querySelector("header")!.append(dockRefuel);
+const undockPrompt = document.createElement("section");
+undockPrompt.id = "campaign-undock-check";
+undockPrompt.className = "campaign-undock-check";
+undockPrompt.hidden = true;
+undockPrompt.setAttribute("aria-labelledby", "campaign-undock-warning");
+undockPrompt.innerHTML =
+  '<p id="campaign-undock-warning"></p><div><button data-command="refuel-undock" class="primary"></button><button data-command="undock-anyway">Undock anyway</button></div>';
+$("campaign-dock-content").before(undockPrompt);
 
 const input = new CampaignInput(preferences, {
   blocked: () => paused(),
@@ -314,6 +342,8 @@ const input = new CampaignInput(preferences, {
   unlockAudio: () => {
     void audio.unlock();
   },
+  menu: menuControl,
+  releaseKeyboard: () => campaign.clearInputAssist(),
 });
 input.onRemapped = (message) => {
   $("campaign-remap-status").textContent = message;
@@ -321,6 +351,10 @@ input.onRemapped = (message) => {
 };
 applyPreferences();
 
+function clearPilotInput() {
+  input.clear();
+  campaign.clearInputAssist();
+}
 function paused() {
   return Boolean(
     overlay ||
@@ -351,16 +385,23 @@ function condition(value: number) {
 function recoveryCopy(short = false) {
   const preview = campaign.recoveryPreview;
   const resources = `Energy ${condition(preview.energy)}/${campaign.maxEnergy} L · Hull ${condition(preview.hull)}/${campaign.maxHull} HP`;
+  if (preview.freeTow)
+    return short
+      ? `First tow · free. ${resources}. Cargo, relics and mission objects kept.`
+      : `First disabled-rig tow in this world · free. ${resources}. All carried cargo, relics and mission objects stay aboard. ${money(preview.remaining)} remains. Later tows and voluntary recovery use the normal fee and cargo-loss rules.`;
   return short
     ? `Cost ${money(preview.cost)} · ${resources}. Carried cargo lost; mission objects returned.`
     : `Recovery costs ${money(preview.cost)}; ${money(preview.remaining)} remains. ${resources}. Healthy resources above half capacity are preserved. Carried ordinary cargo and relics are lost; unbanked mission objects return to their marked sources. Banked cargo, equipment and progress are kept.`;
 }
 function requireResumeAfterRestore() {
   resumeRequired = true;
-  input.clear();
+  clearPilotInput();
   saveTimer = 0;
   lastMined = campaign.state.stats.mined;
   lastHull = campaign.state.vehicle.hull;
+  lastCargoBulk = campaign.cargoBulk;
+  messageHoldUntil = 0;
+  messageUntil = 0;
 }
 function syncSafety() {
   const vehicle = campaign.state.vehicle;
@@ -369,21 +410,51 @@ function syncSafety() {
     `Energy ${condition(vehicle.energy)}/${campaign.maxEnergy} L · Hull ${condition(vehicle.hull)}/${campaign.maxHull} HP · Cargo ${campaign.cargoBulk}/${campaign.capacity}`,
   );
   const messages: string[] = [];
+  const energyRatio = vehicle.energy / campaign.maxEnergy;
+  const refuel = campaign.servicePreview("refuel");
+  const refuelHint =
+    campaign.atDock && energyRatio < 0.5
+      ? refuel.cost > 0
+        ? `Energy below half · refuel here for ${money(refuel.cost)}${refuel.partial ? " (partial fill)" : ""}`
+        : "Energy below half · sell cargo to afford refuelling"
+      : "";
+  setText("campaign-dock-refuel", refuelHint);
+  setHidden("campaign-dock-refuel", !refuelHint);
   if (vehicle.energy <= 0) messages.push("Energy depleted · request recovery");
-  else if (vehicle.energy / campaign.maxEnergy <= 0.15)
-    messages.push("Energy critical · return to the lander");
-  else if (vehicle.energy / campaign.maxEnergy <= 0.25)
-    messages.push("Low energy · return to the lander");
+  else if (campaign.atDock) {
+    if (refuelHint && refuel.cost > 0) messages.push(refuelHint);
+  } else if (energyRatio <= 0.08)
+    messages.push("Emergency reserve · return or request recovery");
+  else if (energyRatio <= 0.15)
+    messages.push("Energy critical · return through your cleared route");
+  else if (energyRatio <= 0.25)
+    messages.push("Low energy · reserve at 25% · check your return route");
   if (vehicle.hull <= 0) messages.push("Hull failed · request recovery");
   else if (vehicle.hull / campaign.maxHull <= 0.25)
     messages.push("Critical hull · repair at the lander");
   setText("campaign-danger", messages.join("\n"));
-  setHidden("campaign-danger", !messages.length);
+  setHidden("campaign-danger", !messages.length || overlay === "dock");
   setBodyData("campaignDanger", String(Boolean(messages.length)));
   const disabled = rigDisabled();
   setBodyData("campaignDisabled", String(disabled));
   setBodyData("campaignResumeRequired", String(resumeRequired));
-  $<HTMLButtonElement>("campaign-resume").disabled = restoring || conflict;
+  $<HTMLButtonElement>("campaign-resume").disabled =
+    restoring || conflict || confirmBusy;
+  document
+    .querySelectorAll<HTMLButtonElement>(
+      '.action-grid [data-command]:not([data-command="export"])',
+    )
+    .forEach((button) => {
+      button.disabled =
+        busy ||
+        confirmBusy ||
+        (button.dataset.command === "restore" && !backupAvailable);
+    });
+  $("campaign-archives")
+    .querySelectorAll<HTMLButtonElement>("button")
+    .forEach((button) => {
+      button.disabled = busy || restoring || confirmBusy;
+    });
   setHidden("campaign-disabled", !disabled || Boolean(overlay || confirmation));
   if (disabled) {
     setText(
@@ -426,11 +497,22 @@ function presentationMessage(message: string) {
     .replace(". Its improvement is active now.", ".")
     .replace("Your current valid save becomes the backup.", "");
 }
-function showMessage(message: string) {
+function showMessage(message: string, priority?: number) {
   const concise = presentationMessage(message);
   if (!concise || document.body.dataset.campaignDanger === "true") return;
+  const now = performance.now();
+  const nextPriority =
+    priority ??
+    (/^Hold full/.test(concise)
+      ? 3
+      : /surveyed|secured|restored|complete|constructed/i.test(concise)
+        ? 2
+        : 0);
+  if (now < messageHoldUntil && nextPriority < messagePriority) return;
+  messagePriority = nextPriority;
+  messageHoldUntil = nextPriority >= 2 ? now + 2500 : now;
   setText("campaign-message", concise);
-  messageUntil = performance.now() + 4000;
+  messageUntil = now + 4000;
   $("campaign-message").classList.add("visible");
 }
 function syncMissionSignal(objectiveNext: string) {
@@ -484,7 +566,7 @@ function syncMissionSignal(objectiveNext: string) {
   ) {
     announcedSignalBands.set(signal.targetId, rank);
     const message = `${signal.name} · ${proximity}. ${signal.action}.`;
-    showMessage(message);
+    showMessage(message, 1);
   }
 }
 function openOverlay(kind: Exclude<typeof overlay, undefined>) {
@@ -492,22 +574,41 @@ function openOverlay(kind: Exclude<typeof overlay, undefined>) {
     showMessage("Return to the lander's illuminated surface bay to dock.");
     return;
   }
-  input.clear();
+  clearPilotInput();
   for (const id of ["menu", "dock", "map", "welcome"] as const) {
     const dialog = $<HTMLDialogElement>("campaign-" + id);
     if (dialog.open) dialog.close();
   }
   overlay = kind;
   document.body.dataset.campaignOverlay = kind;
-  if (kind === "dock") renderDock();
-  if (kind === "menu") renderMenu();
+  if (kind === "dock") {
+    undockCheck = false;
+    if (
+      campaign.cargo.length ||
+      campaign.world.missions.some((item) => item.status === "carried") ||
+      campaign.state.vehicle.energy < campaign.maxEnergy ||
+      campaign.state.vehicle.hull < campaign.maxHull
+    )
+      dockTab = "service";
+    else if (
+      campaign.missionReady &&
+      campaign.currentMilestone &&
+      campaign.state.credits >= campaign.currentMilestone.fee
+    )
+      dockTab = "lander";
+    renderDock();
+  }
+  if (kind === "menu") {
+    renderMenu();
+    void refreshArchives();
+  }
   if (kind === "map") renderMap();
   $<HTMLDialogElement>("campaign-" + kind).showModal();
   if (kind === "menu") syncMenuHeaderInset();
   audio.update(0, true, false, false);
 }
-function closeOverlay() {
-  if (restoring) return;
+function closeOverlay(skipRefuelCheck = false) {
+  if (restoring || confirmBusy) return;
   if (resumeRequired) {
     if (overlay !== "menu" && !confirmation) openOverlay("menu");
     return;
@@ -519,12 +620,71 @@ function closeOverlay() {
     return;
   }
   if (confirmation || overlay === "welcome") return;
+  if (
+    overlay === "dock" &&
+    !skipRefuelCheck &&
+    campaign.state.vehicle.energy / campaign.maxEnergy < 0.5 &&
+    campaign.servicePreview("refuel").cost > 0
+  ) {
+    undockCheck = true;
+    renderDock();
+    $("campaign-undock-check")
+      .querySelector<HTMLButtonElement>('[data-command="refuel-undock"]')!
+      .focus();
+    return;
+  }
   if (overlay) $<HTMLDialogElement>("campaign-" + overlay).close();
   overlay = undefined;
   delete document.body.dataset.campaignOverlay;
-  input.clear();
+  clearPilotInput();
+  undockCheck = false;
   $("campaign-game").focus({ preventScroll: true });
   syncHUD();
+}
+function menuControl(action: MenuAction) {
+  if (action === "back") {
+    if (confirmation) $("campaign-confirm-cancel").click();
+    else if (overlay && overlay !== "welcome") {
+      if (overlay === "menu" && resumeRequired && !conflict && !restoring)
+        $("campaign-resume").click();
+      else closeOverlay();
+    }
+    return;
+  }
+  const host = confirmation
+    ? $("campaign-confirm")
+    : overlay
+      ? $("campaign-" + overlay)
+      : rigDisabled()
+        ? $("campaign-disabled")
+        : undefined;
+  if (!host) return;
+  const controls = Array.from(
+    host.querySelectorAll<HTMLElement>(
+      "button:not(:disabled), input:not(:disabled), select:not(:disabled), summary, a[href]",
+    ),
+  ).filter(
+    (element) =>
+      !element.closest("[hidden], [inert]") &&
+      element.getClientRects().length > 0,
+  );
+  if (!controls.length) return;
+  const index = controls.indexOf(document.activeElement as HTMLElement);
+  if (action === "activate") {
+    const target = controls[index < 0 ? 0 : index];
+    if (target instanceof HTMLInputElement && target.type === "range") return;
+    target.click();
+  } else {
+    const next =
+      index < 0
+        ? action === "previous"
+          ? controls.length - 1
+          : 0
+        : (index + (action === "previous" ? -1 : 1) + controls.length) %
+          controls.length;
+    controls[next].focus();
+    controls[next].scrollIntoView({ block: "nearest" });
+  }
 }
 function openDock() {
   if (!overlay && initialized) openOverlay("dock");
@@ -626,9 +786,53 @@ function renderMenu() {
   document
     .querySelectorAll<HTMLButtonElement>('[data-command="restore"]')
     .forEach((button) => {
-      button.disabled = busy || !backupAvailable;
+      button.disabled = busy || confirmBusy || !backupAvailable;
     });
   renderBindings();
+}
+async function refreshArchives(force = false) {
+  if (archivesRequest) {
+    if (!force) return archivesRequest;
+    await archivesRequest;
+  }
+  archivesRequest = store
+    .listArchives()
+    .then((entries) => {
+      archives = entries;
+      const key = JSON.stringify(entries);
+      if (key !== archivesKey) {
+        archivesKey = key;
+        $("campaign-archives").innerHTML = entries.length
+          ? entries
+              .map(
+                (entry) =>
+                  '<article class="archive-row"><div><strong>' +
+                  escape(worldName(entry.currentWorld)) +
+                  " · seed " +
+                  entry.seed +
+                  "</strong><small>" +
+                  escape(new Date(entry.archivedAt).toLocaleString()) +
+                  " · " +
+                  money(entry.credits) +
+                  "</small></div>" +
+                  button("archive:" + entry.id, "Restore archived campaign") +
+                  "</article>",
+              )
+              .join("")
+          : '<p class="muted">No archived campaigns yet.</p>';
+      }
+      setText("campaign-archive-status", "");
+    })
+    .catch(() => {
+      setText(
+        "campaign-archive-status",
+        "Archives could not be read. Your active checkpoint is unchanged.",
+      );
+    })
+    .finally(() => {
+      archivesRequest = undefined;
+    });
+  return archivesRequest;
 }
 function actionKey(action: "mobility" | "interact" | "primary") {
   if (matchMedia("(pointer: coarse)").matches || innerWidth <= 760)
@@ -873,20 +1077,26 @@ function syncHUD() {
     previousMessage = campaign.message;
     showMessage(campaign.message);
   }
+  if (
+    campaign.cargoBulk >= campaign.capacity &&
+    lastCargoBulk < campaign.capacity
+  )
+    showMessage(`Hold full · ${campaign.cargoBulk}/${campaign.capacity}`, 3);
+  lastCargoBulk = campaign.cargoBulk;
   const reserve = v.energy / campaign.maxEnergy;
   const nextWarning =
     reserve <= 0.08 ? 3 : reserve <= 0.15 ? 2 : reserve <= 0.25 ? 1 : 0;
   if (!paused() && nextWarning > energyWarningBand) {
-    showMessage(
-      nextWarning === 3
-        ? "Emergency reserve · return to the lander or request recovery in Menu."
-        : nextWarning === 2
-          ? "Energy low · return through your cleared route."
-          : "Reserve at 25% · check your return route before cutting farther.",
-    );
+    energyPulseUntil = performance.now() + 2000;
     audio.event("warning");
   }
   energyWarningBand = nextWarning;
+  document
+    .querySelector(".energy-vital")!
+    .classList.toggle(
+      "warning-pulse",
+      performance.now() < energyPulseUntil && !preferences.reducedMotion,
+    );
   syncMissionSignal(objective.next);
   if (performance.now() >= messageUntil)
     $("campaign-message").classList.remove("visible");
@@ -941,6 +1151,27 @@ function serviceCopy(action: "refuel" | "repair") {
 }
 function renderDock() {
   const s = campaign.state;
+  const content = $("campaign-dock-content");
+  const focused = document.activeElement as HTMLElement | null;
+  const focusCommand = content.contains(focused)
+    ? focused?.dataset.command
+    : undefined;
+  const previousControls = Array.from(
+    content.querySelectorAll<HTMLButtonElement>("button"),
+  );
+  const focusIndex = previousControls.indexOf(focused as HTMLButtonElement);
+  const previousScroll = $("campaign-dock").scrollTop;
+  setHidden("campaign-undock-check", !undockCheck);
+  if (undockCheck) {
+    const refuel = campaign.servicePreview("refuel");
+    setText(
+      "campaign-undock-warning",
+      `Energy is below half. ${serviceCopy("refuel")} Refuel before your next trip?`,
+    );
+    $("campaign-undock-check").querySelector<HTMLButtonElement>(
+      '[data-command="refuel-undock"]',
+    )!.textContent = `Refuel ${money(refuel.cost)} & undock`;
+  }
   $("campaign-dock-credits").textContent = money(s.credits);
   document
     .querySelectorAll<HTMLButtonElement>("[data-tab]")
@@ -1283,7 +1514,25 @@ function renderDock() {
       ) +
       "</section></div>";
   }
-  $("campaign-dock-content").innerHTML = html;
+  if (content.innerHTML !== html) {
+    content.innerHTML = html;
+    if (focusCommand) {
+      const controls = Array.from(
+        content.querySelectorAll<HTMLButtonElement>("button"),
+      );
+      const same = controls.find(
+        (element) =>
+          element.dataset.command === focusCommand && !element.disabled,
+      );
+      const fallback =
+        controls
+          .slice(Math.max(0, focusIndex))
+          .find((element) => !element.disabled) ||
+        controls.find((element) => !element.disabled);
+      (same || fallback)?.focus({ preventScroll: true });
+    }
+    $("campaign-dock").scrollTop = previousScroll;
+  }
   $("campaign-dock-message").textContent =
     presentationMessage(campaign.message) || "Lander uplink ready.";
 }
@@ -1412,18 +1661,37 @@ function handleSaveError(error: unknown) {
   $("campaign-storage-notice").hidden = false;
   blocked = true;
   if (error instanceof CampaignSaveError && error.code === "conflict") {
-    conflict = true;
-    openOverlay("menu");
+    storageConflictEpoch++;
+    protectConflictedSession();
   }
   showMessage(message);
 }
+function protectConflictedSession() {
+  conflict = true;
+  blocked = true;
+  // A confirmation can be open, or already awaiting an IndexedDB operation.
+  // Its decision is no longer current. Keep any in-flight work guarded until
+  // it settles, but make the recovery menu the only live modal immediately.
+  confirmation = undefined;
+  confirmReturn = undefined;
+  dockAfterConfirmation = false;
+  menuAfterConfirmation = false;
+  launchUntil = 0;
+  setHidden("campaign-launch", true);
+  const dialog = $<HTMLDialogElement>("campaign-confirm");
+  if (dialog.open) dialog.close();
+  clearPilotInput();
+  if (initialized) openOverlay("menu");
+}
 async function loadCheckpoint() {
-  if (busy) return;
+  if (busy || confirmBusy) return;
+  const loadEpoch = storageConflictEpoch;
   restoring = true;
   openOverlay("menu");
   busy = true;
   try {
     const loaded = await store.load();
+    assertCurrentStorageDecision(loadEpoch);
     if (loaded.state) {
       campaign = new Campaign(loaded.state);
       requireResumeAfterRestore();
@@ -1462,7 +1730,8 @@ function ask(
   copy: string,
   operation: () => Promise<void> | void,
 ) {
-  input.clear();
+  if (confirmBusy) return;
+  clearPilotInput();
   confirmReturn = overlay;
   confirmation = operation;
   $("campaign-confirm-title").textContent = title;
@@ -1471,11 +1740,21 @@ function ask(
   $<HTMLDialogElement>("campaign-confirm").showModal();
   syncHUD();
 }
+function assertCurrentStorageDecision(epoch: number) {
+  if (epoch !== storageConflictEpoch)
+    throw new CampaignSaveError(
+      "conflict",
+      "Another tab changed the checkpoint during this action. Load its checkpoint to continue; export this tab to keep a separate copy.",
+    );
+}
 async function replaceCampaign(state: CampaignState) {
+  const replaceEpoch = storageConflictEpoch;
   if (savePromise) await savePromise;
+  assertCurrentStorageDecision(replaceEpoch);
   busy = true;
   try {
     await store.replace(state);
+    assertCurrentStorageDecision(replaceEpoch);
     campaign = new Campaign(state);
     blocked = false;
     conflict = false;
@@ -1489,6 +1768,7 @@ async function replaceCampaign(state: CampaignState) {
       "campaign-save-status",
       "Campaign checkpoint replaced. Resume when ready.",
     );
+    await refreshArchives(true);
   } finally {
     busy = false;
     syncHUD();
@@ -1509,6 +1789,18 @@ async function transact(
   if (overlay === "menu") renderMenu();
 }
 async function command(name: string) {
+  if (confirmBusy && name !== "export") return;
+  if (name === "undock-anyway") {
+    if (!busy && overlay === "dock") closeOverlay(true);
+    return;
+  }
+  if (name === "refuel-undock") {
+    if (busy || overlay !== "dock" || conflict) return;
+    await transact(() => campaign.refuel());
+    if (!blocked && !conflict && campaign.state.vehicle.energy > 0)
+      closeOverlay(true);
+    return;
+  }
   if (name === "disabled-dock") {
     if (!busy && rigDisabled() && campaign.atDock) {
       resumeRequired = true;
@@ -1519,7 +1811,7 @@ async function command(name: string) {
   }
   if (name === "release-volatile") {
     if (paused()) return;
-    input.clear();
+    clearPilotInput();
     if (campaign.releaseVolatile()) audio.event("pickup");
     syncHUD();
     $("campaign-game").focus({ preventScroll: true });
@@ -1543,7 +1835,7 @@ async function command(name: string) {
     }
     return;
   }
-  if (busy) return;
+  if (busy || confirmBusy) return;
   if (name.startsWith("travel-")) {
     const destination = name.slice(7);
     const preview = campaign.travelPreview(destination);
@@ -1568,7 +1860,7 @@ async function command(name: string) {
         campaign.maxHull +
         ". Travel is free; refuel or repair before leaving if needed.",
       async () => {
-        input.clear();
+        clearPilotInput();
         if (!campaign.travel(destination)) throw new Error(campaign.message);
         saveTimer = 0;
         lastMined = campaign.state.stats.mined;
@@ -1605,7 +1897,9 @@ async function command(name: string) {
       "Restore the backup?",
       "Your current valid campaign becomes the backup. Export first if you want a separate copy.",
       async () => {
+        const restoreEpoch = storageConflictEpoch;
         const state = await store.restoreBackup();
+        assertCurrentStorageDecision(restoreEpoch);
         campaign = new Campaign(state);
         requireResumeAfterRestore();
         menuAfterConfirmation = true;
@@ -1614,6 +1908,31 @@ async function command(name: string) {
         blocked = false;
         conflict = false;
         showMessage("Backup restored.");
+      },
+    );
+    return;
+  }
+  if (name.startsWith("archive:")) {
+    const id = name.slice("archive:".length);
+    const entry = archives.find((item) => item.id === id);
+    if (!entry) return;
+    ask(
+      "Restore this archived campaign?",
+      `${worldName(entry.currentWorld)} · seed ${entry.seed} · ${money(entry.credits)}. The current saved campaign is archived if it is a different expedition. The three most recently archived campaigns are retained; the oldest archive may be removed. Restore starts paused.`,
+      async () => {
+        const restoreEpoch = storageConflictEpoch;
+        const state = await store.restoreArchive(id);
+        assertCurrentStorageDecision(restoreEpoch);
+        campaign = new Campaign(state);
+        requireResumeAfterRestore();
+        menuAfterConfirmation = true;
+        lastSavedAt = Date.now();
+        lastSaveWasAutomatic = false;
+        blocked = false;
+        conflict = false;
+        backupAvailable = true;
+        await refreshArchives(true);
+        showMessage("Archived campaign restored. Resume when ready.");
       },
     );
     return;
@@ -1634,7 +1953,7 @@ async function command(name: string) {
   if (name === "new") {
     ask(
       "Begin a new campaign?",
-      "This replaces the campaign checkpoint with a new asteroid. The prior valid campaign becomes a backup.",
+      "Start on a new asteroid. The current valid saved campaign is kept in Campaign archives, independently of autosave backups. The three most recently archived campaigns are retained; the oldest archive may be removed.",
       async () => {
         await replaceCampaign(createCampaign(seed()));
         showMessage("New asteroid expedition ready.");
@@ -1653,8 +1972,21 @@ async function command(name: string) {
   }
   if (name === "bank-sell") {
     await transact(() => {
+      const missions = campaign.world.missions
+        .filter((item) => item.status === "carried")
+        .map((item) => item.name);
+      const creditsBefore = campaign.state.credits;
       const banked = campaign.bank();
-      const sold = campaign.sell();
+      const saleCount = campaign.warehouse.length;
+      const sold = saleCount > 0 && campaign.sell();
+      if (banked || sold) {
+        const bankMessage = missions.length
+          ? `Banked ${missions.join(", ")}`
+          : "Hold unloaded";
+        campaign.message = sold
+          ? `${bankMessage} · sold ${saleCount} packages for ${money(campaign.state.credits - creditsBefore)}.`
+          : `${bankMessage} · no ore to sell.`;
+      }
       return banked || sold;
     }, "pickup");
     return;
@@ -1763,11 +2095,16 @@ $("campaign-confirm-cancel").onclick = () => {
 $("campaign-confirm-accept").onclick = async () => {
   if (!confirmation || busy || confirmBusy) return;
   confirmBusy = true;
+  const operationEpoch = storageConflictEpoch;
   $<HTMLButtonElement>("campaign-confirm-accept").disabled = true;
   $<HTMLButtonElement>("campaign-confirm-cancel").disabled = true;
   const operation = confirmation;
   try {
     await operation();
+    if (operationEpoch !== storageConflictEpoch) {
+      protectConflictedSession();
+      return;
+    }
     confirmation = undefined;
     $<HTMLDialogElement>("campaign-confirm").close();
     if (menuAfterConfirmation || conflict) {
@@ -1784,14 +2121,30 @@ $("campaign-confirm-accept").onclick = async () => {
     if (overlay === "menu") renderMenu();
     syncHUD();
   } catch (error) {
-    $("campaign-confirm-error").textContent =
-      error instanceof Error
-        ? error.message
-        : "This action could not be completed.";
+    if (operationEpoch !== storageConflictEpoch) {
+      protectConflictedSession();
+    } else if (
+      error instanceof CampaignSaveError &&
+      error.code === "conflict"
+    ) {
+      // CAS remains authoritative when cross-tab broadcasts are unavailable.
+      // Close the stale confirmation before opening checkpoint recovery, so
+      // Load and Export cannot end up behind a modal decision dialog.
+      confirmation = undefined;
+      $<HTMLDialogElement>("campaign-confirm").close();
+      dockAfterConfirmation = false;
+      menuAfterConfirmation = false;
+      handleSaveError(error);
+    } else
+      $("campaign-confirm-error").textContent =
+        error instanceof Error
+          ? error.message
+          : "This action could not be completed.";
   } finally {
     confirmBusy = false;
     $<HTMLButtonElement>("campaign-confirm-accept").disabled = false;
     $<HTMLButtonElement>("campaign-confirm-cancel").disabled = false;
+    syncHUD();
   }
 };
 for (const name of ["menu", "dock", "map", "welcome"] as const) {
@@ -1823,7 +2176,7 @@ $<HTMLInputElement>("campaign-import").onchange = async (event) => {
         state.progress.completed.length +
         " completed asteroid milestones and " +
         Object.keys(state.worlds).length +
-        " visited destination(s)? Your current valid save becomes the backup.",
+        " visited destination(s)? If this is a different expedition, your current valid saved campaign is kept in Campaign archives (three most recent).",
       () => replaceCampaign(state),
     );
   } catch (error) {
@@ -1843,7 +2196,7 @@ $("campaign-sound").onclick = async () => {
   audio.settings();
 };
 fullscreenButton.onclick = async () => {
-  input.clear();
+  clearPilotInput();
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
     else await document.documentElement.requestFullscreen();
@@ -1862,7 +2215,7 @@ document
     field.onchange = () => {
       const key = field.dataset.setting as "reducedMotion";
       preferences[key] = field.checked;
-      input.clear();
+      clearPilotInput();
       applyPreferences();
     };
   });
@@ -1877,7 +2230,7 @@ document
     };
   });
 function background() {
-  input.clear();
+  clearPilotInput();
   if (initialized && !overlay && !confirmation && !launchUntil)
     openOverlay("menu");
   void persist();
@@ -1891,10 +2244,8 @@ window.addEventListener("pagehide", () => {
   audio.update(0, true, false, false);
 });
 store.subscribe(() => {
-  conflict = true;
-  blocked = true;
-  input.clear();
-  if (initialized) openOverlay("menu");
+  storageConflictEpoch++;
+  protectConflictedSession();
 });
 
 async function boot() {
@@ -1938,6 +2289,7 @@ async function boot() {
         void audio.unlock();
       },
       reducedMotion: () => preferences.reducedMotion,
+      highContrast: () => preferences.highContrast,
       onUpdate: (dt: number) => {
         input.pollCommands();
         audio.update(

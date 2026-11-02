@@ -2,6 +2,8 @@
 
 Date: 2026-11-01. Status: **approved; W01 and the W02 expansion implemented; Phase 2 awaits W03**. The user subsequently requested removal of the alternate prototype mode; this plan now describes a single campaign application.
 
+The subsequently authorized [improvement plan](IMPROVEMENT_PLAN.md) prioritizes the existing W01/W02 experience and shared content tools before W03. Its Phase 0–3 numbering describes that improvement program, separately from the campaign phases below. See [current implementation progress](IMPROVEMENT_PROGRESS.md).
+
 This plan maps the supplied campaign and visual design onto the Phaser/TypeScript baseline at checkpoint `a03079b`. The user approved beginning implementation after reviewing this document. Current first-slice behavior and remaining work are recorded in [CAMPAIGN_W01.md](CAMPAIGN_W01.md).
 
 ## Direction agreed for this plan

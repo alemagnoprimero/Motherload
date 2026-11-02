@@ -98,6 +98,8 @@ describe("Ice comet definitions and generation", () => {
     }
   });
 
+  // This checks 60,000 deposit records, not a frame-time budget. Allow shared
+  // CI hosts enough time without reducing seed or assertion coverage.
   it("retains exact ordinary rarity, deeper rewards, unique identities and valid source cells across 100 seeds", () => {
     for (let seed = 0; seed < 100; seed++) {
       const world = createW02(seed);
@@ -142,7 +144,7 @@ describe("Ice comet definitions and generation", () => {
         expect(item.processedBy).toEqual([]);
       }
     }
-  });
+  }, 15000);
 
   it("guarantees mission samples, a safe volatile tutorial and surplus deep proof sources", () => {
     for (let seed = 0; seed < 100; seed++) {

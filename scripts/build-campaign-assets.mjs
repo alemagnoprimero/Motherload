@@ -2,7 +2,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { chromium } from "playwright-core";
+import { rasterizeCampaignSources } from "./rasterize-campaign-svgs.mjs";
 
 const root = new URL("../", import.meta.url);
 const source = new URL("assets/campaign/source/", root);
@@ -13,33 +13,7 @@ const manifest = JSON.parse(
 );
 await mkdir(temporary, { recursive: true });
 await mkdir(generated, { recursive: true });
-const browser = await chromium.launch({
-  executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
-  args: ["--no-sandbox", "--disable-dev-shm-usage"],
-});
-try {
-  const page = await browser.newPage({
-    viewport: { width: 512, height: 512 },
-    deviceScaleFactor: 1,
-  });
-  const images = [...manifest.frames, ...manifest.backgrounds];
-  for (const frame of images) {
-    const drawing = await readFile(
-      new URL(`${frame.name}.svg`, source),
-      "utf8",
-    );
-    await page.setViewportSize({ width: frame.width, height: frame.height });
-    await page.setContent(
-      `<style>html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden}svg{display:block}</style>${drawing}`,
-    );
-    await page.screenshot({
-      path: fileURLToPath(new URL(`${frame.name}.png`, temporary)),
-      omitBackground: true,
-    });
-  }
-} finally {
-  await browser.close();
-}
+await rasterizeCampaignSources(source, temporary, manifest);
 
 const packing = String.raw`
 import json, math

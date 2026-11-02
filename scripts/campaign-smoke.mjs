@@ -48,8 +48,16 @@ async function closeOverlay(page) {
   if (await page.locator("#campaign-confirm").evaluate((d) => d.open))
     throw new Error("Unexpected confirmation must be resolved explicitly");
   const open = await page.evaluate(() => document.body.dataset.campaignOverlay);
-  if (open && open !== "welcome")
+  if (open && open !== "welcome") {
     await click(page, "#campaign-" + open + ' [data-close="' + open + '"]');
+    // Mechanics fixtures sometimes deliberately leave with low energy. Make
+    // that choice through the new visible safety prompt rather than bypassing it.
+    if (
+      open === "dock" &&
+      (await page.locator("#campaign-undock-check").isVisible())
+    )
+      await click(page, '[data-command="undock-anyway"]');
+  }
 }
 async function menu(page) {
   const open = await page.evaluate(() => document.body.dataset.campaignOverlay);
@@ -108,7 +116,7 @@ async function advance(page, ms) {
 }
 async function freeze(page) {
   await page.clock.install();
-  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 300));
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 3000));
   clocked.add(page);
 }
 async function sample(page) {

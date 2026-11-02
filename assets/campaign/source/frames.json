@@ -177,6 +177,230 @@
       "logicalHeight": 48
     },
     {
+      "name": "stone-edge-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-5",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-5",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-6",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-6",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-7",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-7",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-8",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-8",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-9",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-9",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-10",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-10",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-11",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-11",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-12",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-12",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-13",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-13",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-14",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-14",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "stone-edge-15",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-edge-15",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "bedrock-0",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
+      "name": "sky-body",
+      "width": 256,
+      "height": 256,
+      "logicalWidth": 128,
+      "logicalHeight": 128
+    },
+    {
       "name": "stone-0",
       "width": 96,
       "height": 96,

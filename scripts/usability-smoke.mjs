@@ -423,7 +423,8 @@ export async function runUsabilitySmoke(
           "Recovery preserves healthy resources above half capacity",
         );
         assert.equal(recovered.vehicle.energy, 5);
-        assert.equal(recovered.credits, 1000);
+        assert.equal(recovered.credits, disabledBefore.credits);
+        assert.ok(recovered.progress.towsUsed.includes("W01"));
         check(
           `${label}: one-viewport live HUD, persistent warnings, safe restoration and accessible recovery`,
         );
@@ -493,6 +494,8 @@ export async function runUsabilitySmoke(
         await imported(page, state, envelope);
         await resume(page);
         await page.locator("#campaign-game").focus();
+        // Native menu commands intentionally reject repeats inside300ms.
+        await advance(page, 350);
         await page.keyboard.press("e");
         await advance(page, 100);
         const preview = await page
@@ -519,6 +522,8 @@ export async function runUsabilitySmoke(
         await imported(page, upgrade, envelope);
         await resume(page);
         await page.locator("#campaign-game").focus();
+        // Native menu commands intentionally reject repeats inside300ms.
+        await advance(page, 350);
         await page.keyboard.press("e");
         await advance(page, 100);
         await click(page, '#campaign-dock [data-tab="hardware"]');

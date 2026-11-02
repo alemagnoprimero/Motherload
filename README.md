@@ -10,6 +10,7 @@ Open **https://alemagnoprimero.github.io/Motherload/** on a computer or Android 
 - **Touch:** press the playfield to place a floating joystick, then drag from its center. Up flies, Down drills, and either side steers. Return to center for neutral input or lift to release. The center stays fixed while the rig and camera move; each new touch places a new center.
 - **Mouse:** hold or drag toward a direction relative to the rig. Short clicks/taps inspect visible minerals or enter the nearby lander.
 - **Pause:** Escape / P or the on-screen pause button. Fixed direction buttons are an optional fallback under **Pilot controls**. Space deploys owned anchoring feet; Tab opens navigation after M2.
+- **Controller menus:** D-pad selects controls, A activates, B returns. Holding an interaction button does not repeatedly open/close the terminal.
 
 Momentum and committed cuts can continue after release. Browser modifier shortcuts and focused toolbar/form keys do not become pilot commands. Click the playfield to return keyboard focus to the rig. Sound starts muted; enable it and adjust its three volume controls in Pause.
 
@@ -25,6 +26,8 @@ Momentum and committed cuts can continue after release. Browser modifier shortcu
 The two opening veins retain their 380/480 CR gross rewards. Construction and services come out of that balance. A full hold leaves recoverable packages in the world; **Pause → Cargo manifest** allows ejection without duplicating package identities.
 
 Low energy and critical hull warnings persist ahead of routine pickups. Disabled rigs have **Request recovery**, also available beside Resume in Pause. Recovery previews the fee, cargo consequences and resulting conditions before confirmation, then returns paused. It raises energy/hull to at least 50%, preserving healthier conditions. If already at the lander, **Lander services** remains available to repair/refuel normally.
+
+A new expedition starts with a full tank. The first emergency tow for a disabled rig in each world is **free and keeps cargo and mission items**. Voluntary recovery and later tows use the normal fee and cargo-loss rules. Holding Down near an excavated shaft helps center the rig for entry. The terminal prompts you before undocking with less than half a tank.
 
 The world wraps horizontally. Wall-occluded discovery keeps unexplored ore hidden. Known minerals have distinct shape markers explained by the pause menu's ore/hazard legend.
 
@@ -43,6 +46,8 @@ The thermal auger cuts ice faster, the condenser recovers part of actual drillin
 Autosave runs every five active seconds and after transactions. **Save checkpoint** records the current expedition; **Load latest autosave** uses the latest browser checkpoint, which autosave can replace after a manual Save. Restored runs wait for Resume. Status reports actual successful saves and their recency in this browser.
 
 **Export campaign** retains a separate JSON file and enables manual device transfer. Import and backup restoration require confirmation. IndexedDB checkpoints include excavation/discovery, package identities, money, equipment, conditions and missions, with atomic backups and stale-tab protection. Background saving is best effort; use Save/Export before closing after an important discovery. Browser saves do not synchronize automatically.
+
+Starting a new campaign keeps the previous valid saved campaign in **Pause → Campaign archives**, independently of the rotating autosave backup. The three newest valid archives are retained. Restore previews the expedition and returns paused; replacing a different current expedition archives it in the same transaction.
 
 Old bookmarked mode URLs now open this same campaign. Retired browser save bytes are neither converted nor deleted; imports accept campaign checkpoints only.
 
@@ -79,6 +84,8 @@ npm run test:browser       # campaign preview on port 5173
 npm run test:usability     # responsive HUD, safety, restore and input
 npm run test:poi           # mission landmarks, proximity and recovery guidance
 npm run test:frontier      # travel, comet extraction and stage progression
+npm run test:opening       # native model opening / emergency tow / shaft entry
+npm run test:improvements  # Phase 0 browser and pixel measurements (Pillow)
 npm run test:production    # compiled game, defaults to port 8080
 npm run test:campaign:storage
 ```
@@ -87,4 +94,4 @@ Browser checks use `/usr/bin/chromium`; override with `CHROMIUM_PATH`. `PREVIEW_
 
 Normal builds validate committed campaign artwork. `npm run campaign:assets` regenerates it from editable SVGs and needs the tools in [CAMPAIGN_ASSETS.md](docs/CAMPAIGN_ASSETS.md).
 
-See [current rules and limits](docs/CAMPAIGN_W01.md), [project status](docs/PROJECT.md), [usability changes](docs/USABILITY_REVIEW.md), and the [full implementation plan](docs/DESIGN_PACK_IMPLEMENTATION.md). Original Flash research remains separate under `reference/`; see [RESEARCH.md](docs/RESEARCH.md).
+See [current rules and limits](docs/CAMPAIGN_W01.md), [project status](docs/PROJECT.md), the [improvement plan](docs/IMPROVEMENT_PLAN.md) and [implementation progress](docs/IMPROVEMENT_PROGRESS.md). The [campaign roadmap](docs/DESIGN_PACK_IMPLEMENTATION.md) still records the later destinations. Original Flash research remains separate under `reference/`; see [RESEARCH.md](docs/RESEARCH.md).

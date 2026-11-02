@@ -462,10 +462,13 @@ async function warningRecovery(page, checkpoint, viewport, path) {
   await inViewport(page, "#campaign-danger", viewport);
   assert.match(
     await page.locator("#campaign-danger").innerText(),
-    /(?:low energy|energy critical)[\s\S]*critical hull/i,
+    /(?:low energy|energy critical|emergency reserve)[\s\S]*critical hull/i,
   );
   await page.screenshot({ path: path + "-warnings.png" });
   const disabled = structuredClone(critical);
+  // This regression covers the ordinary paid recovery after the one-time
+  // emergency tow. First-tow cargo protection has its own Phase 0 checks.
+  disabled.state.progress.towsUsed = ["W02"];
   disabled.state.vehicle.energy = 0;
   disabled.state.vehicle.hull =
     HARDWARE_LEVELS.hull[disabled.state.hardware.hull] * 0.8;

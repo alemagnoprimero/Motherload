@@ -2,39 +2,21 @@
 import { mkdir, readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { rasterizeCampaignSources } from "./rasterize-campaign-svgs.mjs";
 
 const root = new URL("../", import.meta.url);
 const source = new URL("assets/campaign/w02/", root);
 const output = new URL("assets/campaign/generated/", root);
 const temporary = new URL(".cache/frontier-renders/", root);
-const profile = new URL(".cache/frontier-inkscape/", root);
 const manifest = JSON.parse(
   await readFile(new URL("frames.json", source), "utf8"),
 );
 await Promise.all([
   mkdir(output, { recursive: true }),
   mkdir(temporary, { recursive: true }),
-  mkdir(profile, { recursive: true }),
 ]);
-for (const frame of [...manifest.frames, ...manifest.backgrounds]) {
-  const result = spawnSync(
-    process.env.INKSCAPE || "inkscape",
-    [
-      fileURLToPath(new URL(`${frame.name}.svg`, source)),
-      "--export-area-page",
-      "--export-background-opacity=0",
-      `--export-filename=${fileURLToPath(new URL(`${frame.name}.png`, temporary))}`,
-    ],
-    {
-      encoding: "utf8",
-      env: { ...process.env, INKSCAPE_PROFILE_DIR: fileURLToPath(profile) },
-    },
-  );
-  if (result.status !== 0)
-    throw new Error(
-      `SVG export failed for ${frame.name}: ${result.stderr || result.error}`,
-    );
-}
+await rasterizeCampaignSources(source, temporary, manifest);
+
 const packing = String.raw`
 import json, math
 from pathlib import Path
@@ -69,7 +51,7 @@ for f in m['frames']:
 for assetid,record in registry['assets'].items():
  for size in record['iconSizes']:
   icon_image(record['icon'],size).save(icons/(assetid.lower()+f'-icon-{size}.png'),optimize=True);iconcount+=1
-registry['provenance']={'renderer':'Inkscape SVG rasterizer','packing':'Node orchestrates Pillow lossless RGBA packing','source':'assets/campaign/w02/*.svg','authoring':'node assets/campaign/w02/create-sources.mjs; node scripts/build-frontier-assets.mjs','frameCount':len(frames),'backgroundCount':len(m['backgrounds']),'iconCount':iconcount}
+registry['provenance']={'renderer':'Chromium SVG rasterizer','packing':'Node orchestrates Pillow lossless RGBA packing','source':'assets/campaign/w02/*.svg','authoring':'node assets/campaign/w02/create-sources.mjs; node scripts/build-frontier-assets.mjs','frameCount':len(frames),'backgroundCount':len(m['backgrounds']),'iconCount':iconcount}
 (out/'w02-assets.json').write_text(json.dumps(registry,indent=2)+'\n')
 print(f"W02 atlas: {len(frames)} original frames, {width}x{height}, {(out/'w02-atlas.png').stat().st_size//1024}KiB; {iconcount} icons and three backgrounds exported.")
 `;

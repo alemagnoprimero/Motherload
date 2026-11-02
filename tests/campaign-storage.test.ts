@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { createCampaign } from "../src/campaign/model";
+import { Campaign, createCampaign } from "../src/campaign/model";
 import {
   CampaignStore,
   CampaignSaveError,
   IndexedCampaignBackend,
   MAX_CAMPAIGN_BYTES,
   type CampaignBackend,
+  type CampaignArchiveRecord,
 } from "../src/campaign/persistence";
 
 /** Unit transaction contract; real IndexedDB is covered by browser scenarios. */
@@ -15,20 +16,34 @@ class MemoryCampaignBackend implements CampaignBackend {
   failRead = false;
   failWrite = false;
   writes = 0;
+  archives: CampaignArchiveRecord[] = [];
 
   async read() {
     if (this.failRead) throw new Error("Storage disabled");
     return { current: this.current, backup: this.backup };
   }
 
+  async listArchives() {
+    if (this.failRead) throw new Error("Storage disabled");
+    return structuredClone(this.archives);
+  }
+
   async commit(
     expected: string | null,
     current: string,
     backup?: string | null,
+    archive?: string,
   ) {
     if (this.current !== expected)
       throw new CampaignSaveError("conflict", "Newer campaign checkpoint");
     if (this.failWrite) throw new Error("QuotaExceededError");
+    if (archive !== undefined) {
+      this.archives.unshift({
+        id: `archive:${new Date(Date.UTC(2026, 10, 2) + this.writes).toISOString()}`,
+        checkpoint: archive,
+      });
+      this.archives = this.archives.slice(0, 3);
+    }
     if (backup !== undefined) this.backup = backup;
     this.current = current;
     this.writes++;
@@ -42,6 +57,130 @@ const state = (credits = 200, seed = 146) => ({
 });
 
 describe("campaign checkpoint transactions", () => {
+  it("keeps the outgoing campaign through a new run and 60 seconds of autosaves", async () => {
+    const backend = new MemoryCampaignBackend(),
+      store = new CampaignStore(backend),
+      original = state(4190, 51);
+    original.worlds.W01.tiles[80] = 0;
+    original.worlds.W01.discovered[80] = 1;
+    await store.load();
+    await store.save(original);
+    const originalBytes = backend.current;
+    const next = new Campaign(state(200, 52));
+    await store.replace(next.state);
+    for (let second = 0; second < 60; second++) {
+      for (let frame = 0; frame < 60; frame++) next.tick(1 / 60, {});
+      if ((second + 1) % 20 === 0) await store.save(next.state);
+    }
+    expect(JSON.parse(backend.backup!).state.seed).toBe(52);
+    const archives = await new CampaignStore(backend).listArchives();
+    expect(archives).toHaveLength(1);
+    expect(archives[0]).toMatchObject({
+      seed: 51,
+      credits: 4190,
+      campaignId: original.id,
+      currentWorld: "W01",
+    });
+    expect(backend.archives[0].checkpoint).toBe(originalBytes);
+    const restored = await store.restoreArchive(archives[0].id);
+    expect(restored).toEqual(original);
+    expect((await store.load()).state).toEqual(original);
+    expect((await store.listArchives()).map((archive) => archive.seed)).toEqual(
+      [52, 51],
+    );
+    expect(JSON.parse(backend.backup!).state.elapsed).toBeGreaterThan(59.9);
+  });
+
+  it("lists the three most recently replaced campaigns without archiving same-run checkpoint repair", async () => {
+    const backend = new MemoryCampaignBackend(),
+      store = new CampaignStore(backend);
+    await store.load();
+    await store.save(state(200, 1));
+    for (let seed = 2; seed <= 5; seed++) await store.replace(state(200, seed));
+    expect((await store.listArchives()).map((archive) => archive.seed)).toEqual(
+      [4, 3, 2],
+    );
+    const before = await backend.listArchives();
+    await store.replace(state(400, 5));
+    expect(await backend.listArchives()).toEqual(before);
+  });
+
+  it("aborts replacement without changing current, backup, archives or revision", async () => {
+    const backend = new MemoryCampaignBackend(),
+      store = new CampaignStore(backend);
+    await store.load();
+    await store.save(state(200, 1));
+    await store.replace(state(200, 2));
+    const before = {
+      records: await backend.read(),
+      archives: await backend.listArchives(),
+      revision: store.revision,
+    };
+    backend.failWrite = true;
+    await expect(store.replace(state(200, 3))).rejects.toMatchObject({
+      code: "storage",
+    });
+    expect(await backend.read()).toEqual(before.records);
+    expect(await backend.listArchives()).toEqual(before.archives);
+    expect(store.revision).toBe(before.revision);
+    backend.failWrite = false;
+    await store.replace(state(200, 3));
+    expect((await store.listArchives()).map((archive) => archive.seed)).toEqual(
+      [2, 1],
+    );
+  });
+
+  it("rejects stale replacement and archive restore without changing any record", async () => {
+    const backend = new MemoryCampaignBackend(),
+      first = new CampaignStore(backend),
+      stale = new CampaignStore(backend);
+    await first.load();
+    await first.save(state(200, 1));
+    await first.replace(state(200, 2));
+    await stale.load();
+    const id = (await first.listArchives())[0].id;
+    await first.save(state(1000, 2));
+    const records = await backend.read(),
+      archives = await backend.listArchives();
+    await expect(stale.restoreArchive(id)).rejects.toMatchObject({
+      code: "conflict",
+    });
+    await expect(stale.replace(state(200, 3))).rejects.toMatchObject({
+      code: "conflict",
+    });
+    expect(await backend.read()).toEqual(records);
+    expect(await backend.listArchives()).toEqual(archives);
+  });
+
+  it("does not expose or rewrite malformed or future archived checkpoints", async () => {
+    const backend = new MemoryCampaignBackend(),
+      store = new CampaignStore(backend),
+      future = JSON.parse(store.export(state(200, 42)));
+    future.version = 99;
+    backend.archives = [
+      { id: "archive:2026-11-02T10:00:00.000Z", checkpoint: "{damaged" },
+      {
+        id: "archive:2026-11-02T11:00:00.000Z",
+        checkpoint: JSON.stringify(future),
+      },
+    ];
+    await store.load();
+    await store.save(state());
+    const records = await backend.read(),
+      archives = await backend.listArchives();
+    expect(await store.listArchives()).toEqual([]);
+    for (const id of [
+      "current",
+      "archive:not-a-date",
+      ...archives.map((a) => a.id),
+    ])
+      await expect(store.restoreArchive(id)).rejects.toMatchObject({
+        code: "invalid",
+      });
+    expect(await backend.read()).toEqual(records);
+    expect(await backend.listArchives()).toEqual(archives);
+  });
+
   it("round-trips 100 generated W01 snapshots inside the state-size bound", () => {
     const store = new CampaignStore(new MemoryCampaignBackend());
     let largest = 0;

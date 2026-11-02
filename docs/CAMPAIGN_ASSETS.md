@@ -40,6 +40,9 @@ The scene loads `w01-atlas.png` and `w01-atlas.json` as Phaser texture `campaign
 | Main interiors | `soil-0` … `soil-7` | 96 × 96 |
 | Edge masks | `soil-edge-0` … `soil-edge-15` | 96 × 96 |
 | Stone interiors | `stone-0` … `stone-3` | 96 × 96 |
+| Hard-rock and bedrock rims | `stone-edge-1` … `15`, `bedrock-edge-1` … `15` | 96 × 96 |
+| Bedrock interior | `bedrock-0` | 96 × 96 |
+| Separate sky body | `sky-body` | 256 × 256 |
 | Cut overlays | `crack-1` … `crack-3` | 96 × 96 |
 | Ordinary deposits/packages | `ore-o1` … `ore-o4`, `package-o1` … `package-o4` | 96 × 96 |
 | Relic and mission objects | `relic`, `mission-beacon`, `mission-valve`, `mission-antenna`, `mission-core` | 96 × 96 |
@@ -57,7 +60,7 @@ The scene loads `w01-atlas.png` and `w01-atlas.json` as Phaser texture `campaign
 | Refuge construction | `refuge-stage-0` … `refuge-stage-2` | 288 × 192 |
 | Relay construction | `relay-stage-0` … `relay-stage-2` | 192 × 192 |
 
-The background planes are separate images: `w01-sky.png` (1024 × 512), `w01-ridge-far.png` and `w01-ridge-near.png` (1024 × 384 each). Their lower contrast and slower motion keep foreground collision edges legible. Deposit sprites, exposed packages, terrain, cracks and collision are separate layers, allowing extraction without baking item identity into a terrain image.
+The background planes are separate images: `w01-sky.png` (1024 × 512 transparent stars), `w01-ridge-far.png` and `w01-ridge-near.png` (1024 × 384 each). A runtime gradient and one `sky-body` atlas frame complete the sky; the star field cannot repeat planets. Ridges wrap continuously and have solid lower margins. Their lower contrast and slower motion keep foreground collision edges legible. Deposit sprites, exposed packages, terrain, cracks and collision are separate layers, allowing extraction without baking item identity into a terrain image.
 
 The terrain edge mask uses bit 1 for top, 2 for right, 4 for bottom and 8 for left exposed edges. Damage overlays represent the 75%, 40% and 15% HP thresholds. Equipment and resource/mission icons are exported at 64/128 px under `generated/icons/`; shared UI glyphs are exported at 24/48 px. The build's `frames.json` records all currently authored outputs.
 
@@ -65,7 +68,7 @@ The terrain edge mask uses bit 1 for top, 2 for right, 4 for bottom and 8 for le
 
 ## Production checks
 
-The checker requires all 131 named W01 frames, three backgrounds, the complete 29-ID registry and 114 sized icon exports, including mapped aliases. It validates frame sizes, PNG transparency, frame bounds, non-overlap, transparent gutters, anchor metadata, registry references and alias artwork, and rejects entirely invisible frames. The registry's stable IDs are checked against the pinned design manifest. Missing committed output fails validation instead of substituting fallback art.
+The checker requires all 163 named W01 frames, three backgrounds, the complete 29-ID registry and 114 sized icon exports, including mapped aliases. It validates frame sizes, PNG transparency, frame bounds, non-overlap, transparent gutters, anchor metadata, registry references and alias artwork, and rejects entirely invisible frames. Production pixel checks enforce background seams, transparent rims and material contrast (minimum ΔE 12). The registry's stable IDs are checked against the pinned design manifest. Missing committed output fails validation instead of substituting fallback art.
 
 The W01 art proof must also be inspected in the real game on desktop, portrait and short landscape: compact silhouette, stable tread/drill position, readable mission and ore shapes at inventory size, and hazard cues distinguishable without colour or sound. These visual checks complement file validation; the checker cannot establish animation quality or physical Android performance.
 

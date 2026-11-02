@@ -29,6 +29,18 @@ function clearShaft(campaign: Campaign, through: number) {
 }
 
 describe("mission landmarks and proximity guidance", () => {
+  it("guides toward a distant buried mission before asking for a local cut", () => {
+    const campaign = stageTwo();
+    const valve = campaign.world.missions.find(
+      (item) => item.id === "W01-VALVE",
+    )!;
+    const distant = campaignSignal(campaign)!;
+    expect(distant.targetId).toBe(valve.id);
+    expect(distant.action).toBe(`Descend to 250 m (${distant.arrow})`);
+    campaign.state.vehicle.x = valve.x;
+    campaign.state.vehicle.y = valve.y - 4;
+    expect(campaignSignal(campaign)?.action).toBe("Excavate the marked debris");
+  });
   it("broadcasts the current wreck signal without revealing terrain or hidden ore", () => {
     const campaign = new Campaign(createCampaign(11));
     const before = JSON.stringify(campaign.state);

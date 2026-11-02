@@ -14,6 +14,9 @@ class MemoryBackend implements CampaignBackend {
   async read() {
     return { current: this.current, backup: this.backup };
   }
+  async listArchives() {
+    return [];
+  }
   async commit(
     expected: string | null,
     current: string,

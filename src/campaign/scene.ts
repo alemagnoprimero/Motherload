@@ -20,6 +20,7 @@ export interface CampaignSceneBindings {
   onPilotGesture?: () => void;
   onEvent?: (kind: "cut" | "pickup" | "damage" | "thrust" | "idle") => void;
   reducedMotion?: () => boolean;
+  highContrast?: () => boolean;
   getInterfaceMode?: () => "welcome" | "menu" | "dock" | "map" | undefined;
   getDockBounds?: () =>
     { x: number; y: number; width: number; height: number } | undefined;
@@ -54,6 +55,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
   return class CampaignScene extends Phaser.Scene {
     private background!: Phaser.GameObjects.Graphics;
     private edges!: Phaser.GameObjects.Graphics;
+    private contrastEdges!: Phaser.GameObjects.Graphics;
     private effects!: Phaser.GameObjects.Graphics;
     private screen!: Phaser.GameObjects.Graphics;
     private wreckage!: Phaser.GameObjects.Graphics;
@@ -61,6 +63,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private wreckMask!: Phaser.Display.Masks.GeometryMask;
     private images: Phaser.GameObjects.Image[] = [];
     private labels: Phaser.GameObjects.Text[] = [];
+    private skyGradient!: Phaser.GameObjects.Image;
     private sky!: Phaser.GameObjects.TileSprite;
     private ridgeFar!: Phaser.GameObjects.TileSprite;
     private ridgeNear!: Phaser.GameObjects.TileSprite;
@@ -187,6 +190,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         "soil-0",
         "soil-edge-15",
         "stone-0",
+        "stone-edge-15",
+        "bedrock-0",
+        "sky-body",
         "rig-body-0",
         "rig-cabin",
         "rig-drill-down-0",
@@ -202,9 +208,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         required.some((name) => !this.textures.get(CAMPAIGN_TEXTURE).has(name));
       this.artFailed ||=
         !this.textures.exists(FRONTIER_TEXTURE) ||
-        ["ice-0", "ore-o3", "mission-sample", "mission-catalyst"].some(
-          (name) => !this.textures.get(FRONTIER_TEXTURE).has(name),
-        );
+        [
+          "ice-0",
+          "ore-o3",
+          "mission-sample",
+          "mission-catalyst",
+          "bedrock-0",
+          "bedrock-edge-15",
+          "sky-body",
+        ].some((name) => !this.textures.get(FRONTIER_TEXTURE).has(name));
       const host = document.getElementById("campaign-game");
       const status = this.artFailed ? "error" : "ready";
       if (host) host.dataset.campaignArt = status;
@@ -218,15 +230,37 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
 
       this.background = this.add.graphics().setDepth(0);
       this.edges = this.add.graphics().setDepth(11);
+      this.contrastEdges = this.add.graphics().setDepth(12);
       this.effects = this.add.graphics().setDepth(24);
       this.screen = this.add.graphics().setDepth(40);
       this.wreckMaskShape = this.add.graphics().setVisible(false);
       this.wreckMask = this.wreckMaskShape.createGeometryMask();
       this.wreckage = this.add.graphics().setDepth(14).setMask(this.wreckMask);
+      // Stretch a gradient once; only the transparent stars may tile. The
+      // former combined sky repeated its planet and horizon on tall displays.
+      for (const [key, top, bottom] of [
+        ["campaign-sky-gradient", "#14232b", "#48616b"],
+        ["frontier-sky-gradient", "#142b45", "#5d91a0"],
+      ] as const) {
+        if (this.textures.exists(key)) continue;
+        const gradientTexture = this.textures.createCanvas(key, 4, 512);
+        if (!gradientTexture) continue;
+        const context = gradientTexture.context;
+        const gradient = context.createLinearGradient(0, 0, 0, 512);
+        gradient.addColorStop(0, top);
+        gradient.addColorStop(1, bottom);
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 4, 512);
+        gradientTexture.refresh();
+      }
+      this.skyGradient = this.add
+        .image(0, 0, "campaign-sky-gradient")
+        .setOrigin(0)
+        .setDepth(1);
       this.sky = this.add
         .tileSprite(0, 0, 1, 1, "campaign-sky")
         .setOrigin(0)
-        .setDepth(1);
+        .setDepth(1.1);
       this.ridgeFar = this.add
         .tileSprite(0, 0, 1, 1, "campaign-ridge-far")
         .setOrigin(0)
@@ -489,13 +523,19 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           .setDepth(42);
         this.labels.push(label);
       }
+      const align =
+        centered === "right" ? "right" : centered ? "center" : "left";
+      const wrapWidth = Math.max(120, this.scale.width - 48);
+      // Phaser style setters rasterize and upload text even for equal values.
+      // Labels remain pooled, but stationary text now keeps its cached texture.
+      if (label.text !== text) label.setText(text);
+      if (label.style.color !== color) label.setColor(color);
+      if (label.style.align !== align) label.setAlign(align);
+      if (label.style.wordWrapWidth !== wrapWidth)
+        label.setWordWrapWidth(wrapWidth, true);
       label
         .setPosition(x, y)
-        .setText(text)
-        .setColor(color)
         .setOrigin(centered === "right" ? 1 : centered ? 0.5 : 0, 0)
-        .setAlign(centered === "right" ? "right" : centered ? "center" : "left")
-        .setWordWrapWidth(Math.max(120, this.scale.width - 48), true)
         .setVisible(true);
       return label;
     }
@@ -911,6 +951,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       const icy = world.id === "W02";
       const dockX = campaign.activeWorldDefinition.dockX;
       if (changed) {
+        this.skyGradient.setTexture(
+          icy ? "frontier-sky-gradient" : "campaign-sky-gradient",
+        );
         this.sky.setTexture(icy ? "frontier-sky" : "campaign-sky");
         this.ridgeFar.setTexture(
           icy ? "frontier-ridge-far" : "campaign-ridge-far",
@@ -974,6 +1017,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       );
       const usable = Math.max(100, height - safe.top - safe.bottom);
       const interfaceMode = bindings.getInterfaceMode?.();
+      const titleVisible = interfaceMode === "welcome";
+      const highContrast = Boolean(bindings.highContrast?.());
       const dock =
         interfaceMode === "dock" ? bindings.getDockBounds?.() : undefined;
       if (interfaceMode !== this.previousInterface) {
@@ -1018,6 +1063,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       const fx = this.effects;
       graphics.clear();
       edges.clear();
+      this.contrastEdges.clear();
       fx.clear();
       this.screen.clear();
       this.wreckage.clear();
@@ -1056,12 +1102,42 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           );
         }
       }
+      this.skyGradient.setVisible(surfaceY > 0);
       this.sky.setVisible(surfaceY > 0);
       this.ridgeFar.setVisible(surfaceY > 0);
       this.ridgeNear.setVisible(surfaceY > 0);
+      let skyBodyVisible = false;
+      let skyBodyBounds:
+        { x: number; y: number; width: number; height: number } | undefined;
       if (surfaceY > 0) {
-        this.sky.setPosition(0, 0).setSize(width, Math.min(height, surfaceY));
+        const skyHeight = Math.min(height, surfaceY);
+        this.skyGradient.setPosition(0, 0).setDisplaySize(width, skyHeight);
+        this.sky.setPosition(0, 0).setSize(width, skyHeight);
         this.sky.tilePositionX = cx * 0.15;
+        this.sky.tilePositionY = cy * 0.03;
+        // A single body belongs to the sky, never to its repeating star texture.
+        // Wrap its slow parallax inside the view, keeping it within the sky band.
+        const bodySize = Math.min(tile * 4.4, width * 0.38, skyHeight * 0.7);
+        const bodyMargin = bodySize / 2 + 10;
+        const bodySpan = Math.max(1, width - bodyMargin * 2);
+        const bodyX = bodyMargin + wrap(bodySpan * 0.72 - cx * 0.035, bodySpan);
+        if (bodySize >= 8) {
+          skyBodyVisible = this.image(
+            "sky-body",
+            bodyX,
+            skyHeight * 0.42,
+            bodySize,
+            bodySize,
+            1.2,
+          );
+          if (skyBodyVisible)
+            skyBodyBounds = {
+              x: bodyX - bodySize / 2,
+              y: skyHeight * 0.42 - bodySize / 2,
+              width: bodySize,
+              height: bodySize,
+            };
+        }
         const scale = tile / 96;
         this.ridgeFar
           .setPosition(0, surfaceY - 384 * scale)
@@ -1094,6 +1170,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       const solid = (x: number, y: number) =>
         y >= world.rows ||
         (y >= 0 && world.tiles[y * world.width + wrap(x, world.width)] !== 0);
+      const exposed = (x: number, y: number) =>
+        !solid(x, y) && (y < 0 || campaign.isKnown(wrap(x, world.width), y));
       for (let row = firstRow; row <= lastRow; row++) {
         for (let column = firstColumn; column <= lastColumn; column++) {
           const canonical = wrap(column, world.width);
@@ -1102,23 +1180,26 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           const y = (row + 0.5) * tile - cy;
           const known = row >= world.rows || campaign.isKnown(canonical, row);
           if (!known) {
-            edges.fillStyle(icy ? 0x0b2332 : 0x111c24);
+            edges.fillStyle(icy ? 0x2a424c : 0x2c363d);
             edges.fillRect(
               x - tile / 2 - 0.3,
               y - tile / 2 - 0.3,
               tile + 0.6,
               tile + 0.6,
             );
-            // Every unknown cell uses the same geology-independent substrate,
-            // including unseen air. Its faint plates never expose a cave shape.
+            // Every unknown cell uses the same opaque geology-independent
+            // substrate, including unseen air. A 20% texture overlay gives dim
+            // rock rather than a black void, without exposing caves or deposits.
             this.image(
               `soil-${Math.floor(hash(canonical, row, world.seed) * 8)}`,
               x,
               y,
               tile + 0.6,
               tile + 0.6,
-              11,
-              0.07,
+              // Keep textures strictly above their opaque substrate. Equal
+              // depths let a reused formerly-depth-10 image sort underneath it.
+              11.1,
+              0.2,
             );
             continue;
           }
@@ -1135,12 +1216,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             column + 0.5 - this.unwrappedX,
             row + 0.5 - campaign.renderY,
           );
-          const alpha = lit ? Math.max(0.58, 1 - distance * 0.055) : 0.42;
+          const alpha = lit ? Math.max(0.8, 1 - distance * 0.055) : 0.65;
           if (type !== 0) {
             const variant = Math.floor(
               hash(canonical, row, world.seed) * (type === 1 ? 8 : 4),
             );
-            const frame = type === 1 ? `soil-${variant}` : `stone-${variant}`;
+            const frame =
+              type === 3
+                ? "bedrock-0"
+                : type === 1
+                  ? `soil-${variant}`
+                  : `stone-${variant}`;
             if (!this.image(frame, x, y, tile + 0.5, tile + 0.5, 10, alpha)) {
               edges.fillStyle(
                 icy
@@ -1159,25 +1245,25 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
                 tile + 0.5,
               );
             }
-            if (type === 3) {
-              edges.fillStyle(icy ? 0x102b3d : 0x17232b, 0.75);
-              edges.fillRect(
-                x - tile / 2,
-                y - tile / 2,
-                tile + 0.5,
-                tile + 0.5,
-              );
-            }
             let mask = 0;
-            if (!solid(column, row - 1)) mask |= 1;
-            if (!solid(column + 1, row)) mask |= 2;
-            if (!solid(column, row + 1)) mask |= 4;
-            if (!solid(column - 1, row)) mask |= 8;
+            // Even a known rim must not outline an undiscovered cave beside it.
+            if (exposed(column, row - 1)) mask |= 1;
+            if (exposed(column + 1, row)) mask |= 2;
+            if (exposed(column, row + 1)) mask |= 4;
+            if (exposed(column - 1, row)) mask |= 8;
+            const material =
+              type === 3
+                ? "bedrock"
+                : type === 2
+                  ? icy
+                    ? "frozen-rock"
+                    : "stone"
+                  : icy
+                    ? "ice"
+                    : "soil";
             if (mask)
               this.image(
-                icy
-                  ? `${type === 2 ? "frozen-rock" : "ice"}-edge-${mask}`
-                  : `soil-edge-${mask}`,
+                `${material}-edge-${mask}`,
                 x,
                 y,
                 tile + 0.5,
@@ -1185,6 +1271,18 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
                 11,
                 alpha,
               );
+            if (mask && highContrast) {
+              const contour = this.contrastEdges;
+              contour.lineStyle(2.4, icy ? 0xd7f5ee : 0xf1dfb7, alpha);
+              const left = x - tile / 2 + 1,
+                right = x + tile / 2 - 1,
+                top = y - tile / 2 + 1,
+                bottom = y + tile / 2 - 1;
+              if (mask & 1) contour.lineBetween(left, top, right, top);
+              if (mask & 2) contour.lineBetween(right, top, right, bottom);
+              if (mask & 4) contour.lineBetween(right, bottom, left, bottom);
+              if (mask & 8) contour.lineBetween(left, bottom, left, top);
+            }
           }
           for (const item of packageCells.get(index) || []) {
             const number = oreNumber(item);
@@ -1418,7 +1516,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       let poiMarkerX = "",
         poiMarkerY = "",
         poiMarkerVisible = false;
-      if (signal && signal.kind !== "lander" && signal.band !== "distant") {
+      if (
+        !titleVisible &&
+        signal &&
+        signal.kind !== "lander" &&
+        signal.band !== "distant"
+      ) {
         const poi = signal.poi;
         const x =
           (this.unwrappedX + delta(campaign.renderX, poi.x, world.width)) *
@@ -1957,6 +2060,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         }
         this.label(width / 2, labelY, callout, "#F6E1AF");
       }
+      if (titleVisible)
+        for (const label of this.labels) label.setVisible(false);
       const host = document.getElementById("campaign-game");
       if (host) {
         for (const [key, value] of Object.entries({
@@ -1971,10 +2076,19 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           rigScreenY: py.toFixed(2),
           rigWorldX: campaign.renderX.toFixed(4),
           rigWorldY: campaign.renderY.toFixed(4),
+          viewCameraX: cx.toFixed(4),
+          viewCameraY: cy.toFixed(4),
+          viewTile: tile.toFixed(4),
           campaignWorld: world.id,
           worldWidth: String(world.width),
           worldRows: String(world.rows),
           worldTexture: icy ? FRONTIER_TEXTURE : CAMPAIGN_TEXTURE,
+          skyBodyVisible: String(skyBodyVisible),
+          skyBodyBounds: skyBodyBounds ? JSON.stringify(skyBodyBounds) : "",
+          highContrast: String(highContrast),
+          worldLabels: String(
+            this.labels.filter((label) => label.visible).length,
+          ),
           volatileCue: String(Boolean(volatile)),
           volatileRemaining: volatile?.remaining.toFixed(3) ?? "",
           precisionActive: String(Boolean(campaign.precisionActive)),

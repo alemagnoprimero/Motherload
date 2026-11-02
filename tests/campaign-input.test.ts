@@ -58,6 +58,7 @@ function inputHarness(overrides: Partial<PilotPreferences> = {}) {
       documentEvents.set(name, [...(documentEvents.get(name) || []), handler]);
     },
   };
+  let pads: Gamepad[] = [];
   vi.stubGlobal("Element", TestElement);
   vi.stubGlobal("window", {
     addEventListener: (name: string, handler: (event: unknown) => void) => {
@@ -65,7 +66,7 @@ function inputHarness(overrides: Partial<PilotPreferences> = {}) {
     },
   });
   vi.stubGlobal("document", document);
-  vi.stubGlobal("navigator", { getGamepads: () => [] });
+  vi.stubGlobal("navigator", { getGamepads: () => pads });
   vi.stubGlobal("matchMedia", () => ({ matches: false }));
   vi.stubGlobal("localStorage", { getItem: () => null, setItem: vi.fn() });
   const preferences = { ...loadPilotPreferences(), ...overrides };
@@ -76,6 +77,8 @@ function inputHarness(overrides: Partial<PilotPreferences> = {}) {
     map: vi.fn(),
     pause: vi.fn(),
     unlockAudio: vi.fn(),
+    menu: vi.fn(),
+    releaseKeyboard: vi.fn(),
   };
   const input = new CampaignInput(preferences, callbacks);
   const key = (
@@ -122,6 +125,18 @@ function inputHarness(overrides: Partial<PilotPreferences> = {}) {
     direction,
     pointer,
     block: () => (blocked = true),
+    unblock: () => (blocked = false),
+    pad: (pressed: number[], axes = [0, 0]) => {
+      pads = [
+        {
+          connected: true,
+          axes,
+          buttons: Array.from({ length: 16 }, (_, index) => ({
+            pressed: pressed.includes(index),
+          })),
+        } as unknown as Gamepad,
+      ];
+    },
   };
 }
 
@@ -129,6 +144,23 @@ beforeEach(() => vi.restoreAllMocks());
 afterEach(() => vi.unstubAllGlobals());
 
 describe("campaign keyboard ownership", () => {
+  it("does not let held Enter activate the newly focused dock control", () => {
+    const h = inputHarness();
+    h.callbacks.interact.mockImplementation(() => {
+      h.block();
+      h.focus(h.toolbar);
+    });
+    h.key("Enter");
+    expect(h.callbacks.interact).toHaveBeenCalledOnce();
+    expect(
+      h.key("Enter", { repeat: true }).preventDefault,
+    ).toHaveBeenCalledOnce();
+    expect(h.key(" ", { repeat: true }).preventDefault).toHaveBeenCalledOnce();
+    expect(h.callbacks.interact).toHaveBeenCalledOnce();
+    // A fresh intentional press remains a native focused-button action.
+    h.key("Enter", {}, "keyup");
+    expect(h.key("Enter").preventDefault).not.toHaveBeenCalled();
+  });
   it("leaves browser shortcuts and composition alone instead of piloting or pausing", () => {
     const h = inputHarness();
     for (const [key, modifiers] of [
@@ -186,6 +218,9 @@ describe("campaign keyboard ownership", () => {
       h.direction.onpointerdown!(h.pointer);
       h.focus(h.toolbar);
       expect(h.input.getControls()).toEqual({ left: true });
+      expect(h.callbacks.releaseKeyboard).toHaveBeenCalledOnce();
+      h.focus(h.field);
+      expect(h.callbacks.releaseKeyboard).toHaveBeenCalledOnce();
       h.focus(h.game);
       expect(h.input.getControls()).toEqual({ left: true });
       h.direction.onpointerup!(h.pointer);
@@ -216,5 +251,88 @@ describe("campaign keyboard ownership", () => {
     expect(h.key("x").preventDefault).toHaveBeenCalledOnce();
     expect(h.preferences.keys.down).toEqual(["x"]);
     expect(h.input.getControls()).toEqual({});
+  });
+});
+
+describe("campaign controller menus", () => {
+  it("consumes a held controller button when another input opens a menu before polling", () => {
+    const h = inputHarness();
+    h.pad([0]);
+    h.input.clear();
+    h.block();
+    h.input.pollCommands();
+    expect(h.callbacks.menu).not.toHaveBeenCalled();
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([0]);
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenCalledOnce();
+    expect(h.callbacks.menu).toHaveBeenCalledWith("activate");
+  });
+  it("routes D-pad, A and B to menus once per press with a 300 ms command guard", () => {
+    const h = inputHarness();
+    let now = 0;
+    vi.spyOn(performance, "now").mockImplementation(() => now);
+    h.block();
+    h.pad([13]);
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenLastCalledWith("next");
+    now = 1000;
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenCalledOnce();
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([12]);
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenLastCalledWith("previous");
+    now = 1100;
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([0]);
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenCalledTimes(2);
+    now = 1500;
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([0]);
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenLastCalledWith("activate");
+    now = 1900;
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([1]);
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenLastCalledWith("back");
+    expect(h.input.getControls()).toEqual({});
+    expect(h.callbacks.interact).not.toHaveBeenCalled();
+  });
+
+  it("does not turn held thrust into a menu click or held menu controls into flight", () => {
+    const h = inputHarness();
+    let now = 0;
+    vi.spyOn(performance, "now").mockImplementation(() => now);
+    h.pad([0, 4]);
+    h.callbacks.interact.mockImplementation(() => {
+      h.block();
+      h.input.clear();
+    });
+    h.input.pollCommands();
+    expect(h.callbacks.interact).toHaveBeenCalledOnce();
+    now = 500;
+    h.input.pollCommands();
+    expect(h.callbacks.menu).not.toHaveBeenCalled();
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([13], [0, 1]);
+    h.input.pollCommands();
+    expect(h.callbacks.menu).toHaveBeenLastCalledWith("next");
+    h.input.clear();
+    h.unblock();
+    expect(h.input.getControls().down).toBe(false);
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([13]);
+    h.input.pollCommands();
+    expect(h.input.getControls().down).toBe(true);
   });
 });

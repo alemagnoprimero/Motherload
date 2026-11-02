@@ -89,6 +89,8 @@ export interface CampaignState {
     completed: number[];
     unlockedWorlds: string[];
     departed: boolean;
+    /** Worlds whose one complimentary disabled-rig tow has been used. */
+    towsUsed: string[];
   };
   elapsed: number;
   stats: {
