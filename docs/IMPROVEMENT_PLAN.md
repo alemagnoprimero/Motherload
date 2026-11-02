@@ -92,7 +92,7 @@ About 85 audit proposals and the critiques' additions merge into 74 items. Effor
 | 10 L, none | 676.5 | 26.5 | 76.5 | 176.5 | 226.5 |
 | 10 L, 3 HP | 631.3 | −18.7 | 31.3 | 131.3 | 181.3 |
 
-**The gate purchase is energy rank 1 at 600 CR.** It leaves at least 27 CR in every case, and the new tank fills on purchase. After A4a, the engine also qualifies. The drill (750 CR) and the cargo bay (700 CR) are never affordable. M1 stays at 200 CR, because at 250 the 600 CR tank misses by 18.7 CR. H1 runs this scenario in place of the hull purchase at `tests/campaign-model.test.ts:150`.
+**The gate purchase is energy rank 1 at 600 CR.** It leaves at least 27 CR in every case, and the new tank fills on purchase. After A4a, the engine also qualifies. The drill (750 CR) and the cargo bay (700 CR) are never affordable. M1 stays at 200 CR, because at 250 the 600 CR tank misses by 18.7 CR. H1 runs this scenario in place of the hull purchase at `tests/campaign-model.test.ts:154`.
 
 **Fees.** Measured with the audit harness, using A1 placement and the plate, on 6 seeds:
 
@@ -183,7 +183,7 @@ The fees feed the pinned ore floor (3 × budget, `check-campaign-data.mjs:125`),
 - vertical speed: min(12, 6√p);
 - the mass factor.
 
-`tick()` uses this table instead of the literals at `model.ts:388`, `:411-415`, `:496`, `:512` and `:533`.
+`tick()` uses this table instead of the literals at `model.ts:388`, `:405`, `:411-415`, `:496`, `:512` and `:533`.
 
 The estimate is a pure function that adds three parts:
 - rows to climb ÷ vertical speed × (0.126·mf + 0.063);
@@ -213,9 +213,9 @@ Let m = energy − estimate and b = max(1 L, one cut). The states are:
 
 ### 4.3 C: Game feel, camera and audio
 
-**Diagnosis (FEEL-F1–F8).** Movement responds well, reaching full speed in 0.30 s, but the feedback around it is muted:
+**Diagnosis (FEEL-F1–F8, GFX-F12).** Movement responds well, reaching full speed in 0.30 s, but the feedback around it is muted:
 - Sound is off by default (`audio.ts:14`). When it is on, 98.7% of the drilling mix sits below 150 Hz.
-- The pickup chime fires on every cut, because `onEvent` (`scene.ts:21`) is never passed (`main.ts:1925`).
+- The pickup chime fires on every cut (`main.ts:1956-1958`), and the scene's own cues are unused because `onEvent` (`scene.ts:21`) is never passed (`main.ts:1925`).
 - Cuts fill 69–83% of a trip, yet end in 2.3 px grey squares.
 - The drill animation frames differ by ≤0.48%.
 - A fixed camera anchor leaves 43% of the surface view as fog.
@@ -231,7 +231,7 @@ Let m = energy − estimate and b = max(1 L, one cut). The states are:
 | C6 | Alarm and rim, damage flash, pinned shelf dust, power-down, volatile bell, haptics (FEEL-P7) | Danger is shown as text only | M | Medium | C1, C2 |
 | C7a | Auger twist frames, distinct thrust flames (GFX-P8) | Frames differ by ≤0.48% | S–M | Medium | H5a |
 | C7b | Lean, squash, exhaust, load sag, readable damage (FEEL-P8) | Rigid rig | M | Low | C2, D4 |
-| C8 | Mouse steers on press unless the press lands on an inspectable object (FEEL-P9) | 180 ms hold vs the approved 100 ms (`pointer.ts:74`) | S | Medium | — |
+| C8 | Mouse steers on press unless the press lands on an inspectable object (FEEL-P9) | 180 ms hold vs the approved 100 ms (`pointer.ts:86`) | S | Medium | — |
 | C9 | Adaptive music and ambience (FEEL-P10) | One note every 12 s | L | Medium | C1 |
 
 **C1 spec.**
@@ -460,9 +460,9 @@ The critique's 22/58/140/400 cannot make 480 from 7 packages. Packages store the
 ### 4.8 H: Enablers
 
 **Diagnosis.**
-- **Unmaintained tooling.** The review's harness, fixtures and capture scripts exist only as an archive in `docs/improvement-plan/work/`, which no check runs, and CI runs only on pushes to main.
+- **Unmaintained tooling.** The review's harness, fixtures and capture scripts exist only as an archive in `docs/improvement-plan/work/`, which no check runs, and CI (the Pages workflow) runs only unit tests and the build, on path-filtered pushes to main or by hand.
 - **Balance is locked.** `npm run build` checks fees, prices, W02 bulk and route totals against v0.1 (`check-campaign-data.mjs:192-256`), so any balance change fails the deploy.
-- **Strict decoding.** `decodeCampaign` rejects other versions (`model.ts:1243-1250`), packages from other balance versions (`:1369-1392`) and tiles above 3 (`:1360`). It reads a missing field as "incomplete" (`:1632-1634`), and the save then opens protected.
+- **Strict decoding.** `decodeCampaign` rejects other versions (`model.ts:1243-1250`), packages from other balance versions (`:1369-1392`) and tiles above 3 (`:1360`). A missing field fails its own check, such as "Campaign progression is invalid" (`:1282`), and the save then opens protected.
 - **Mixed coordinates.** `scene.ts` compares DOM rectangles with canvas pixels (`:831`, `:978-989`, `:1954`).
 - **Inkscape dependency.** The W02 build needs Inkscape, which is absent.
 
@@ -662,12 +662,12 @@ Neither cut line includes the Phase 2 graphics overhaul.
 |---|---|---|
 | Recovery fee and lost cargo (`campaign-model.test.ts:99-127`, `:262-296`; `usability-smoke.mjs:403-426`; `frontier-smoke.mjs:483-498`) | A2 | First tow is free and keeps cargo |
 | 6 L opening buys hull (`campaign-model.test.ts:129-160`) | A2, A3 | Buys the 600 CR tank after an impact, with ≥25 CR left |
-| Rack needs feet (`:349-370`) | A4a | No prerequisite |
+| Rack needs feet; rack gives 8 bulk (`campaign-model.test.ts:349-370`) | A4a | No prerequisite; rack gives 10 |
 | All-soil corridor; shelf positions (`campaign-world.test.ts:76-83`) | A3, G2 | Plate rows; shelf 2 moved |
 | Ore floors (`campaign-world.test.ts:39-49`) | A1, H8 | v0.2 budget |
 | `/Ironium.*30/` (`campaign-smoke.mjs:488`, `:895`; `usability-smoke.mjs:261`) | G1 | New names and values |
-| 180 ms hold (`pointer.ts:74`) | C8 | Press steers |
-| "0.75 seconds" copy (`frontier.ts:111`) | A5a | Training-window copy |
+| 180 ms hold (`campaign-pointer.test.ts:15-33`; `pointer.ts:74`, `:86`) | C8 | Press steers |
+| 0.75 s window (`campaign-frontier-model.test.ts:161-172`; `frontier-smoke.mjs:857-860`) and copy (`frontier.ts:111`) | A5a | 1.5 s for a new W02's first three cuts; training-window copy |
 | Asset rules (`check-campaign-assets.mjs:189-364`) | H5b, D3b, D6 | Trim metadata |
 | v0.1 equality (`check-campaign-data.mjs:192-256`) | H8 | Data chosen by version |
 | 47 `#campaign-*` ids | H6, E2, E4, F2a–F6 | Stable hooks |
@@ -712,11 +712,11 @@ Neither cut line includes the Phase 2 graphics overhaul.
 |---|---|---|---|
 | No purchase needed | 5 trips, 0 purchases, 163–165 s, 10/10 seeds | — | PROG-F1 |
 | Depth and purchases | 9.8 → 6.9 CR per cell; parts −1.5% to +7.6% | d21, d10-dock-hardware | PROG-F2, PROG-F3 |
-| First dive fails | 190 m after 19.4 s, 40/40 seeds | d05 | FTUE-F1 |
+| First dive fails | 190 m after 19.4 s, 40/40 seeds | d05 | FTUE-F1, PROG-F7 |
 | Black void | 86–89% below luma 40; 3% when revealed | d04, d05, d20, l02, d21 | GFX-F1 |
-| Sky and terrain | Seam and two planets; stone ΔE 3.1 | `g10-w01-flying-ceiling.png`, `g05-surface-1920x1080.png`, e00 | GFX-F2, GFX-F4 |
+| Sky and terrain | Seam and two planets; stone ΔE 3.1 | `g10-w01-flying-ceiling.png`, `g05-surface-1920x1080.png`, e00 | GFX-F2, GFX-F4, GFX-F6 |
 | Soft HiDPI | 11% of device pixels at DPR 3 | p02, p03 | GFX-F5 |
-| HUD | Worst contrast 1.46:1; 1.4 clear rows | p02, p03, l02, d20 | HUD-F3, HUD-F6 |
+| HUD | Worst contrast 1.46:1; 1.4 clear rows | p02, p03, l02, d20 | HUD-F3, HUD-F4 |
 | Menus | Terminal 523 words; pause 279 words | d01, d06, d13c, p04, p05 | MENU-F1–F10 |
 | Empty route; reference names | 7.8% of the world discovered | d04, d20 | WORLD-F1, WORLD-F14 |
 | Opening gate, fees, plate | 631.3 CR after an impact; fee sweep; 136/200 bypass seeds | — | `work/critique-*` re-runs |
