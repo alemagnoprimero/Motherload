@@ -4,6 +4,11 @@ L*, HSV warm/cyan share and edge density follow work/lighting/stats.py; the
 axis-aligned boundary share follows work/terrain/boundary.py (same blur, Sobel,
 5 degree tolerance and 42 px-per-tile rescale). Region luma for the prototype
 uses its own exact region masks (debug-regions-*.png).
+
+Needs `node render.mjs` first (it writes the renders into out/), and CAPTURES set to a
+folder that holds the session captures in shots/ and shots2/. Neither is committed. The
+working scripts named above (work/...) are not committed either; this file carries the
+same definitions.
 """
 import json, os
 import numpy as np
@@ -12,7 +17,7 @@ from PIL import Image, ImageFilter
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, 'out')
 SH = os.path.join(os.environ.get('CAPTURES', 'captures'), 'shots') + '/'  # session captures, not committed
-BOARD = '/home/user/Motherload/docs/art-direction/d0-target-board.png'
+BOARD = os.path.join(HERE, '..', '..', 'art-direction', 'd0-target-board.png')
 # Concept panel boxes on the board (desktop panels, inner area) and HUD rectangles inside them.
 PANELS = {'surface': (227, 142, 918, 500), 'shaft': (227, 527, 918, 879), 'cavern': (227, 903, 918, 1282)}
 CONCEPT_HUD = [(8, 5, 308, 45), (366, 5, 690, 45), (8, 45, 166, 82)]

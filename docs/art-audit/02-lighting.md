@@ -2,7 +2,7 @@
 
 Dimension key: `lighting`. Scope: palette and value hierarchy, headlamp, darkness with depth, fog of war, shadows and ambient occlusion, rim light, emissive accents, sky, planet and mountain layers, and colour grading. Repository state: `origin/main` 644e222, read-only.
 
-Abbreviations: L\* is CIE L\* (0 = black, 100 = white), computed from sRGB. b\* is the CIE yellow-blue axis; positive values are warm. "Luma" is Rec. 709 luma on 0–255, the measure the improvement plan used. File names without a path are captures in `scratchpad/v2/shots/` or `shots2/`. All derived images are in `scratchpad/art-audit/work/lighting/`, abbreviated `work/` below.
+Abbreviations: L\* is CIE L\* (0 = black, 100 = white), computed from sRGB. b\* is the CIE yellow-blue axis; positive values are warm. "Luma" is Rec. 709 luma on 0–255, the measure the improvement plan used. File names without a path are session captures, which are not committed. Derived images and scripts named below (`work/…`) are working files from the audit session and are not committed either (see the [README](README.md)); the committed copies are [`images/cmp-shaft-lighting.jpg`](images/cmp-shaft-lighting.jpg) (`cmp-shaft.png`) and [`images/value-ladder.png`](images/value-ladder.png).
 
 ---
 
@@ -12,7 +12,7 @@ The pale blue-grey wash is not caused by hue. The concept board is also a cool b
 
 1. **Unexplored rock is too bright.** It fills 60–80 % of every underground frame. The concept shows it at L\* 24; the game draws it at L\* 36–38 on every W01 band (the concept's lit tunnel walls are L\* 38) and at L\* 48 in W02. From 60 m to 550 m it darkens by less than 2 L\*.
 2. **The frame has one value.** In the 60 m and 150 m dives, 82 % of non-HUD pixels lie within ±3 L\* of a single value (38.5). The concept spreads its pixels: only 36 % fall within ±3 of its mode. The concept's 2nd–98th percentile range is 45–52 L\*; the game's is 26–30.
-3. **There are no highlights and nothing warm emits light.** The concept's 98th-percentile pixel is L\* 54–65 (lamp cores, rims, bulbs). The game's is 39–48. Its "headlamp" is a cool, blue-grey 7–9 L\* lift on fog (b\* −4.8); the concept's is a warm beam (b\* +12) at L\* 72–75 at the lamp.
+3. **There are no highlights and nothing warm emits light.** The concept's 98th-percentile pixel is L\* 54–65 (lamp cores, rims, bulbs). The game's is 39–48. Its "headlamp" is a cool, blue-grey 7–9 L\* lift on fog (b\* −4.8); the concept's is a warm beam at L\* 75 and b\* +26 at the lamp (b\* +12 averaged over the cone 1–2 tiles out).
 4. **At depth the order inverts.** At 465 m, the space the player has explored and lit is darker (cave air L\* 10–11, lit soil 24) than the rock they have not explored (L\* 35–36). The headlamp beam is darker than the fog it points into (`lamp-falloff.png`).
 
 The biggest single reason is a deliberate over-correction. The previous audit found a black void (89 % of pixels below luma 40). The plan then set a **one-sided** gate, "≤ 45 % below luma 40", and the implementation met it by fogging unknown rock at only 16 % darkness (`lighting.ts:73-77`) over a light base colour (`terrain.ts:177-181`). It reached 0.3–5.4 % of pixels below luma 40. The concept's own shaft panel has 10 %, and its cavern panel has 42 %. The plan's own D4 gate, "histograms within tolerance of D0", was never measured (`IMPROVEMENT_COVERAGE.md:58`).
@@ -28,11 +28,11 @@ A one-day prototype (§2.6) shows that re-keying the darkness and adding an addi
 - **Concept crops.** Panels were cut from `d0-target-board.png` at their measured borders: desktop x 227–917; surface y 143–499, shaft 527–878, cavern 904–1281; portrait x 937–1180. The results are `work/concept-{surface,shaft,cavern}[_p].png`.
 - **HUD masking.** HUD rectangles are excluded from every statistic. Scripts: `work/stats.py` (masks, histograms, edge density), `regions.py` (matched regions), `profile.py` (lamp falloff), `lab.py` (warmth), `mode.py` (value concentration).
 - **Comparison sheets.** Each shows colour, a pure-value L\* map and an L\* histogram for concept, current build and prototype:
-  - `work/cmp-shaft.png`
+  - `images/cmp-shaft-lighting.jpg` (committed copy of `work/cmp-shaft.png`)
   - `work/cmp-cavern.png`
   - `work/cmp-surface.png`
   - `work/cmp-portrait.png`
-- **Charts.** `work/value-ladder.png` and `work/lamp-falloff.png`.
+- **Charts.** `images/value-ladder.png` and `work/lamp-falloff.png`.
 - **Re-captures.** The same world (`fresh-w01.json`) was captured before and after the prototype by one script (`work/capture-proto.mjs`), giving `work/caps/base-*.png` and `work/caps/proto-*.png`. `base-dive-60m` matches the layout of `a04-dive-60m@2`.
 
 ### 2.2 Whole-frame value and colour (HUD masked)
@@ -53,7 +53,7 @@ A one-day prototype (§2.6) shows that re-keying the darkness and adding an addi
 
 On the legacy luma gate (`work/luma40.py`), pixels below luma 40 / mean luma / luma p99 are: concept shaft 10.1 % / 61 / 183; concept cavern 42.3 % / 51 / 156; a04 0.3 % / 90 / 125; c-site-4 25.4 % / 67 / 99. The game's mean luma is about 30 levels brighter than the concept's, and its brightest 1 % is 55–60 levels dimmer.
 
-### 2.3 60 m shaft: concept vs `a04-dive-60m@2` (`work/cmp-shaft.png`)
+### 2.3 60 m shaft: concept vs `a04-dive-60m@2` (`images/cmp-shaft-lighting.jpg`)
 
 **What the concept shows**
 - **Rock.** A dark slate mass, L\* 24, with visible strata (region sd 4.7).
@@ -216,14 +216,14 @@ Normal-blending 18 % pale cream over dark colours raises their value and lowers 
 ### 3.7 Emissive accents are missing or subtractive
 **Rare ores.** O3/O4 ores get a 0.55 `destination-out` "glint brush" (`lighting.ts:134-154`). It reveals, but does not add, light, and lit O2–O4 get small cross sprites (`scene.ts:1240-1262`).
 
-**Depth order.** Ore sprites (depth 13) and site/structure art (depth 15, e.g. `scene.ts:1768`) sit **under** the darkness map (depth 17). Fog dims them, and none of them emits light.
+**Depth order.** Ore sprites (depth 13), site and wreck art (depth 14, `scene.ts:679, 1725-1731`), and POI frames and field logs (depth 15, `scene.ts:1487, 1768`) sit **under** the darkness map (depth 17). Fog dims them, and none of them emits light.
 
 **Missing assets.** The atlas `assets/campaign/generated/w01-runtime.json` has `site-beacon`, `mission-beacon`, `dock-stage-*`, `refuge-*` and `relay-*`, but no lamp-post or emissive frames. Nothing on the surface matches the concept's two lit lamp tripods; the only lights are the dock dots and ellipses at 13–16 % alpha.
 
 ### 3.8 Sky, planet and ridges are pale, small and single-layer
 **Sky.** The gradient is generated at `scene.ts:211-226` (`#14232b → #48616b`; W02 `#142b45 → #5d91a0`). Its horizon (L\* 35.5) is 7 L\* brighter than the concept's.
 
-**Ridges.** `assets/campaign/source/w01-ridge-{far,near}.svg` (far `#304753`/`#415865`, peaks at 242/384 px; near `#293E48`/`#52636A`, peaks at 133/384 px) are placed at `surfaceY − 300·tile/96` (`scene.ts:1166-1176`). Peaks rise only about 1.3–1.7 tiles above the ground, with no third, hazed layer and no value step between layers.
+**Ridges.** `assets/campaign/source/w01-ridge-{far,near}.svg` (far `#304753`/`#415865`, peaks at 242/384 px; near `#293E48`/`#52636A`, peaks at 133/384 px) are placed at `surfaceY − 384·tile/96` (far) and `surfaceY − 300·tile/96` (near) (`scene.ts:1165-1176`). Peaks rise only about 1.3–1.7 tiles above the ground, with no third, hazed layer and no value step between layers.
 
 **Planet.** `assets/campaign/source/sky-body.svg` paints the lit crescent `#987E5B`, a muted tan, against the concept's saturated amber.
 
@@ -242,7 +242,7 @@ Normal-blending 18 % pale cream over dark colours raises their value and lowers 
 2. **Value inversion at depth.** Explored, lit space is darker than unexplored rock from band B down.
    - Evidence: 465 m pocket L\* 10 and lit soil 24 vs fog 35.6 (`cmp-cavern.png`, `lamp-falloff.png`).
 3. **No warm, directional, additive headlamp.**
-   - Evidence: a cool +7.8 L\* lift (b\* −4.8) vs a warm L\* 72–75 core (b\* +12) falling off over 1.8 tiles. The cream normal-blend lamp adds a grey halo.
+   - Evidence: a cool +7.8 L\* lift (b\* −4.8) vs a warm core of L\* 75, b\* +26 at the lamp (b\* +12 averaged over the cone) falling off over 1.8 tiles. The cream normal-blend lamp adds a grey halo.
    - Cause: `lighting.ts:99-133`, `scene.ts:244-261`.
 4. **Highlights are missing.** p98 L\* is 39–48 vs 54–65; rims peak at 58 vs 88; no bevels, no light direction in materials (`terrain.ts:248-277`, band pages).
 5. **No occlusion or ambient occlusion.** Light ignores walls, and the boundary between space and solid is a blur (`lighting.ts:86`), not a bevel plus shadow.
@@ -452,7 +452,7 @@ Cyan-accent share ≥ 0.2 % when a beacon is on screen.
 
 ### Artefacts
 
-All in `scratchpad/art-audit/work/lighting/`:
+All in the working folder `work/lighting/` (not committed):
 - comparison sheets `cmp-{shaft,cavern,surface,portrait}.png`;
 - charts `value-ladder.png` and `lamp-falloff.png`;
 - crops `band-textures.png`, `a04-rig-crop.png`, `c4-rig-crop.png`, `a02-horizon.png` and `concept-*.png`;

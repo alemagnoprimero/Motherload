@@ -1,6 +1,6 @@
 # 04 · In-world overlays, readability layers, motion and effects
 
-Scope: everything drawn over the world art (world text, chips, badges, markers, rails, coach cards, toasts, drill UI) and the motion/feedback layer (particles, light FX, camera, rig animation, landing, pickups). Repository state: `origin/main` 644e222, read-only. Evidence lives in `<working folder>/art-audit/work/overlays/` (shortened below to `work/overlays/`). Captures cited as `shots/…` and `shots2/…` are in `…/scratchpad/v2/`.
+Scope: everything drawn over the world art (world text, chips, badges, markers, rails, coach cards, toasts, drill UI) and the motion/feedback layer (particles, light FX, camera, rig animation, landing, pickups). Repository state: `origin/main` 644e222, read-only. Evidence files named `work/overlays/…` below are working files from the audit session and are not committed (see the [README](README.md)), except the 60 m annotation, [`images/annot-a04-60m.jpg`](images/annot-a04-60m.jpg). Captures cited as `shots/…` and `shots2/…` are session captures, also not committed.
 
 ## 1 Verdict
 
@@ -30,7 +30,7 @@ The probe (`work/overlays/probe/overlay-inventory.json`, `desktop-spawn`) confir
 
 ### 2.2 60 m shaft (concept panel 2 vs `shots/a04-dive-60m@2.png`, `shots2/p-portrait-03-dive-70m@3.png`)
 
-Annotated: `work/overlays/annot-a04-60m.png`, `work/overlays/annot-portrait-70m.png`.
+Annotated: `images/annot-a04-60m.jpg`, `work/overlays/annot-portrait-70m.png`.
 
 - **Text.** Concept: none. Game desktop: "↑ HOME · 164 m", "+ Shard silver", "Seam A · shallow ore · mission part", "Wreck survey beacon · 39 m" on a pulsing ring, and "Home 0.9L · Safe". The probe run adds "Collect the marked seam. Skip", for 5 canvas labels plus 4 DOM text elements (`probe/overlay-inventory.json`, `desktop-60m`).
 - **Label collisions.** In portrait the "Seam A…" and "Seam B…" labels are drawn at the same y and merge into "SeamSeam B…shallow ore…emission part". The "+ Shard silver" popup sits on the ore and the target chip sits on the ring.
@@ -235,7 +235,7 @@ All measurements use the capture harness (`capture-v2.mjs` pattern, fake clock) 
 6. **Camera continuity.** In the surface-to-shaft sequence (`fx-capture.mjs`), the rig's screen position changes ≤ 40 CSS px per 50 ms (today 231 px horizontally in one 60 ms step) and tile size ≤ 3% per 100 ms (today 13.6% in 120 ms).
 7. **Framing.** Tiles across: desktop 16–17 (today 21), portrait 7–7.5 (today 8.9). Rig width ≥ 6% of the desktop frame width (today 4.3–4.5%; concept 7.5%).
 8. **FX presence**, from per-type dataset counters during a 1 s down-drill in soil and in stone: ≥ 3 particle types active (chunk, dust, spark on stone); ≥ 40% of chunks moving downward or sideways when drilling down (today 0%); a pickup arc visible in 3 consecutive 80 ms frames; landing dust on both sides of the rig.
-9. **Side-by-side review.** Produce panel-matched frames (spawn, 60 m shaft, 300 m-class cavern; desktop and portrait) next to the six concept panels, in the format of `work/overlays/side-by-side-concept-vs-game.png`. Three reviewers who have not seen the work circle everything they read as "UI in the playfield" (median ≤ 2 per frame; `annot-a04-60m.png` marks 17 today) and rate "matches the concept's mood" from 1 to 5 (median ≥ 4).
+9. **Side-by-side review.** Produce panel-matched frames (spawn, 60 m shaft, 300 m-class cavern; desktop and portrait) next to the six concept panels, in the format of `work/overlays/side-by-side-concept-vs-game.png`. Three reviewers who have not seen the work circle everything they read as "UI in the playfield" (median ≤ 2 per frame; `images/annot-a04-60m.jpg` marks 17 today) and rate "matches the concept's mood" from 1 to 5 (median ≥ 4).
 10. **No regressions.** `feel-smoke`, `poi-smoke`, `frontier-smoke` and `plan-ui-smoke` pass in both Scan modes, and a first-session playtest shows no increase in time-to-beacon or time-to-first-bank.
 
-Evidence index (`work/overlays/`): `side-by-side-concept-vs-game.png`, `annot-a04-60m.png`, `annot-portrait-70m.png`, `pair-60m-dom-stripped.png`, `headlamp-compare.png`, `game-badge-zoom.png`, `concept-shaft-ore-zoom.png`, `sheet-drill.png`, `sheet-land.png`, `drill-deep-01-zoom.png`, `probe/overlay-inventory.json`, `fx/fx-log.json`. Scripts: `overlay-probe.mjs`, `fx-capture.mjs`, `annotate.py`, `edge-share.py`.
+Evidence index (`work/overlays/`, not committed): `side-by-side-concept-vs-game.png`, `annot-a04-60m.png` (committed as `images/annot-a04-60m.jpg`), `annot-portrait-70m.png`, `pair-60m-dom-stripped.png`, `headlamp-compare.png`, `game-badge-zoom.png`, `concept-shaft-ore-zoom.png`, `sheet-drill.png`, `sheet-land.png`, `drill-deep-01-zoom.png`, `probe/overlay-inventory.json`, `fx/fx-log.json`. Scripts: `overlay-probe.mjs`, `fx-capture.mjs`, `annotate.py`, `edge-share.py`.

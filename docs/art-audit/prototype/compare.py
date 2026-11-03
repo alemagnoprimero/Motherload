@@ -1,6 +1,10 @@
 """Side-by-side sheet: concept panel crop | current game capture | technique prototype.
 
 One row per situation (desktop triple, then portrait triple), plus a framing row.
+
+Needs `node render.mjs` first (renders in out/), CAPTURES set to a folder that holds the
+session captures in shots/ and shots2/, and the portrait cavern capture at
+game/p-portrait-cavern-site4@3.png. None of these is committed.
 """
 import os
 from PIL import Image, ImageDraw, ImageFont
@@ -9,7 +13,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, 'out')
 SH = os.path.join(os.environ.get('CAPTURES', 'captures'), 'shots') + '/'  # session captures, not committed
 SH2 = os.path.join(os.environ.get('CAPTURES', 'captures'), 'shots2') + '/'  # session captures, not committed
-board = Image.open('/home/user/Motherload/docs/art-direction/d0-target-board.png').convert('RGB')
+BOARD = os.path.join(HERE, '..', '..', 'art-direction', 'd0-target-board.png')
+board = Image.open(BOARD).convert('RGB')
 F = '/usr/share/fonts/opentype/inter/Inter-SemiBold.otf'
 if not os.path.exists(F): F = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 font = ImageFont.truetype(F, 22); small = ImageFont.truetype(F, 17); big = ImageFont.truetype(F, 30)

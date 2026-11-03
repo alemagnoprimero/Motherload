@@ -1,8 +1,10 @@
-# 07 — Critique of `ART_QUALITY_AUDIT-draft.md`
+# 07 — Critique of the draft of `ART_QUALITY_AUDIT.md`
 
 *Review of the draft dated 2026-11-03, read against `origin/main` 644e222 (read-only), the concept board `docs/art-direction/d0-target-board.png`, the captures in `v2/shots/` and `v2/shots2/` (both manifests complete), and the prototype outputs in `prototype/out/`.*
 
-- **New evidence for this review** is in `critique/` beside this file: `measure.py` (reproduces every number below; writes `measure.json`), plus the crops `a04-rig-crop.png`, `concept-surface-props-2x.png`, `concept-portrait-surface-3x.png`, `portrait-aspect-cavern.png`, `b330-plate-crop.png` and `w02-sheet.jpg`.
+*Section numbers below refer to the draft, which is not committed. In [ART_QUALITY_AUDIT.md](../ART_QUALITY_AUDIT.md), draft §1–§3 are unchanged, draft §4.1–§4.7 are §5.1–§5.7, draft §5.1–§5.4 are §6.1–§6.4, draft §6 is §7, draft §7 is §8 and draft §8 is §9. Appendix A of the audit lists where each issue was applied.*
+
+- **New evidence for this review** is committed as [`data/measure.json`](data/measure.json) and the crops [`images/a04-rig-crop.png`](images/a04-rig-crop.png), [`images/concept-surface-props.jpg`](images/concept-surface-props.jpg), [`images/portrait-aspect-cavern.jpg`](images/portrait-aspect-cavern.jpg), [`images/b330-plate-crop.jpg`](images/b330-plate-crop.jpg) and [`images/w02-sheet.jpg`](images/w02-sheet.jpg). The script `measure.py` that wrote `measure.json`, and the crop `concept-portrait-surface-3x.png`, are working files and are not committed. Paths below that start `critique/` name working files.
 - **Units:** as in the draft, luma is Rec. 709 on 0–255.
 
 ---
@@ -67,8 +69,8 @@ I found nothing that breaks existing saves, provided the issues on generator-ver
 
 **Shaft.**
 - The board's shaft is 2.3 tiles wide: rims at x 518 and 627, tile ≈ 44–47 px. The rig stands on a ledge and faces sideways, with air on both sides.
-- The game digs 1-tile shafts. The hull frame is 92 px on a 96 px/tile page (0.96 tile, `rig-body-0`). The rig spans 112 saturated px on a 130.9 px tile in `a04` (`critique/a04-rig-crop.png`), so the rig *is* the shaft.
-- While drilling down, the cone points into rock. The prototype found the same ("the cone hits the wall after 0.1 tile", `06-prototype.md` §4), and its concept-zoom shaft (`proto-shaft-conceptzoom-1440x900@2.png`) shows no cone at all.
+- The game digs 1-tile shafts. The hull frame is 92 px on a 96 px/tile page (0.96 tile, `rig-body-0`). The rig spans 112 saturated px on a 130.9 px tile in `a04` (`images/a04-rig-crop.png`), so the rig *is* the shaft.
+- While drilling down, the cone points into rock. The prototype found the same ("the cone hits the wall after 0.1 tile", `06-prototype.md` §4), and its concept-zoom shaft (`prototype/proto-shaft-conceptzoom.jpg`) shows no cone at all.
 
 **Cavern.**
 - The board puts a beacon tripod beside the wreck at 300 m.
@@ -77,7 +79,7 @@ I found nothing that breaks existing saves, provided the issues on generator-ver
 
 **Portrait.**
 - The board's panels measure 693×358 (1.94) and 246×358 (0.69). They are not 16:9 (1.78) or 9:19 (0.47).
-- A 393×851 phone (0.46) shows about 50 % more height per unit of width than the "portrait" panel (`critique/portrait-aspect-cavern.png`).
+- A 393×851 phone (0.46) shows about 50 % more height per unit of width than the "portrait" panel (`images/portrait-aspect-cavern.jpg`).
 - §4.3 asks the owner to score each portrait panel ≥4 against a frame the phone cannot show.
 
 *Fix.* Add a Phase 0 item **F0, "reachable targets"** (2–3 d of art direction plus owner time):
@@ -140,7 +142,7 @@ I found nothing that breaks existing saves, provided the issues on generator-ver
 | Air | 46.2 | Back wall 33.9 (sd 5.2) |
 | Known solid | 62.9 | Rock 52–57 (sd 22–23) |
 
-- In `proto-cavern-conceptzoom-1440x900@2.png` the cave air measures 51.5 (sd 3.1).
+- In `proto-cavern-conceptzoom-1440x900@2.png` (the full-resolution render; committed as `prototype/proto-cavern-conceptzoom.jpg`) the cave air measures 51.5 (sd 3.1).
 - The board reads as a dark hollow framed by lit rock. The prototype reads as a lit teal field framed by grey crazy paving.
 - T4's own gate (back-wall luma 28–42) would reject the prototype, but §8 marks the order as passing.
 
@@ -187,7 +189,7 @@ I found nothing that breaks existing saves, provided the issues on generator-ver
 **7. Major. Decision D1 (camera framing) omits the surface zoom, understates the board's phone scale, and ignores what it does to texel density and asset priority.**
 
 *Evidence.*
-- **Surface zoom.** The surface and dock zoom is 0.88 (`scene.ts:787-795`). At D1's `width/17` the surface shows about 19.3 tiles; the board's surface shows about 15.7 (tile ≈ 44 px in a 693 px panel, `critique/concept-surface-props-2x.png`).
+- **Surface zoom.** The surface and dock zoom is 0.88 (`scene.ts:787-795`). At D1's `width/17` the surface shows about 19.3 tiles; the board's surface shows about 15.7 (tile ≈ 44 px in a 693 px panel, `images/concept-surface-props.jpg`).
 - **Portrait scale.** The board's portrait shows about 5.6 tiles, and the rig is 52 px, 21 % of the panel width (`critique/concept-portrait-surface-3x.png`). D1's 52 px tile gives 7.6 tiles, and the rig 50–60 px, 13–15 % of 393 px.
 - **Texel density.** At `width/17` a desktop tile is 84.7 CSS px, or 169 device px at backing 2. That exceeds the 144 px/tile @3x page, and the rig frames (asset 40) are P1, so the hero of every G1 frame would be upscaled.
 - **Phone pages.** `artQuality` is hard-coded to 2 on coarse pointers (`scene.ts:833-837`), and @3x pages never load on phones (`art.ts:144`). Any portrait tile above 48 CSS px therefore samples @2x art upscaled.
@@ -220,7 +222,7 @@ Simpler still, and with no masks: sandwich props between a back-wall pass and th
 **9. Major. The slice leaves out what every player passes through on the way to the slice cavern.**
 
 *Evidence.*
-- **Plate layer.** W01 has a full-width 2-row plate layer at rows 30–31: 80 plate tiles in `fresh-w01.json`, 40 per row. It is drawn with diagonal stripes (`terrain.ts:236-247`, `critique/b330-plate-crop.png`). It is the board's "heavy iron shelf", yet W4 and asset 38 sit in Phase 2.
+- **Plate layer.** W01 has a full-width 2-row plate layer at rows 30–31: 80 plate tiles in `fresh-w01.json`, 40 per row. It is drawn with diagonal stripes (`terrain.ts:236-247`, `images/b330-plate-crop.jpg`). It is the board's "heavy iron shelf", yet W4 and asset 38 sit in Phase 2.
 - **Shelf.** A brittle shelf hazard sits at (13.5, 46.5), 2–3 cells from W01-SITE-4 at (15.5, 43.5), inside the slice frame.
 - **Band B.** Band B covers rows 11–29 and holds the second milestone (the valve at row 24, `config.ts:368`). It and the B→C cut (`b-330m-…`: blue-grey to brown in one row) stay old until W1.
 
@@ -271,7 +273,7 @@ Score one as-shipped HUD frame per scene under question 4.
 **12. Major. The memory figures are wrong or unmeasurable.**
 
 *Evidence.*
-- **Asset list size.** "Rows 1–51 come to about 20 MB at @3x." Decoded RGBA from the table's own canvas sizes (`critique/measure.json`):
+- **Asset list size.** "Rows 1–51 come to about 20 MB at @3x." Decoded RGBA from the table's own canvas sizes (`data/measure.json`):
 
   | Rows | Size |
   |---|---|
@@ -349,7 +351,7 @@ Score one as-shipped HUD frame per scene under question 4.
 
 ### Minor
 
-**17. Minor. Hard rock: follow the board, not the prototype.** The board's surface draws hard rock as square, cracked, darker bevelled blocks on the grid, in both formats (`critique/concept-surface-props-2x.png`, `concept-portrait-surface-3x.png`). The prototype rounds hard rock into boulder inclusions (`06` §2 T5), and T2 and asset 23 follow that. *Fix:* hard-rock cells keep square outlines with a 0.03-tile chamfer and cracked-plate fill at L\* −8 relative to strata. Exclude them from the natural-cave axis-aligned measure.
+**17. Minor. Hard rock: follow the board, not the prototype.** The board's surface draws hard rock as square, cracked, darker bevelled blocks on the grid, in both formats (`images/concept-surface-props.jpg`, `concept-portrait-surface-3x.png`). The prototype rounds hard rock into boulder inclusions (`06` §2 T5), and T2 and asset 23 follow that. *Fix:* hard-rock cells keep square outlines with a 0.03-tile chamfer and cracked-plate fill at L\* −8 relative to strata. Exclude them from the natural-cave axis-aligned measure.
 
 **18. Minor. Lander scale and the wreck ribs.**
 - The board's lander is about 2.5×1.65 tiles (2.0× the rig's width). `dock-stage-0` is 375×196 px on a 96 px/tile page, or 3.9×2.0 tiles (3.4× the rig).

@@ -2,15 +2,15 @@
 
 Scope: every object on the concept board, compared with the shipped atlases, their SVG sources, the generators that write those SVGs, and the scene code that places them. Terrain, lighting and camera are covered by other reports and appear here only where they decide whether a prop can look like the concept.
 
-Work files are under `<working folder>/art-audit/work/assets/`:
+Work files from the audit session (not committed unless noted; see the [README](README.md)):
 
-- `concept-asset-inventory.png`: the concept board annotated green, amber or red for each asset.
+- [`images/concept-asset-inventory.jpg`](images/concept-asset-inventory.jpg) (committed): the concept board annotated green, amber or red for each asset.
 - `cmp-surface.png`, `cmp-cavern.png`, `cmp-rig-ore.png`: concept and game crops rescaled to one common 96 px tile.
 - `cmp-proto.png`: concept, the current game and a layered-SVG prototype I made in this audit.
 - `metrics.md`: the shading and detail measurements.
-- `game-spawn-lamp-dots.png`: the hidden surface lights.
+- [`images/game-spawn-lamp-dots.png`](images/game-spawn-lamp-dots.png) (committed): the hidden surface lights.
 
-The prototype sources are in `work/proto/`.
+The prototype sources are committed as `prototype/assets/proto-wreck.svg` and `prototype/assets/proto-beacon.svg`.
 
 ---
 
@@ -23,7 +23,7 @@ Almost everything that makes the board look rich is missing or is a placeholder:
 - **Surface:** there is no physical lander at spawn. Stage 0 is a dashed wireframe. There are no lamp posts, tripod lamps, cables, crates, tools or loose rocks.
 - **Cavern:** there is no wreck hull, beacon tripod, stalactites, rust drips, amber crystals, boulders or iron shelf.
 
-Of the 21 items marked on the board (`concept-asset-inventory.png`), 8 are comparable, 2 exist far below the concept, and 11 do not exist.
+Of the 21 items marked on the board (`images/concept-asset-inventory.jpg`), 7 are comparable, 2 exist far below the concept, and 12 are missing (the wreck is marked red: it exists only as a generic wedge).
 
 The single biggest reason is the authoring method. Every prop is a few hand-typed polygons emitted by a JavaScript generator (`create-w01-sources.mjs`, `render-sources.mjs`) with flat fills only. None of the 177 W01 or 93 W02 sprite SVGs uses a gradient, filter or opacity. One 6-primitive "wreck" polygon is reused for 6 of 8 landmark kinds, with only the stroke colour changed.
 
@@ -111,7 +111,7 @@ Atlas-level facts (`w01-atlas.json`/`.png`):
 
 ### 2.5 Prototype (`cmp-proto.png`)
 
-I wrote `work/proto/proto-wreck.svg` (480 × 176, 5 × 1.8 cells) and `proto-beacon.svg` (112 × 232) by hand in one short session. Both use only:
+I wrote `prototype/assets/proto-wreck.svg` (480 × 176, 5 × 1.8 cells) and `proto-beacon.svg` (112 × 232) by hand in one short session. Both use only:
 
 - linear gradients for cylinder shading, legs and the orange body;
 - radial gradients for the contact shadow, the open end and the light pool;
@@ -329,7 +329,7 @@ Suggested order: rows 1–10 (one 2-week sprint to fix the first screen), then 1
 - **S3:** a W01 cavern of at least 6 × 4 cells at 280–340 m containing the wreck site and the beacon, fully known and lit.
 - **S4:** the iron-shelf band.
 
-**Coverage.** Every item on the board's inventory has a shipped frame visible in S1–S4. There are 21 marked items (`concept-asset-inventory.png`); headlamp and planet are excluded as other dimensions. A script checks this from the atlas JSON and the scene's rendered image list (`render-probe.mjs` can expose frame names). The target is 0 red items and at most 2 amber.
+**Coverage.** Every item on the board's inventory has a shipped frame visible in S1–S4. There are 21 marked items (`images/concept-asset-inventory.jpg`); headlamp and planet are excluded as other dimensions. A script checks this from the atlas JSON and the scene's rendered image list (`render-probe.mjs` can expose frame names). The target is 0 red items and at most 2 amber.
 
 **Scale**, measured on the opaque bounding boxes in S1–S3, in cells:
 

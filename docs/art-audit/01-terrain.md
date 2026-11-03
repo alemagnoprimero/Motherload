@@ -1,6 +1,6 @@
 # 01 · Terrain, strata, tunnels and caves
 
-Scope: how the ground is drawn: rock, unexplored rock, dug tunnels, natural caves, back walls and the cave shapes the generator produces. Repository: `/home/user/Motherload` at `644e222` (read-only). Captures: `v2/shots/` and `v2/shots2/` in the session scratchpad. Every figure and script cited below is in `art-audit/work/terrain/`, which sits beside this report. Luma means Rec. 709 on 0–255 sRGB. "Tile-normalised" means a capture resampled to a 42 px tile, the concept's scale judged by its 47 px rig (the game rig is 1.28 tiles: 168 px on a 130.9 px tile at 1440×900 @2x).
+Scope: how the ground is drawn: rock, unexplored rock, dug tunnels, natural caves, back walls and the cave shapes the generator produces. Repository: `644e222` (read-only). Captures (`a04-dive-60m@2.png` and similar) are session captures and are not committed. Figures and scripts named below are working files from the audit session and are not committed either (see the [README](README.md)), except the boundary figure, [`images/cmp-boundary-orientation.jpg`](images/cmp-boundary-orientation.jpg). Luma means Rec. 709 on 0–255 sRGB. "Tile-normalised" means a capture resampled to a 42 px tile, the concept's scale judged by its 47 px rig (the game rig is 1.28 tiles: 168 px on a 130.9 px tile at 1440×900 @2x).
 
 ---
 
@@ -45,7 +45,7 @@ The game reads as a pale wall with a dark slot cut into it; the concept reads as
 | Dressing | Stalactites, rubble, amber crystals, rust drips | None in the terrain code (no stalactite, drip, rubble, decal or AO anywhere in `src/campaign/render/*` or `scene.ts`) |
 | Fog edge | Not shown (the board shows a composition target) | A hard staircase of light squares around a dark hole. The fog blur is about 0.35 tile (`lighting.ts:86`), but unknown is drawn lighter than known, so the eye reads light frames around dark cut-outs |
 
-`cmp-boundary-orientation.png` marks every air/rock boundary pixel: red within ±5° of horizontal or vertical, green otherwise. The game's caves are outlined almost entirely in red; its green comes from the lamp disc and sprites, which the threshold mistakes for cave edges, so the game's figures are conservative. The concept's outline is almost entirely green.
+[`images/cmp-boundary-orientation.jpg`](images/cmp-boundary-orientation.jpg) marks every air/rock boundary pixel: red within ±5° of horizontal or vertical, green otherwise. The game's caves are outlined almost entirely in red; its green comes from the lamp disc and sprites, which the threshold mistakes for cave edges, so the game's figures are conservative. The concept's outline is almost entirely green.
 
 ### 2.3 SURFACE ground: concept vs `a02-spawn-1440x900@2.png` (`cmp-surface-ground.jpg`)
 
@@ -269,8 +269,8 @@ All scripts are in `work/terrain/` and run on standard capture fixtures: `a04-di
 | D2 | Hidden-cave identity | passes | — | still passes, including for known cells adjacent to hidden air | existing improvement smoke |
 | D3 | Memory and frame time | 55.8 / 63.5 MiB desktop | — | within T12 budgets after R4 | `npm run test:render:memory` |
 
-**Review gate.** Regenerate `cmp-concept-vs-game.jpg`, which places each concept panel beside the matching capture at equal tile scale, together with `cmp-boundary-orientation.png` and `cmp-values.png`. The owner then scores each panel pair 1–5 on four questions: "same rock", "same tunnel edge", "same cave shape", "same darkness order". Pass when every pair scores ≥ 4 and all A–D gates pass on W01 bands A–B. Then repeat for C–D and W02.
+**Review gate.** Regenerate `cmp-concept-vs-game.jpg`, which places each concept panel beside the matching capture at equal tile scale, together with `images/cmp-boundary-orientation.jpg` and `cmp-values.png`. The owner then scores each panel pair 1–5 on four questions: "same rock", "same tunnel edge", "same cave shape", "same darkness order". Pass when every pair scores ≥ 4 and all A–D gates pass on W01 bands A–B. Then repeat for C–D and W02.
 
 ---
 
-Artefacts in `work/terrain/`: the comparison sheets (`cmp-*.jpg/png`), the prototype (`proto-before-after.png`, `proto.py`), the page sheets (`band-pages-w01.png`, `band-page-grid-overlay.png`), the cave geometry (`w01-tilemap.png`), the verified sample rectangles (`regions-*.jpg`, `regions.json`) and the metric scripts with their JSON output (`values`, `boundary`, `gridlock`, `edges`, `sbs`).
+Working files in `work/terrain/` (not committed): the comparison sheets (`cmp-*.jpg/png`), the prototype (`proto-before-after.png`, `proto.py`), the page sheets (`band-pages-w01.png`, `band-page-grid-overlay.png`), the cave geometry (`w01-tilemap.png`), the verified sample rectangles (`regions-*.jpg`, `regions.json`) and the metric scripts with their JSON output (`values`, `boundary`, `gridlock`, `edges`, `sbs`).

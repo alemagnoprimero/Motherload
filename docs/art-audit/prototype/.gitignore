@@ -1,0 +1,10 @@
+# Outputs that render.mjs and compare.py regenerate (about 95 MB). Only metrics.txt,
+# metrics.json and hidden-info-test.txt in out/ are committed.
+out/*.png
+out/*.jpg
+out/render-report.json
+out/swiftshader-baseline.json
+# The portrait cavern capture that compare.py reads (session capture, not committed).
+game/
+# Older instructions copied the game atlas here; render.mjs now reads it from assets/.
+assets/w01-atlas-3x-0.*

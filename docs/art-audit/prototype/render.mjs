@@ -1,6 +1,6 @@
 // Render the technique prototype with headless Chromium.
 // Usage: node render.mjs [jobs=all|name,name] [perf=N]
-// Serves this folder on a free local port; never touches the game repository.
+// Serves this folder on a free local port (plus the game's W01 atlas, read-only); writes only into out/.
 import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { extname, join } from 'node:path';
@@ -16,7 +16,11 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'applic
 const server = createServer(async (req, res) => {
   try {
     const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
-    const body = await readFile(join(HERE, path === '/' ? 'index.html' : path));
+    // The game atlas is read from the repository's generated assets, so nothing is copied here.
+    const file = /^\/assets\/w01-atlas-3x-0\.(json|png)$/.test(path)
+      ? join(HERE, '../../../assets/campaign/generated', path.slice('/assets/'.length))
+      : join(HERE, path === '/' ? 'index.html' : path);
+    const body = await readFile(file);
     res.writeHead(200, { 'content-type': types[extname(path)] || 'application/octet-stream' }); res.end(body);
   } catch { res.writeHead(404); res.end(); }
 });

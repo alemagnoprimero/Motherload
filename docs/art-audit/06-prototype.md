@@ -4,30 +4,30 @@
 
 - **Value hierarchy.** In the 60 m shaft, unexplored rock lands at luma 52.8 (sd 12.0). The concept has 57 (sd 10.6); the game has 84–89 (sd 1.5–1.7).
 - **Organic, bevelled cave edges.** 25.9 % of the cave boundary is axis-aligned. The concept has 17.9 %; the game's c-site-4 has 64.9 %. Visual air differs from collision air on 1.8 % of the frame.
-- **Warm headlamp.** At 0.35 tile in front of the lamp, the beam is L\* 83.5 with b\* +17.6. The game's cone adds +7.8 L\* and is cool (b\* −4.8).
+- **Warm headlamp.** In the cavern, at 0.35 tile in front of the lamp, the beam is L\* 83.5 with b\* +17.6. The game's cone adds +7.8 L\* and is cool (b\* −4.8).
 
 Edge density in the shaft is 0.085 (concept 0.077, game 0.028). The single change that moves the picture most is drawing unexplored rock as dark, position-only strata instead of a flat light fog.
 
 What does **not** close is mostly authored art: the lander, lamp posts, wreck, beacon, crystals and rust paint, plus the camera framing. It also shows in the measured gaps. Highlight range is p98 L\* 41–46 against 56–65, and warm-accent share is 0.17–0.62 % against 0.63–3.86 %. The cave back wall is too smooth: 67 % of the cavern frame sits within 10 levels of one value, against a gate of ≤ 25 %. Every decoration in these renders is prototype art drawn in code. It shows placement and lighting technique, not production quality.
 
-Main sheet: `<working folder>/art-audit/prototype/out/compare.png` (JPEG copy: `compare.jpg` in the same folder).
+Main sheet: [`images/compare.jpg`](images/compare.jpg), a reduced copy of `out/compare.png`, which `compare.py` regenerates.
 
 ---
 
 ## 1. What was built
 
-| File (all under `<working folder>/art-audit/prototype/`) | Role |
+| File (under `docs/art-audit/prototype/`; outputs marked † are regenerated and not committed) | Role |
 |---|---|
 | `index.html`, `proto.js` (922 lines, Canvas 2D) | The renderer. URL parameters: `scene=surface\|shaft\|cavern`, `vw`, `vh`, `dpr`, `camera=game\|frame`, `tilecss`, `ls` (light-map scale), `perf=N`, `debug=regions\|air\|albedo\|light`, `scramble=1`. |
-| `render.mjs` | Starts a static server on a free port and drives headless Chromium (`/opt/pw-browsers/chromium`, SwiftShader). Exports exact canvas pixels via `toDataURL`. Writes `out/render-report.json`. |
-| `metrics.py` | Metrics from the earlier audits: L\*, mode share, edge density and warm share from `work/lighting/stats.py`; axis-aligned share from `work/terrain/boundary.py`; `mean_grad` and flat share from `work/terrain/gridlock.py`. Adds a wall-profile probe and a headlamp-axis probe. Writes `out/metrics.json` and `out/metrics.txt`. |
-| `compare.py` | Builds `out/compare.png`: concept crop, then game capture, then prototype, for each situation (desktop, then portrait), plus a framing row. |
-| `game/capture-portrait-cavern.mjs`, `game/p-portrait-cavern-site4@3.png` | The one game capture that was missing: portrait 393x851@3 at W01-SITE-4. It uses the same fixture as `c-site-W01-SITE-4` and was captured on a private dev server (port 5247), stopped afterwards. |
-| `assets/` | Copies only: `fresh-w01.json`, the game's `w01-atlas-3x-0.png/.json`, and `proto-wreck.svg`/`proto-beacon.svg` from the asset audit (`work/proto/`, labelled "not game art"). Nothing in the repository was modified. |
+| `render.mjs` | Starts a static server on a free port and drives headless Chromium (`/opt/pw-browsers/chromium`, SwiftShader). Exports exact canvas pixels via `toDataURL`. Writes `out/render-report.json` †. It reads the game atlas from `assets/campaign/generated/`. |
+| `metrics.py` | Metrics from the earlier audits, with the same definitions as their working scripts (not committed): L\*, mode share, edge density and warm share from `work/lighting/stats.py`; axis-aligned share from `work/terrain/boundary.py`; `mean_grad` and flat share from `work/terrain/gridlock.py`. Adds a wall-profile probe and a headlamp-axis probe. Writes `out/metrics.json` and `out/metrics.txt`. |
+| `compare.py` | Builds `out/compare.png` †: concept crop, then game capture, then prototype, for each situation (desktop, then portrait), plus a framing row. |
+| `game/capture-portrait-cavern.mjs`, `game/p-portrait-cavern-site4@3.png` † | Not committed. The one game capture that was missing: portrait 393x851@3 at W01-SITE-4. It uses the same fixture as `c-site-W01-SITE-4` and was captured on a private dev server (port 5247), stopped afterwards. |
+| `assets/` | `fresh-w01.json`, and `proto-wreck.svg`/`proto-beacon.svg` from the asset audit (labelled "not game art"). The game's `w01-atlas-3x-0.png/.json` is served from `assets/campaign/generated/` by `render.mjs`. Nothing in the game was modified. |
 
-**Outputs** (`out/`):
-- Main renders: `proto-{surface,shaft,cavern}-1440x900@2.png` and `proto-{surface,shaft,cavern}-393x851@2.png`.
-- Framing variants: `proto-cavern-gamecam-1440x900@2.png` (the game's camera rule), and `proto-shaft-conceptzoom-1440x900@2.png` and `proto-cavern-conceptzoom-1440x900@2.png` (tile 90 CSS px, about the concept's 16 tiles across).
+**Outputs** (`out/`; only `metrics.txt`, `metrics.json` and `hidden-info-test.txt` are committed):
+- Main renders: `proto-{surface,shaft,cavern}-1440x900@2.png` and `proto-{surface,shaft,cavern}-393x851@2.png`. The desktop surface is committed at half size as `prototype/proto-surface.jpg`.
+- Framing variants: `proto-cavern-gamecam-1440x900@2.png` (the game's camera rule), and `proto-shaft-conceptzoom-1440x900@2.png` and `proto-cavern-conceptzoom-1440x900@2.png` (tile 90 CSS px, about the concept's 16 tiles across; committed at half size as `prototype/proto-shaft-conceptzoom.jpg` and `prototype/proto-cavern-conceptzoom.jpg`).
 - Debug layers: `debug-{regions,air,albedo,light}-*.png`.
 - Hidden-information test: `test-scrambled-{shaft,cavern}-1440x900.png` and `hidden-info-test.txt`.
 - Measurements: `swiftshader-baseline.json`, `metrics.json`, `render-report.json`.
@@ -81,7 +81,7 @@ Region and structure measurements:
 | Wall profile, rock → lip → undercut → air (luma) | 90 → 177 → 35 → 50 | 111 → 138 → 50 | **62–80 → 226 → 36 → 50** (shaft, row 4.5) | lip ≥ +55, undercut ≤ −8 ✔ |
 | Tile-normalised mean gradient (`gridlock.py`) | 3.5–3.75 | 0.93 | shaft **2.47**, cavern **2.27** | ≥ 2.5 ✘ (just under) |
 | Playfield within 10 luma of one value | — | a04 86.4 %, c-site-4 61.4 % | shaft **48.8 %**, cavern **67.3 %** | ≤ 25 % ✘ |
-| Headlamp axis at 0.35 / 0.8 / 1.5 tile | core L\* 72–75, b\* +12, gone by ~1.8 tiles | +7.8 L\*, b\* −4.8 | **83.5/+17.6, 73.7/+14.8, 45.4/+14.7** | core ≥ 70, b\* +10…+25 ✔ |
+| Headlamp axis at 0.35 / 0.8 / 1.5 tile | core L\* 75, b\* +26 at the lamp, gone by ~1.8 tiles | +7.8 L\*, b\* −4.8 | **83.5/+17.6, 73.7/+14.8, 45.4/+14.7** | core ≥ 70, b\* +15…+30 ✔ |
 | Hidden-cave identity | — | passes | **0 px changed under scramble** | must pass ✔ |
 
 Phone renders (`proto-*-393x851@2.png`): L\* 24.5 / 23.1 / 20.1, edge density 0.025 / 0.057 / 0.057, cavern p2–p98 47.4. The surface edge density is low because at tile 38.7 most of a 9:19 frame is sky.
@@ -90,7 +90,7 @@ Phone renders (`proto-*-393x851@2.png`): L\* 24.5 / 23.1 / 20.1, edge density 0.
 
 | Element | Result | Why (technique or art) |
 |---|---|---|
-| Unexplored rock and the value ladder | **Close.** Dark textured strata everywhere, lighter where discovered, the warm lamp brightest. Matches the concept's shaft panel (`compare.png`, row 2). | Technique only (T1, T4, T7). In the game this is lighting.ts:72-77 plus terrain.ts:177-181/209-210. |
+| Unexplored rock and the value ladder | **Close.** Dark textured strata everywhere, lighter where discovered, the warm lamp brightest. Matches the concept's shaft panel (`images/compare.jpg`, row 2). | Technique only (T1, T4, T7). In the game this is lighting.ts:72-77 plus terrain.ts:177-181/209-210. |
 | Continuous strata | **Close in shaft and surface.** Courses run across cells and bands change along a wobbling line. Mean gradient 2.47 against 3.5–3.75. | Technique. The rest of the gap is painted detail (speckle, chips, painted bevels) on the concept's plates. |
 | Shaft walls | **Close.** Crisp near-white lip, dark undercut, lit band beside the shaft. | Technique (T2, T3, T7). The concept's 2.3-rig-wide shaft is a game-design difference: the game digs 1-tile shafts. |
 | Cave silhouette | **Close in shape language**: arched, lumpy, chamfered, with stalactites, rust seams and silhouettes behind. **Not** the concept's single grand arch. | The W01 gallery is a tall chamber with ledges, a 1-cell pillar under the rig and one-cell pockets. That is generator geometry (terrain audit R7), not rendering. |
@@ -103,7 +103,7 @@ Phone renders (`proto-*-393x851@2.png`): L\* 24.5 / 23.1 / 20.1, edge density 0.
 | Wreck and beacon | **Grounded and lit**, but placeholder. | Art. They are the asset audit's layered-SVG prototypes; production props need about 2–2.5 weeks (asset audit R3). |
 | Framing | **Not the concept's.** The game shows about 22 tiles across on desktop and 8.9 on phone; the concept shows about 16 and 6. | Camera. The concept-zoom variants (`proto-*-conceptzoom-*`) look much closer with the same renderer. This is an owner decision (tech audit R10). |
 
-Overall, looking at `compare.png`: shaft and cavern move from "debug view" to "same family as the concept". The surface moves less, because its gap is mostly props.
+Overall, looking at `images/compare.jpg`: shaft and cavern move from "debug view" to "same family as the concept". The surface moves less, because its gap is mostly props.
 
 ## 5. Frame time (1440x900 at DPR 2, 40 frames, this 4-CPU container, SwiftShader)
 
@@ -147,9 +147,12 @@ Estimates are for one engineer who knows the code, and exclude art.
 
 ## 8. Reproduce
 
+From the repository root, after `npm ci`:
+
 ```
-cd <working folder>/art-audit/prototype
-node render.mjs perf=40        # all renders, debug layers, scramble test, frame-time probe
-python3 metrics.py > out/metrics.txt
-python3 compare.py             # out/compare.png and out/compare.jpg
+node docs/art-audit/prototype/render.mjs perf=40      # all renders, debug layers, scramble test, frame-time probe
+CAPTURES=<folder with shots/ and shots2/> python3 docs/art-audit/prototype/metrics.py > docs/art-audit/prototype/out/metrics.txt
+CAPTURES=<folder with shots/ and shots2/> python3 docs/art-audit/prototype/compare.py   # out/compare.png and out/compare.jpg
 ```
+
+The captures and `game/p-portrait-cavern-site4@3.png` are not committed, so `metrics.py` and `compare.py` run only where they exist. `render.mjs` needs only the repository.

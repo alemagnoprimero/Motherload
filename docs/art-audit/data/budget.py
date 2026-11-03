@@ -20,7 +20,7 @@ surface = {
 cave = {
  'strips: bands B,C,D x 2 @2x density': mib(1024,384,6),
  'shelf: one page + 3 crack decals': mib(1152,1152,1) + mib(288,288,3),
- 'wreck back/front/rust x 2 states + ribs': mib(720,246,4) + mib(288,348,1),
+ 'wreck back/front/rust x 2 states + ribs (asset 14, 7x2 cells)': mib(1008,288,4) + mib(288,348,1),
  'beacon 3 states + 8 pulse + wall variant': mib(168,348,12),
  'dressing 16-20': mib(144,144,6)+mib(288,174,3)+mib(144,144,4)+mib(48,96,6)+mib(144,96,6)+mib(432,216,3)+mib(174,174,6),
  'inclusions, sockets, ore+package+HC': mib(159,159,12)+mib(144,144,8)+mib(144,144,24),

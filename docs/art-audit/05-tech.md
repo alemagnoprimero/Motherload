@@ -1,11 +1,11 @@
 # 05 · Rendering architecture, resolution and technical quality
 
-Dimension key: `tech`. Repository: `/home/user/Motherload` at `644e222` (read-only). Captures: `scratchpad/v2/shots/` and `scratchpad/v2/shots2/`. My own probes, figures and scripts are in `scratchpad/art-audit/work/tech/` (abbreviated `work/` below):
+Dimension key: `tech`. Repository: `644e222` (read-only). Captures are session captures and are not committed. My probes, figures and scripts, named `work/…` below, are working files from the audit session and are not committed either (see the [README](README.md)), except the exploded-layer figure, [`images/tech-exploded-60m.jpg`](images/tech-exploded-60m.jpg):
 
 - `tech-probe.mjs` drives the game in Chromium, patching the served `scene.ts` in flight to expose the scene and hooking `texImage2D`. It reads the display list, texture sizes and upload traffic. `PIN_DPR=1` disables the adaptive-resolution sampler.
 - `probe/` holds the as-shipped behaviour and `probe-dpr2/` the run with DPR pinned. Each has `probe.json` plus Phaser `renderer.snapshot()` frames without the DOM HUD.
 - `hf.py` measures effective resolution; `edges.py` and `edge-stats.json` hold edge density at a common tile scale.
-- Figures: `tech-exploded-60m.png`, `tech-resolution-rig.png`, `tech-pattern-seams.png`, `tech-side-by-side.jpg`.
+- Figures: `images/tech-exploded-60m.jpg`, `tech-resolution-rig.png`, `tech-pattern-seams.png`, `tech-side-by-side.jpg`.
 
 Value, shape and asset content are in the sibling reports `01-terrain.md`, `02-lighting.md` and `03-assets.md`. This report asks whether the renderer can produce the concept, at what resolution and cost.
 
@@ -20,7 +20,7 @@ Every terrain, fog and light pixel is drawn on the CPU with Canvas 2D into two `
 The consequences are measurable:
 
 - Every visible object in the frame uses blend mode NORMAL. There is no additive light, multiply or emissive layer (`probe/` and `probe-dpr2/probe.json`: 61–65 visible objects, all `blend0`).
-- The "light" is an alpha-only darkening layer. Its maximum darkness over unexplored rock is 0.16, so it changes the frame by about 16 luma (`work/tech-exploded-60m.png`, panel C).
+- The "light" is an alpha-only darkening layer. Its maximum darkness over unexplored rock is 0.16, so it changes the frame by about 16 luma (`images/tech-exploded-60m.jpg`, panel C).
 - Terrain boundaries are clipped per square cell (`terrain.ts:162-164`). Rims are 2 px straight strokes (`terrain.ts:248-277`).
 - The terrain buffer at DPR 2 is a single 2744×1862 texture, 19.5 MiB. That is 38 % of all resident texture memory. Moving or digging re-uploads it whole, at an average of 1.9 MiB per frame with 19.5 MiB spikes.
 - Expensive frames trip the adaptive resolution budget, which only ever ratchets down (`view.ts:103-121`). Here the trigger was software GL; on phones it is the recorded 54.9 ms moving p95, to which these uploads contribute. In the audit captures the world was drawn at backing scale 1.0 on a DPR 2 display and 1.5 on a DPR 3 phone. The sharp DOM HUD then sits over a world upscaled 2×.
@@ -61,7 +61,7 @@ The measured state of this frame:
 - **Blend modes:** none other than NORMAL.
 - **Fog:** part of the light map, drawn per cell at ¼ resolution then blurred on the CPU.
 
-`work/tech-exploded-60m.png` shows the frame taken apart:
+`images/tech-exploded-60m.jpg` shows the frame taken apart:
 
 - **A:** the final frame.
 - **B:** the terrain texture alone. It is almost identical to A.
@@ -72,7 +72,7 @@ The lighting system is effectively a 16 % grey veil.
 
 ### 2.2 SURFACE panel vs `a02-spawn-1440x900@2.png`
 
-See the top row of `work/tech-side-by-side.jpg`. The concept stacks a sky gradient, stars and a ringed planet, then two or three faceted, snow-lit ranges rising about 35 % of the sky. Below them sit a bevelled crust with pits, glowing lamp posts with halos, cables, crates and a detailed lander.
+See the top row of `work/tech-side-by-side.jpg`. The concept stacks a sky gradient, stars and a banded planet, then two or three faceted, snow-lit ranges rising about 35 % of the sky. Below them sit a bevelled crust with pits, glowing lamp posts with halos, cables, crates and a detailed lander.
 
 The game has the same layer *count* behind the ground (gradient, stars, body, two ridges), so parallax is not an architectural gap. The gap is what fills the layers:
 
@@ -144,7 +144,7 @@ Further scaling artefacts:
 - **Band pages always load at 2×** (`art.ts:130`), even though 3× pages exist in `bands/manifest.json`.
 - **The phone backing scale is capped at 2** (`view.ts:35`), a 1.5× compositor upscale even in the best case; acceptable for this style, unlike the ratchet.
 - **Stars are magnified:** the star texture is drawn at tileScale 2 (`scene.ts:1139`), so stars are 4× device-magnified dots at DPR 2.
-- **Sprite placement is good:** sprites snap to device pixels (`scene.ts:614-625`); the softness comes from scale, not sampling.
+- **Sprite placement is good:** sprites snap to device pixels (`scene.ts:595-607`); the softness comes from scale, not sampling.
 
 ### 2.6 Detail density at a common tile scale
 
@@ -315,7 +315,7 @@ Land this first, or every art review judges 2×-upscaled pixels.
 
 **R9 · Background and surface emissives · S code + M art · impact medium · risk low.**
 
-- Add 3–4 ridge `TileSprite`s with facets rising to about 35 % of the sky, and a ringed sky body.
+- Add 3–4 ridge `TileSprite`s with facets rising to about 35 % of the sky, and a banded sky body.
 - Use stars at tileScale 1 from a 2× source (`scene.ts:1139`).
 - Give lamps ADD halos (R3).
 
@@ -372,7 +372,7 @@ All metrics run in the R11 harness on six fixtures that match the concept panels
 | T5 | Resident textures, desktop W02 / phone active | 63.52 MiB (recorded) / 24.5 MiB | ≤56 MiB (8 MiB headroom) / ≤36 MiB, *after* the concept art lands |
 | T6 | Draw calls, desktop / phone | 7 / 4 | ≤12 / ≤10 |
 | T7 | p95 frame time, 4× throttle, phone viewport moving | 54.9 ms | ≤16.7 ms (12 ms stretch); physical device ≤16.7 ms |
-| T8 | Objects with ADD blend in an underground frame | 0 | ≥1 light buffer plus emissives; warm cone core b\* ≥ +8 (`02-lighting.md`: concept +12, game −4.8) |
+| T8 | Objects with ADD blend in an underground frame | 0 | ≥1 light buffer plus emissives; warm cone core b\* ≥ +8 (`02-lighting.md`: concept +26 at the lamp, +12 averaged over the cone; game −4.8) |
 | T9 | Strong-edge share (Sobel >20 at a 43 px tile, HUD masked) | 0.021–0.036 | 0.045–0.075 (concept 0.051–0.065) |
 | T10 | Luma p98 underground at a 43 px tile | 94–127 | ≥130 (concept 131–147) |
 | T11 | Axis-aligned share of the cave and tunnel boundary (`01-terrain.md` method) | 65–82 % | ≤35 % (concept 18–23 %) |
