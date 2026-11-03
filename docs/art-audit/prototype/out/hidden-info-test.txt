@@ -1,0 +1,2 @@
+shaft differing pixels 0 max diff 0
+cavern differing pixels 0 max diff 0

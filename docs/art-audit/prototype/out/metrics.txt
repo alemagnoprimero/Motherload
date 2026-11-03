@@ -1,0 +1,78 @@
+         set         L*    sd    p2   p98   rng  mode3  warm%  cyan%   edge
+surface  concept   26.0  11.0  12.6  64.9  52.4  0.352   2.46   0.10  0.087
+surface  game      30.3   8.7  14.3  50.7  36.4  0.247   0.25   4.21  0.031
+surface  proto     24.6   8.5  14.1  46.0  31.9  0.295   0.62   0.08  0.048
+shaft    concept   25.9  10.9  11.0  60.9  49.9  0.364   0.63   0.02  0.077
+shaft    game      38.1   5.3  21.6  48.2  26.6  0.824   0.23   0.01  0.028
+shaft    proto     22.8   7.4   8.6  41.1  32.5  0.405   0.17   0.02  0.085
+cavern   concept   21.0  11.6   8.7  56.4  47.7  0.334   3.86   0.18  0.113
+cavern   game      28.2  11.3   8.9  38.9  30.0  0.575   1.26   0.01  0.025
+cavern   proto     19.8   8.8   3.2  42.9  39.8  0.487   0.62   0.96  0.076
+{
+"surface": {
+"unknown_solid": {
+"luma_mean": 60.6,
+"luma_sd": 16.0,
+"share": 0.189
+},
+"known_solid": {
+"luma_mean": 92.5,
+"luma_sd": 30.8,
+"share": 0.023
+},
+"known_air": {
+"luma_mean": 56.9,
+"luma_sd": 30.9,
+"share": 0.0
+},
+"sky": {
+"luma_mean": 56.3,
+"luma_sd": 19.3,
+"share": 0.78
+}
+},
+"shaft": {
+"unknown_solid": {
+"luma_mean": 52.8,
+"luma_sd": 12.0,
+"share": 0.867
+},
+"known_solid": {
+"luma_mean": 84.8,
+"luma_sd": 33.1,
+"share": 0.063
+},
+"known_air": {
+"luma_mean": 46.6,
+"luma_sd": 34.9,
+"share": 0.021
+},
+"sky": {
+"luma_mean": 48.1,
+"luma_sd": 7.5,
+"share": 0.042
+}
+},
+"cavern": {
+"unknown_solid": {
+"luma_mean": 46.8,
+"luma_sd": 8.6,
+"share": 0.564
+},
+"known_solid": {
+"luma_mean": 62.9,
+"luma_sd": 27.4,
+"share": 0.093
+},
+"known_air": {
+"luma_mean": 46.2,
+"luma_sd": 28.1,
+"share": 0.335
+}
+}
+}
+boundary axis-aligned share {'shaft': 0.694, 'cavern': 0.259}
+phone {"surface": {"L_mean": 24.5, "L_sd": 7.9, "L_p2": 14.2, "L_p98": 42.7, "L_range_p2_p98": 28.5, "within3_of_mode": 0.318, "warm_pct": 0.57, "cyan_pct": 0.01, "edge_density": 0.025}, "shaft": {"L_mean": 23.1, "L_sd": 8.5, "L_p2": 8.7, "L_p98": 45.2, "L_range_p2_p98": 36.5, "within3_of_mode": 0.355, "warm_pct": 0.45, "cyan_pct": 0.04, "edge_density": 0.057}, "cavern": {"L_mean": 20.1, "L_sd": 10.8, "L_p2": 2.6, "L_p98": 50.0, "L_range_p2_p98": 47.4, "within3_of_mode": 0.409, "warm_pct": 0.97, "cyan_pct": 1.68, "edge_density": 0.057}}
+gates {'shaft': {'game': (0.93, 0.864), 'proto': (2.47, 0.488)}, 'cavern': {'game': (0.93, 0.614), 'proto': (2.27, 0.673)}}
+profile {'row2.5': {'rock_-0.4tile': 104.0, 'lip_peak': 153.0, 'undercut_min': 18.0, 'air_+0.2tile': 34.0}, 'row4.5': {'rock_-0.4tile': 62.0, 'lip_peak': 226.0, 'undercut_min': 36.0, 'air_+0.2tile': 50.0}}
+headlamp {'0.35tile': {'L': 83.5, 'b': 17.6}, '0.8tile': {'L': 73.7, 'b': 14.8}, '1.5tile': {'L': 45.4, 'b': 14.7}}

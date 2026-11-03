@@ -1,0 +1,7 @@
+untrimmed @3x: {'lander 1-4': 7.8, 'ridges 12': 10.1, 'strips 21+30 (8 strips)': 27.0, 'shelf 38 (3 pages)': 15.2, 'materials 22+29 (4 bands x 2 x 3 var)': 121.5} sum 181.6
+surface zone {'lander: one stage + dish + trimmed emissive': 2.14, 'surface kit 5-11': 1.93, 'ridges: near @3x, far+mid @2x': 6.38} sum 10.4
+cave zone {'strips: bands B,C,D x 2 @2x density': 9.0, 'shelf: one page + 3 crack decals': 6.01, 'wreck back/front/rust x 2 states + ribs (asset 14, 7x2 cells)': 4.81, 'beacon 3 states + 8 pulse + wall variant': 2.68, 'dressing 16-20': 3.55, 'inclusions, sockets, ore+package+HC': 3.69} sum 29.7
+field texture W01 640x960 2.34 W02 768x1600 4.69
+quarter-res light 720x450 1.24 ; full-frame target 2880x1800 19.8
+desktop W01 cave zone, High tier: 53.1 ; keeping band pages: 73.1
+phone W01 cave zone, High: 35.8 ; Medium without compression: 40.8

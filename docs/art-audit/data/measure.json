@@ -1,0 +1,114 @@
+{
+  "panel_box": {
+    "desktop": [
+      225,
+      141,
+      918,
+      499
+    ],
+    "portrait": [
+      935,
+      141,
+      1181,
+      499
+    ]
+  },
+  "panel_aspect": {
+    "desktop": 1.94,
+    "portrait": 0.69,
+    "1440x900": 1.6,
+    "16:9": 1.78,
+    "393x851": 0.46
+  },
+  "unknown_luma": {
+    "a04_left": {
+      "mean": 88.5,
+      "sd": 1.5
+    },
+    "a04_right": {
+      "mean": 88.4,
+      "sd": 1.6
+    },
+    "b550_left": {
+      "mean": 84.1,
+      "sd": 1.4
+    },
+    "concept_shaft_left": {
+      "mean": 57.3,
+      "sd": 10.1
+    },
+    "concept_shaft_right": {
+      "mean": 58.9,
+      "sd": 11.3
+    }
+  },
+  "a04_rig_saturated_span_px": 112,
+  "a04_tile_px": 130.9,
+  "frames": {
+    "rig-body-0": {
+      "trimmed_w": 92,
+      "trimmed_h": 43,
+      "canvas": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "rig-drill-right-0": {
+      "trimmed_w": 39,
+      "trimmed_h": 30,
+      "canvas": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "dock-stage-0": {
+      "trimmed_w": 375,
+      "trimmed_h": 196,
+      "canvas": {
+        "w": 384,
+        "h": 288
+      }
+    },
+    "site-wreck": {
+      "trimmed_w": 173,
+      "trimmed_h": 63,
+      "canvas": {
+        "w": 192,
+        "h": 128
+      }
+    }
+  },
+  "proto_cavern_region_luma": {
+    "0": 46.7,
+    "85": 62.9,
+    "170": 46.2
+  },
+  "concept_cavern_luma": {
+    "ceiling_rock": {
+      "mean": 56.5,
+      "sd": 22.5
+    },
+    "floor_rock": {
+      "mean": 52.2,
+      "sd": 23.2
+    },
+    "back_wall": {
+      "mean": 33.9,
+      "sd": 5.2
+    }
+  },
+  "dark_share_lt40": {
+    "proto_shaft": 0.108,
+    "proto_cavern": 0.214,
+    "concept_shaft": 0.093,
+    "concept_cavern": 0.43,
+    "game_a04": 0.053
+  },
+  "asset_table_decoded_MiB_at_3x": {
+    "lander 1-4": 7.6,
+    "ridges 12": 10.1,
+    "strips 21+30": 27.0,
+    "material pages 22+29 (4 bands x soil,rock x 3 variants)": 121.5,
+    "iron shelf 38": 15.2
+  }
+}

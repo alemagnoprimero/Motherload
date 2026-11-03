@@ -1,0 +1,901 @@
+{
+ "concept": {
+  "surface": {
+   "L_mean": 26.0,
+   "L_sd": 11.0,
+   "L_p2": 12.6,
+   "L_p98": 64.9,
+   "L_range_p2_p98": 52.4,
+   "within3_of_mode": 0.352,
+   "warm_pct": 2.46,
+   "cyan_pct": 0.1,
+   "edge_density": 0.087
+  },
+  "shaft": {
+   "L_mean": 25.9,
+   "L_sd": 10.9,
+   "L_p2": 11.0,
+   "L_p98": 60.9,
+   "L_range_p2_p98": 49.9,
+   "within3_of_mode": 0.364,
+   "warm_pct": 0.63,
+   "cyan_pct": 0.02,
+   "edge_density": 0.077
+  },
+  "cavern": {
+   "L_mean": 21.0,
+   "L_sd": 11.6,
+   "L_p2": 8.7,
+   "L_p98": 56.4,
+   "L_range_p2_p98": 47.7,
+   "within3_of_mode": 0.334,
+   "warm_pct": 3.86,
+   "cyan_pct": 0.18,
+   "edge_density": 0.113
+  }
+ },
+ "game": {
+  "surface": {
+   "file": "a02-spawn-1440x900@2.png",
+   "L_mean": 30.3,
+   "L_sd": 8.7,
+   "L_p2": 14.3,
+   "L_p98": 50.7,
+   "L_range_p2_p98": 36.4,
+   "within3_of_mode": 0.247,
+   "warm_pct": 0.25,
+   "cyan_pct": 4.21,
+   "edge_density": 0.031
+  },
+  "shaft": {
+   "file": "a04-dive-60m@2.png",
+   "L_mean": 38.1,
+   "L_sd": 5.3,
+   "L_p2": 21.6,
+   "L_p98": 48.2,
+   "L_range_p2_p98": 26.6,
+   "within3_of_mode": 0.824,
+   "warm_pct": 0.23,
+   "cyan_pct": 0.01,
+   "edge_density": 0.028
+  },
+  "cavern": {
+   "file": "c-site-W01-SITE-4-wreck@2.png",
+   "L_mean": 28.2,
+   "L_sd": 11.3,
+   "L_p2": 8.9,
+   "L_p98": 38.9,
+   "L_range_p2_p98": 30.0,
+   "within3_of_mode": 0.575,
+   "warm_pct": 1.26,
+   "cyan_pct": 0.01,
+   "edge_density": 0.025
+  }
+ },
+ "proto": {
+  "surface": {
+   "L_mean": 24.6,
+   "L_sd": 8.5,
+   "L_p2": 14.1,
+   "L_p98": 46.0,
+   "L_range_p2_p98": 31.9,
+   "within3_of_mode": 0.295,
+   "warm_pct": 0.62,
+   "cyan_pct": 0.08,
+   "edge_density": 0.048
+  },
+  "shaft": {
+   "L_mean": 22.8,
+   "L_sd": 7.4,
+   "L_p2": 8.6,
+   "L_p98": 41.1,
+   "L_range_p2_p98": 32.5,
+   "within3_of_mode": 0.405,
+   "warm_pct": 0.17,
+   "cyan_pct": 0.02,
+   "edge_density": 0.085
+  },
+  "cavern": {
+   "L_mean": 19.8,
+   "L_sd": 8.8,
+   "L_p2": 3.2,
+   "L_p98": 42.9,
+   "L_range_p2_p98": 39.8,
+   "within3_of_mode": 0.487,
+   "warm_pct": 0.62,
+   "cyan_pct": 0.96,
+   "edge_density": 0.076
+  }
+ },
+ "proto_regions": {
+  "surface": {
+   "unknown_solid": {
+    "luma_mean": 60.6,
+    "luma_sd": 16.0,
+    "share": 0.189
+   },
+   "known_solid": {
+    "luma_mean": 92.5,
+    "luma_sd": 30.8,
+    "share": 0.023
+   },
+   "known_air": {
+    "luma_mean": 56.9,
+    "luma_sd": 30.9,
+    "share": 0.0
+   },
+   "sky": {
+    "luma_mean": 56.3,
+    "luma_sd": 19.3,
+    "share": 0.78
+   }
+  },
+  "shaft": {
+   "unknown_solid": {
+    "luma_mean": 52.8,
+    "luma_sd": 12.0,
+    "share": 0.867
+   },
+   "known_solid": {
+    "luma_mean": 84.8,
+    "luma_sd": 33.1,
+    "share": 0.063
+   },
+   "known_air": {
+    "luma_mean": 46.6,
+    "luma_sd": 34.9,
+    "share": 0.021
+   },
+   "sky": {
+    "luma_mean": 48.1,
+    "luma_sd": 7.5,
+    "share": 0.042
+   }
+  },
+  "cavern": {
+   "unknown_solid": {
+    "luma_mean": 46.8,
+    "luma_sd": 8.6,
+    "share": 0.564
+   },
+   "known_solid": {
+    "luma_mean": 62.9,
+    "luma_sd": 27.4,
+    "share": 0.093
+   },
+   "known_air": {
+    "luma_mean": 46.2,
+    "luma_sd": 28.1,
+    "share": 0.335
+   }
+  }
+ },
+ "proto_boundary": {
+  "shaft": 0.694,
+  "cavern": 0.259
+ },
+ "proto_phone": {
+  "surface": {
+   "L_mean": 24.5,
+   "L_sd": 7.9,
+   "L_p2": 14.2,
+   "L_p98": 42.7,
+   "L_range_p2_p98": 28.5,
+   "within3_of_mode": 0.318,
+   "warm_pct": 0.57,
+   "cyan_pct": 0.01,
+   "edge_density": 0.025
+  },
+  "shaft": {
+   "L_mean": 23.1,
+   "L_sd": 8.5,
+   "L_p2": 8.7,
+   "L_p98": 45.2,
+   "L_range_p2_p98": 36.5,
+   "within3_of_mode": 0.355,
+   "warm_pct": 0.45,
+   "cyan_pct": 0.04,
+   "edge_density": 0.057
+  },
+  "cavern": {
+   "L_mean": 20.1,
+   "L_sd": 10.8,
+   "L_p2": 2.6,
+   "L_p98": 50.0,
+   "L_range_p2_p98": 47.4,
+   "within3_of_mode": 0.409,
+   "warm_pct": 0.97,
+   "cyan_pct": 1.68,
+   "edge_density": 0.057
+  }
+ },
+ "render": {
+  "proto-surface-1440x900@2": {
+   "tile": 57.6,
+   "zoom": 0.88,
+   "framing": "game",
+   "timing": {
+    "fields": 977.6,
+    "terrain-pixel-pass": 1619.7,
+    "sky": 1.6,
+    "decorations-back": 0,
+    "ores": 36.9,
+    "props-and-rig": 0.7,
+    "light-first": 123,
+    "composite-first": 1.1,
+    "bakeTotal": 2883.3
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 26,
+     "p95": 40.9,
+     "mean": 30.8
+    },
+    "composite": {
+     "p50": 843.6,
+     "p95": 1009.2,
+     "mean": 938.1
+    },
+    "total": {
+     "p50": 873.4,
+     "p95": 1035.2,
+     "mean": 968.9
+    }
+   },
+   "disagreement": {
+    "pixels": 3352,
+    "share_of_frame": 0.0006,
+    "share_of_air": 0.0008
+   },
+   "counts": {
+    "stalactites": 0,
+    "drips": 0,
+    "pebbles": 0,
+    "boulders": 0,
+    "crystals": 0,
+    "emitters": 11,
+    "lights": 5,
+    "ores": 2
+   },
+   "props": []
+  },
+  "proto-shaft-1440x900@2": {
+   "tile": 65.45,
+   "zoom": 1,
+   "framing": "game",
+   "timing": {
+    "fields": 856.9,
+    "terrain-pixel-pass": 2941.6,
+    "sky": 1.4,
+    "decorations-back": 0.1,
+    "ores": 44.6,
+    "props-and-rig": 0.1,
+    "light-first": 81,
+    "composite-first": 0.8,
+    "bakeTotal": 4082.8
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 16.4,
+     "p95": 26.5,
+     "mean": 17.9
+    },
+    "composite": {
+     "p50": 920.1,
+     "p95": 1145.5,
+     "mean": 953.8
+    },
+    "total": {
+     "p50": 935.6,
+     "p95": 1172.7,
+     "mean": 971.7
+    }
+   },
+   "disagreement": {
+    "pixels": 7257,
+    "share_of_frame": 0.0014,
+    "share_of_air": 0.0222
+   },
+   "counts": {
+    "stalactites": 0,
+    "drips": 0,
+    "pebbles": 0,
+    "boulders": 0,
+    "crystals": 0,
+    "emitters": 3,
+    "lights": 2,
+    "ores": 7
+   },
+   "props": []
+  },
+  "proto-cavern-1440x900@2": {
+   "tile": 68.73,
+   "zoom": 1.05,
+   "framing": "cave rows 37-48, cols 7-19",
+   "timing": {
+    "fields": 759.8,
+    "terrain-pixel-pass": 3608.4,
+    "sky": 0.1,
+    "decorations-back": 2.1,
+    "ores": 0.9,
+    "props-and-rig": 3.3,
+    "light-first": 134,
+    "composite-first": 45,
+    "bakeTotal": 4723.1
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 24.9,
+     "p95": 39.4,
+     "mean": 27.9
+    },
+    "composite": {
+     "p50": 973.7,
+     "p95": 1168.1,
+     "mean": 1031.2
+    },
+    "total": {
+     "p50": 998.6,
+     "p95": 1207.5,
+     "mean": 1059.1
+    }
+   },
+   "disagreement": {
+    "pixels": 94792,
+    "share_of_frame": 0.0183,
+    "share_of_air": 0.0534
+   },
+   "counts": {
+    "stalactites": 17,
+    "drips": 12,
+    "pebbles": 10,
+    "boulders": 3,
+    "crystals": 4,
+    "emitters": 10,
+    "lights": 8,
+    "ores": 11
+   },
+   "props": [
+    {
+     "kind": "wreck",
+     "x": 14.95,
+     "y": 44.62,
+     "w": 4.6,
+     "h": 1.69
+    },
+    {
+     "kind": "beacon",
+     "x": 11.18,
+     "y": 45.31,
+     "w": 0.95,
+     "h": 1.97
+    }
+   ]
+  },
+  "proto-surface-393x851@2": {
+   "tile": 38.72,
+   "zoom": 0.88,
+   "framing": "game",
+   "timing": {
+    "fields": 740.5,
+    "terrain-pixel-pass": 401.1,
+    "sky": 3.8,
+    "decorations-back": 0,
+    "ores": 0.4,
+    "props-and-rig": 1.4,
+    "light-first": 49.4,
+    "composite-first": 84.7,
+    "bakeTotal": 1401.1
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 7.7,
+     "p95": 14,
+     "mean": 8.8
+    },
+    "composite": {
+     "p50": 222.5,
+     "p95": 287.7,
+     "mean": 238.9
+    },
+    "total": {
+     "p50": 230.2,
+     "p95": 295.2,
+     "mean": 247.7
+    }
+   },
+   "disagreement": {
+    "pixels": 678,
+    "share_of_frame": 0.0005,
+    "share_of_air": 0.0006
+   },
+   "counts": {
+    "stalactites": 0,
+    "drips": 0,
+    "pebbles": 0,
+    "boulders": 0,
+    "crystals": 0,
+    "emitters": 11,
+    "lights": 5,
+    "ores": 2
+   },
+   "props": []
+  },
+  "proto-shaft-393x851@2": {
+   "tile": 44,
+   "zoom": 1,
+   "framing": "game",
+   "timing": {
+    "fields": 565,
+    "terrain-pixel-pass": 760.6,
+    "sky": 1.3,
+    "decorations-back": 0,
+    "ores": 0.5,
+    "props-and-rig": 0.1,
+    "light-first": 52.1,
+    "composite-first": 36.3,
+    "bakeTotal": 1530.7
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 5.9,
+     "p95": 9.1,
+     "mean": 6.4
+    },
+    "composite": {
+     "p50": 231.4,
+     "p95": 294.6,
+     "mean": 240.9
+    },
+    "total": {
+     "p50": 238,
+     "p95": 300.5,
+     "mean": 247.2
+    }
+   },
+   "disagreement": {
+    "pixels": 1991,
+    "share_of_frame": 0.0015,
+    "share_of_air": 0.0064
+   },
+   "counts": {
+    "stalactites": 0,
+    "drips": 0,
+    "pebbles": 0,
+    "boulders": 0,
+    "crystals": 0,
+    "emitters": 3,
+    "lights": 2,
+    "ores": 7
+   },
+   "props": []
+  },
+  "proto-cavern-393x851@2": {
+   "tile": 46.2,
+   "zoom": 1.05,
+   "framing": "cave rows 37-48, cols 7-19",
+   "timing": {
+    "fields": 652.4,
+    "terrain-pixel-pass": 1205.7,
+    "sky": 0.1,
+    "decorations-back": 2.4,
+    "ores": 0.8,
+    "props-and-rig": 3.2,
+    "light-first": 59.4,
+    "composite-first": 37.7,
+    "bakeTotal": 2076.7
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 12.2,
+     "p95": 22.4,
+     "mean": 14.1
+    },
+    "composite": {
+     "p50": 245.3,
+     "p95": 291.4,
+     "mean": 257.3
+    },
+    "total": {
+     "p50": 259.4,
+     "p95": 304,
+     "mean": 271.5
+    }
+   },
+   "disagreement": {
+    "pixels": 34170,
+    "share_of_frame": 0.0255,
+    "share_of_air": 0.0483
+   },
+   "counts": {
+    "stalactites": 18,
+    "drips": 13,
+    "pebbles": 13,
+    "boulders": 3,
+    "crystals": 4,
+    "emitters": 10,
+    "lights": 8,
+    "ores": 11
+   },
+   "props": [
+    {
+     "kind": "wreck",
+     "x": 14.95,
+     "y": 44.62,
+     "w": 4.6,
+     "h": 1.69
+    },
+    {
+     "kind": "beacon",
+     "x": 11.18,
+     "y": 45.31,
+     "w": 0.95,
+     "h": 1.97
+    }
+   ]
+  },
+  "proto-cavern-gamecam-1440x900@2": {
+   "tile": 68.73,
+   "zoom": 1.05,
+   "framing": "game",
+   "timing": {
+    "fields": 781.9,
+    "terrain-pixel-pass": 3683.1,
+    "sky": 0,
+    "decorations-back": 1.6,
+    "ores": 0.9,
+    "props-and-rig": 2.2,
+    "light-first": 106,
+    "composite-first": 44.9,
+    "bakeTotal": 4799.6
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 23.8,
+     "p95": 39.8,
+     "mean": 26.7
+    },
+    "composite": {
+     "p50": 916.2,
+     "p95": 1114.7,
+     "mean": 947.8
+    },
+    "total": {
+     "p50": 942.1,
+     "p95": 1140.3,
+     "mean": 974.5
+    }
+   },
+   "disagreement": {
+    "pixels": 79445,
+    "share_of_frame": 0.0153,
+    "share_of_air": 0.0523
+   },
+   "counts": {
+    "stalactites": 17,
+    "drips": 12,
+    "pebbles": 10,
+    "boulders": 3,
+    "crystals": 4,
+    "emitters": 10,
+    "lights": 8,
+    "ores": 11
+   },
+   "props": [
+    {
+     "kind": "wreck",
+     "x": 14.95,
+     "y": 44.62,
+     "w": 4.6,
+     "h": 1.69
+    },
+    {
+     "kind": "beacon",
+     "x": 11.18,
+     "y": 45.31,
+     "w": 0.95,
+     "h": 1.97
+    }
+   ]
+  },
+  "proto-perf-cavern-ls8-1440x900@2": {
+   "tile": 68.73,
+   "zoom": 1.05,
+   "framing": "cave rows 37-48, cols 7-19",
+   "timing": {
+    "fields": 688.8,
+    "terrain-pixel-pass": 3331.1,
+    "sky": 0.1,
+    "decorations-back": 1.5,
+    "ores": 0.4,
+    "props-and-rig": 1.9,
+    "light-first": 73.9,
+    "composite-first": 37.8,
+    "bakeTotal": 4249
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 9.3,
+     "p95": 15.5,
+     "mean": 11.2
+    },
+    "composite": {
+     "p50": 923.6,
+     "p95": 1118.9,
+     "mean": 958.6
+    },
+    "total": {
+     "p50": 936.8,
+     "p95": 1132.8,
+     "mean": 969.8
+    }
+   },
+   "disagreement": {
+    "pixels": 94792,
+    "share_of_frame": 0.0183,
+    "share_of_air": 0.0534
+   },
+   "counts": {
+    "stalactites": 17,
+    "drips": 12,
+    "pebbles": 10,
+    "boulders": 3,
+    "crystals": 4,
+    "emitters": 10,
+    "lights": 8,
+    "ores": 11
+   },
+   "props": [
+    {
+     "kind": "wreck",
+     "x": 14.95,
+     "y": 44.62,
+     "w": 4.6,
+     "h": 1.69
+    },
+    {
+     "kind": "beacon",
+     "x": 11.18,
+     "y": 45.31,
+     "w": 0.95,
+     "h": 1.97
+    }
+   ]
+  },
+  "proto-shaft-conceptzoom-1440x900@2": {
+   "tile": 90,
+   "zoom": 1,
+   "framing": "game",
+   "timing": {
+    "fields": 683,
+    "terrain-pixel-pass": 2931.2,
+    "sky": 0.1,
+    "decorations-back": 0.3,
+    "ores": 0.6,
+    "props-and-rig": 0,
+    "light-first": 107.6,
+    "composite-first": 49,
+    "bakeTotal": 3936.6
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 20.7,
+     "p95": 34.5,
+     "mean": 23.1
+    },
+    "composite": {
+     "p50": 907.2,
+     "p95": 1093.7,
+     "mean": 932.5
+    },
+    "total": {
+     "p50": 927.8,
+     "p95": 1114.9,
+     "mean": 955.6
+    }
+   },
+   "disagreement": {
+    "pixels": 4515,
+    "share_of_frame": 0.0009,
+    "share_of_air": 0.0281
+   },
+   "counts": {
+    "stalactites": 0,
+    "drips": 0,
+    "pebbles": 0,
+    "boulders": 0,
+    "crystals": 0,
+    "emitters": 3,
+    "lights": 2,
+    "ores": 7
+   },
+   "props": []
+  },
+  "proto-cavern-conceptzoom-1440x900@2": {
+   "tile": 90,
+   "zoom": 1.05,
+   "framing": "cave rows 37-48, cols 7-19",
+   "timing": {
+    "fields": 502.3,
+    "terrain-pixel-pass": 3449.2,
+    "sky": 0.1,
+    "decorations-back": 1.4,
+    "ores": 0.7,
+    "props-and-rig": 2.1,
+    "light-first": 113.4,
+    "composite-first": 38.6,
+    "bakeTotal": 4255.1
+   },
+   "perf": {
+    "frames": 40,
+    "light": {
+     "p50": 33,
+     "p95": 50.3,
+     "mean": 35.4
+    },
+    "composite": {
+     "p50": 898.4,
+     "p95": 1183.6,
+     "mean": 930.5
+    },
+    "total": {
+     "p50": 929.5,
+     "p95": 1214,
+     "mean": 965.9
+    }
+   },
+   "disagreement": {
+    "pixels": 130207,
+    "share_of_frame": 0.0251,
+    "share_of_air": 0.0467
+   },
+   "counts": {
+    "stalactites": 17,
+    "drips": 12,
+    "pebbles": 10,
+    "boulders": 3,
+    "crystals": 4,
+    "emitters": 10,
+    "lights": 8,
+    "ores": 11
+   },
+   "props": [
+    {
+     "kind": "wreck",
+     "x": 14.95,
+     "y": 44.62,
+     "w": 4.6,
+     "h": 1.69
+    },
+    {
+     "kind": "beacon",
+     "x": 11.18,
+     "y": 45.31,
+     "w": 0.95,
+     "h": 1.97
+    }
+   ]
+  }
+ },
+ "terrain_gates_mean_grad_flat": {
+  "shaft": {
+   "game": [
+    0.93,
+    0.864
+   ],
+   "proto": [
+    2.47,
+    0.488
+   ]
+  },
+  "cavern": {
+   "game": [
+    0.93,
+    0.614
+   ],
+   "proto": [
+    2.27,
+    0.673
+   ]
+  }
+ },
+ "shaft_wall_profile": {
+  "row2.5": {
+   "rock_-0.4tile": 104.0,
+   "lip_peak": 153.0,
+   "undercut_min": 18.0,
+   "air_+0.2tile": 34.0,
+   "samples": [
+    102.0,
+    104.0,
+    105.0,
+    104.0,
+    102.0,
+    105.0,
+    104.0,
+    104.0,
+    103.0,
+    104.0,
+    106.0,
+    103.0,
+    105.0,
+    104.0,
+    96.0,
+    97.0,
+    153.0,
+    144.0,
+    18.0,
+    23.0,
+    24.0,
+    26.0,
+    28.0,
+    29.0,
+    31.0,
+    32.0,
+    33.0,
+    34.0,
+    36.0
+   ]
+  },
+  "row4.5": {
+   "rock_-0.4tile": 62.0,
+   "lip_peak": 226.0,
+   "undercut_min": 36.0,
+   "air_+0.2tile": 50.0,
+   "samples": [
+    62.0,
+    62.0,
+    62.0,
+    62.0,
+    63.0,
+    39.0,
+    75.0,
+    77.0,
+    77.0,
+    77.0,
+    80.0,
+    72.0,
+    53.0,
+    77.0,
+    84.0,
+    172.0,
+    226.0,
+    188.0,
+    49.0,
+    37.0,
+    36.0,
+    38.0,
+    41.0,
+    41.0,
+    45.0,
+    46.0,
+    49.0,
+    50.0,
+    54.0
+   ]
+  }
+ },
+ "cavern_headlamp_axis": {
+  "0.35tile": {
+   "L": 83.5,
+   "b": 17.6
+  },
+  "0.8tile": {
+   "L": 73.7,
+   "b": 14.8
+  },
+  "1.5tile": {
+   "L": 45.4,
+   "b": 14.7
+  }
+ }
+}

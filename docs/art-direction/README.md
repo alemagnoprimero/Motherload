@@ -7,3 +7,5 @@ The six panels pair desktop and portrait compositions for surface spawn, a 60 m 
 Use continuous strata, clear material boundaries, dim opaque unexplored rock, lit tunnel walls, restrained amber/cyan accents and a warm rig headlamp. Keep the flat side view, a single sky body and a compact transparent HUD. The cave shown is a composition target: it must never reveal undiscovered terrain or minerals. The generated labels and resource values are illustrative, not balance data.
 
 The plan's quantitative gates are evaluated on actual game captures. Concept art does not establish contrast, phone framing, performance, completed assets or player approval.
+
+The [art quality audit](../ART_QUALITY_AUDIT.md) measures the current game against this board and sets the plan, targets and gates for reaching it.

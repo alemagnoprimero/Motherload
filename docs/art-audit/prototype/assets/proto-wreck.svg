@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="176" viewBox="0 0 480 176">
+<title>proto-wreck-hull: layered-shading prototype (not game art)</title>
+<defs>
+ <linearGradient id="hull" x1="0" y1="38" x2="0" y2="150" gradientUnits="userSpaceOnUse">
+  <stop offset="0" stop-color="#b9c0bc"/><stop offset=".14" stop-color="#8d9694"/><stop offset=".48" stop-color="#626b6c"/><stop offset=".82" stop-color="#3b4345"/><stop offset="1" stop-color="#262d30"/></linearGradient>
+ <linearGradient id="rib" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a3632"/><stop offset=".45" stop-color="#8b7d6a"/><stop offset="1" stop-color="#4a4038"/></linearGradient>
+ <linearGradient id="rust" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c46a2c" stop-opacity=".95"/><stop offset=".6" stop-color="#9a4f22" stop-opacity=".55"/><stop offset="1" stop-color="#7a3d1b" stop-opacity="0"/></linearGradient>
+ <linearGradient id="mound" x1="0" y1="124" x2="0" y2="156" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6b655c"/><stop offset=".25" stop-color="#4b4741"/><stop offset="1" stop-color="#2b2926"/></linearGradient>
+ <radialGradient id="shadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".6"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+ <radialGradient id="mouth" cx=".35" cy=".5" r=".7"><stop offset="0" stop-color="#05090b"/><stop offset=".7" stop-color="#121a1e"/><stop offset="1" stop-color="#2a3236"/></radialGradient>
+ <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8378"/><stop offset=".35" stop-color="#5a554e"/><stop offset="1" stop-color="#34312d"/></linearGradient>
+</defs>
+<g stroke-linecap="round" stroke-linejoin="round">
+ <ellipse cx="240" cy="151" rx="236" ry="16" fill="url(#shadow)"/>
+ <!-- broken ribs, left (behind) -->
+ <path d="M30 152 L52 78 M58 152 L72 98 M92 150 L86 112" stroke="#10171b" stroke-width="12" fill="none"/>
+ <path d="M30 152 L52 78 M58 152 L72 98 M92 150 L86 112" stroke="url(#rib)" stroke-width="7" fill="none"/>
+ <path d="M47 92 L52 78 M69 108 L72 98" stroke="#c46a2c" stroke-width="3" fill="none"/>
+ <!-- exposed frame ribs, right (behind) -->
+ <g fill="none">
+  <path d="M378 150 C 404 120 410 70 384 40" stroke="#10171b" stroke-width="13"/>
+  <path d="M378 150 C 404 120 410 70 384 40" stroke="#7c7062" stroke-width="7"/>
+  <path d="M381 140 C 400 116 404 76 386 50" stroke="#b07a46" stroke-width="2" opacity=".8"/>
+  <path d="M404 150 C 428 124 432 94 420 70" stroke="#10171b" stroke-width="12"/>
+  <path d="M404 150 C 428 124 432 94 420 70" stroke="#6c6256" stroke-width="6"/>
+  <path d="M430 150 C 444 136 448 118 444 104" stroke="#10171b" stroke-width="11"/>
+  <path d="M430 150 C 444 136 448 118 444 104" stroke="#5e554b" stroke-width="5"/>
+  <path d="M392 64 h16 M410 104 h14 M396 124 h18" stroke="#10171b" stroke-width="7"/>
+  <path d="M392 64 h16 M410 104 h14 M396 124 h18" stroke="#8b7d6a" stroke-width="3"/>
+ </g>
+ <!-- hull body -->
+ <path d="M64 152 L70 96 Q74 66 100 60 L338 38 Q358 36 364 52 L376 152 Z" fill="url(#hull)" stroke="#10171b" stroke-width="5"/>
+ <!-- open end -->
+ <ellipse cx="364" cy="96" rx="20" ry="56" fill="url(#mouth)" stroke="#10171b" stroke-width="5"/>
+ <path d="M352 50 Q340 96 352 146" stroke="#a7aeaa" stroke-width="3" fill="none" opacity=".7"/>
+ <path d="M366 58 L376 74 M372 118 L380 128" stroke="#3d4548" stroke-width="3"/>
+ <!-- plate seams with light/dark pairs -->
+ <g fill="none">
+  <path d="M128 56 Q120 104 126 152 M196 50 Q188 100 194 152 M264 44 Q256 96 262 152 M318 40 Q310 94 316 152" stroke="#1f272a" stroke-width="2.5"/>
+  <path d="M132 57 Q124 104 130 152 M200 51 Q192 100 198 152 M268 45 Q260 96 266 152 M322 41 Q314 94 320 152" stroke="#a9b1ae" stroke-width="1.5" opacity=".5"/>
+ </g>
+ <!-- rivets -->
+ <g fill="#2a3134"><circle cx="124" cy="70" r="2"/><circle cx="122" cy="90" r="2"/><circle cx="192" cy="64" r="2"/><circle cx="190" cy="84" r="2"/><circle cx="260" cy="58" r="2"/><circle cx="258" cy="78" r="2"/><circle cx="314" cy="54" r="2"/><circle cx="312" cy="74" r="2"/></g>
+ <!-- portholes -->
+ <g>
+  <rect x="146" y="76" width="34" height="20" rx="9" fill="#0b1114" stroke="#10171b" stroke-width="4"/>
+  <rect x="146" y="76" width="34" height="20" rx="9" fill="none" stroke="#b9773f" stroke-width="2"/>
+  <rect x="212" y="70" width="34" height="20" rx="9" fill="#0b1114" stroke="#10171b" stroke-width="4"/>
+  <rect x="212" y="70" width="34" height="20" rx="9" fill="none" stroke="#b9773f" stroke-width="2"/>
+  <path d="M152 80 h14 M218 74 h14" stroke="#5f7d86" stroke-width="2" opacity=".8"/>
+ </g>
+ <!-- torn hole -->
+ <path d="M276 74 L290 66 L300 76 L296 92 L282 98 L272 88 Z" fill="#0b1114" stroke="#10171b" stroke-width="3"/>
+ <path d="M276 74 L290 66 L300 76" fill="none" stroke="#c9cfca" stroke-width="1.5" opacity=".7"/>
+ <!-- rust streaks -->
+ <path d="M150 96 q4 14 2 30 l6 0 q0 -16 4 -30 Z M168 96 q2 10 0 20 l4 0 q0 -10 2 -20 Z M222 90 q3 18 1 36 l6 0 q-1 -18 3 -36 Z M284 98 q3 14 1 28 l5 0 q0 -14 3 -28 Z M106 70 q4 18 2 40 l6 0 q0 -20 4 -40 Z M338 44 q3 16 1 34 l5 0 q0 -18 3 -34 Z" fill="url(#rust)"/>
+ <!-- top rim light -->
+ <path d="M76 90 Q80 68 102 63 L336 42 Q352 41 358 50" fill="none" stroke="#e3e8e2" stroke-width="2.2" opacity=".65"/>
+ <!-- burying mound -->
+ <path d="M10 156 Q48 140 92 142 Q150 128 214 138 Q280 126 340 140 Q400 132 470 156 Z" fill="url(#mound)" stroke="#10171b" stroke-width="4"/>
+ <path d="M30 148 Q60 138 92 140 Q150 128 214 136 Q280 126 340 138 Q392 132 440 146" fill="none" stroke="#a0958a" stroke-width="2" opacity=".55"/>
+ <!-- rubble -->
+ <g stroke="#10171b" stroke-width="3">
+  <path d="M120 148 l10 -12 l14 4 l4 10 Z" fill="url(#rock)"/>
+  <path d="M300 150 l8 -14 l16 2 l6 12 Z" fill="url(#rock)"/>
+  <path d="M392 152 l6 -8 l10 2 l2 6 Z" fill="url(#rock)"/>
+  <path d="M60 154 l5 -7 l9 1 l3 6 Z" fill="url(#rock)"/>
+ </g>
+</g></svg>
