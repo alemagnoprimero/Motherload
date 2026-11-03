@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="232" viewBox="0 0 112 232">
+<title>proto-beacon-tripod: layered-shading prototype (not game art)</title>
+<defs>
+ <radialGradient id="pool" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f0a43c" stop-opacity=".55"/><stop offset="1" stop-color="#f0a43c" stop-opacity="0"/></radialGradient>
+ <linearGradient id="body" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a8611f"/><stop offset=".35" stop-color="#f3b54f"/><stop offset=".6" stop-color="#ffd98a"/><stop offset="1" stop-color="#c0752a"/></linearGradient>
+ <linearGradient id="leg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9c9480"/><stop offset=".5" stop-color="#efe6cb"/><stop offset="1" stop-color="#b3aa92"/></linearGradient>
+ <filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<g stroke-linecap="round" stroke-linejoin="round">
+ <ellipse cx="56" cy="218" rx="54" ry="12" fill="url(#pool)"/>
+ <path d="M56 140 L18 218 M56 140 L94 218 M56 140 L56 220" stroke="#10171b" stroke-width="10" fill="none"/>
+ <path d="M56 140 L18 218 M56 140 L94 218 M56 140 L56 220" stroke="url(#leg)" stroke-width="5" fill="none"/>
+ <rect x="30" y="126" width="52" height="16" rx="3" fill="url(#body)" stroke="#10171b" stroke-width="4"/>
+ <rect x="44" y="74" width="24" height="56" rx="4" fill="url(#body)" stroke="#10171b" stroke-width="4"/>
+ <rect x="50" y="84" width="12" height="26" rx="2" fill="#2b2016" stroke="#10171b" stroke-width="2"/>
+ <rect x="52" y="88" width="8" height="10" fill="#ffe6a6"/>
+ <rect x="51" y="44" width="10" height="32" fill="#49c9d6" stroke="#10171b" stroke-width="3"/>
+ <g filter="url(#glow)" opacity=".9"><path d="M56 6 L76 26 L56 46 L36 26 Z" fill="none" stroke="#6ff3ff" stroke-width="8"/><rect x="51" y="44" width="10" height="30" fill="#6ff3ff"/></g>
+ <path d="M56 6 L76 26 L56 46 L36 26 Z" fill="#0f3a44" stroke="#10171b" stroke-width="6"/>
+ <path d="M56 6 L76 26 L56 46 L36 26 Z" fill="none" stroke="#7ff4ff" stroke-width="3"/>
+ <path d="M56 17 L65 26 L56 35 L47 26 Z" fill="#b8fbff"/>
+</g></svg>
