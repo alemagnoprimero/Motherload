@@ -1,0 +1,48 @@
+name: Audit Firefox surface rendering
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  surface:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: npx playwright-core install --with-deps ${{ matrix.browser }}
+      - run: python3 -m pip install Pillow==12.0.0
+      - name: Start compiled preview
+        run: |
+          npm run preview -- --port 4173 --strictPort > /tmp/motherload-preview.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/motherload-preview.log
+          exit 1
+      - name: Compare native surface sprites with production atlas pixels
+        env:
+          BROWSER: ${{ matrix.browser }}
+          PREVIEW_URL: http://127.0.0.1:4173/
+        run: |
+          if [ "$BROWSER" = chromium ]; then
+            export CHROMIUM_PATH="$(node --input-type=module -e 'import {chromium} from "playwright-core"; process.stdout.write(chromium.executablePath())')"
+          fi
+          node scripts/surface-render-smoke.mjs
+      - name: Retain actual browser screenshots and GPU capabilities
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: surface-${{ matrix.browser }}
+          path: artifacts/surface-*/
+          if-no-files-found: warn
