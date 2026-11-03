@@ -3780,3 +3780,113 @@ body[data-campaign-volatile="cutting"] .campaign-message.visible {
     margin-bottom: 4px;
   }
 }
+
+/* Mission and advice share the upper HUD. Only direct controls occupy the
+   lower edge, leaving the surface, rig and returning flight path visible. */
+.campaign-mission-stack {
+  position: fixed;
+  z-index: 14;
+  top: 84px;
+  left: 18px;
+  width: min(350px, calc(100vw - 36px));
+  pointer-events: none;
+}
+body .campaign-mission-stack .campaign-objective {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  max-width: none;
+}
+.campaign-advisories {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  margin-top: 6px;
+}
+.campaign-advisories
+  > :is(
+    #campaign-coach,
+    #campaign-return,
+    #campaign-message,
+    #campaign-extraction,
+    #campaign-danger
+  ) {
+  position: relative;
+  inset: auto;
+  transform: none;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  box-shadow: none;
+  text-align: left;
+}
+.campaign-advisories #campaign-danger {
+  order: 0;
+}
+.campaign-advisories #campaign-extraction {
+  order: 1;
+  pointer-events: auto;
+}
+.campaign-advisories #campaign-return {
+  order: 2;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #10232bc9;
+}
+.campaign-advisories #campaign-message,
+.campaign-advisories #campaign-coach {
+  order: 3;
+}
+.campaign-advisories #campaign-coach {
+  justify-content: space-between;
+  gap: 8px;
+  white-space: normal;
+  padding: 4px 8px;
+  pointer-events: auto;
+}
+.campaign-advisories #campaign-coach button {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+}
+#campaign-game[data-world-callout="true"]
+  ~ .campaign-mission-stack
+  #campaign-message {
+  opacity: 0;
+}
+@media (pointer: coarse), (max-width: 760px) {
+  .campaign-mission-stack {
+    top: 96px;
+    left: 10px;
+    width: calc(100vw - 20px);
+  }
+  .campaign-advisories {
+    gap: 4px;
+    margin-top: 4px;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .campaign-mission-stack {
+    top: 59px;
+    left: 8px;
+    width: calc(50vw - 20px);
+    max-width: 380px;
+  }
+  .campaign-advisories {
+    position: fixed;
+    top: 59px;
+    right: 8px;
+    width: calc(50vw - 20px);
+    max-width: 380px;
+    margin-top: 0;
+  }
+  .campaign-advisories #campaign-danger,
+  .campaign-advisories #campaign-message {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+}

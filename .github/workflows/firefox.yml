@@ -1,6 +1,14 @@
 name: Audit Firefox surface rendering
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/campaign/**"
+      - "assets/campaign/**"
+      - "scripts/browser-launch.mjs"
+      - "scripts/surface-render-*"
+      - ".github/workflows/firefox.yml"
+      - "package*.json"
 permissions:
   contents: read
 jobs:

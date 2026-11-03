@@ -76,7 +76,12 @@ function place(
         getComputedStyle(node).display !== "none",
     )
     .map((node) => node.getBoundingClientRect())
-    .sort((a, b) => b.top - a.top);
+    .sort((a, b) => {
+      const upperA = a.top < view.height / 2,
+        upperB = b.top < view.height / 2;
+      if (upperA !== upperB) return upperA ? -1 : 1;
+      return upperA ? a.top - b.top : b.top - a.top;
+    });
   for (const rect of obstacles)
     if (
       px + half + 6 > rect.left &&
@@ -84,7 +89,13 @@ function place(
       py + halfHeight + 6 > rect.top &&
       py - halfHeight - 6 < rect.bottom
     )
-      py = Math.max(view.safe.top + halfHeight + 8, rect.top - halfHeight - 8);
+      py =
+        rect.top < view.height / 2
+          ? Math.min(
+              view.height - view.safe.bottom - halfHeight - 8,
+              rect.bottom + halfHeight + 8,
+            )
+          : Math.max(view.safe.top + halfHeight + 8, rect.top - halfHeight - 8);
   if (element.id === "campaign-target-beacon") {
     const home = document.getElementById("campaign-home-beacon")!;
     if (!home.hidden) {

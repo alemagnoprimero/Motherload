@@ -17,6 +17,7 @@ await mkdir(output, { recursive: true });
 const browser = await launchBrowser();
 const results = {
   engine,
+  browserVersion: browser.version(),
   base,
   cases: [],
   notes: [
@@ -261,5 +262,32 @@ try {
     }
   }
 } finally {
+  await writeFile(
+    `${output}/results.json`,
+    JSON.stringify(results, null, 2) + "\n",
+  );
+  if (process.env.GITHUB_ACTIONS === "true") {
+    // Keep essential evidence readable through GitHub's check-run API even when
+    // a review environment cannot download the separate artifact storage host.
+    const report = JSON.stringify({
+      engine,
+      version: results.browserVersion,
+      cases: results.cases.map(
+        ({ name, renderer, gl, dpr, coarsePointer, pixels }) => ({
+          name,
+          renderer,
+          gl,
+          dpr,
+          coarsePointer,
+          pixels,
+        }),
+      ),
+      notes: results.notes,
+    })
+      .replaceAll("%", "%25")
+      .replaceAll("\r", "%0D")
+      .replaceAll("\n", "%0A");
+    console.log(`::notice title=Surface browser evidence::${report}`);
+  }
   await browser.close();
 }

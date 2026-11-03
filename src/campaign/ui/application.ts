@@ -1069,7 +1069,14 @@ function syncHUD() {
       performance.now() < energyPulseUntil && !preferences.reducedMotion,
     );
   syncMissionSignal(objective.next);
-  const notice = notices.current();
+  const notice = notices.current(
+    performance.now(),
+    !$("campaign-extraction").hidden
+      ? 0
+      : document.body.dataset.campaignDanger === "true"
+        ? 2
+        : 3,
+  );
   $("campaign-message").classList.toggle("visible", Boolean(notice));
   setHidden("campaign-message", !notice);
   if (notice) setText("campaign-message", notice.text);

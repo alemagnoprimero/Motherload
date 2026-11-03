@@ -1,0 +1,38 @@
+# Quality audit — 2026-11-02 (America/Bogota)
+
+The previous implementation run ended at `b211bfe`. This audit follows the owner's reports of a jump during ascent, surface landmarks hidden by HUD notices, green surface sprites in current Firefox for Android with Standard tracking protection, and repeated artwork around the first mission.
+
+## Findings and corrective scope
+
+- **Camera continuity — confirmed defect.** Animated tile size was included in the camera reset key, so zoom changes bypassed smoothing. Crossing the surface also switched immediately between two incompatible vertical targets. The correction separates actual viewport resets from zoom, blends surface and shaft composition over four cells, and grows ascent look-ahead with velocity. Surface framing uses the unobstructed viewport.
+- **HUD composition — confirmed defect.** Coaching, ordinary notices, return guidance, danger and interaction prompts occupied independent bottom positions. Passing a viewport-bounds check did not establish that the world remained visible. The correction gives passive guidance a shared upper-screen area and leaves the lower area for immediate actions/tools. Safety takes priority; protected notifications retain their remaining reading time.
+- **POI identity — confirmed defect and art limitation.** Native opening captures showed four similar mast silhouettes around the first beacon. Both starter seams drew full survey-wreck scenery; the beacon had two decorative layers; other records and objectives could repeat a site already drawn by the world. Each physical object now needs a single rendering owner. Ore markers and records should not instantiate full wreck scenery. Ordinary seams must not be labeled as mission parts. Correcting these duplicates improves legibility but does not establish finished art quality.
+- **Firefox for Android — reported, device-specific verification outstanding.** The local environment has no Firefox binary. Its configured network policy rejects the Playwright Firefox download hosts. A separate GitHub-hosted browser check can provide desktop Firefox evidence; viewport/touch emulation cannot reproduce an Android GPU driver. Keep the Android report open until the affected device is retested or an equivalent failure is reproduced. Do not change renderer based solely on a Firefox user-agent guess.
+
+## What the earlier checks missed
+
+The earlier suite covered many state transitions and fixed screenshots. It did not establish continuity while crossing the surface, the combined visibility of competing notices, a complete opening journey through the native interface, or rendering on Firefox for Android. Unit-test counts and feature coverage are not substitutes for those experience checks. New checks should exercise these transitions, retain before/after captures, and reject the old defects.
+
+## Art and interface iteration
+
+Use **Figma for HUD and menu composition**: desktop, portrait and short landscape frames; condition/mission hierarchy; one advisory region; service cards; keyboard focus and touch targets. Start from actual game captures so the usable world area stays visible. Figma prototypes are useful for comparing layouts, but acceptance belongs in the running game.
+
+Use **Blender with a fixed side-view orthographic camera for the vehicle, lander and wreck kit**, or a dedicated painting/vector application for a fully illustrated kit. Export transparent, consistently lit PNG layers into the existing sprite atlas pipeline. Preserve the flat side-view projection, sprite pivots, fog masking and texture budgets. Keep image-generation concepts as visual references with clear provenance; they do not replace authored animation frames or actual gameplay validation. No Figma connector is available in the current environment.
+
+The first art milestone should be one complete opening area: a distinctive damaged survey wreck, a small independent record marker, two legible ore seams, the rig and a welcoming surface lander. Give the hero wreck an asymmetric silhouette, recognizable broken antenna and warm local signal, rather than repeating a generic hull with a color change. Develop depth, material wear, lights and restrained ambient motion together. Review a short mine → discover → ascend → service clip on desktop and Android before expanding the asset family.
+
+## Evidence
+
+The native opening baseline is retained under `artifacts/audit-opening-baseline/`. Camera before/after traces are `artifacts/audit-camera-before.json` and `artifacts/audit-camera-compiled.json`. Generated artifacts are local/CI evidence and are not committed as source assets. Final verification and release details are recorded with the delivery.
+
+The compiled correction passes **239 unit tests**, with five opt-in measurement tests skipped, plus formatting, asset validation, TypeScript and production builds. Native camera traces reduced the abrupt threshold displacement from 116 to 2 px on desktop and 82 to 1 px on portrait. The original crossings fail the new continuity guard. Short landscape additionally composes the lander left of the advisory column; this is blended into the same continuous surface transition.
+
+The compiled HUD probe passes all four forms (1440×900, 393×851, 844×390 and 568×320): native ascent with simultaneous energy/hull warnings, no overlapping advisory cards, coaching restored after urgent/transient notices, and a full 4×3-cell lander footprint clear of the mission, advisories, tools and interaction button. Evidence is in `artifacts/hud-surface-compiled/`.
+
+The complete two-haul opening journey passes on the original release and the corrected compiled build, including its portrait touch layout. Real keyboard and terminal inputs mine both seams, survey the beacon, return twice, sell fourteen packages for 860 CR, fund the first milestone, service and install the 600 CR tank, ending at 16/16 L and 10/10 hull without recovery. No terrain, position, credits or progression state is injected. The portrait journey uses keyboard input in a touch layout; it is not a physical touchscreen certification. Evidence: `artifacts/audit-opening-final/` and `artifacts/audit-opening-final-portrait/`.
+
+The surface-art audit isolates the actual production sprite frames and compares rendered colors, opaque interiors and transparent silhouettes with the source atlas. The eight Chromium baseline cases cover both worlds, desktop/touch layouts, automatic WebGL and explicit Canvas. A deliberately green replacement fails the assertions. The first hosted Firefox run also passes eight cases; final capability details are recorded separately because a passing AUTO case can use Canvas on a runner without WebGL.
+
+For the reported Android corruption, [the Canvas compatibility URL](https://alemagnoprimero.github.io/Motherload/?renderer=canvas) selects the existing alternative renderer and keeps the same origin and browser save. It is a diagnostic/workaround to try, not proof that the original Android WebGL defect is fixed.
+
+Repeat the maintained checks with `npm run test:camera`, `npm run test:hud:surface`, `npm run test:opening:browser` and `npm run test:surface:render`; `PREVIEW_URL` selects a source or compiled preview. `BROWSER=firefox` selects an installed Playwright Firefox for the surface audit. The dedicated Firefox workflow retains actual renderer, browser version, GPU limits and screenshots. The broader improvement-plan balance/performance acceptance gaps remain as documented; this focused audit does not close them.

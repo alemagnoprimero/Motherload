@@ -3,7 +3,13 @@ import type { Campaign } from "./model";
 import type { CampaignEvent } from "./events";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
 import { campaignSafeArea, campaignTileSize } from "./layout";
-import { CampaignView, RenderScaleBudget, type CameraSafeArea } from "./view";
+import {
+  CampaignView,
+  RenderScaleBudget,
+  campaignCameraY,
+  surfaceFraming,
+  type CameraSafeArea,
+} from "./view";
 import { CampaignPointer, TOUCH_JOYSTICK } from "./pointer";
 import { mergePilotControls } from "./input";
 import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
@@ -13,6 +19,11 @@ import { CampaignLighting } from "./render/lighting";
 import { CampaignArt } from "./render/art";
 import { renderRig } from "./render/rig";
 import { RenderDiagnostics } from "./render/diagnostics";
+import {
+  FIELD_LOG_FRAME,
+  poiArtwork,
+  poiSecondaryCaption,
+} from "./render/poi-art";
 export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
@@ -662,21 +673,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       tile: number,
       alpha: number,
     ) {
-      const kind =
-        poi.kind === "seam" || poi.kind === "log"
-          ? "survey"
-          : poi.kind === "relic"
-            ? "geode"
-            : poi.kind === "cache"
-              ? "cache"
-              : poi.kind === "core" || poi.kind === "catalyst"
-                ? "core"
-                : poi.kind === "antenna"
-                  ? "antenna"
-                  : poi.kind === "beacon"
-                    ? "beacon"
-                    : "wreck";
-      if (this.image(`site-${kind}`, x, y, tile * 2.8, tile * 1.9, 14, alpha))
+      const { scenery } = poiArtwork(poi);
+      if (
+        scenery &&
+        this.image(scenery, x, y, tile * 2.8, tile * 1.9, 14, alpha)
+      )
         this.images[this.imageIndex - 1]!.setMask(this.wreckMask);
     }
 
@@ -751,7 +752,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           labelY < box.bottom &&
           labelY + label.height > box.top
         )
-          labelY = Math.max(safe.top + 5, box.top - label.height - 8);
+          labelY =
+            box.top < height / 2
+              ? Math.min(
+                  height - safe.bottom - label.height - 8,
+                  box.bottom + 8,
+                )
+              : Math.max(safe.top + 5, box.top - label.height - 8);
       }
       label.setY(labelY);
     }
@@ -789,11 +796,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         ? 1
         : this.inspection
           ? 1.08
-          : viewCampaign.renderY < 0.2 || mode === "dock" || mode === "welcome"
+          : mode === "dock" || mode === "welcome"
             ? 0.88
             : viewCampaign.depth > 120
               ? 1.05
-              : 1;
+              : 1 - surfaceFraming(viewCampaign.renderY) * 0.12;
       const zoomStep =
         1 - Math.exp(-Math.min(0.05, deltaMilliseconds / 1000) * 24);
       this.contextZoom =
@@ -1030,7 +1037,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.tile = this.view.tile;
       const tile = this.tile;
       const safe = this.view.safe;
-      const usable = Math.max(100, height - safe.top - safe.bottom);
       const interfaceMode = bindings.getInterfaceMode?.();
       const titleVisible = interfaceMode === "welcome";
       const highContrast = Boolean(bindings.highContrast?.());
@@ -1054,21 +1060,29 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.unwrappedX * tile -
         width / 2 +
         (reduced ? 0 : campaign.velocityX * tile * 0.06);
-      let targetY =
-        campaign.renderY < 0.2
-          ? -height * 0.78
-          : campaign.renderY * tile -
-            (safe.top + usable * (campaign.thrusting ? 0.57 : 0.43)) +
-            (reduced
-              ? 0
-              : Math.max(
-                  -tile,
-                  Math.min(tile, campaign.velocityY * tile * 0.08),
-                ));
-      if (!titleVisible && !dock && campaign.renderY < 0.2 && width >= 900) {
+      // On a short touch layout the advisory column occupies the upper right.
+      // Keep the tall lander below the left mission strip, blending back to
+      // centred tracking as the rig enters the shaft.
+      if (width < 900 && height <= 420)
+        targetX += width * 0.14 * surfaceFraming(campaign.renderY);
+      let targetY = campaignCameraY(
+        campaign.renderY,
+        campaign.velocityY,
+        tile,
+        height,
+        safe,
+        reduced,
+      );
+      if (!titleVisible && !dock && width >= 900) {
         const homeOffset = delta(campaign.renderX, dockX, world.width);
-        if (Math.abs(homeOffset) < (width / tile) * 0.85)
-          targetX += homeOffset * tile * 0.4;
+        const homeDistance = Math.abs(homeOffset * tile) / width;
+        const homeBlend = Math.max(0, Math.min(1, (0.85 - homeDistance) / 0.2));
+        targetX +=
+          homeOffset *
+          tile *
+          0.4 *
+          homeBlend *
+          surfaceFraming(campaign.renderY);
       }
       if (titleVisible)
         targetX =
@@ -1089,7 +1103,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           screenX;
         targetY = -surface;
       }
-      const size = `${width}:${height}:${tile}`;
+      // An animated zoom changes tile size each frame. It is not a viewport
+      // resize and must never bypass the camera's interpolation.
+      const size = `${width}:${height}`;
       if (changed || jumped || size !== this.previousSize) {
         this.cameraX = targetX;
         this.cameraY = targetY;
@@ -1434,6 +1450,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       const sourceMarkers: string[] = [];
       const labeledSites = new Set<string>();
       for (const poi of pois) {
+        const artwork = poiArtwork(poi);
         const x =
           (this.unwrappedX + delta(campaign.renderX, poi.x, world.width)) *
             tile -
@@ -1478,12 +1495,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           (poi.status === "source" || poi.status === "surveyed")
         ) {
           if (
+            artwork.marker &&
             this.image(
-              poi.frame,
+              artwork.marker,
               x,
               y,
-              tile * 0.8,
-              tile * 0.8,
+              tile * artwork.width,
+              tile * artwork.height,
               15,
               poi.visible ? 1 : 0.42,
             )
@@ -1496,7 +1514,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           poi.y - campaign.renderY,
         );
         const clustered = poi.kind === "sample" || poi.kind === "cryo";
+        const caption = poiSecondaryCaption(poi);
         if (
+          caption &&
           poi.visible &&
           distance < 3.8 &&
           poi.id !== signal?.targetId &&
@@ -1506,12 +1526,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           )
         ) {
           if (clustered) labeledSites.add(poi.kind);
-          const suffix =
-            poi.status === "surveyed"
-              ? " · surveyed"
-              : poi.status === "carried" || poi.status === "banked"
-                ? " · recovered"
-                : " · mission part";
           this.missionLabel(
             x,
             y,
@@ -1519,7 +1533,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             py,
             tile,
             safe,
-            poi.title + (clustered ? "" : suffix),
+            caption,
             poi.status === "source" ? "#F6E1AF" : "#A7D8C5",
           );
         }
@@ -1765,7 +1779,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           y = log.y * tile - cy;
         if (x < -tile || x > width + tile || y < -tile || y > height + tile)
           continue;
-        if (this.image("site-survey", x, y, tile * 0.9, tile * 0.6, 15, 0.95))
+        if (
+          this.image(FIELD_LOG_FRAME, x, y, tile * 0.45, tile * 0.45, 15, 0.95)
+        )
           this.images[this.imageIndex - 1]!.setMask(this.wreckMask);
       }
       for (const seam of world.pressureSeams ?? []) {

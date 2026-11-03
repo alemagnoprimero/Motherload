@@ -109,7 +109,12 @@ export function renderGuidance(
   );
   const coaching =
     !preferences.coachSkipped && !cursor.complete && s.currentWorld === "W01";
-  setHidden("campaign-coach", !coaching || Boolean(overlay));
+  const urgentAdvice = [
+    "campaign-message",
+    "campaign-danger",
+    "campaign-extraction",
+  ].some((id) => !$(id).hidden);
+  setHidden("campaign-coach", !coaching || Boolean(overlay) || urgentAdvice);
   setText("campaign-coach-copy", cursor.text);
   document.body.classList.toggle("campaign-coaching", coaching);
   if (cursor.next !== preferences.coachStep) {

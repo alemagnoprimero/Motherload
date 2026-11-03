@@ -1,0 +1,60 @@
+import { describe, expect, it } from "vitest";
+import { Campaign, createCampaign } from "../src/campaign/model";
+import { campaignPois } from "../src/campaign/poi";
+import {
+  FIELD_LOG_FRAME,
+  poiArtwork,
+  poiSecondaryCaption,
+} from "../src/campaign/render/poi-art";
+import atlas from "../assets/campaign/generated/w01-runtime.json";
+
+describe("physical ownership of mission artwork", () => {
+  it("keeps the opening ore routes from creating phantom survey wrecks", () => {
+    const campaign = new Campaign(createCampaign(23));
+    const entry = campaignPois(campaign).filter((poi) => poi.y < 10);
+    expect(entry.map((poi) => poi.id).sort()).toEqual([
+      "W01-BEACON",
+      "W01-SEAM-A",
+      "W01-SEAM-B",
+    ]);
+    const independentObjects = entry
+      .map(poiArtwork)
+      .filter((art) => art.marker || art.scenery);
+    expect(independentObjects).toHaveLength(1);
+    expect(independentObjects[0]!.marker).toBe("mission-beacon");
+    expect(independentObjects[0]!.scenery).toBeUndefined();
+    expect(independentObjects[0]!.height).toBeGreaterThan(1);
+    for (const poi of entry.filter((poi) => poi.kind === "seam"))
+      expect(poiSecondaryCaption(poi)).toBeUndefined();
+  });
+
+  it("does not duplicate caches, field records or relics when the chapter unlocks their radio signals", () => {
+    const campaign = new Campaign(createCampaign(23));
+    campaign.state.progress.completed = [1, 2, 3];
+    const before = JSON.stringify(campaign.state);
+    const goals = campaignPois(campaign).filter((poi) => poi.stage === 4);
+    expect(new Set(goals.map((poi) => poi.kind))).toEqual(
+      new Set(["cache", "log", "relic"]),
+    );
+    for (const poi of goals) {
+      const art = poiArtwork(poi);
+      expect(art.marker, poi.id).toBeUndefined();
+      expect(art.scenery, poi.id).toBeUndefined();
+    }
+    expect(JSON.stringify(campaign.state)).toBe(before);
+  });
+
+  it("retains real atlas frames for recoverable mission parts and compact records", () => {
+    const campaign = new Campaign(createCampaign(23));
+    const frames = atlas.frames as Record<string, unknown>;
+    for (const poi of campaignPois(campaign)) {
+      const art = poiArtwork(poi);
+      if (art.marker) expect(frames[art.marker], poi.id).toBeDefined();
+      if (art.scenery) expect(frames[art.scenery], poi.id).toBeDefined();
+      if (["valve", "antenna", "core"].includes(poi.kind))
+        expect(art.marker).toBe(poi.frame);
+    }
+    expect(frames[FIELD_LOG_FRAME]).toBeDefined();
+    expect(FIELD_LOG_FRAME).not.toMatch(/^site-/);
+  });
+});

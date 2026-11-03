@@ -9,6 +9,38 @@ export interface CameraSafeArea {
   left?: number;
   right?: number;
 }
+
+/** Ease surface composition into shaft tracking without a hard depth boundary. */
+export function surfaceFraming(y: number) {
+  const depth = Math.max(0, Math.min(1, y / 4));
+  return 1 - depth * depth * (3 - 2 * depth);
+}
+
+/** Place the surface and ascent inside the usable view, away from HUD bands. */
+export function campaignCameraY(
+  y: number,
+  velocityY: number,
+  tile: number,
+  height: number,
+  safe: CameraSafeArea,
+  reducedMotion: boolean,
+) {
+  const usable = Math.max(100, height - safe.top - safe.bottom);
+  // Short landscape needs room for the three-tile lander below the top HUD.
+  // The surface itself still sits above the lower action row.
+  const surface = -(safe.top + usable * (height <= 420 ? 0.82 : 0.62));
+  // Velocity makes the look-ahead grow with actual ascent rather than jumping
+  // by fourteen percent of the viewport when the thrust key changes state.
+  const ascent = reducedMotion ? 0 : Math.max(0, Math.min(1, -velocityY / 3));
+  const rigAnchor = safe.top + usable * (0.43 + ascent * 0.14);
+  const lead = reducedMotion
+    ? 0
+    : Math.max(-tile, Math.min(tile, velocityY * tile * 0.08));
+  const tracking = y * tile - rigAnchor + lead;
+  const blend = surfaceFraming(y);
+  return tracking + (surface - tracking) * blend;
+}
+
 export class CampaignView {
   width = 1;
   height = 1;

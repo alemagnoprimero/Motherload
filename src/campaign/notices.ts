@@ -39,11 +39,24 @@ export class NoticeQueue {
     this.recent.splice(20);
     this.queue.sort((a, b) => a.priority - b.priority || a.at - b.at);
   }
-  current(now = performance.now()) {
+  current(now = performance.now(), maximumPriority: NoticePriority = 3) {
     this.queue = this.queue.filter(
       (notice) => notice.priority < 3 || now - notice.at <= 5000,
     );
-    const urgent = this.queue[0];
+    // A live extraction instruction owns the advisory space. Keep protected
+    // announcements queued, with their remaining reading time, until it clears.
+    if (this.active && this.active.priority > maximumPriority) {
+      if (now < this.active.until && this.active.priority < 3) {
+        this.active.remaining = this.active.until - now;
+        this.queue.push(this.active);
+        this.queue.sort((a, b) => a.priority - b.priority || a.at - b.at);
+      }
+      this.active = undefined;
+    }
+    const urgentIndex = this.queue.findIndex(
+      (notice) => notice.priority <= maximumPriority,
+    );
+    const urgent = this.queue[urgentIndex];
     if (
       this.active &&
       now < this.active.until &&
@@ -56,7 +69,7 @@ export class NoticeQueue {
         this.queue.push(this.active);
         this.queue.sort((a, b) => a.priority - b.priority || a.at - b.at);
       }
-      this.active = this.queue.shift();
+      this.active = this.queue.splice(urgentIndex, 1)[0];
       this.active!.until =
         now +
         (this.active!.remaining ??

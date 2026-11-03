@@ -2,6 +2,8 @@
 
 **The Deep Frontier** is the working title of the two-world mining campaign. Development follows the owner's [improvement plan](IMPROVEMENT_PLAN.md); [implementation progress](IMPROVEMENT_PROGRESS.md) records releases, measured gates and remaining validation. The repository, published `/Motherload/` address and browser-save namespace retain their original names.
 
+The follow-up [quality audit](QUALITY_AUDIT_2026-11-02.md) corrects surface camera discontinuity, competing HUD messages and duplicate POI scenery. It records a complete native opening journey and the outstanding Firefox-for-Android rendering report.
+
 W01 Broken asteroid and W02 Ice comet are playable. Both support persistent excavation, minerals, services, upgrades, construction, travel, optional contracts, logs, named relics and specialist caches. W03 and later destinations remain outside this improvement plan's two-world implementation scope.
 
 ## Gameplay and interface

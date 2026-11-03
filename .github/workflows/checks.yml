@@ -53,6 +53,10 @@ jobs:
           npm run test:plan-ui
           npm run test:render
           npm run test:render:memory
+          npm run test:camera
+          npm run test:hud:surface
+          npm run test:opening:browser
+          AUDIT_VIEWPORT=portrait OPENING_ARTIFACTS=artifacts/audit-opening-portrait npm run test:opening:browser
       - name: Retain browser evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -66,6 +70,9 @@ jobs:
             artifacts/audio/
             artifacts/plan-ui/
             artifacts/render-*/
+            artifacts/camera-*/
+            artifacts/hud-surface*/
+            artifacts/audit-opening*/
           if-no-files-found: ignore
   pacing:
     runs-on: ubuntu-latest

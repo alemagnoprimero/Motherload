@@ -33,6 +33,17 @@ describe("notice priorities and readable duration", () => {
     expect(queue.critical).toBe("");
     expect(queue.current(0)?.text).toBe("Ore banked");
   });
+  it("holds protected announcements while extraction owns the advisory slot", () => {
+    const queue = new NoticeQueue();
+    queue.push("Hold full · 7/7", 2, 0);
+    expect(queue.current(0)?.text).toContain("Hold full");
+    expect(queue.current(500, 0)).toBeUndefined();
+    queue.push("Collected slag iron", 3, 600);
+    expect(queue.current(6000, 0)).toBeUndefined();
+    expect(queue.current(6000)?.text).toContain("Hold full");
+    expect(queue.current(7999)?.text).toContain("Hold full");
+    expect(queue.current(8000)).toBeUndefined();
+  });
 });
 
 const opening: CoachContext = {
