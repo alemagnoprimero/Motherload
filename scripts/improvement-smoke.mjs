@@ -134,6 +134,10 @@ async function settledView(page, checkpoint) {
     const signature = restored ? JSON.stringify(state) : "";
     same = restored && signature === previous ? same + 1 : 0;
     previous = signature;
+    // Not restored yet: destination art is still arriving, in real time.
+    // Wait for it rather than step. HUD notices expire on the game clock,
+    // so extra steps during a slow load would change what is captured.
+    if (!restored) await wait(250);
   }
   assert.equal(same, 4, "Restored checkpoint settles on screen");
   await advance(page, 250);
@@ -1012,14 +1016,30 @@ export async function runImprovementSmoke(browser, base, path) {
       try {
         await freeze(page);
         for (const worldId of ["W01", "W02"]) {
-          const value = fixture(worldId, 6);
+          // Measure the restored view, not a frame of the import. The first
+          // W02 restore in each context loads that world's atlas on demand;
+          // the 180 ms fade-in starts only once it arrives, so a fixed advance
+          // could capture the previous view, a partial fade or the fade colour.
+          // The W02 fixture's column is already open through row 6, so rest
+          // that rig on its floor (row 7) rather than restore it mid-air.
+          const value = fixture(worldId, worldId === "W01" ? 6 : 7);
           await restore(page, value);
-          await advance(page, 200);
+          await settledView(page, value);
           await capture(page, path, `${worldId}-${kind}-shaft`, entries);
+          // W02's arrival notice expires on the game clock at about the time
+          // the danger view settles, and how long the shaft view takes to
+          // settle depends on the atlas load. Let it expire first, so the
+          // danger capture never shows it.
+          for (
+            let step = 0;
+            step < 100 && (await page.locator("#campaign-message").isVisible());
+            step++
+          )
+            await advance(page, 50);
           value.state.vehicle.energy = 2.2;
           value.state.vehicle.hull = 1.5;
           await restore(page, value);
-          await advance(page, 200);
+          await settledView(page, value);
           await capture(page, path, `${worldId}-${kind}-danger`, entries);
           if (!baseline) {
             value.state.vehicle.energy = 0;
