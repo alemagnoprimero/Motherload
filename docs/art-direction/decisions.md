@@ -19,7 +19,7 @@ Owner decisions for the art programme. The options and the audit's recommendatio
 **Pipelines.**
 - B (hand-written layered SVG), A (existing generators) and P (seeded procedural) only.
 - Assets 16 to 21 and 38 become seeded generators. Materials 22, 23 and 29 are shader parameters, with Canvas and Medium-tier pages baked from the same shader code.
-- The mapping for every §5.6 row is in `asset-tracker.md`.
+- The mapping for every §5.6 row is in `docs/art-direction/asset-tracker.md`.
 
 **Generated underlays: yes, with a provenance record per asset** (decided in step 2, 2026-11-03).
 - Scope: the silhouettes of the three hero props only: the lander (assets 1 and 2), the wreck (14) and the beacon (15, including the wall-mounted variant).
@@ -29,13 +29,13 @@ Owner decisions for the art programme. The options and the audit's recommendatio
 - Tools: the Adobe connector offers no image generation in this environment (only generative expand). Figma (`generate_image`) and Canva (`generate-image`) are connected to this account and not yet tried.
 
 **Effects on the audit's plan.**
-- §6.1 "Medium": "vector" is taken literally, so assets 16 to 21 and 38 leave pipeline C, and so does every other row of §5.6 whose Pipe column includes C (10, 14, 22, 23, 29 to 31, 36 and 44 to 48). A7, A8 and A14 are re-estimated in `asset-tracker.md`: 5 to 6.5 executor-days plus a 1-day shared generator kit, against 8.5 to 9.5 artist-days painted.
-- §5.6 conventions: there are no 4× raster masters. Every density, including the @4x desktop pages under D1, is a re-render from source. The size note is redone in `asset-tracker.md`.
+- §6.1 "Medium": "vector" is taken literally, so assets 16 to 21 and 38 leave pipeline C, and so does every other row of §5.6 whose Pipe column includes C (10, 14, 22, 23, 29 to 31, 36 and 44 to 48). A7, A8 and A14 are re-estimated in `docs/art-direction/asset-tracker.md`: 5 to 6.5 executor-days plus a 1-day shared generator kit, against 8.5 to 9.5 artist-days painted.
+- §5.6 conventions: there are no 4× raster masters. Every density, including the @4x desktop pages under D1, is a re-render from source. The size note is redone in `docs/art-direction/asset-tracker.md`.
 - §6.2: the "Organic dressing, back walls, iron shelf" row (Krita or Photoshop, `.kra` or `.psd` masters) no longer applies. The provenance row stands.
 - §5.7 and §1 "What it costs": artist-days become executor-days in this Project's chats and in Claude Code sessions. The director's review time (about two or three sessions a week, roughly an hour each, during the slice) sets the pace of the art track.
 - D13 and F0: panels described as "painted over prototype renders" are composited as SVG overlays on those renders instead.
 
-## Standing decisions from art-programme-sequence.md
+## Standing decisions from art-programme-sequence.md (a Project doc in Claude, not in the repo)
 
 Recorded here so they reach Claude Code sessions with the repo copy.
 

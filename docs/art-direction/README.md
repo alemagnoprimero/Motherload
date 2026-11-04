@@ -28,3 +28,9 @@ For each panel the JSON gives the `file` and its `sha256`, the `window` on the b
 - **`interior`** is the area inside the border strokes. Take statistics inside it, minus `hud_mask`. In the shaft crops it also leaves out the 1 to 2 px of page background at the top and bottom: the shaft panel is 353.5 px tall between its stroke centrelines, 4.5 px less than the 358 px window, so the window takes in a little of the page behind it. The rounded corners still hold a few border pixels.
 - **`hud_mask`** lists generous rectangles over the board's HUD. Exclude them from every statistic. The desktop boxes follow `CONCEPT_HUD` in [`metrics.py`](../art-audit/prototype/metrics.py).
 - **`rig_box`, `rig_anchor` and `rig_anchor_fraction`** give the rig's bounding box (hull, tracks and drill bit, not the lamp light), its centre, and that centre as a fraction of the crop. Crop each game capture so the rig sits at the same fraction of its `game_window`. The anchor was read at 6 to 7× zoom and is good to about 1 px.
+
+Other files in this directory:
+
+- [`decisions.md`](decisions.md) is the art director's log of art-programme decisions: the option chosen, the date and the rationale for each, and the decisions still pending.
+- [`asset-tracker.md`](asset-tracker.md) tracks each asset in the audit's §5.6 table (how it is made under D5, its priority, status, owner and what it waits on), plus the effort per art item and the size note redone under D5.
+- [`asset-budget.py`](asset-budget.py) recomputes the resident texture budget with no painted raster, as D5 decides (the audit's §5.6 size note and §7 projections); run it with `python3 docs/art-direction/asset-budget.py`.
