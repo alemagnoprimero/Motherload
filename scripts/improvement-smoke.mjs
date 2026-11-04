@@ -104,6 +104,44 @@ async function restore(page, checkpoint, resume = true) {
   );
   if (resume) await play(page);
 }
+// Pixel-exact comparisons need one camera transform. After an import the
+// destination art may still be loading (the previous view stays published),
+// the camera fades in, contextZoom eases from the previous framing (the camera
+// follows it) and band pages stream in. Like settle() in render-acceptance.mjs,
+// wait for four unchanged frames of the restored rig, then let the fade end.
+async function settledView(page, checkpoint) {
+  const { currentWorld, vehicle } = checkpoint.state;
+  const read = () =>
+    page.locator("#campaign-game").evaluate((el) => ({
+      world: el.dataset.campaignWorld,
+      x: Number(el.dataset.rigWorldX),
+      y: Number(el.dataset.rigWorldY),
+      tile: Number(el.dataset.viewTile),
+      cx: Number(el.dataset.viewCameraX),
+      cy: Number(el.dataset.viewCameraY),
+      textureBytes: Number(el.dataset.residentTextureBytes),
+    }));
+  let previous = "",
+    same = 0;
+  for (let frame = 0; frame < 60 && same < 4; frame++) {
+    await advance(page, 50);
+    await wait(30);
+    const state = await read();
+    const restored =
+      state.world === currentWorld &&
+      Math.abs(state.x - vehicle.x) < 0.5 &&
+      Math.abs(state.y - vehicle.y) < 0.5;
+    const signature = restored ? JSON.stringify(state) : "";
+    same = restored && signature === previous ? same + 1 : 0;
+    previous = signature;
+  }
+  assert.equal(same, 4, "Restored checkpoint settles on screen");
+  await advance(page, 250);
+  const settled = JSON.stringify(await read());
+  assert.equal(settled, previous, "Camera framing holds once settled");
+  const { tile, cx, cy } = JSON.parse(settled);
+  return { tile, cx, cy };
+}
 async function confirm(page) {
   const closed = page
     .locator("#campaign-confirm")
@@ -819,12 +857,7 @@ export async function runImprovementSmoke(browser, base, path) {
             mine.discovered[y * mine.width + canonical] = 0;
           }
         await restore(page, solid);
-        await advance(page, 100);
-        const view = await page.locator("#campaign-game").evaluate((el) => ({
-          tile: Number(el.dataset.viewTile),
-          cx: Number(el.dataset.viewCameraX),
-          cy: Number(el.dataset.viewCameraY),
-        }));
+        const view = await settledView(page, solid);
         const clip = {
           x: column * view.tile - view.cx + 3,
           y: 17 * view.tile - view.cy + 3,
@@ -837,7 +870,13 @@ export async function runImprovementSmoke(browser, base, path) {
         const air = structuredClone(solid);
         for (const [x, y] of hidden) clear(air, x, y);
         await restore(page, air);
-        await advance(page, 100);
+        // Hidden cells must not move the camera, and the clip only covers the
+        // same world window under the same transform.
+        assert.deepEqual(
+          await settledView(page, air),
+          view,
+          "Unknown cave changes the camera framing",
+        );
         const airFile = `${path}/${worldId}-hidden-air.png`;
         await page.screenshot({ path: airFile, clip });
         execFileSync("python3", [
