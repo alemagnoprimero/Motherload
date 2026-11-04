@@ -167,12 +167,26 @@ async function hudTexts(page) {
         if (seen.has(el)) continue;
         seen.add(el);
         if (el.closest("[hidden],.sr-only")) continue;
+        // Unpainted text has no contrast. As the controller-navigation filter
+        // does, skip closed disclosures outside their summary; treat a box
+        // clipped to 1 px (.sr-only without the class) as hidden too.
+        const closed = el.closest("details:not([open])");
+        if (closed && !closed.querySelector(":scope > summary")?.contains(el))
+          continue;
         let opacity = 1,
           visible = true;
         for (let node = el; node; node = node.parentElement) {
           const css = getComputedStyle(node);
           opacity *= Number(css.opacity);
           if (css.display === "none" || css.visibility === "hidden")
+            visible = false;
+          if (node === document.body || node === document.documentElement)
+            continue;
+          const box = node.getBoundingClientRect();
+          if (
+            (css.overflowX !== "visible" && box.width <= 1) ||
+            (css.overflowY !== "visible" && box.height <= 1)
+          )
             visible = false;
         }
         if (!visible || opacity === 0) continue;
