@@ -81,7 +81,7 @@ Effort in executor-days, the audit's artist-day unit, so the numbers drop into ย
 | A1 | Style guide, swatch cards, review template | 2 to 3 d | not re-estimated | Chat (step 6) | |
 | A2 | 1, 3, 4 | 3 to 3.5 d | not re-estimated | Art (A2) | underlay allowed |
 | A3 | 5 to 11 | 5.5 d | not re-estimated | Art (A3) | rocks (10) by generator; builds the rock-chunk recipe |
-| A4 | 12, 13 | 1.5 d | not re-estimated | Art (A4) | first session in the P0 order of `art-programme-sequence.md`, so it carries the 1 d generator kit |
+| A4 | 12, 13 | 1.5 d | not re-estimated | Art (A4) | first session in the P0 order of `art-programme-sequence.md` (a Project doc in Claude, not in the repo), so it carries the 1 d generator kit |
 | A5 | 14 | 3.5 to 4.5 d | not re-estimated | Art (A5) | rust generated, not painted; underlay allowed |
 | A6 | 15 | 2 d | not re-estimated | Art (A6) | underlay allowed |
 | A7 | 16 to 20 | 5.5 d painted | **3.5 to 4.25 d** | Art (A7) | re-estimated below |
@@ -111,7 +111,7 @@ Effort in executor-days, the audit's artist-day unit, so the numbers drop into ย
 
 **Reviewing before T5 and T4 exist.** The prototype's SITE-4 render already places stalactites, drips, pebbles, boulders and crystals on known natural boundaries (`docs/art-audit/prototype/proto.js`), so generated frames can be judged there first. Once T13a lands, a few frames placed by hand in the SITE-4 fixture give the in-game view.
 
-**Order.** The P0 order in `art-programme-sequence.md` is A4, A2, A3, A6, A5, A7, A8, A14 (ยง5.3 lists the items in another order). So A4 builds the kit; A3 builds the rock-chunk recipe for the regolith rocks, which rubble and boulders reuse; and A5 (wreck) builds the rust recipe that A7 and A14 reuse. A2 runs right after A4, so the lander's provenance record already uses the kit's writer.
+**Order.** The P0 order in `art-programme-sequence.md` (a Project doc in Claude, not in the repo) is A4, A2, A3, A6, A5, A7, A8, A14 (ยง5.3 lists the items in another order). So A4 builds the kit; A3 builds the rock-chunk recipe for the regolith rocks, which rubble and boulders reuse; and A5 (wreck) builds the rust recipe that A7 and A14 reuse. A2 runs right after A4, so the lander's provenance record already uses the kit's writer.
 
 ## Size (ยง5.6 note, redone under D5)
 
