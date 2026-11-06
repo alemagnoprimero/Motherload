@@ -104,6 +104,48 @@ async function restore(page, checkpoint, resume = true) {
   );
   if (resume) await play(page);
 }
+// Pixel-exact comparisons need one camera transform. After an import the
+// destination art may still be loading (the previous view stays published),
+// the camera fades in, contextZoom eases from the previous framing (the camera
+// follows it) and band pages stream in. Like settle() in render-acceptance.mjs,
+// wait for four unchanged frames of the restored rig, then let the fade end.
+async function settledView(page, checkpoint) {
+  const { currentWorld, vehicle } = checkpoint.state;
+  const read = () =>
+    page.locator("#campaign-game").evaluate((el) => ({
+      world: el.dataset.campaignWorld,
+      x: Number(el.dataset.rigWorldX),
+      y: Number(el.dataset.rigWorldY),
+      tile: Number(el.dataset.viewTile),
+      cx: Number(el.dataset.viewCameraX),
+      cy: Number(el.dataset.viewCameraY),
+      textureBytes: Number(el.dataset.residentTextureBytes),
+    }));
+  let previous = "",
+    same = 0;
+  for (let frame = 0; frame < 60 && same < 4; frame++) {
+    await advance(page, 50);
+    await wait(30);
+    const state = await read();
+    const restored =
+      state.world === currentWorld &&
+      Math.abs(state.x - vehicle.x) < 0.5 &&
+      Math.abs(state.y - vehicle.y) < 0.5;
+    const signature = restored ? JSON.stringify(state) : "";
+    same = restored && signature === previous ? same + 1 : 0;
+    previous = signature;
+    // Not restored yet: destination art is still arriving, in real time.
+    // Wait for it rather than step. HUD notices expire on the game clock,
+    // so extra steps during a slow load would change what is captured.
+    if (!restored) await wait(250);
+  }
+  assert.equal(same, 4, "Restored checkpoint settles on screen");
+  await advance(page, 250);
+  const settled = JSON.stringify(await read());
+  assert.equal(settled, previous, "Camera framing holds once settled");
+  const { tile, cx, cy } = JSON.parse(settled);
+  return { tile, cx, cy };
+}
 async function confirm(page) {
   const closed = page
     .locator("#campaign-confirm")
@@ -129,12 +171,26 @@ async function hudTexts(page) {
         if (seen.has(el)) continue;
         seen.add(el);
         if (el.closest("[hidden],.sr-only")) continue;
+        // Unpainted text has no contrast. As the controller-navigation filter
+        // does, skip closed disclosures outside their summary; treat a box
+        // clipped to 1 px (.sr-only without the class) as hidden too.
+        const closed = el.closest("details:not([open])");
+        if (closed && !closed.querySelector(":scope > summary")?.contains(el))
+          continue;
         let opacity = 1,
           visible = true;
         for (let node = el; node; node = node.parentElement) {
           const css = getComputedStyle(node);
           opacity *= Number(css.opacity);
           if (css.display === "none" || css.visibility === "hidden")
+            visible = false;
+          if (node === document.body || node === document.documentElement)
+            continue;
+          const box = node.getBoundingClientRect();
+          if (
+            (css.overflowX !== "visible" && box.width <= 1) ||
+            (css.overflowY !== "visible" && box.height <= 1)
+          )
             visible = false;
         }
         if (!visible || opacity === 0) continue;
@@ -819,12 +875,7 @@ export async function runImprovementSmoke(browser, base, path) {
             mine.discovered[y * mine.width + canonical] = 0;
           }
         await restore(page, solid);
-        await advance(page, 100);
-        const view = await page.locator("#campaign-game").evaluate((el) => ({
-          tile: Number(el.dataset.viewTile),
-          cx: Number(el.dataset.viewCameraX),
-          cy: Number(el.dataset.viewCameraY),
-        }));
+        const view = await settledView(page, solid);
         const clip = {
           x: column * view.tile - view.cx + 3,
           y: 17 * view.tile - view.cy + 3,
@@ -837,7 +888,13 @@ export async function runImprovementSmoke(browser, base, path) {
         const air = structuredClone(solid);
         for (const [x, y] of hidden) clear(air, x, y);
         await restore(page, air);
-        await advance(page, 100);
+        // Hidden cells must not move the camera, and the clip only covers the
+        // same world window under the same transform.
+        assert.deepEqual(
+          await settledView(page, air),
+          view,
+          "Unknown cave changes the camera framing",
+        );
         const airFile = `${path}/${worldId}-hidden-air.png`;
         await page.screenshot({ path: airFile, clip });
         execFileSync("python3", [
@@ -959,14 +1016,30 @@ export async function runImprovementSmoke(browser, base, path) {
       try {
         await freeze(page);
         for (const worldId of ["W01", "W02"]) {
-          const value = fixture(worldId, 6);
+          // Measure the restored view, not a frame of the import. The first
+          // W02 restore in each context loads that world's atlas on demand;
+          // the 180 ms fade-in starts only once it arrives, so a fixed advance
+          // could capture the previous view, a partial fade or the fade colour.
+          // The W02 fixture's column is already open through row 6, so rest
+          // that rig on its floor (row 7) rather than restore it mid-air.
+          const value = fixture(worldId, worldId === "W01" ? 6 : 7);
           await restore(page, value);
-          await advance(page, 200);
+          await settledView(page, value);
           await capture(page, path, `${worldId}-${kind}-shaft`, entries);
+          // W02's arrival notice expires on the game clock at about the time
+          // the danger view settles, and how long the shaft view takes to
+          // settle depends on the atlas load. Let it expire first, so the
+          // danger capture never shows it.
+          for (
+            let step = 0;
+            step < 100 && (await page.locator("#campaign-message").isVisible());
+            step++
+          )
+            await advance(page, 50);
           value.state.vehicle.energy = 2.2;
           value.state.vehicle.hull = 1.5;
           await restore(page, value);
-          await advance(page, 200);
+          await settledView(page, value);
           await capture(page, path, `${worldId}-${kind}-danger`, entries);
           if (!baseline) {
             value.state.vehicle.energy = 0;
