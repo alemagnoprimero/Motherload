@@ -128,27 +128,151 @@ export class CampaignView {
   }
 }
 
-/** Lower resolution only after a sustained expensive render window, never on a single hitch. */
+/** The backing scales the Render quality setting offers and the budget steps between. */
+export const BACKING_LEVELS = [1, 1.5, 2] as const;
+
+/** Device classes chosen once at boot (audit §7). Each sets a backing floor. */
+export type QualityTier = "high" | "medium" | "low";
+export const BACKING_FLOOR: Record<QualityTier, number> = {
+  high: 2,
+  medium: 1.5,
+  low: 1,
+};
+
+/**
+ * High: WebGL with fragment highp on a fine-pointer (desktop) device. Medium:
+ * WebGL on a coarse-pointer device, or without fragment highp. No boot-time
+ * signal tells a recent phone from a mid-range one, so phones start at Medium;
+ * recovery still raises them to 2.0 when their frames allow. Low: Canvas.
+ */
+export function qualityTier(
+  renderer: "webgl" | "canvas",
+  fragmentHighp: boolean,
+  coarsePointer: boolean,
+): QualityTier {
+  if (renderer === "canvas") return "low";
+  return fragmentHighp && !coarsePointer ? "high" : "medium";
+}
+
+/** `?backing=1|1.5|2` pins the backing scale; `?debug=frametime` shows the readout. */
+export function renderDebugOptions(search: string) {
+  const params = new URLSearchParams(search);
+  const pin = Number(params.get("backing"));
+  return {
+    backingPin: (BACKING_LEVELS as readonly number[]).includes(pin)
+      ? pin
+      : undefined,
+    frameTime: (params.get("debug") ?? "").split(",").includes("frametime"),
+  };
+}
+
+function percentile95(values: readonly number[]) {
+  const ordered = [...values].sort((a, b) => a - b);
+  return (
+    ordered[Math.min(ordered.length - 1, Math.floor(ordered.length * 0.95))] ??
+    0
+  );
+}
+
+/**
+ * Lower resolution only after a sustained expensive render window, never on a
+ * single hitch, and never below the tier's floor. Raise it again after 10 s of
+ * cheap frames. Loading and resize windows are not measured. All windows are
+ * scene time: `dt` comes from the game loop, so they freeze with the test clock.
+ */
 export class RenderScaleBudget {
-  private samples: number[] = [];
-  private elapsed = 0;
-  private ceiling = 2;
+  tier: QualityTier = "high";
+  /** Debug pin: one of BACKING_LEVELS, or undefined for the adaptive policy. */
+  pin: number | undefined;
+  private level = 2;
+  private cap = 2;
+  private window: number[] = [];
+  private windowSeconds = 0;
+  private slice: number[] = [];
+  private sliceSeconds = 0;
+  private cheapSeconds = 0;
+  private recent: { milliseconds: number; at: number }[] = [];
+  private clock = 0;
+  private held = 0;
+  setTier(tier: QualityTier) {
+    this.tier = tier;
+    this.level = Math.max(this.level, BACKING_FLOOR[tier]);
+  }
+  /** The tier's floor, limited by what this device and setting allow. */
+  floor() {
+    return Math.min(BACKING_FLOOR[this.tier], this.cap);
+  }
   scale(deviceDpr: number, requested = 2) {
-    return Math.max(1, Math.min(deviceDpr, requested, this.ceiling));
+    if (this.pin !== undefined) return this.pin;
+    this.cap = Math.max(1, Math.min(deviceDpr, requested, 2));
+    return this.current();
+  }
+  /** Ignore frames for `seconds` of scene time: loading and resizes are not steady cost. */
+  hold(seconds = 1) {
+    this.held = Math.max(this.held, seconds);
+    this.restart();
+  }
+  /** p95 frame time over the last `seconds` of measured frames, if any. */
+  p95(seconds = 10) {
+    const since = this.clock - seconds;
+    const frames = this.recent
+      .filter((frame) => frame.at > since)
+      .map((frame) => frame.milliseconds);
+    return frames.length ? percentile95(frames) : undefined;
   }
   sample(milliseconds: number, dt: number) {
-    this.samples.push(milliseconds);
-    this.elapsed += dt;
-    if (this.elapsed < 3) return false;
-    const ordered = this.samples.sort((a, b) => a - b);
-    const p95 =
-      ordered[
-        Math.min(ordered.length - 1, Math.floor(ordered.length * 0.95))
-      ] ?? 0;
-    this.samples = [];
-    this.elapsed = 0;
-    if (p95 <= 18 || this.ceiling <= 1) return false;
-    this.ceiling = this.ceiling > 1.5 ? 1.5 : 1;
+    this.clock += dt;
+    if (this.held > 0) {
+      this.held -= dt;
+      return false;
+    }
+    this.recent.push({ milliseconds, at: this.clock });
+    while (this.recent.length && this.recent[0]!.at <= this.clock - 10)
+      this.recent.shift();
+    if (this.pin !== undefined) return false;
+    const current = this.current();
+    this.window.push(milliseconds);
+    this.windowSeconds += dt;
+    // Recovery counts whole seconds of cheap frames, so a slow stretch is not
+    // outweighed by the many fast frames that follow it.
+    this.slice.push(milliseconds);
+    this.sliceSeconds += dt;
+    if (this.sliceSeconds >= 1) {
+      this.cheapSeconds =
+        percentile95(this.slice) < 12
+          ? this.cheapSeconds + this.sliceSeconds
+          : 0;
+      this.slice = [];
+      this.sliceSeconds = 0;
+    }
+    if (this.windowSeconds >= 3) {
+      const p95 = percentile95(this.window);
+      this.window = [];
+      this.windowSeconds = 0;
+      if (p95 > 18) {
+        const lower = Math.max(
+          this.floor(),
+          [...BACKING_LEVELS].reverse().find((level) => level < current) ?? 1,
+        );
+        if (lower >= current) return false;
+        this.level = lower;
+        this.restart();
+        return true;
+      }
+    }
+    if (this.cheapSeconds < 10 || current >= this.cap) return false;
+    this.level = BACKING_LEVELS.find((level) => level > current) ?? 2;
+    this.restart();
     return true;
+  }
+  private restart() {
+    this.window = [];
+    this.windowSeconds = 0;
+    this.slice = [];
+    this.sliceSeconds = 0;
+    this.cheapSeconds = 0;
+  }
+  private current() {
+    return Math.max(this.floor(), Math.min(this.cap, this.level));
   }
 }
