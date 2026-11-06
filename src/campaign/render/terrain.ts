@@ -174,8 +174,8 @@ export class RetainedTerrain {
                 : type === 4
                   ? "plate"
                   : "rock";
-        // F4 values: unknown rock dark (concept L* about 24), cave air darker
-        // still before light (#17242e, L* about 14).
+        // F4 values: unknown rock dark (concept L* about 24); cave air darker
+        // still before light, #17242e (L* about 14) under a light wall page.
         const base =
           material === "unknown"
             ? world.id === "W02"
@@ -210,7 +210,7 @@ export class RetainedTerrain {
         }
         if (pattern) {
           ctx.globalAlpha =
-            material === "unknown" ? 0.5 : material === "wall" ? 0.55 : 1;
+            material === "unknown" ? 0.5 : material === "wall" ? 0.25 : 1;
           ctx.fillStyle = pattern;
           ctx.fillRect(x * tile, y * tile, tile + 0.2, tile + 0.2);
           ctx.globalAlpha = 1;
