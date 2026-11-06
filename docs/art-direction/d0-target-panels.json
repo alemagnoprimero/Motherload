@@ -1,0 +1,350 @@
+{
+  "source": "docs/art-direction/d0-target-board.png",
+  "source_sha256": "e293cb300b3b75b2c3bab47db1d766ec9ec613aecd1351470e63ac110c58abda",
+  "made": "2026-11-03, Adobe Photoshop API through the Adobe connector (image_crop_to_bounds); every crop checked pixel-identical to the board inside its window. Adobe adds XMP, an sRGB ICC profile and a C2PA provenance link; pixels are unchanged.",
+  "coordinates": "window: board pixels [x0, y0, x1, y1), exclusive ends. interior, hud_mask, rig_box and rig_anchor: pixels of that crop.",
+  "rule": "Each window has the size given in ART_QUALITY_AUDIT.md \u00a74.3 and is centred on the panel border-stroke centrelines (luma-weighted). This reproduces the surface box in docs/art-audit/data/measure.json.",
+  "fields": {
+    "game_window": "The matching scoring window on a game capture (\u00a74.3).",
+    "stroke_span": "Width and height between the panel border-stroke centrelines.",
+    "interior": "Inside the border strokes. Use it, minus hud_mask, for statistics; the rounded corners still hold a few border pixels.",
+    "hud_mask": "Generous rectangles over the board HUD, to exclude it from statistics. Desktop boxes follow CONCEPT_HUD in docs/art-audit/prototype/metrics.py.",
+    "rig_anchor": "Centre of the rig bounding box (hull, tracks and drill bit; not the lamp light), read at 6 to 7x zoom, about 1 px either way. Crop each game capture so the rig sits at the same rig_anchor_fraction of its game_window."
+  },
+  "notes": [
+    "Shaft row: the panel is 353.5 px tall between stroke centrelines, 4.5 px less than the 358 in \u00a74.3, so its 358-row window takes in the border strokes and 1 to 2 rows of page background at top and bottom. interior excludes them.",
+    "Surface and cavern rows: the window holds the border strokes at its edges; interior excludes them."
+  ],
+  "panels": {
+    "surface-wide": {
+      "file": "d0-target-surface-wide.png",
+      "sha256": "a70a671d59daa5c676746b288dd53b9a3a5e4eb150f5af2d2760470a83eaada6",
+      "window": [
+        225,
+        141,
+        918,
+        499
+      ],
+      "size": [
+        693,
+        358
+      ],
+      "aspect": 1.936,
+      "game_window": "1440x743",
+      "stroke_span": [
+        692.0,
+        358.6
+      ],
+      "interior": [
+        2,
+        2,
+        692,
+        358
+      ],
+      "hud_mask": [
+        [
+          8,
+          4,
+          312,
+          48
+        ],
+        [
+          364,
+          4,
+          693,
+          48
+        ],
+        [
+          8,
+          46,
+          170,
+          84
+        ]
+      ],
+      "rig_box": [
+        342,
+        228,
+        396,
+        265
+      ],
+      "rig_anchor": [
+        369.0,
+        246.5
+      ],
+      "rig_anchor_fraction": [
+        0.532,
+        0.689
+      ]
+    },
+    "surface-tall": {
+      "file": "d0-target-surface-tall.png",
+      "sha256": "77610a994bf7673fe08069c6ab2071f79262a88d96e21b2c6f4f62e8651de85c",
+      "window": [
+        935,
+        141,
+        1181,
+        499
+      ],
+      "size": [
+        246,
+        358
+      ],
+      "aspect": 0.687,
+      "game_window": "393x572",
+      "stroke_span": [
+        245.1,
+        359.5
+      ],
+      "interior": [
+        2,
+        2,
+        245,
+        358
+      ],
+      "hud_mask": [
+        [
+          0,
+          0,
+          246,
+          55
+        ],
+        [
+          4,
+          58,
+          144,
+          90
+        ]
+      ],
+      "rig_box": [
+        98,
+        229,
+        149,
+        265
+      ],
+      "rig_anchor": [
+        123.5,
+        247.0
+      ],
+      "rig_anchor_fraction": [
+        0.502,
+        0.69
+      ]
+    },
+    "shaft-wide": {
+      "file": "d0-target-shaft-wide.png",
+      "sha256": "0d51fe65cb3ef434a34c279b9151c286a8516b60046f28e1237e4a3c54809f67",
+      "window": [
+        225,
+        523,
+        918,
+        881
+      ],
+      "size": [
+        693,
+        358
+      ],
+      "aspect": 1.936,
+      "game_window": "1440x743",
+      "stroke_span": [
+        692.0,
+        353.5
+      ],
+      "interior": [
+        2,
+        4,
+        692,
+        355
+      ],
+      "hud_mask": [
+        [
+          8,
+          7,
+          312,
+          50
+        ],
+        [
+          364,
+          7,
+          693,
+          50
+        ],
+        [
+          8,
+          48,
+          170,
+          86
+        ]
+      ],
+      "rig_box": [
+        345,
+        253,
+        398,
+        291
+      ],
+      "rig_anchor": [
+        371.5,
+        272.0
+      ],
+      "rig_anchor_fraction": [
+        0.536,
+        0.76
+      ]
+    },
+    "shaft-tall": {
+      "file": "d0-target-shaft-tall.png",
+      "sha256": "173b2b82420ada9b63be39e12a22b0b26031f14ec6bf92257bdbfa1ca7c9c337",
+      "window": [
+        935,
+        523,
+        1181,
+        881
+      ],
+      "size": [
+        246,
+        358
+      ],
+      "aspect": 0.687,
+      "game_window": "393x572",
+      "stroke_span": [
+        245.5,
+        353.4
+      ],
+      "interior": [
+        2,
+        4,
+        245,
+        355
+      ],
+      "hud_mask": [
+        [
+          0,
+          0,
+          246,
+          59
+        ]
+      ],
+      "rig_box": [
+        114,
+        253,
+        169,
+        290
+      ],
+      "rig_anchor": [
+        141.5,
+        271.5
+      ],
+      "rig_anchor_fraction": [
+        0.575,
+        0.758
+      ]
+    },
+    "cavern-wide": {
+      "file": "d0-target-cavern-wide.png",
+      "sha256": "946db6a5b3a14412cee2438cf1e4ef2bc5d2f8b9638ddbecf4e375ab057fad23",
+      "window": [
+        225,
+        901,
+        918,
+        1282
+      ],
+      "size": [
+        693,
+        381
+      ],
+      "aspect": 1.819,
+      "game_window": "1440x792",
+      "stroke_span": [
+        692.1,
+        379.8
+      ],
+      "interior": [
+        2,
+        2,
+        692,
+        380
+      ],
+      "hud_mask": [
+        [
+          8,
+          4,
+          312,
+          48
+        ],
+        [
+          362,
+          4,
+          693,
+          48
+        ],
+        [
+          8,
+          46,
+          170,
+          84
+        ]
+      ],
+      "rig_box": [
+        162,
+        240,
+        216,
+        278
+      ],
+      "rig_anchor": [
+        189.0,
+        259.0
+      ],
+      "rig_anchor_fraction": [
+        0.273,
+        0.68
+      ]
+    },
+    "cavern-tall": {
+      "file": "d0-target-cavern-tall.png",
+      "sha256": "b6dec92545fde00b54afebe1ca8ad5fc0a29e78c0dcd0a4c1f5e3e0b93cad7a4",
+      "window": [
+        935,
+        901,
+        1181,
+        1282
+      ],
+      "size": [
+        246,
+        381
+      ],
+      "aspect": 0.646,
+      "game_window": "393x608",
+      "stroke_span": [
+        245.8,
+        379.9
+      ],
+      "interior": [
+        2,
+        2,
+        245,
+        380
+      ],
+      "hud_mask": [
+        [
+          0,
+          0,
+          246,
+          56
+        ]
+      ],
+      "rig_box": [
+        30,
+        238,
+        81,
+        274
+      ],
+      "rig_anchor": [
+        55.5,
+        256.0
+      ],
+      "rig_anchor_fraction": [
+        0.226,
+        0.672
+      ]
+    }
+  }
+}
