@@ -239,12 +239,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.frameReadout = document.createElement("div");
         this.frameReadout.id = "campaign-frametime";
         this.frameReadout.setAttribute("aria-hidden", "true");
-        // Two short lines in the bottom-left corner stay clear of the tool
-        // block on a 393 px phone; insets as the rest of the HUD uses them.
+        // Mid-height on the left edge is playfield in every layout; on phones
+        // the bottom corners hold the Dock button and the tool block.
         Object.assign(this.frameReadout.style, {
           position: "fixed",
-          left: "max(8px, env(safe-area-inset-left))",
-          bottom: "max(8px, env(safe-area-inset-bottom))",
+          left: "8px",
+          top: "50%",
+          transform: "translateY(-50%)",
           zIndex: "1000",
           padding: "4px 6px",
           borderRadius: "3px",
@@ -254,6 +255,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           pointerEvents: "none",
           whiteSpace: "pre",
         });
+        // Inside the safe area where env() is supported; 8px stays otherwise.
+        this.frameReadout.style.left = "max(8px, env(safe-area-inset-left))";
         this.frameReadout.textContent = "p95 —\nbacking —";
         document.body.append(this.frameReadout);
       }
