@@ -133,7 +133,7 @@ export const BACKING_LEVELS = [1, 1.5, 2] as const;
 
 /** Device classes chosen once at boot (audit §7). Each sets a backing floor. */
 export type QualityTier = "high" | "medium" | "low";
-export const BACKING_FLOOR: Record<QualityTier, number> = {
+const BACKING_FLOOR: Readonly<Record<QualityTier, number>> = {
   high: 2,
   medium: 1.5,
   low: 1,
@@ -177,12 +177,13 @@ function percentile95(values: readonly number[]) {
 /**
  * Lower resolution only after a sustained expensive render window, never on a
  * single hitch, and never below the tier's floor. Raise it again after 10 s of
- * cheap frames. A raise that is undone within 10 s doubles the wait before the
- * next one (up to 160 s), so a device that is cheap at one level and expensive
- * at the next does not flip every few seconds; a raise that holds for 60 s
- * resets the wait. Loading and resize windows are not measured. Time is the
- * scene clock: frame dt clamped as the scene clamps it, so every window
- * freezes with the test clock and one long frame counts as one short step.
+ * cheap frames. A raise that the next two windows undo (within 8 s) doubles
+ * the wait before the next raise to that level, up to 160 s, so a device that
+ * is cheap at one level and expensive at the next does not flip every few
+ * seconds; a raise that holds for 60 s resets that level's wait. Loading and
+ * resize windows are not measured. Time is the scene clock: frame dt clamped
+ * as the scene clamps it, so every window freezes with the test clock and one
+ * long frame counts as one short step.
  */
 export class RenderScaleBudget {
   tier: QualityTier = "high";
@@ -195,8 +196,9 @@ export class RenderScaleBudget {
   private slice: number[] = [];
   private sliceSeconds = 0;
   private cheapSeconds = 0;
-  private recoverAfter = 10;
-  private raisedAt: number | undefined;
+  /** Cheap seconds needed before a raise to each level, if not 10. */
+  private recoverAfter = new Map<number, number>();
+  private raised: { to: number; at: number } | undefined;
   private recent: { milliseconds: number; at: number }[] = [];
   private clock = 0;
   private held = 0;
@@ -213,35 +215,40 @@ export class RenderScaleBudget {
     this.cap = Math.max(1, Math.min(deviceDpr, requested, 2));
     return this.current();
   }
-  /** Ignore frames for `seconds` of scene time: loading and resizes are not steady cost. */
+  /**
+   * Loading and resizes are not steady cost: the policy ignores frames for
+   * `seconds` of scene time and starts its windows and recovery count again.
+   * The readout's p95 still counts them.
+   */
   hold(seconds = 1) {
     this.held = Math.max(this.held, seconds);
     this.restart();
   }
-  /** p95 frame time over the last `seconds` of measured frames, if any. */
-  p95(seconds = 10) {
-    const since = this.clock - seconds;
-    const frames = this.recent
-      .filter((frame) => frame.at > since)
-      .map((frame) => frame.milliseconds);
-    return frames.length ? percentile95(frames) : undefined;
+  /** p95 frame cost over the last 10 s of scene time, if any frames. */
+  p95() {
+    return this.recent.length
+      ? percentile95(this.recent.map((frame) => frame.milliseconds))
+      : undefined;
   }
-  /** One frame: its cost in milliseconds and its frame time in seconds. */
+  /**
+   * One frame: its cost in milliseconds (Phaser PRE_STEP to POST_RENDER) and
+   * the loop's frame interval in seconds.
+   */
   sample(milliseconds: number, frameSeconds: number) {
     // The scene's own clock step (scene.ts update): at most 50 ms per frame.
     const dt = Math.min(0.05, Math.max(0, frameSeconds));
     this.clock += dt;
+    this.recent.push({ milliseconds, at: this.clock });
+    while (this.recent.length && this.recent[0]!.at <= this.clock - 10)
+      this.recent.shift();
     if (this.held > 0) {
       this.held -= dt;
       return false;
     }
-    this.recent.push({ milliseconds, at: this.clock });
-    while (this.recent.length && this.recent[0]!.at <= this.clock - 10)
-      this.recent.shift();
     if (this.pin !== undefined) return false;
-    if (this.raisedAt !== undefined && this.clock - this.raisedAt >= 60) {
-      this.recoverAfter = 10;
-      this.raisedAt = undefined;
+    if (this.raised && this.clock - this.raised.at >= 60) {
+      this.recoverAfter.delete(this.raised.to);
+      this.raised = undefined;
     }
     const current = this.current();
     this.window.push(milliseconds);
@@ -268,20 +275,27 @@ export class RenderScaleBudget {
           [...BACKING_LEVELS].reverse().find((level) => level < current) ?? 1,
         );
         if (lower >= current) return false;
-        if (this.raisedAt !== undefined && this.clock - this.raisedAt < 10)
-          this.recoverAfter = Math.min(160, this.recoverAfter * 2);
-        this.raisedAt = undefined;
+        if (this.raised && this.clock - this.raised.at < 8)
+          this.recoverAfter.set(
+            this.raised.to,
+            Math.min(160, this.waitFor(this.raised.to) * 2),
+          );
+        this.raised = undefined;
         this.level = lower;
         this.restart();
         return true;
       }
     }
-    if (this.cheapSeconds < this.recoverAfter || current >= this.cap)
-      return false;
-    this.level = BACKING_LEVELS.find((level) => level > current) ?? 2;
-    this.raisedAt = this.clock;
+    if (current >= this.cap) return false;
+    const next = BACKING_LEVELS.find((level) => level > current) ?? 2;
+    if (this.cheapSeconds < this.waitFor(next)) return false;
+    this.level = next;
+    this.raised = { to: next, at: this.clock };
     this.restart();
     return true;
+  }
+  private waitFor(level: number) {
+    return this.recoverAfter.get(level) ?? 10;
   }
   private restart() {
     this.window = [];

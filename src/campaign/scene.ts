@@ -2057,7 +2057,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.frameReadoutTimer += dt;
       if (this.frameReadoutTimer >= 0.5) {
         this.frameReadoutTimer = 0;
-        this.frameP95 = this.resolutionBudget.p95(10);
+        this.frameP95 = this.resolutionBudget.p95();
         if (this.frameReadout)
           this.frameReadout.textContent =
             `p95 ${this.frameP95 === undefined ? "—" : this.frameP95.toFixed(1) + " ms"}\n` +

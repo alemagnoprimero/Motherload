@@ -23,7 +23,8 @@
  * ART_BACKING, a backing-scale pin of 1, 1.5 or 2.
  *
  * manifest.json records, per capture, the backing scale and quality tier the
- * game reported, the rig's box in device pixels and its keep@2.
+ * game reported, the rig's box in device pixels and its keep@2, and after
+ * real-clock play the readout's p95 frame cost.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
@@ -183,9 +184,12 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             ),
             qualityTier: element.dataset.qualityTier ?? null,
             backingPinned: element.dataset.backingPinned ?? null,
-            frameP95: element.dataset.frameP95 || null,
+            frameP95: Number(element.dataset.frameP95) || null,
             renderer: element.dataset.renderer,
           }));
+        // Playwright's frozen clock makes every frame cost 0 ms: a p95 only
+        // means something after real-clock play.
+        if (!(playSeconds > 0)) reported.frameP95 = null;
         const box = await rigBox(page, settings.deviceScaleFactor);
         const image =
           "data:image/png;base64," + (await readFile(file)).toString("base64");

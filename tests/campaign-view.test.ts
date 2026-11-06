@@ -122,6 +122,52 @@ function frames(
   scales.add(budget.scale(dpr, requested));
   return scales;
 }
+/**
+ * Play `seconds` in the scene's frame order: scale() each update, hold(1)
+ * when the backing changes (the resize branch), sample() at post-render.
+ * Returns each backing change as [scene time, new scale].
+ */
+function play(
+  budget: RenderScaleBudget,
+  seconds: number,
+  cost: (frame: {
+    scale: number;
+    t: number;
+    raises: number;
+    since: number;
+  }) => number,
+  dpr = 2,
+) {
+  const dt = 1 / 60,
+    changes: [number, number][] = [];
+  let backing = budget.scale(dpr, 2),
+    raises = 0,
+    raisedAt = 0;
+  for (let n = 1; n <= Math.round(seconds / dt); n++) {
+    const t = n * dt,
+      scale = budget.scale(dpr, 2);
+    if (scale !== backing) {
+      changes.push([t, scale]);
+      if (scale > backing) {
+        raises++;
+        raisedAt = t;
+      }
+      backing = scale;
+      budget.hold(1);
+    }
+    budget.sample(cost({ scale, t, raises, since: t - raisedAt }), dt);
+  }
+  return changes;
+}
+/** Seconds from each step down to the raise after it. */
+function waits(changes: [number, number][]) {
+  return changes
+    .map(([at, scale], i) =>
+      i && scale > changes[i - 1]![1] ? at - changes[i - 1]![0] : undefined,
+    )
+    .filter((wait) => wait !== undefined)
+    .map(Math.round);
+}
 function budgetFor(tier: QualityTier) {
   const budget = new RenderScaleBudget();
   budget.setTier(tier);
@@ -220,51 +266,59 @@ describe("render scale budget (F1)", () => {
   it("backs off after a raise that is undone at once", () => {
     // Cheap at 1.5, expensive at 2: each failed raise doubles the wait, up
     // to 160 s, instead of flipping every 15 s.
-    const budget = budgetFor("medium"),
-      dt = 1 / 60,
-      changes: [number, number][] = [];
-    let backing = budget.scale(3, 2);
-    for (let n = 1; n <= 600 * 60; n++) {
-      const scale = budget.scale(3, 2);
-      if (scale !== backing) {
-        changes.push([n * dt, scale]);
-        backing = scale;
-        budget.hold(1);
-      }
-      budget.sample(scale === 2 ? 20 : 11, dt);
-    }
+    const changes = play(
+      budgetFor("medium"),
+      600,
+      ({ scale }) => (scale === 2 ? 20 : 11),
+      3,
+    );
     expect(changes.length).toBe(13);
-    const waits = changes
-      .map(([at, scale], i) =>
-        scale === 2 ? at - changes[i - 1]![0] : undefined,
-      )
-      .filter((wait) => wait !== undefined);
     // One second of resize hold, then 10, 20, 40, 80, 160 and 160 s.
-    expect(waits.map(Math.round)).toEqual([11, 21, 41, 81, 161, 161]);
+    expect(waits(changes)).toEqual([11, 21, 41, 81, 161, 161]);
   });
-  it("waits 10 s again once a raise has held for 60 s", () => {
-    const budget = budgetFor("medium"),
-      dt = 1 / 60,
-      raises: number[] = [];
-    let backing = budget.scale(3, 2);
-    for (let n = 1; n <= 260 * 60; n++) {
-      const t = n * dt,
-        scale = budget.scale(3, 2);
-      if (scale !== backing) {
-        if (scale > backing) raises.push(t);
-        backing = scale;
-        budget.hold(1);
-      }
-      // 0–30 s: a raise fails (wait doubles to 20 s). 30–200 s: cheap, the
-      // next raise holds past 60 s. 200–215 s: expensive. Then cheap.
-      const cost =
-        t < 30 ? (scale === 2 ? 20 : 11) : t < 200 ? 6 : t < 215 ? 30 : 6;
-      budget.sample(cost, dt);
-    }
-    expect(raises.length).toBe(3);
-    expect(raises[1]! - 19).toBeGreaterThan(20);
-    expect(raises[2]).toBeGreaterThan(224.9);
-    expect(raises[2]).toBeLessThan(226.2);
+  it("counts a raise undone by its first two windows as failed", () => {
+    // After a raise: 1 s of resize hold, then windows end at 4, 7 and 10 s.
+    // Expensive frames from 4.5 s fail the second window (doubled wait);
+    // from 7.5 s they fail the third, which no longer counts.
+    const after = (cheapFor: number) =>
+      waits(
+        play(
+          budgetFor("medium"),
+          60,
+          ({ scale, raises, since }) =>
+            scale !== 2 ? 11 : raises && since < cheapFor ? 11 : 20,
+          3,
+        ),
+      );
+    expect(after(4.5).slice(0, 2)).toEqual([11, 21]);
+    expect(after(7.5).slice(0, 2)).toEqual([11, 11]);
+  });
+  it("resets a level's wait once a raise to it holds for 60 s", () => {
+    // The first raise fails (the wait for 2 doubles to 20 s); the second
+    // holds for `holds` seconds, then 2 turns expensive.
+    const after = (holds: number) =>
+      waits(
+        play(
+          budgetFor("medium"),
+          160,
+          ({ scale, raises, since }) =>
+            scale !== 2 ? 11 : raises === 2 && since < holds ? 6 : 20,
+          3,
+        ),
+      );
+    expect(after(50).slice(0, 3)).toEqual([11, 21, 21]);
+    expect(after(70).slice(0, 3)).toEqual([11, 21, 11]);
+  });
+  it("keeps a separate wait for each level", () => {
+    // Low tier: cheap at 1 and 1.5, expensive at 2, so failed raises grow
+    // the wait for 2 to 160 s. A burst drops 1.5 to 1; 1.5 still comes back
+    // 10 s after the burst, and 2 still waits 160 s.
+    const changes = play(budgetFor("low"), 800, ({ scale, t }) =>
+      t >= 600 && t < 610 ? 30 : scale === 2 ? 20 : scale === 1.5 ? 11 : 9,
+    ).filter(([at]) => at > 600);
+    expect(changes.map(([, scale]) => scale).slice(0, 3)).toEqual([1, 1.5, 2]);
+    expect(changes[1]![0]).toBeLessThan(622);
+    expect(changes[2]![0] - changes[1]![0]).toBeGreaterThan(160);
   });
   it("counts a long frame as one scene-clock step", () => {
     // The scene clamps frame dt to 50 ms; so does the budget. Each case
@@ -285,6 +339,12 @@ describe("render scale budget (F1)", () => {
     fresh(desk);
     desk.sample(3000, 3);
     expect(desk.scale(2, 2)).toBe(2);
+    // Frames of 100 ms count 50 ms each: a 3 s window takes 60 of them.
+    const slow = budgetFor("low");
+    for (let n = 0; n < 58; n++) slow.sample(40, 0.1);
+    expect(slow.scale(2, 2)).toBe(2);
+    for (let n = 0; n < 4; n++) slow.sample(40, 0.1);
+    expect(slow.scale(2, 2)).toBe(1.5);
   });
   it("ignores frames inside loading and resize windows", () => {
     const budget = budgetFor("low");
@@ -320,26 +380,20 @@ describe("render scale budget (F1)", () => {
     const budget = budgetFor("high");
     budget.pin = 1.5;
     expect([...frames(budget, 40, 20)]).toEqual([1.5]);
-    expect(budget.p95(10)).toBe(40);
-    expect(new RenderScaleBudget().p95(10)).toBeUndefined();
+    expect(budget.p95()).toBe(40);
+    expect(new RenderScaleBudget().p95()).toBeUndefined();
   });
-  it("reports p95 over the last 10 s of measured frames only", () => {
+  it("reports p95 over the last 10 s, held frames included", () => {
     const budget = budgetFor("high");
     frames(budget, 40, 10);
     frames(budget, 5, 10);
-    expect(budget.p95(10)).toBe(5);
-    // Frames inside a loading or resize window are not measured.
-    frames(budget, 40, 0.5, { hold: true });
-    expect(budget.p95(10)).toBe(5);
-    // The 10 s run on while frames are held: older frames age out.
-    const held = budgetFor("high");
-    frames(held, 40, 2);
-    frames(held, 5, 8);
-    expect(held.p95(10)).toBe(40);
-    frames(held, 40, 3, { hold: true });
-    expect(held.p95(10)).toBe(5);
-    frames(held, 40, 8, { hold: true });
-    expect(held.p95(10)).toBeUndefined();
+    expect(budget.p95()).toBe(5);
+    // The readout counts loading and resize frames that the policy skips.
+    frames(budget, 40, 1, { hold: true });
+    expect(budget.p95()).toBe(40);
+    // Older frames age out.
+    frames(budget, 5, 10);
+    expect(budget.p95()).toBe(5);
   });
   it("chooses the quality tier from renderer, precision and pointer", () => {
     expect(qualityTier("canvas", true, false)).toBe("low");
