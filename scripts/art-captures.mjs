@@ -1,7 +1,7 @@
 /**
  * Art-audit captures, named as docs/ART_QUALITY_AUDIT.md names them (§2, §9.1):
  *
- *   a02-spawn-1440x900@2.png        fresh world, rig at the lander   1440×900 @2
+ *   a02-spawn-1440x900@2.png        fresh world at spawn, surface    1440×900 @2
  *   a04-dive-60m@2.png              60 m shaft, band A               1440×900 @2
  *   b-550m-band-D@2.png             550 m shaft, band D              1440×900 @2
  *   c-site-W01-SITE-4-wreck@2.png   SITE-4 wreck cavern, band C      1440×900 @2
@@ -161,7 +161,10 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           await new Promise((resolve) =>
             setTimeout(resolve, playSeconds * 1000),
           );
-          await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+          // pauseAt cannot go back in time: leave room for a long frame.
+          await page.clock.pauseAt(
+            await page.evaluate(() => Date.now() + 1000),
+          );
           await settledView(page, checkpoint);
         }
         const file = `${path}/${capture.name}.png`;

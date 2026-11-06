@@ -152,6 +152,8 @@ describe("render scale budget (F1)", () => {
     expect(budget.scale(2, 2)).toBe(1.5);
     frames(budget, 40, 3);
     expect(budget.scale(2, 2)).toBe(1);
+    // A p95 of exactly 18 ms is not expensive.
+    expect([...frames(budgetFor("low"), 18, 30)]).toEqual([2]);
   });
   it("recovers one level after 10 s of frames with p95 below 12 ms", () => {
     const budget = budgetFor("low");
@@ -179,7 +181,8 @@ describe("render scale budget (F1)", () => {
     const budget = budgetFor("low");
     frames(budget, 40, 7);
     frames(budget, 8, 8);
-    // Two seconds at 10 fps of 100 ms frames: few frames, but a slow stretch.
+    // Two seconds at 10 fps of 100 ms frames (one second of scene time, which
+    // clamps each frame to 50 ms): few frames, but a slow stretch.
     for (let n = 0; n < 20; n++) budget.sample(100, 0.1);
     expect(budget.scale(2, 2)).toBe(1);
     frames(budget, 8, 9.5);
@@ -187,11 +190,101 @@ describe("render scale budget (F1)", () => {
     frames(budget, 8, 1.6);
     expect(budget.scale(2, 2)).toBe(1.5);
   });
+  it("recovers on each second's p95, not on every frame or the mean", () => {
+    // 64 frames of 1/64 s make an exact one-second slice; its p95 is the
+    // 61st fastest frame, so three slow frames per second still count as
+    // cheap and four do not. Every frame would reject three; the mean
+    // (about 9.4 ms) would accept four.
+    const secondsToRecover = (slowFramesPerSecond: number) => {
+      const budget = budgetFor("low"),
+        dt = 1 / 64;
+      for (let n = 0; n < 7 * 64; n++) budget.sample(40, dt);
+      expect(budget.scale(2, 2)).toBe(1);
+      for (let n = 1; n <= 30 * 64; n++) {
+        budget.sample(n % 64 < slowFramesPerSecond ? 30 : 8, dt);
+        if (budget.scale(2, 2) > 1) return n * dt;
+      }
+      return undefined;
+    };
+    expect(secondsToRecover(3)).toBe(10);
+    expect(secondsToRecover(4)).toBeUndefined();
+  });
   it("does not recover while frames stay at or above 12 ms", () => {
-    const budget = budgetFor("low");
-    frames(budget, 40, 7);
-    frames(budget, 14, 30);
-    expect(budget.scale(2, 2)).toBe(1);
+    for (const milliseconds of [12, 14]) {
+      const budget = budgetFor("low");
+      frames(budget, 40, 7);
+      frames(budget, milliseconds, 30);
+      expect(budget.scale(2, 2)).toBe(1);
+    }
+  });
+  it("backs off after a raise that is undone at once", () => {
+    // Cheap at 1.5, expensive at 2: each failed raise doubles the wait, up
+    // to 160 s, instead of flipping every 15 s.
+    const budget = budgetFor("medium"),
+      dt = 1 / 60,
+      changes: [number, number][] = [];
+    let backing = budget.scale(3, 2);
+    for (let n = 1; n <= 600 * 60; n++) {
+      const scale = budget.scale(3, 2);
+      if (scale !== backing) {
+        changes.push([n * dt, scale]);
+        backing = scale;
+        budget.hold(1);
+      }
+      budget.sample(scale === 2 ? 20 : 11, dt);
+    }
+    expect(changes.length).toBe(13);
+    const waits = changes
+      .map(([at, scale], i) =>
+        scale === 2 ? at - changes[i - 1]![0] : undefined,
+      )
+      .filter((wait) => wait !== undefined);
+    // One second of resize hold, then 10, 20, 40, 80, 160 and 160 s.
+    expect(waits.map(Math.round)).toEqual([11, 21, 41, 81, 161, 161]);
+  });
+  it("waits 10 s again once a raise has held for 60 s", () => {
+    const budget = budgetFor("medium"),
+      dt = 1 / 60,
+      raises: number[] = [];
+    let backing = budget.scale(3, 2);
+    for (let n = 1; n <= 260 * 60; n++) {
+      const t = n * dt,
+        scale = budget.scale(3, 2);
+      if (scale !== backing) {
+        if (scale > backing) raises.push(t);
+        backing = scale;
+        budget.hold(1);
+      }
+      // 0–30 s: a raise fails (wait doubles to 20 s). 30–200 s: cheap, the
+      // next raise holds past 60 s. 200–215 s: expensive. Then cheap.
+      const cost =
+        t < 30 ? (scale === 2 ? 20 : 11) : t < 200 ? 6 : t < 215 ? 30 : 6;
+      budget.sample(cost, dt);
+    }
+    expect(raises.length).toBe(3);
+    expect(raises[1]! - 19).toBeGreaterThan(20);
+    expect(raises[2]).toBeGreaterThan(224.9);
+    expect(raises[2]).toBeLessThan(226.2);
+  });
+  it("counts a long frame as one scene-clock step", () => {
+    // The scene clamps frame dt to 50 ms; so does the budget. Each case
+    // starts the frame on fresh windows: a hold of exactly 64 × 1/64 s.
+    const fresh = (budget: RenderScaleBudget) => {
+      budget.hold(1);
+      for (let n = 0; n < 64; n++) budget.sample(40, 1 / 64);
+    };
+    // One cheap frame that took 10 s of wall time is not 10 s of cheap frames.
+    const phone = budgetFor("medium");
+    frames(phone, 40, 7, { dpr: 3 });
+    expect(phone.scale(3, 2)).toBe(1.5);
+    fresh(phone);
+    phone.sample(8, 10);
+    expect(phone.scale(3, 2)).toBe(1.5);
+    // Nor does one 3 s hitch fill a 3 s window on its own.
+    const desk = budgetFor("medium");
+    fresh(desk);
+    desk.sample(3000, 3);
+    expect(desk.scale(2, 2)).toBe(2);
   });
   it("ignores frames inside loading and resize windows", () => {
     const budget = budgetFor("low");
@@ -199,6 +292,17 @@ describe("render scale budget (F1)", () => {
     expect(budget.scale(2, 2)).toBe(2);
     // One more second of hold after the window, then a full 3 s window.
     frames(budget, 40, 3.9);
+    expect(budget.scale(2, 2)).toBe(2);
+    frames(budget, 40, 0.2);
+    expect(budget.scale(2, 2)).toBe(1.5);
+  });
+  it("starts its windows again after a hold", () => {
+    // Two seconds before a resize and one after are not one 3 s window.
+    const budget = budgetFor("low");
+    frames(budget, 40, 2);
+    budget.hold(1);
+    frames(budget, 40, 1);
+    frames(budget, 40, 2.9);
     expect(budget.scale(2, 2)).toBe(2);
     frames(budget, 40, 0.2);
     expect(budget.scale(2, 2)).toBe(1.5);
@@ -218,6 +322,24 @@ describe("render scale budget (F1)", () => {
     expect([...frames(budget, 40, 20)]).toEqual([1.5]);
     expect(budget.p95(10)).toBe(40);
     expect(new RenderScaleBudget().p95(10)).toBeUndefined();
+  });
+  it("reports p95 over the last 10 s of measured frames only", () => {
+    const budget = budgetFor("high");
+    frames(budget, 40, 10);
+    frames(budget, 5, 10);
+    expect(budget.p95(10)).toBe(5);
+    // Frames inside a loading or resize window are not measured.
+    frames(budget, 40, 0.5, { hold: true });
+    expect(budget.p95(10)).toBe(5);
+    // The 10 s run on while frames are held: older frames age out.
+    const held = budgetFor("high");
+    frames(held, 40, 2);
+    frames(held, 5, 8);
+    expect(held.p95(10)).toBe(40);
+    frames(held, 40, 3, { hold: true });
+    expect(held.p95(10)).toBe(5);
+    frames(held, 40, 8, { hold: true });
+    expect(held.p95(10)).toBeUndefined();
   });
   it("chooses the quality tier from renderer, precision and pointer", () => {
     expect(qualityTier("canvas", true, false)).toBe("low");

@@ -239,10 +239,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.frameReadout = document.createElement("div");
         this.frameReadout.id = "campaign-frametime";
         this.frameReadout.setAttribute("aria-hidden", "true");
+        // Two short lines in the bottom-left corner stay clear of the tool
+        // block on a 393 px phone; insets as the rest of the HUD uses them.
         Object.assign(this.frameReadout.style, {
           position: "fixed",
-          left: "8px",
-          bottom: "8px",
+          left: "max(8px, env(safe-area-inset-left))",
+          bottom: "max(8px, env(safe-area-inset-bottom))",
           zIndex: "1000",
           padding: "4px 6px",
           borderRadius: "3px",
@@ -250,9 +252,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           color: "#f6e1af",
           font: "12px/1.3 ui-monospace, monospace",
           pointerEvents: "none",
-          whiteSpace: "nowrap",
+          whiteSpace: "pre",
         });
-        this.frameReadout.textContent = "p95 — · backing —";
+        this.frameReadout.textContent = "p95 —\nbacking —";
         document.body.append(this.frameReadout);
       }
       this.terrainLayer = new RetainedTerrain(this);
@@ -450,6 +452,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.diagnostics.destroy();
         this.terrainLayer.destroy();
         this.lightingLayer.destroy();
+        this.frameReadout?.remove();
       });
       bindings.onUpdate(0);
     }
@@ -2051,16 +2054,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       if (titleVisible)
         for (const label of this.labels) label.setVisible(false);
       // Twice a second of scene time: the 10 s p95 and the readout.
-      this.frameReadoutTimer += Math.max(0, deltaMilliseconds / 1000);
+      this.frameReadoutTimer += dt;
       if (this.frameReadoutTimer >= 0.5) {
         this.frameReadoutTimer = 0;
         this.frameP95 = this.resolutionBudget.p95(10);
         if (this.frameReadout)
           this.frameReadout.textContent =
-            `p95 ${this.frameP95 === undefined ? "—" : this.frameP95.toFixed(1) + " ms"}` +
-            ` · backing ${this.view.dpr.toFixed(1)}×` +
-            ` · ${this.resolutionBudget.tier}` +
-            (this.resolutionBudget.pin === undefined ? "" : " (pinned)");
+            `p95 ${this.frameP95 === undefined ? "—" : this.frameP95.toFixed(1) + " ms"}\n` +
+            `backing ${Number(this.view.dpr.toFixed(2))}× · ${this.resolutionBudget.tier}` +
+            (this.resolutionBudget.pin === undefined ? "" : " · pinned");
       }
       const host = document.getElementById("campaign-game");
       if (host) {

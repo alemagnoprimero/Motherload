@@ -247,29 +247,25 @@ export function readRenderProbe() {
  * is a PNG data URL and `crop` a rectangle in its device pixels. Luma is
  * Rec. 709; both resamples are Lanczos-3 with Pillow's coefficients (the
  * audit's 0.96 at backing 1 and 0.69 at backing 2 depend on that near-ideal
- * low-pass); energy is the sum of squared forward differences.
+ * low-pass); energy is the sum of squared forward differences. A crop that
+ * reaches past the image is cut to it, so the edge adds no false gradient.
  */
 export async function keepAt2({ image, crop }) {
   const picture = new Image();
   picture.src = image;
   await picture.decode();
-  const width = crop.width - (crop.width % 2),
-    height = crop.height - (crop.height % 2);
+  const left = Math.max(0, crop.x),
+    top = Math.max(0, crop.y),
+    right = Math.min(picture.naturalWidth, crop.x + crop.width),
+    bottom = Math.min(picture.naturalHeight, crop.y + crop.height);
+  const width = Math.max(0, right - left - ((right - left) % 2)),
+    height = Math.max(0, bottom - top - ((bottom - top) % 2));
+  if (width < 2 || height < 2) return null;
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const context = canvas.getContext("2d", { willReadFrequently: true });
-  context.drawImage(
-    picture,
-    crop.x,
-    crop.y,
-    width,
-    height,
-    0,
-    0,
-    width,
-    height,
-  );
+  context.drawImage(picture, left, top, width, height, 0, 0, width, height);
   const rgba = context.getImageData(0, 0, width, height).data;
   const luma = new Float64Array(width * height);
   for (let i = 0; i < luma.length; i++)
