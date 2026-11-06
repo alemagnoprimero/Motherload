@@ -49,3 +49,25 @@ export function renderBand(worldId: string, row: number) {
     ) ?? RENDER_BANDS.W01![0]!
   );
 }
+
+/**
+ * Darkness of each cell state, set per band from its ambient light: unknown
+ * rock is the darkest, remembered space next, visible space the lightest, in
+ * every band (F4). Unknown rock already has a dark base and rock page
+ * (terrain.ts), so its darkness stays low enough to keep it legible.
+ */
+export function stateDarkness(ambient: number) {
+  const depth = 1 - ambient;
+  return {
+    unknown: 0.08 + depth * 0.31,
+    remembered: 0.04 + depth * 0.28,
+    visible: depth * 0.25,
+  };
+}
+/**
+ * High contrast lightens every state by ×0.65 and never darkens unknown rock
+ * past L* 18. On the darkest unknown band (W02 D: base #2f4250 and a rock page
+ * of mean luma 65 at 0.5 alpha, about luma 64 before darkness), darkness 0.36
+ * leaves luma 44, which is L* 18.
+ */
+export const HIGH_CONTRAST_UNKNOWN_DARKNESS = 0.36;
