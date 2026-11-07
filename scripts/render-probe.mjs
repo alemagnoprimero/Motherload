@@ -239,3 +239,95 @@ export function readRenderProbe() {
     lightMapMaximumAlphaStep: maxAlphaStep(probe.lightMap),
   };
 }
+
+/**
+ * keep@2 (audit Appendix C): the share of a crop's gradient energy that
+ * survives halving it and enlarging it again. About 0.95 or more means the
+ * crop was already upscaled 2×; lower is sharper. Runs in the page: `image`
+ * is a PNG data URL and `crop` a rectangle in its device pixels. Luma is
+ * Rec. 709; both resamples are Lanczos-3 with Pillow's coefficients (the
+ * audit's 0.96 at backing 1 and 0.69 at backing 2 depend on that near-ideal
+ * low-pass); energy is the sum of squared forward differences. A crop that
+ * reaches past the image is cut to it, so the edge adds no false gradient.
+ */
+export async function keepAt2({ image, crop }) {
+  const picture = new Image();
+  picture.src = image;
+  await picture.decode();
+  const left = Math.max(0, crop.x),
+    top = Math.max(0, crop.y),
+    right = Math.min(picture.naturalWidth, crop.x + crop.width),
+    bottom = Math.min(picture.naturalHeight, crop.y + crop.height);
+  const width = Math.max(0, right - left - ((right - left) % 2)),
+    height = Math.max(0, bottom - top - ((bottom - top) % 2));
+  if (width < 2 || height < 2) return null;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  context.drawImage(picture, left, top, width, height, 0, 0, width, height);
+  const rgba = context.getImageData(0, 0, width, height).data;
+  const luma = new Float64Array(width * height);
+  for (let i = 0; i < luma.length; i++)
+    luma[i] =
+      0.2126 * rgba[i * 4] +
+      0.7152 * rgba[i * 4 + 1] +
+      0.0722 * rgba[i * 4 + 2];
+  const sinc = (x) => (x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x));
+  const lanczos = (x) => (x >= -3 && x < 3 ? sinc(x) * sinc(x / 3) : 0);
+  // Pillow's ImagingResample coefficients for one axis.
+  const coefficients = (from, to) => {
+    const scale = from / to,
+      filterScale = Math.max(scale, 1),
+      support = 3 * filterScale;
+    return Array.from({ length: to }, (_, out) => {
+      const centre = (out + 0.5) * scale;
+      const start = Math.max(0, Math.trunc(centre - support + 0.5)),
+        end = Math.min(from, Math.trunc(centre + support + 0.5));
+      const weights = [];
+      for (let x = start; x < end; x++)
+        weights.push(lanczos((x - centre + 0.5) / filterScale));
+      const total = weights.reduce((sum, weight) => sum + weight, 0);
+      return { start, weights: weights.map((weight) => weight / total) };
+    });
+  };
+  const resample = (values, fromW, fromH, toW, toH) => {
+    const across = coefficients(fromW, toW),
+      down = coefficients(fromH, toH);
+    const wide = new Float64Array(toW * fromH);
+    for (let y = 0; y < fromH; y++)
+      across.forEach(({ start, weights }, x) => {
+        let sum = 0;
+        weights.forEach((weight, k) => {
+          sum += values[y * fromW + start + k] * weight;
+        });
+        wide[y * toW + x] = sum;
+      });
+    const result = new Float64Array(toW * toH);
+    down.forEach(({ start, weights }, y) => {
+      for (let x = 0; x < toW; x++) {
+        let sum = 0;
+        weights.forEach((weight, k) => {
+          sum += wide[(start + k) * toW + x] * weight;
+        });
+        result[y * toW + x] = sum;
+      }
+    });
+    return result;
+  };
+  const half = resample(luma, width, height, width / 2, height / 2);
+  const enlarged = resample(half, width / 2, height / 2, width, height);
+  const energy = (values) => {
+    let sum = 0;
+    for (let y = 0; y < height - 1; y++)
+      for (let x = 0; x < width - 1; x++) {
+        const i = y * width + x,
+          dx = values[i + 1] - values[i],
+          dy = values[i + width] - values[i];
+        sum += dx * dx + dy * dy;
+      }
+    return sum;
+  };
+  const original = energy(luma);
+  return original ? energy(enlarged) / original : null;
+}

@@ -7,6 +7,8 @@ import {
   CampaignView,
   RenderScaleBudget,
   campaignCameraY,
+  qualityTier,
+  renderDebugOptions,
   surfaceFraming,
   type CameraSafeArea,
 } from "./view";
@@ -78,6 +80,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
   return class CampaignScene extends Phaser.Scene {
     readonly view = new CampaignView();
     private resolutionBudget = new RenderScaleBudget();
+    private renderDebug = renderDebugOptions(location.search);
+    private frameReadout: HTMLElement | undefined;
+    private frameReadoutTimer = 0;
+    private frameP95: number | undefined;
     private art!: CampaignArt;
     private diagnostics!: RenderDiagnostics;
     private artQuality = 2;
@@ -209,6 +215,51 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.diagnostics = new RenderDiagnostics(this, (milliseconds, dt) => {
         this.resolutionBudget.sample(milliseconds, dt);
       });
+      // Quality tier is chosen once, from the renderer and the device (§7).
+      const webgl = this.game.renderer.type !== Phaser.CANVAS;
+      let fragmentHighp = false;
+      if (webgl) {
+        const gl = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer)
+          .gl;
+        fragmentHighp =
+          (gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
+            ?.precision ?? 0) > 0;
+      }
+      this.resolutionBudget.setTier(
+        qualityTier(
+          webgl ? "webgl" : "canvas",
+          fragmentHighp,
+          matchMedia("(pointer: coarse)").matches,
+        ),
+      );
+      this.resolutionBudget.pin = this.renderDebug.backingPin;
+      // Boot uploads and shader compilation are a loading window.
+      this.resolutionBudget.hold(1);
+      if (this.renderDebug.frameTime) {
+        this.frameReadout = document.createElement("div");
+        this.frameReadout.id = "campaign-frametime";
+        this.frameReadout.setAttribute("aria-hidden", "true");
+        // Mid-height on the left edge is playfield in every layout; on phones
+        // the bottom corners hold the Dock button and the tool block.
+        Object.assign(this.frameReadout.style, {
+          position: "fixed",
+          left: "8px",
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: "1000",
+          padding: "4px 6px",
+          borderRadius: "3px",
+          background: "rgba(8, 16, 20, 0.82)",
+          color: "#f6e1af",
+          font: "12px/1.3 ui-monospace, monospace",
+          pointerEvents: "none",
+          whiteSpace: "pre",
+        });
+        // Inside the safe area where env() is supported; 8px stays otherwise.
+        this.frameReadout.style.left = "max(8px, env(safe-area-inset-left))";
+        this.frameReadout.textContent = "p95 —\nbacking —";
+        document.body.append(this.frameReadout);
+      }
       this.terrainLayer = new RetainedTerrain(this);
       this.lightingLayer = new CampaignLighting(this);
       this.background = this.add.graphics().setDepth(0);
@@ -404,6 +455,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.diagnostics.destroy();
         this.terrainLayer.destroy();
         this.lightingLayer.destroy();
+        this.frameReadout?.remove();
       });
       bindings.onUpdate(0);
     }
@@ -829,6 +881,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.game.canvas.height !== deviceHeight
       ) {
         this.scale.resize(deviceWidth, deviceHeight);
+        // A resize re-allocates the backing store: not a steady-state frame.
+        this.resolutionBudget.hold(1);
         this.game.canvas.style.width = cssWidth + "px";
         this.game.canvas.style.height = cssHeight + "px";
         this.cameras.main
@@ -845,6 +899,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           ? 3
           : 2;
       this.art.update(campaign, this.artQuality);
+      // Asset loading and the uploads it causes are not steady-state frames.
+      if (this.load.isLoading() || !this.art.ready(campaign))
+        this.resolutionBudget.hold(1);
       if (!this.art.ready(campaign)) {
         this.loading.setText("PREPARING THE DESTINATION").setVisible(true);
         bindings.onUpdate(0);
@@ -1999,6 +2056,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       }
       if (titleVisible)
         for (const label of this.labels) label.setVisible(false);
+      // Twice a second of scene time: the 10 s p95 and the readout.
+      this.frameReadoutTimer += dt;
+      if (this.frameReadoutTimer >= 0.5) {
+        this.frameReadoutTimer = 0;
+        this.frameP95 = this.resolutionBudget.p95();
+        if (this.frameReadout)
+          this.frameReadout.textContent =
+            `p95 ${this.frameP95 === undefined ? "—" : this.frameP95.toFixed(1) + " ms"}\n` +
+            `backing ${Number(this.view.dpr.toFixed(2))}× · ${this.resolutionBudget.tier}` +
+            (this.resolutionBudget.pin === undefined ? "" : " · pinned");
+      }
       const host = document.getElementById("campaign-game");
       if (host) {
         for (const [key, value] of Object.entries({
@@ -2041,6 +2109,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             this.game.renderer.type === Phaser.CANVAS ? "canvas" : "webgl",
           activeParticles: String(this.chips.length),
           renderScale: String(this.view.dpr),
+          backingScale: String(this.view.dpr),
+          qualityTier: this.resolutionBudget.tier,
+          backingPinned: String(this.resolutionBudget.pin !== undefined),
+          frameP95: this.frameP95?.toFixed(1) ?? "",
           residentTextureBytes: String(
             Object.values(this.textures.list).reduce(
               (sum, texture) =>

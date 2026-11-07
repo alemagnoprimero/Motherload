@@ -128,27 +128,183 @@ export class CampaignView {
   }
 }
 
-/** Lower resolution only after a sustained expensive render window, never on a single hitch. */
+/** The backing scales the Render quality setting offers and the budget steps between. */
+export const BACKING_LEVELS = [1, 1.5, 2] as const;
+
+/** Device classes chosen once at boot (audit §7). Each sets a backing floor. */
+export type QualityTier = "high" | "medium" | "low";
+const BACKING_FLOOR: Readonly<Record<QualityTier, number>> = {
+  high: 2,
+  medium: 1.5,
+  low: 1,
+};
+
+/**
+ * High: WebGL with fragment highp on a fine-pointer (desktop) device. Medium:
+ * WebGL on a coarse-pointer device, or without fragment highp. No boot-time
+ * signal tells a recent phone from a mid-range one, so phones start at Medium;
+ * recovery still raises them to 2.0 when their frames allow. Low: Canvas.
+ */
+export function qualityTier(
+  renderer: "webgl" | "canvas",
+  fragmentHighp: boolean,
+  coarsePointer: boolean,
+): QualityTier {
+  if (renderer === "canvas") return "low";
+  return fragmentHighp && !coarsePointer ? "high" : "medium";
+}
+
+/** `?backing=1|1.5|2` pins the backing scale; `?debug=frametime` shows the readout. */
+export function renderDebugOptions(search: string) {
+  const params = new URLSearchParams(search);
+  const pin = Number(params.get("backing"));
+  return {
+    backingPin: (BACKING_LEVELS as readonly number[]).includes(pin)
+      ? pin
+      : undefined,
+    frameTime: (params.get("debug") ?? "").split(",").includes("frametime"),
+  };
+}
+
+function percentile95(values: readonly number[]) {
+  const ordered = [...values].sort((a, b) => a - b);
+  return (
+    ordered[Math.min(ordered.length - 1, Math.floor(ordered.length * 0.95))] ??
+    0
+  );
+}
+
+/**
+ * Lower resolution only after a sustained expensive render window, never on a
+ * single hitch, and never below the tier's floor. Raise it again after 10 s of
+ * cheap frames. A raise that the next two windows undo (within 8 s) doubles
+ * the wait before the next raise to that level, up to 160 s, so a device that
+ * is cheap at one level and expensive at the next does not flip every few
+ * seconds; a raise that holds for 60 s resets that level's wait. Loading and
+ * resize windows are not measured. Time is the scene clock: frame dt clamped
+ * as the scene clamps it, so every window freezes with the test clock and one
+ * long frame counts as one short step.
+ */
 export class RenderScaleBudget {
-  private samples: number[] = [];
-  private elapsed = 0;
-  private ceiling = 2;
-  scale(deviceDpr: number, requested = 2) {
-    return Math.max(1, Math.min(deviceDpr, requested, this.ceiling));
+  tier: QualityTier = "high";
+  /** Debug pin: one of BACKING_LEVELS, or undefined for the adaptive policy. */
+  pin: number | undefined;
+  private level = 2;
+  private cap = 2;
+  private window: number[] = [];
+  private windowSeconds = 0;
+  private slice: number[] = [];
+  private sliceSeconds = 0;
+  private cheapSeconds = 0;
+  /** Cheap seconds needed before a raise to each level, if not 10. */
+  private recoverAfter = new Map<number, number>();
+  private raised: { to: number; at: number } | undefined;
+  private recent: { milliseconds: number; at: number }[] = [];
+  private clock = 0;
+  private held = 0;
+  setTier(tier: QualityTier) {
+    this.tier = tier;
+    this.level = Math.max(this.level, BACKING_FLOOR[tier]);
   }
-  sample(milliseconds: number, dt: number) {
-    this.samples.push(milliseconds);
-    this.elapsed += dt;
-    if (this.elapsed < 3) return false;
-    const ordered = this.samples.sort((a, b) => a - b);
-    const p95 =
-      ordered[
-        Math.min(ordered.length - 1, Math.floor(ordered.length * 0.95))
-      ] ?? 0;
-    this.samples = [];
-    this.elapsed = 0;
-    if (p95 <= 18 || this.ceiling <= 1) return false;
-    this.ceiling = this.ceiling > 1.5 ? 1.5 : 1;
+  /** The tier's floor, limited by what this device and setting allow. */
+  floor() {
+    return Math.min(BACKING_FLOOR[this.tier], this.cap);
+  }
+  scale(deviceDpr: number, requested = 2) {
+    if (this.pin !== undefined) return this.pin;
+    this.cap = Math.max(1, Math.min(deviceDpr, requested, 2));
+    return this.current();
+  }
+  /**
+   * Loading and resizes are not steady cost: the policy ignores frames for
+   * `seconds` of scene time and starts its windows and recovery count again.
+   * The readout's p95 still counts them.
+   */
+  hold(seconds = 1) {
+    this.held = Math.max(this.held, seconds);
+    this.restart();
+  }
+  /** p95 frame cost over the last 10 s of scene time, if any frames. */
+  p95() {
+    return this.recent.length
+      ? percentile95(this.recent.map((frame) => frame.milliseconds))
+      : undefined;
+  }
+  /**
+   * One frame: its cost in milliseconds (Phaser PRE_STEP to POST_RENDER) and
+   * the loop's frame interval in seconds.
+   */
+  sample(milliseconds: number, frameSeconds: number) {
+    // The scene's own clock step (scene.ts update): at most 50 ms per frame.
+    const dt = Math.min(0.05, Math.max(0, frameSeconds));
+    this.clock += dt;
+    this.recent.push({ milliseconds, at: this.clock });
+    while (this.recent.length && this.recent[0]!.at <= this.clock - 10)
+      this.recent.shift();
+    if (this.held > 0) {
+      this.held -= dt;
+      return false;
+    }
+    if (this.pin !== undefined) return false;
+    if (this.raised && this.clock - this.raised.at >= 60) {
+      this.recoverAfter.delete(this.raised.to);
+      this.raised = undefined;
+    }
+    const current = this.current();
+    this.window.push(milliseconds);
+    this.windowSeconds += dt;
+    // Recovery counts whole seconds of cheap frames, so a slow stretch is not
+    // outweighed by the many fast frames that follow it.
+    this.slice.push(milliseconds);
+    this.sliceSeconds += dt;
+    if (this.sliceSeconds >= 1) {
+      this.cheapSeconds =
+        percentile95(this.slice) < 12
+          ? this.cheapSeconds + this.sliceSeconds
+          : 0;
+      this.slice = [];
+      this.sliceSeconds = 0;
+    }
+    if (this.windowSeconds >= 3) {
+      const p95 = percentile95(this.window);
+      this.window = [];
+      this.windowSeconds = 0;
+      if (p95 > 18) {
+        const lower = Math.max(
+          this.floor(),
+          [...BACKING_LEVELS].reverse().find((level) => level < current) ?? 1,
+        );
+        if (lower >= current) return false;
+        if (this.raised && this.clock - this.raised.at < 8)
+          this.recoverAfter.set(
+            this.raised.to,
+            Math.min(160, this.waitFor(this.raised.to) * 2),
+          );
+        this.raised = undefined;
+        this.level = lower;
+        this.restart();
+        return true;
+      }
+    }
+    if (current >= this.cap) return false;
+    const next = BACKING_LEVELS.find((level) => level > current) ?? 2;
+    if (this.cheapSeconds < this.waitFor(next)) return false;
+    this.level = next;
+    this.raised = { to: next, at: this.clock };
+    this.restart();
     return true;
+  }
+  private waitFor(level: number) {
+    return this.recoverAfter.get(level) ?? 10;
+  }
+  private restart() {
+    this.window = [];
+    this.windowSeconds = 0;
+    this.slice = [];
+    this.sliceSeconds = 0;
+    this.cheapSeconds = 0;
+  }
+  private current() {
+    return Math.max(this.floor(), Math.min(this.cap, this.level));
   }
 }

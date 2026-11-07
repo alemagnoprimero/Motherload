@@ -64,12 +64,15 @@ function clear(checkpoint, x, y) {
     )
       item.status = "exposed";
 }
-function fixture(worldId = "W01", row = 6) {
+export function fixture(
+  worldId = "W01",
+  row = 6,
+  x = worldId === "W01" ? 31.5 : 12.5,
+) {
   const checkpoint = structuredClone(
     fixtures[worldId === "W01" ? "native" : "w02"],
   );
   const mine = world(checkpoint);
-  const x = worldId === "W01" ? 31.5 : 12.5;
   checkpoint.state.vehicle = { x, y: row - 0.36, energy: 9, hull: 10 };
   for (let y = 0; y < row; y++) clear(checkpoint, x, y);
   mine.discovered.fill(0);
@@ -95,7 +98,7 @@ async function play(page, ms = 50) {
   }
   if (ms) await advance(page, ms);
 }
-async function restore(page, checkpoint, resume = true) {
+export async function restore(page, checkpoint, resume = true) {
   await keys(page, []);
   await importCheckpoint(page, checkpoint);
   assert.equal(
@@ -109,7 +112,7 @@ async function restore(page, checkpoint, resume = true) {
 // the camera fades in, contextZoom eases from the previous framing (the camera
 // follows it) and band pages stream in. Like settle() in render-acceptance.mjs,
 // wait for four unchanged frames of the restored rig, then let the fade end.
-async function settledView(page, checkpoint) {
+export async function settledView(page, checkpoint) {
   const { currentWorld, vehicle } = checkpoint.state;
   const read = () =>
     page.locator("#campaign-game").evaluate((el) => ({
