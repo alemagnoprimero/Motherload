@@ -76,7 +76,7 @@ W02 D's stone (`#39425c` under its rock page, mean luma 65) is barely lighter th
 
 ### Trade-offs
 
-- **Known space is lighter, and the lamp lifts it less.** Remembered and visible darkness must sit below unknown, so known space far from the lamp is lighter than on `main`. Known rock in the cavern frame averages 86.5, against 63.7. With little darkness left to erase, the headlamp lifts known air near the rig by only +0.6 to +3.1 luma, against +10.7 to +17.0 on `main`; the deleted cream lamp added to that lift. The audit's additive headlamp (T1) is the step that brings the lamp back.
+- **Known space is lighter, and the lamp lifts it less.** Remembered and visible darkness must sit below unknown, so known space far from the lamp is lighter than on `main`. Known rock in the cavern frame averages 86.6, against 64.5. With little darkness left to erase, the headlamp lifts known air near the rig by only +0.6 to +3.0 luma, against +10.7 to +16.8 on `main`; the deleted cream lamp added to that lift. The audit's additive headlamp (T1) is the step that brings the lamp back.
 - **W02 against its provisional key.** The audit's provisional W02 key puts unknown rock at luma 64–75, and the owner's line is 45–65. W02 bands A–C sit at 62–64, inside the owner's range and just under the key; band D is at 48. The W02 key waits on D13.
 
 ## Before and after
