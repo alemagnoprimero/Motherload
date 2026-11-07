@@ -315,7 +315,10 @@ def dark_markdown(shares):
     lines = ['## Dark shares across the last nightly runs', '']
     if not runs:
         return '\n'.join(lines + ['No nightly run with `improvement/pixels.json` was found.', ''])
-    lines += [f"{len(runs)} run(s): " + ', '.join(f"{r['run']} ({(r['createdAt'] or '')[:10]}, {(r['headSha'] or '')[:7]})" for r in runs) + '.', '',
+    commits = {r['headSha'] for r in runs if r['headSha']}
+    note = (f' They cover {len(commits)} commits: a change merged inside the window shows here as spread, not only run-to-run noise.'
+            if len(commits) > 1 else '')
+    lines += [f"{len(runs)} run(s): " + ', '.join(f"{r['run']} ({(r['createdAt'] or '')[:10]}, {(r['headSha'] or '')[:7]})" for r in runs) + '.' + note, '',
               '| Capture | Runs | Min | Max | Spread |', '|---|---|---|---|---|']
     for k, v in shares['captures'].items():
         lines.append(f"| `{k}` | {len(v['values'])} | {100 * v['min']:.3f} % | {100 * v['max']:.3f} % | {v['spread_pp']:.3f} pp |")

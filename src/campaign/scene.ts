@@ -91,7 +91,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private resolutionBudget = new RenderScaleBudget();
     private renderDebug = renderDebugOptions(location.search);
     private overlaysVisible = harnessOptions(location.search).overlays;
-    /** Harness hook: hold `elapsed`, so every animated term keeps its phase. */
+    /** Harness hook: hold `elapsed`, so the looping animation keeps its phase. */
     private sceneClockFrozen = false;
     private debugHooks: CampaignDebug | undefined;
     private frameReadout: HTMLElement | undefined;
@@ -2170,7 +2170,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           backingScale: String(this.view.dpr),
           qualityTier: this.resolutionBudget.tier,
           backingPinned: String(this.resolutionBudget.pin !== undefined),
-          backingBackoff: JSON.stringify(this.resolutionBudget.state()),
           frameP95: this.frameP95?.toFixed(1) ?? "",
           residentTextureBytes: String(
             Object.values(this.textures.list).reduce(
