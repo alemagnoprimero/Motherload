@@ -71,7 +71,8 @@ export class CampaignLighting {
         // Darkness depends only on the cell's state and band, never on hidden geology.
         const darkness = fogDarkness(
           !known ? "unknown" : visible ? "visible" : "remembered",
-          renderBand(world.id, row).ambient,
+          world.id,
+          renderBand(world.id, row).id,
           highContrast,
         );
         fog.fillStyle = `rgba(5,9,13,${darkness})`;

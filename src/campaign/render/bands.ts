@@ -52,18 +52,36 @@ export function renderBand(worldId: string, row: number) {
 
 export type CellState = "unknown" | "remembered" | "visible";
 /**
- * Darkness of each cell state, set per band from its ambient light: unknown
- * rock is the darkest, remembered space next, visible space the lightest, in
- * every band (F4). Unknown rock already has a dark base and rock page
- * (terrain.ts), so its darkness stays low enough to keep it legible.
+ * Darkness of each cell state per band (F4): unknown rock is the darkest,
+ * remembered space next, visible space the lightest, in every band. Unknown
+ * rock takes most of its value from its dark base and rock page
+ * (terrain.ts), so its darkness only trims it into luma 45–65.
+ * - W01 follows depth (d = 1 − ambient): about 0.08 + 0.31d, 0.04 + 0.28d
+ *   and 0.25d.
+ * - W02's rock pages are much lighter in bands A–C (mean luma 100–124,
+ *   against 77–83 on W01), so its unknown darkness is higher there. Band D
+ *   matches W01 D but for unknown rock, whose base and page are darker.
  */
-export function stateDarkness(ambient: number) {
-  const depth = 1 - ambient;
-  return {
-    unknown: 0.08 + depth * 0.31,
-    remembered: 0.04 + depth * 0.28,
-    visible: depth * 0.25,
-  };
+const STATE_DARKNESS: Record<
+  string,
+  Record<string, Readonly<Record<CellState, number>>>
+> = {
+  W01: {
+    a: { unknown: 0.13, remembered: 0.08, visible: 0.04 },
+    b: { unknown: 0.18, remembered: 0.13, visible: 0.08 },
+    c: { unknown: 0.25, remembered: 0.19, visible: 0.14 },
+    d: { unknown: 0.3, remembered: 0.24, visible: 0.18 },
+  },
+  W02: {
+    a: { unknown: 0.4, remembered: 0.08, visible: 0.04 },
+    b: { unknown: 0.27, remembered: 0.14, visible: 0.09 },
+    c: { unknown: 0.31, remembered: 0.2, visible: 0.14 },
+    d: { unknown: 0.31, remembered: 0.24, visible: 0.18 },
+  },
+};
+export function stateDarkness(worldId: string, bandId: string) {
+  const world = STATE_DARKNESS[worldId] ?? STATE_DARKNESS.W01!;
+  return world[bandId] ?? STATE_DARKNESS.W01!.a!;
 }
 /**
  * A backstop for the L* 18 floor on unknown rock in high contrast. On the
@@ -76,10 +94,11 @@ export const HIGH_CONTRAST_UNKNOWN_DARKNESS = 0.36;
 /** The light map's darkness for a cell, as lighting.ts draws it. */
 export function fogDarkness(
   state: CellState,
-  ambient: number,
+  worldId: string,
+  bandId: string,
   highContrast: boolean,
 ) {
-  const darkness = stateDarkness(ambient)[state];
+  const darkness = stateDarkness(worldId, bandId)[state];
   if (!highContrast) return darkness;
   return state === "unknown"
     ? Math.min(darkness * 0.65, HIGH_CONTRAST_UNKNOWN_DARKNESS)
