@@ -107,7 +107,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private sky!: Phaser.GameObjects.TileSprite;
     private ridgeFar!: Phaser.GameObjects.TileSprite;
     private ridgeNear!: Phaser.GameObjects.TileSprite;
-    private lamp!: Phaser.GameObjects.Image;
     private loading!: Phaser.GameObjects.Text;
     private imageIndex = 0;
     private labelIndex = 0;
@@ -302,25 +301,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         .tileSprite(0, 0, 1, 1, initialPrefix + "-ridge-near")
         .setOrigin(0)
         .setDepth(3);
-      const glow = this.textures.createCanvas("campaign-lamp", 256, 256);
-      if (glow) {
-        const context = glow.context;
-        const gradient = context.createRadialGradient(
-          128,
-          128,
-          5,
-          128,
-          128,
-          128,
-        );
-        gradient.addColorStop(0, "rgba(246,225,175,.18)");
-        gradient.addColorStop(0.42, "rgba(246,225,175,.08)");
-        gradient.addColorStop(1, "rgba(246,225,175,0)");
-        context.fillStyle = gradient;
-        context.fillRect(0, 0, 256, 256);
-        glow.refresh();
-      }
-      this.lamp = this.add.image(0, 0, "campaign-lamp").setDepth(17.2);
       for (const [kind, colour] of [
         ["silver", "#ecfffa"],
         ["gold", "#ffdfa0"],
@@ -1247,7 +1227,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           .setScale(scale);
         this.ridgeNear.tilePositionX = (cx * 0.6) / scale;
       }
-      this.lamp.setPosition(px, py).setDisplaySize(tile * 5, tile * 5);
 
       this.terrainLayer.render(campaign, this.view, highContrast);
       this.lightingLayer.render(

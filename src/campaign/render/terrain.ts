@@ -174,13 +174,15 @@ export class RetainedTerrain {
                 : type === 4
                   ? "plate"
                   : "rock";
+        // F4 values: unknown rock dark (concept L* about 24); cave air darker
+        // still before light, #17242e (L* about 14) under a light wall page.
         const base =
           material === "unknown"
             ? world.id === "W02"
-              ? "#5d7782"
-              : "#596771"
+              ? "#2f4250"
+              : "#30383f"
             : material === "wall"
-              ? band.wall
+              ? "#17242e"
               : material === "bedrock"
                 ? "#26303d"
                 : material === "plate"
@@ -190,7 +192,8 @@ export class RetainedTerrain {
                     : band.soil[1];
         ctx.fillStyle = base;
         ctx.fillRect(x * tile, y * tile, tile + 0.2, tile + 0.2);
-        const key = `band-${world.id}-${band.id}-${material === "unknown" ? "soil" : material === "plate" || material === "bedrock" ? "rock" : material}`;
+        // Unknown cells take the band's rock page: band (row) only, never hidden material.
+        const key = `band-${world.id}-${band.id}-${material === "unknown" || material === "plate" || material === "bedrock" ? "rock" : material}`;
         let pattern = this.patterns.get(key);
         if (!pattern && this.scene.textures.exists(key)) {
           const source = this.scene.textures
@@ -207,7 +210,7 @@ export class RetainedTerrain {
         }
         if (pattern) {
           ctx.globalAlpha =
-            material === "unknown" ? 0.23 : material === "wall" ? 0.55 : 1;
+            material === "unknown" ? 0.5 : material === "wall" ? 0.25 : 1;
           ctx.fillStyle = pattern;
           ctx.fillRect(x * tile, y * tile, tile + 0.2, tile + 0.2);
           ctx.globalAlpha = 1;
@@ -216,7 +219,7 @@ export class RetainedTerrain {
           ctx.strokeStyle =
             material === "wall"
               ? "#54707a"
-              : material === "rock"
+              : material === "rock" || material === "unknown"
                 ? band.rock[0]
                 : band.soil[0];
           ctx.globalAlpha = material === "unknown" ? 0.16 : 0.35;

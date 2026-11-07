@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import type { Campaign } from "../model";
 import type { CampaignView } from "../view";
-import { renderBand } from "./bands";
+import { fogDarkness, renderBand } from "./bands";
 
 /** Canvas compositing is the reference implementation for both Phaser renderers. */
 export class CampaignLighting {
@@ -68,14 +68,14 @@ export class CampaignLighting {
       for (let column = firstX; column <= lastX; column++) {
         const known = row >= world.rows || campaign.isKnown(wrap(column), row),
           visible = known && campaign.isVisible(wrap(column), row);
-        const ambient = renderBand(world.id, row).ambient;
-        // Unknown rock stays legible at depth; darkness describes known space without revealing hidden geology.
-        const darkness = !known
-          ? 0.16
-          : visible
-            ? (1 - ambient) * 0.72
-            : Math.min(0.52, (1 - ambient) * 0.72 + 0.14);
-        fog.fillStyle = `rgba(5,9,13,${highContrast ? darkness * 0.65 : darkness})`;
+        // Darkness depends only on the cell's state and band, never on hidden geology.
+        const darkness = fogDarkness(
+          !known ? "unknown" : visible ? "visible" : "remembered",
+          world.id,
+          renderBand(world.id, row).id,
+          highContrast,
+        );
+        fog.fillStyle = `rgba(5,9,13,${darkness})`;
         fog.fillRect(
           (column * view.tile - view.scrollX) * scale,
           (row * view.tile - view.scrollY) * scale,
