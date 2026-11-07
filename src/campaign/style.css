@@ -3890,3 +3890,12 @@ body .campaign-mission-stack .campaign-objective {
     font-size: 12px;
   }
 }
+
+/* ?overlays=0 or __campaignDebug.overlays(false): HUD-free frames for the
+   visual harness (audit F3). Opacity, not display or visibility, so every box
+   still shapes the camera's safe area and stays hit-testable. */
+body[data-annotations="off"] .campaign-shell > :not(#campaign-game),
+body[data-annotations="off"] #campaign-frametime,
+body[data-annotations="off"].campaign-hit::after {
+  opacity: 0 !important;
+}

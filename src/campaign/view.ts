@@ -130,6 +130,10 @@ export class CampaignView {
 
 /** The backing scales the Render quality setting offers and the budget steps between. */
 export const BACKING_LEVELS = [1, 1.5, 2] as const;
+/** A raise undone within this many seconds doubles that level's wait. */
+const RAISE_PROBATION_SECONDS = 8;
+/** A raise that holds this long resets that level's wait. */
+const RAISE_RESET_SECONDS = 60;
 
 /** Device classes chosen once at boot (audit §7). Each sets a backing floor. */
 export type QualityTier = "high" | "medium" | "low";
@@ -164,6 +168,69 @@ export function renderDebugOptions(search: string) {
       : undefined,
     frameTime: (params.get("debug") ?? "").split(",").includes("frametime"),
   };
+}
+
+/**
+ * Visual-harness switches (audit F3): `?overlays=0` starts with every
+ * annotation hidden (HUD, chips, labels, markers and UI strokes), for
+ * HUD-free frames.
+ */
+export function harnessOptions(search: string) {
+  return { overlays: new URLSearchParams(search).get("overlays") !== "0" };
+}
+
+/** RenderScaleBudget's adaptive state, as the debug readout shows it. */
+export interface BackingBudgetState {
+  pinned: boolean;
+  /** The backing scale in use: the pin when pinned. */
+  level: number;
+  /** The tier's floor and the ceiling; undefined under a pin, which the policy never sees. */
+  floor: number | undefined;
+  cap: number | undefined;
+  /** The next level a recovery would raise to; undefined at the ceiling. */
+  next: number | undefined;
+  /** Whole seconds of cheap frames counted towards that raise. */
+  cheapSeconds: number;
+  /** Cheap seconds that raise needs: 10, or more after failed raises. */
+  wait: number | undefined;
+  /** Scene seconds left in a loading or resize hold. */
+  held: number;
+  /** Levels whose raises failed, with their doubled waits in seconds. */
+  backoff: { level: number; wait: number }[];
+  /**
+   * The last raise, kept until a step down or its 60 s reset. Its first 8 s
+   * are the probation in which a step down doubles that level's wait.
+   */
+  raised: { to: number; age: number } | undefined;
+}
+
+/**
+ * The readout's policy line (F3): the budget's next step, a raise still on
+ * probation (a step down now doubles that level's wait) and each doubled wait,
+ * with the time a holding raise needs to reset it.
+ */
+export function backoffLine(state: BackingBudgetState) {
+  if (state.pinned) return "policy off (pinned)";
+  const { raised } = state;
+  const probation =
+    raised && raised.age < RAISE_PROBATION_SECONDS
+      ? ` · probation ${raised.to}× ${Math.floor(raised.age)}/${RAISE_PROBATION_SECONDS} s`
+      : "";
+  const waits = state.backoff.length
+    ? ` · back-off ${state.backoff
+        .map(
+          (entry) =>
+            `${entry.level}× ${entry.wait} s` +
+            (raised?.to === entry.level
+              ? ` (resets in ${Math.max(0, Math.ceil(RAISE_RESET_SECONDS - raised.age))} s)`
+              : ""),
+        )
+        .join(", ")}`
+    : "";
+  if (state.held > 0)
+    return `held ${state.held.toFixed(1)} s${probation}${waits}`;
+  if (state.next === undefined) return `at ceiling${probation}${waits}`;
+  return `next ${state.next}× after ${Math.floor(state.cheapSeconds)}/${state.wait} s${probation}${waits}`;
 }
 
 function percentile95(values: readonly number[]) {
@@ -246,7 +313,7 @@ export class RenderScaleBudget {
       return false;
     }
     if (this.pin !== undefined) return false;
-    if (this.raised && this.clock - this.raised.at >= 60) {
+    if (this.raised && this.clock - this.raised.at >= RAISE_RESET_SECONDS) {
       this.recoverAfter.delete(this.raised.to);
       this.raised = undefined;
     }
@@ -275,7 +342,10 @@ export class RenderScaleBudget {
           [...BACKING_LEVELS].reverse().find((level) => level < current) ?? 1,
         );
         if (lower >= current) return false;
-        if (this.raised && this.clock - this.raised.at < 8)
+        if (
+          this.raised &&
+          this.clock - this.raised.at < RAISE_PROBATION_SECONDS
+        )
           this.recoverAfter.set(
             this.raised.to,
             Math.min(160, this.waitFor(this.raised.to) * 2),
@@ -293,6 +363,33 @@ export class RenderScaleBudget {
     this.raised = { to: next, at: this.clock };
     this.restart();
     return true;
+  }
+  /** A read-only view of the adaptive policy for the debug readout. */
+  state(): BackingBudgetState {
+    const pinned = this.pin !== undefined;
+    const level = this.pin ?? this.current();
+    const next =
+      pinned || level >= this.cap
+        ? undefined
+        : BACKING_LEVELS.find((candidate) => candidate > level);
+    return {
+      pinned,
+      level,
+      // scale() returns a pin before it sets the cap: under a pin neither
+      // value was worked out for this device.
+      floor: pinned ? undefined : this.floor(),
+      cap: pinned ? undefined : this.cap,
+      next,
+      cheapSeconds: this.cheapSeconds,
+      wait: next === undefined ? undefined : this.waitFor(next),
+      held: Math.max(0, this.held),
+      backoff: [...this.recoverAfter]
+        .sort(([a], [b]) => a - b)
+        .map(([level, wait]) => ({ level, wait })),
+      raised: this.raised
+        ? { to: this.raised.to, age: this.clock - this.raised.at }
+        : undefined,
+    };
   }
   private waitFor(level: number) {
     return this.recoverAfter.get(level) ?? 10;
