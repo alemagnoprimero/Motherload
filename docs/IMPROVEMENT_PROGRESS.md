@@ -47,6 +47,21 @@ The strict 10/40-minute lower bounds remain unmet; the median 8-minute gap bound
 
 Current repeatable evidence lives in `artifacts/plan-ui-final/`, `artifacts/audio/`, `artifacts/pacing/marginal-final/`, `artifacts/pacing/current-guided/` and `artifacts/pacing/current-comparison/`; these generated files are ignored locally and retained by the relevant CI jobs. The maintained baseline is [tests/pacing/v01-baseline.json](../tests/pacing/v01-baseline.json). The original proposal's audit files remain unchanged.
 
+### Pacing calibration (open)
+
+Recorded 2026-11-06. Four guardrails in `tests/pacing/campaign.test.mjs` fail in the subset run (`npm run test:pacing`: W01 seeds 1 and 8 for each policy, so each value is the mean of two runs). The results are identical locally on `main` at `07be4c4` and in the `pacing` job's recent pull-request runs:
+
+| Guardrail                             | Result    | Limit     |
+| ------------------------------------- | --------- | --------- |
+| Skilled, W01 median chapter           | 8.46 min  | 10–18 min |
+| Novice, W01 median worst purchase gap | 9.19 min  | ≤8 min    |
+| Guided skilled, W01 median chapter    | 9.89 min  | 10–18 min |
+| Guided novice, W01 median chapter     | 35.89 min | 40–50 min |
+
+The 100-seed nightly fails the same four guardrails with different values (run 42248096496 on 2026-11-06: skilled 9.48 min, novice worst gap 10.48 min, guided skilled 9.89 min and guided novice 39.51 min; the two guided values are the medians in the 100-seed table of the previous section). It also reports the W02 targets and seven novice seeds that do not complete a world.
+
+The limits were not loosened, and no limit or script changed. Pull requests no longer run the `pacing` job. The nightly run (100 seeds per policy, both worlds) and manual runs (the same two-seed subset) still enforce these guardrails, and each job reports its failures in its `artifacts/pacing/summary.json`, so the calibration stays visible until it is resolved.
+
 ### Rendering measurements and remaining limits
 
 A separate maximum-quality probe pins actual DPR 2 and lets both worlds’ neighbouring art pages finish loading. Desktop textures measure **45.64 MiB at boot / 55.77 MiB in W01 / 63.52 MiB in W02**, under 64 MiB; the W02 fixture has 0.48 MiB headroom. Phone measurements are **19.43 / 29.55 / 31.80 MiB**, under 20 MiB boot and 40 MiB active. Terrain sampling is capped at 1.5 with 2× macro pages; foreground sprites retain native 3× pages and the canvas/text can use DPR 2. This measured fixture does not certify every possible future content combination. `npm run test:render:memory` retains this strict check in CI.

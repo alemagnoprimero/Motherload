@@ -12,7 +12,7 @@ navigation are also exercised by the native opening and 200 return paths in
 planner's chapter report. Hazard opportunities and hesitation in an abstract
 planner cannot certify physical-device or human results.
 
-Run `npm run test:pacing` for the pull-request subset. Run
+Run `npm run test:pacing` for the two-seed subset. Run
 `npm run test:pacing:nightly` for the 100-seed report. Reports are written to
 ignored `artifacts/pacing/`; every seed retains its completion flag, purchases,
 trips, recovery count and gaps. A stopped or timed-out run is never counted as a
@@ -52,8 +52,9 @@ completed the three remaining rich states without recovery. This does not by
 itself establish the chapter pacing targets.
 
 Nightly CI shards the five policies into separate bounded jobs with
-`PACING_POLICIES`; each shard still runs all 100 seeds and both chapters. The PR
-job runs the two-seed W01 comparison together under a two-minute test timeout.
+`PACING_POLICIES`; each shard still runs all 100 seeds and both chapters. A
+manual run (`workflow_dispatch`) runs the two-seed W01 comparison together under
+a two-minute test timeout. Pull requests do not run the pacing job.
 A local unsharded nightly can take substantially longer than a single CI shard.
 
 Run `PACING_CAPABILITIES=1 npx vitest run tests/pacing/marginal.test.mjs --maxWorkers=1`
@@ -112,6 +113,6 @@ The final direct-POI two-world diagnostic used two seeds per guided policy and
 completed all four W02 chapters. Guided novice W02 measured 49.926 minutes and
 a median worst gap of 8.9925 minutes, failing the 60–90 minute and ≤8 minute targets.
 This is a small diagnostic, not a 100-seed W02 acceptance result; the nightly
-matrix is configured to collect the latter. The actual PR command, including
+matrix is configured to collect the latter. The two-seed subset command, including
 native calibration/return-path tests, completed in 59.5 seconds with 10 mechanical
 tests passing and the strict pacing target test failing as reported.
