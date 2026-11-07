@@ -1,7 +1,8 @@
 // F4 measurement captures. Reuses the capture definitions in
 // scripts/art-captures.mjs (CAPTURES, FORMS) and its flow: restore() the
-// fixture, settledView(), screenshot. It adds two W01 frames with hard rock
-// beside the shaft (bands C and D) and W02 shafts in all four bands. After each screenshot it records the
+// fixture, settledView(), screenshot. It adds W02 shafts in all four bands and
+// frames with hard rock beside the shaft in every band of both worlds (W02 B and
+// D shafts already have it). After each screenshot it records the
 // camera and DOM overlay rectangles and exports the live campaign state, so
 // the analysis can classify every cell (unknown, known solid, known air, sky).
 // Usage: node docs/qa/f4-value-rekey/measure-capture.mjs <base-url> <out-dir> [highContrast=0|1] [names]
@@ -62,6 +63,31 @@ try {
         name: "w02-band-D-850m@2",
         form: "desktop",
         checkpoint: () => fixture("W02", 85),
+      },
+      {
+        name: "w01-hard-rock-A-76m@2",
+        form: "desktop",
+        checkpoint: () => fixture("W01", 8, 6.5),
+      },
+      {
+        name: "w01-hard-rock-B-176m@2",
+        form: "desktop",
+        checkpoint: () => fixture("W01", 18, 3.5),
+      },
+      {
+        name: "w01-hard-rock-B-266m@2",
+        form: "desktop",
+        checkpoint: () => fixture("W01", 27, 1.5),
+      },
+      {
+        name: "w02-hard-rock-A-106m@2",
+        form: "desktop",
+        checkpoint: () => fixture("W02", 11, 36.5),
+      },
+      {
+        name: "w02-hard-rock-C-526m@2",
+        form: "desktop",
+        checkpoint: () => fixture("W02", 53, 20.5),
       },
     ];
     const captures = [...CAPTURES, ...extra].filter(
