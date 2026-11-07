@@ -33,7 +33,7 @@ jobs:
       - name: Install browser and pixel measurement tooling
         run: |
           npx playwright-core install --with-deps chromium
-          python3 -m pip install Pillow==12.0.0
+          python3 -m pip install Pillow==12.0.0 numpy==2.5.3
       - name: Start isolated source preview
         run: |
           npm run dev -- --port 5173 --strictPort > /tmp/motherload-vite.log 2>&1 &
@@ -46,7 +46,9 @@ jobs:
       - name: Check campaign improvements and atomic save storage
         env:
           PREVIEW_URL: http://127.0.0.1:5173/
-          IMPROVEMENT_CHECKS: ${{ github.event_name == 'schedule' && 'behavior,visual,fog,sky,perf' || 'behavior,visual,fog' }}
+          # harness: the §9 fixtures at backing 1 (audit F3). The nightly runs
+          # them at backing 2 in visual-sheets instead.
+          IMPROVEMENT_CHECKS: ${{ github.event_name == 'schedule' && 'behavior,visual,fog,sky,perf' || 'behavior,visual,fog,harness' }}
         run: |
           export CHROMIUM_PATH="$(node --input-type=module -e 'import { chromium } from "playwright-core"; process.stdout.write(chromium.executablePath());')"
           npm run test:improvements
@@ -76,6 +78,91 @@ jobs:
             artifacts/camera-*/
             artifacts/hud-surface*/
             artifacts/audit-opening*/
+          if-no-files-found: ignore
+  visual-sheets:
+    # Audit F3: the §9.1 sheets and the §9.2 table at backing 2 on the
+    # schedule (and manual runs, like pacing), never on pull requests, with
+    # its own timeout; pull requests run the fixtures at backing 1 inside
+    # verify. It also reports how the dark shares in pixels.json spread across
+    # the last seven nightly runs.
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Install browser and pixel measurement tooling
+        run: |
+          npx playwright-core install --with-deps chromium
+          python3 -m pip install Pillow==12.0.0 numpy==2.5.3
+      - name: Start isolated source preview
+        run: |
+          npm run dev -- --port 5173 --strictPort > /tmp/motherload-vite.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:5173/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/motherload-vite.log
+          exit 1
+      - name: Capture the §9 fixtures at backing 2
+        env:
+          PREVIEW_URL: http://127.0.0.1:5173/
+          ART_BACKING: "2"
+          ART_CAPTURES_DIR: artifacts/visual-sheets/captures
+        run: |
+          export CHROMIUM_PATH="$(node --input-type=module -e 'import { chromium } from "playwright-core"; process.stdout.write(chromium.executablePath());')"
+          node scripts/art-captures.mjs
+      - name: Check the ported measures against metrics.py
+        # Also run per pull request, but pull requests that change only docs
+        # skip verify, and the panels, metrics.py and fresh-w01.json are docs.
+        run: |
+          python3 scripts/art-metrics-check.py \
+            "artifacts/visual-sheets/captures/a04-dive-60m@2-hudfree.png" \
+            "artifacts/visual-sheets/captures/c-site-W01-SITE-4-wreck@2-hudfree.png"
+      - name: Fetch pixels.json from the last seven nightly runs
+        # The spread is secondary: an API failure here must not stop the
+        # sheets and the table (art-sheets.py reports an empty history).
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          history="$RUNNER_TEMP/nightly"
+          mkdir -p "$history"
+          cd "$history"
+          # Newest first. Runs whose verify stopped before the visual section
+          # have no pixels.json; keep the first seven that do.
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow checks.yml --event schedule \
+            --limit 20 --json databaseId,createdAt,headSha > runs.json || echo '[]' > runs.json
+          found=0
+          for id in $(jq -r '.[].databaseId' runs.json); do
+            if gh run download "$id" --repo "$GITHUB_REPOSITORY" -n improvement-evidence -D "$id" > /dev/null 2>&1 \
+              && [ -f "$id/improvement/pixels.json" ]; then
+              find "$id" -type f ! -path "*/improvement/pixels.json" -delete
+              found=$((found + 1))
+            else
+              rm -rf "$id"
+            fi
+            if [ "$found" -ge 7 ]; then break; fi
+          done
+          echo "pixels.json from $found nightly run(s)"
+      - name: Build the §9.1 sheets, the §9.2 table and the dark-share spread
+        run: |
+          python3 scripts/art-sheets.py --captures artifacts/visual-sheets/captures \
+            --out artifacts/visual-sheets --history "$RUNNER_TEMP/nightly" >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain the sheets
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: visual-sheets
+          path: artifacts/visual-sheets/
           if-no-files-found: ignore
   pacing:
     # Nightly and manual only: the guardrails fail for an open balance reason

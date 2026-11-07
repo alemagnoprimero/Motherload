@@ -3,7 +3,11 @@ import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { launchBrowser } from "./browser-launch.mjs";
-import { installRenderProbe, readRenderProbe } from "./render-probe.mjs";
+import {
+  compareLightTexture,
+  installRenderProbe,
+  readRenderProbe,
+} from "./render-probe.mjs";
 import {
   click,
   idle,
@@ -140,6 +144,13 @@ try {
         }));
         const probe = await page.evaluate(readRenderProbe);
         info.probe = probe;
+        // The harness hook (audit F3) must return the map the renderer draws.
+        info.lightTexture = await page.evaluate(compareLightTexture);
+        assert.equal(
+          info.lightTexture?.maximumAlphaDifference,
+          0,
+          `__campaignDebug.lightTexture() matches the drawn light map: ${JSON.stringify(info.lightTexture)}`,
+        );
         assert.equal(info.renderer, renderer);
         if (renderer === "webgl") {
           assert.ok(

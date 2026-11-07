@@ -241,6 +241,60 @@ export function readRenderProbe() {
 }
 
 /**
+ * Everything window.__campaignDebug reports, in one read (audit F3): the light
+ * map snapshot, the import fade, the scene clock, F1's backing policy and the
+ * annotation switch. Runs in the page.
+ */
+export async function readCampaignDebug() {
+  const debug = window.__campaignDebug;
+  if (!debug) throw new Error("window.__campaignDebug is missing");
+  return {
+    light: await debug.lightTexture(),
+    fade: debug.fade(),
+    sceneClock: debug.sceneClock.read(),
+    backing: debug.backing(),
+    overlays: debug.overlays(),
+  };
+}
+
+/**
+ * Checks __campaignDebug.lightTexture() against the light map the probe saw
+ * drawn (installRenderProbe keeps the live canvas): sizes and the largest
+ * alpha difference, or null when either is missing. Runs in the page.
+ */
+export async function compareLightTexture() {
+  const drawn = window.__renderProbe?.lightMap,
+    debug = window.__campaignDebug;
+  if (!drawn || !debug) return null;
+  const snapshot = await debug.lightTexture();
+  const image = new Image();
+  image.src = snapshot.dataURL;
+  await image.decode();
+  const alpha = (source) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = source.width;
+    canvas.height = source.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(source, 0, 0);
+    return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  };
+  const result = {
+    snapshot: [image.width, image.height],
+    drawn: [drawn.width, drawn.height],
+    maximumAlphaDifference: null,
+  };
+  if (image.width !== drawn.width || image.height !== drawn.height)
+    return result;
+  const a = alpha(image),
+    b = alpha(drawn);
+  let maximum = 0;
+  for (let index = 3; index < a.length; index += 4)
+    maximum = Math.max(maximum, Math.abs(a[index] - b[index]));
+  result.maximumAlphaDifference = maximum;
+  return result;
+}
+
+/**
  * keep@2 (audit Appendix C): the share of a crop's gradient energy that
  * survives halving it and enlarging it again. About 0.95 or more means the
  * crop was already upscaled 2×; lower is sharper. Runs in the page: `image`

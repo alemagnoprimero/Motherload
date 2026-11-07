@@ -311,7 +311,14 @@ async function tab(page, name) {
   }
   await click(page, '#campaign-dock [data-tab="' + name + '"]');
 }
-async function ready(browser, base, options = {}) {
+/**
+ * Opens the campaign at `base` and starts it. `options` go to
+ * browser.newContext. `harness.freezeSceneClock` holds the scene clock at 0
+ * from the title on (window.__campaignDebug, audit F3), so every animated term
+ * (alarm border, rig frames, glints, pulses) has the same phase in every run,
+ * however long the real clock runs before the caller's freeze().
+ */
+async function ready(browser, base, options = {}, harness = {}) {
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     ...options,
@@ -335,6 +342,12 @@ async function ready(browser, base, options = {}) {
     () =>
       document.querySelector("#campaign-game")?.dataset.campaignArt === "ready",
   );
+  if (harness.freezeSceneClock)
+    assert.equal(
+      await page.evaluate(() => window.__campaignDebug?.sceneClock.freeze(0)),
+      0,
+      "Scene clock freezes at 0 before Start",
+    );
   if (await page.locator("#campaign-start").isVisible())
     await click(page, "#campaign-start");
   await idle(page);
