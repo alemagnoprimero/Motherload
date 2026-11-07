@@ -27,6 +27,8 @@ export interface RigFrame {
   width: number;
   height: number;
   damageLife: number;
+  /** False with ?overlays=0: the hit outline is feedback, not art (F3). */
+  overlays: boolean;
 }
 /** All modular rig layers share their source pivot, squash and load offset. */
 export function renderRig(frame: RigFrame) {
@@ -241,7 +243,7 @@ export function renderRig(frame: RigFrame) {
     );
     screen.strokeRect(2, 2, width - 4, height - 4);
   }
-  if (damageLife > 0) {
+  if (damageLife > 0 && frame.overlays) {
     fx.lineStyle(2, 0xff8e7f, damageLife / 0.3);
     fx.strokeRoundedRect(
       px - tile * 0.48,
