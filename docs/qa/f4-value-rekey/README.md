@@ -41,7 +41,7 @@ The table covers the five audit captures at 1440×900 @2 and 393×851 @3, frozen
 | Unknown − cave air | ≥ +10 | +34.0 to +54.7 | +11.4 to +25.1 | met |
 | Frame L\*, shaft (a04) | 25.9 ± 4 | 37.6 | 26.5 | met |
 | Frame L\*, cavern (c-site-W01-SITE-4) | 21.0 ± 4 | 26.4 | 19.8 | met |
-| Dark share below luma 40 in the `improvement-smoke.mjs` visual check | ≤ 60 % | desktop 5.1 / 5.2 % | desktop {DARK} | met |
+| Dark share below luma 40 in the `improvement-smoke.mjs` visual check | ≤ 60 % | desktop 5.1 / 5.2 % | desktop 8.1 / 6.4 % | met |
 | Fog check and hidden-geology inset crops | pass | pass | pass | met |
 | `npm test`, `format:check` | pass | — | 249 passed, 5 skipped; clean | met |
 
