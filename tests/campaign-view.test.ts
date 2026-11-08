@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
   BACKING_LEVELS,
+  CAMERA_FOLLOW_OMEGA,
+  CAMERA_ZOOM,
   CampaignView,
+  DEEP_BLEND,
   RenderScaleBudget,
+  SURFACE_BLEND,
   backoffLine,
+  cameraZoomTarget,
   campaignCameraY,
+  followSpring,
   harnessOptions,
   qualityTier,
   renderDebugOptions,
@@ -98,12 +104,81 @@ describe("continuous surface camera framing", () => {
       );
     },
   );
-  it("keeps surface composition stable above ground and blends into the shaft", () => {
+  it("keeps surface composition stable above ground and blends into the shaft (F5)", () => {
+    expect(SURFACE_BLEND).toEqual({ from: -0.4, to: 1.6 });
     expect(surfaceFraming(-4)).toBe(1);
-    expect(surfaceFraming(0)).toBe(1);
-    expect(surfaceFraming(2)).toBe(0.5);
-    expect(surfaceFraming(4)).toBe(0);
+    expect(surfaceFraming(-0.4)).toBe(1);
+    expect(surfaceFraming(0.6)).toBe(0.5);
+    expect(surfaceFraming(1.6)).toBe(0);
     expect(surfaceFraming(200)).toBe(0);
+    // No step at the surface line: a smoothstep's slope is at most 1.5 / 2
+    // per row over a 2-row blend.
+    for (let y = -1; y < 2.2; y += 0.01)
+      expect(
+        Math.abs(surfaceFraming(y + 0.01) - surfaceFraming(y)),
+      ).toBeLessThan(0.0076);
+  });
+});
+
+describe("camera zoom and follow (F5)", () => {
+  it("blends the zoom targets by depth instead of switching", () => {
+    expect(cameraZoomTarget(-2)).toBe(CAMERA_ZOOM.surface);
+    expect(cameraZoomTarget(SURFACE_BLEND.from)).toBe(CAMERA_ZOOM.surface);
+    expect(cameraZoomTarget(SURFACE_BLEND.to)).toBe(CAMERA_ZOOM.shaft);
+    expect(cameraZoomTarget(DEEP_BLEND.from)).toBe(CAMERA_ZOOM.shaft);
+    expect(cameraZoomTarget(DEEP_BLEND.to)).toBe(CAMERA_ZOOM.deep);
+    expect(cameraZoomTarget(55)).toBe(CAMERA_ZOOM.deep);
+    // The former step at 120 m (a resting rig at renderY 11.64) is the
+    // middle of the deep blend.
+    expect(cameraZoomTarget(11.64)).toBeCloseTo(
+      (CAMERA_ZOOM.shaft + CAMERA_ZOOM.deep) / 2,
+      6,
+    );
+    let largest = 0;
+    for (let y = -1; y < 15; y += 0.01)
+      largest = Math.max(
+        largest,
+        Math.abs(cameraZoomTarget(y + 0.01) - cameraZoomTarget(y)),
+      );
+    expect(largest).toBeLessThan(0.001);
+  });
+  it("takes its zoom targets as parameters, for T11 under D1", () => {
+    const zoom = {
+      surface: 0.95,
+      shaft: 1.25,
+      deep: 1.4,
+      dock: 0.9,
+      inspection: 1.3,
+    };
+    expect(cameraZoomTarget(-1, zoom)).toBe(0.95);
+    expect(cameraZoomTarget(5, zoom)).toBe(1.25);
+    expect(cameraZoomTarget(20, zoom)).toBe(1.4);
+  });
+  it("follows with a critically damped spring of about 110 ms", () => {
+    expect(1 / CAMERA_FOLLOW_OMEGA).toBeCloseTo(0.111, 3);
+    // From rest, one time constant leaves (1 + 1)/e of the offset.
+    expect(followSpring(1, 0, 0, 1 / CAMERA_FOLLOW_OMEGA).position).toBeCloseTo(
+      2 / Math.E,
+      9,
+    );
+    // It approaches without overshoot, whatever the frame length.
+    for (const dt of [1 / 120, 1 / 60, 0.05]) {
+      let state = { position: 100, velocity: 0 },
+        previous = state.position;
+      for (let t = 0; t < 2; t += dt) {
+        state = followSpring(state.position, state.velocity, 0, dt);
+        expect(state.position).toBeGreaterThanOrEqual(0);
+        expect(state.position).toBeLessThanOrEqual(previous);
+        previous = state.position;
+      }
+      expect(state.position).toBeLessThan(0.01);
+    }
+    // Exact for a held target: two half frames equal one whole frame.
+    const half = followSpring(3, -2, 1, 0.025),
+      twice = followSpring(half.position, half.velocity, 1, 0.025),
+      once = followSpring(3, -2, 1, 0.05);
+    expect(twice.position).toBeCloseTo(once.position, 12);
+    expect(twice.velocity).toBeCloseTo(once.velocity, 12);
   });
 });
 

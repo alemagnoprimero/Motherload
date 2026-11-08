@@ -10,10 +10,81 @@ export interface CameraSafeArea {
   right?: number;
 }
 
-/** Ease surface composition into shaft tracking without a hard depth boundary. */
+/** 0 at `from`, 1 at `to`, smoothstep between them and clamped outside. */
+export function smoothstep(from: number, to: number, x: number) {
+  const t = Math.max(0, Math.min(1, (x - from) / (to - from)));
+  return t * t * (3 - 2 * t);
+}
+
+/**
+ * Audit F5: the surface-to-shaft blend, in rig rows (renderY). The zoom, the
+ * vertical framing and the home pull all follow one smoothstep over it, so
+ * nothing switches at the surface line.
+ */
+export const SURFACE_BLEND = { from: -0.4, to: 1.6 } as const;
+
+/** Surface composition's weight: 1 at and above the surface, 0 in the shaft. */
 export function surfaceFraming(y: number) {
-  const depth = Math.max(0, Math.min(1, y / 4));
-  return 1 - depth * depth * (3 - 2 * depth);
+  return 1 - smoothstep(SURFACE_BLEND.from, SURFACE_BLEND.to, y);
+}
+
+/**
+ * Camera zoom targets (F5): multipliers of campaignTileSize(). T11 sets them
+ * under D1 without touching the blends; surface and shaft meet over
+ * SURFACE_BLEND, shaft and deep over DEEP_BLEND.
+ */
+export interface CameraZoom {
+  surface: number;
+  shaft: number;
+  deep: number;
+  dock: number;
+  inspection: number;
+}
+export const CAMERA_ZOOM: Readonly<CameraZoom> = {
+  surface: 0.88,
+  shaft: 1,
+  deep: 1.05,
+  dock: 0.88,
+  inspection: 1.08,
+};
+/**
+ * The shaft-to-deep blend in rig rows: 100 m to 140 m, centred on the former
+ * step at 120 m (a rig resting on row 12's floor has renderY 11.64).
+ */
+export const DEEP_BLEND = { from: 9.64, to: 13.64 } as const;
+
+/** The zoom target for a rig at row `y`: surface, shaft and deep, blended. */
+export function cameraZoomTarget(
+  y: number,
+  zoom: Readonly<CameraZoom> = CAMERA_ZOOM,
+) {
+  const below =
+    zoom.shaft +
+    (zoom.deep - zoom.shaft) * smoothstep(DEEP_BLEND.from, DEEP_BLEND.to, y);
+  return below + (zoom.surface - below) * surfaceFraming(y);
+}
+
+/**
+ * Audit F5: the camera follows with a critically damped spring of ω = 9 per
+ * second, a time constant of about 110 ms (the former exp(−22 dt) was 45 ms).
+ * The step solves the spring exactly for a target held over `dt`, so it
+ * never overshoots and the frame rate does not change the path.
+ */
+export const CAMERA_FOLLOW_OMEGA = 9;
+export function followSpring(
+  position: number,
+  velocity: number,
+  target: number,
+  dt: number,
+  omega = CAMERA_FOLLOW_OMEGA,
+) {
+  const offset = position - target,
+    k = velocity + omega * offset,
+    decay = Math.exp(-omega * dt);
+  return {
+    position: target + (offset + k * dt) * decay,
+    velocity: (velocity - omega * k * dt) * decay,
+  };
 }
 
 /** Place the surface and ascent inside the usable view, away from HUD bands. */
