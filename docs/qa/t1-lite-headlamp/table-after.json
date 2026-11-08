@@ -1,0 +1,941 @@
+{
+ "base": "http://127.0.0.1:5173/?backing=2",
+ "backingPin": 2,
+ "frames": {
+  "a02-spawn-1440x900@2": {
+   "scene": "surface",
+   "panel": "surface-wide",
+   "backing": 2,
+   "window": [
+    0,
+    39.3,
+    1440,
+    782.3
+   ],
+   "rig_anchor": [
+    0.74,
+    0.689
+   ],
+   "target_anchor": [
+    0.532,
+    0.689
+   ],
+   "frame": {
+    "L_mean": 27.6,
+    "L_sd": 8.0,
+    "L_p2": 15.6,
+    "L_p98": 51.8,
+    "L_range_p2_p98": 36.3,
+    "within3_of_mode": 0.45,
+    "warm_pct": 0.26,
+    "cyan_pct": 3.66,
+    "edge_density": 0.026,
+    "luma_mean": 64.9,
+    "luma_sd": 18.8
+   },
+   "regions": {
+    "unknown": {
+     "luma": 62.6,
+     "sd": 2.7,
+     "n": 406813
+    },
+    "known_lit": {
+     "luma": 128.7,
+     "sd": 3.5,
+     "n": 14226
+    },
+    "lit_cells": 3,
+    "cave_air": null,
+    "rock_near_light": {
+     "luma": 128.7,
+     "sd": 3.5,
+     "n": 14226
+    },
+    "known_solid": {
+     "luma": 120.8,
+     "sd": 8.1,
+     "n": 33339
+    },
+    "known_lit_minus_unknown": 66.1,
+    "known_solid_minus_unknown": 58.2,
+    "unknown_minus_cave_air": null,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": null
+   },
+   "tiles_across": 25.0,
+   "overlay": {
+    "edges_full": 33265,
+    "edges_hudfree": 23038,
+    "playfield_px": 1177994,
+    "overlay_share": 0.307,
+    "art_edge_density": 0.0196
+   },
+   "mean_gradient": 1.16,
+   "flat_share": 0.635
+  },
+  "a04-dive-60m@2": {
+   "scene": "60 m",
+   "panel": "shaft-wide",
+   "backing": 2,
+   "window": [
+    0,
+    0,
+    1440,
+    743
+   ],
+   "rig_anchor": [
+    0.5,
+    0.598
+   ],
+   "target_anchor": [
+    0.536,
+    0.76
+   ],
+   "frame": {
+    "L_mean": 27.1,
+    "L_sd": 7.4,
+    "L_p2": 15.2,
+    "L_p98": 52.6,
+    "L_range_p2_p98": 37.4,
+    "within3_of_mode": 0.791,
+    "warm_pct": 0.08,
+    "cyan_pct": 0.01,
+    "edge_density": 0.025,
+    "luma_mean": 64.1,
+    "luma_sd": 17.9
+   },
+   "regions": {
+    "unknown": {
+     "luma": 61.7,
+     "sd": 3.4,
+     "n": 1222338
+    },
+    "known_lit": {
+     "luma": 122.0,
+     "sd": 9.9,
+     "n": 22674
+    },
+    "lit_cells": 4,
+    "cave_air": {
+     "luma": 38.6,
+     "sd": 3.2,
+     "n": 61222
+    },
+    "rock_near_light": {
+     "luma": 123.8,
+     "sd": 9.4,
+     "n": 28758
+    },
+    "known_solid": {
+     "luma": 123.6,
+     "sd": 8.2,
+     "n": 41240
+    },
+    "known_lit_minus_unknown": 60.3,
+    "known_solid_minus_unknown": 61.9,
+    "unknown_minus_cave_air": 23.1,
+    "lit_minus_cave_air": 83.4,
+    "solid_minus_cave_air": 85.0
+   },
+   "tiles_across": 22.0,
+   "overlay": {
+    "edges_full": 27370,
+    "edges_hudfree": 15780,
+    "playfield_px": 1177994,
+    "overlay_share": 0.423,
+    "art_edge_density": 0.0134
+   },
+   "mean_gradient": 1.05,
+   "flat_share": 0.875,
+   "wall": {
+    "row4.5": {
+     "rock_-0.4tile": 109.0,
+     "lip_peak": 139.0,
+     "undercut_min": 36.0,
+     "air_+0.2tile": 37.0,
+     "samples": [
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      139.0,
+      76.0,
+      37.0,
+      37.0,
+      36.0,
+      36.0,
+      36.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0
+     ]
+    }
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 84.7,
+     "b": 21.0
+    },
+    "0.8tile": {
+     "L": 56.5,
+     "b": 0.7
+    },
+    "1.5tile": {
+     "L": 31.6,
+     "b": -6.2
+    }
+   }
+  },
+  "a05-dive-150m@2": {
+   "scene": "150 m",
+   "panel": "shaft-wide",
+   "backing": 2,
+   "window": [
+    0,
+    0,
+    1440,
+    743
+   ],
+   "rig_anchor": [
+    0.5,
+    0.598
+   ],
+   "target_anchor": [
+    0.536,
+    0.76
+   ],
+   "frame": {
+    "L_mean": 25.4,
+    "L_sd": 7.0,
+    "L_p2": 13.8,
+    "L_p98": 49.0,
+    "L_range_p2_p98": 35.2,
+    "within3_of_mode": 0.769,
+    "warm_pct": 0.03,
+    "cyan_pct": 2.92,
+    "edge_density": 0.015,
+    "luma_mean": 60.2,
+    "luma_sd": 16.6
+   },
+   "regions": {
+    "unknown": {
+     "luma": 59.3,
+     "sd": 3.7,
+     "n": 1375423
+    },
+    "known_lit": {
+     "luma": 115.7,
+     "sd": 39.7,
+     "n": 31282
+    },
+    "lit_cells": 5,
+    "cave_air": {
+     "luma": 36.4,
+     "sd": 3.2,
+     "n": 108575
+    },
+    "rock_near_light": {
+     "luma": 115.7,
+     "sd": 39.7,
+     "n": 31282
+    },
+    "known_solid": {
+     "luma": 112.9,
+     "sd": 26.9,
+     "n": 72201
+    },
+    "known_lit_minus_unknown": 56.4,
+    "known_solid_minus_unknown": 53.6,
+    "unknown_minus_cave_air": 22.9,
+    "lit_minus_cave_air": 79.3,
+    "solid_minus_cave_air": 76.5
+   },
+   "tiles_across": 21.0,
+   "overlay": {
+    "edges_full": 25108,
+    "edges_hudfree": 13188,
+    "playfield_px": 1177994,
+    "overlay_share": 0.475,
+    "art_edge_density": 0.0112
+   },
+   "mean_gradient": 0.95,
+   "flat_share": 0.843,
+   "wall": {
+    "row11.5": {
+     "rock_-0.4tile": 108.0,
+     "lip_peak": 139.0,
+     "undercut_min": 35.0,
+     "air_+0.2tile": 37.0,
+     "samples": [
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      108.0,
+      139.0,
+      90.0,
+      35.0,
+      35.0,
+      36.0,
+      36.0,
+      36.0,
+      36.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0
+     ]
+    }
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 99.6,
+     "b": 3.9
+    },
+    "0.8tile": {
+     "L": 62.4,
+     "b": -8.5
+    },
+    "1.5tile": {
+     "L": 26.3,
+     "b": -7.6
+    }
+   }
+  },
+  "b-330m-plate-band-C@2": {
+   "scene": "330 m",
+   "panel": "cavern-wide",
+   "backing": 2,
+   "window": [
+    0,
+    0,
+    1440,
+    792
+   ],
+   "rig_anchor": [
+    0.5,
+    0.56
+   ],
+   "target_anchor": [
+    0.273,
+    0.68
+   ],
+   "frame": {
+    "L_mean": 23.8,
+    "L_sd": 6.4,
+    "L_p2": 13.3,
+    "L_p98": 44.1,
+    "L_range_p2_p98": 30.8,
+    "within3_of_mode": 0.653,
+    "warm_pct": 1.56,
+    "cyan_pct": 1.63,
+    "edge_density": 0.023,
+    "luma_mean": 56.7,
+    "luma_sd": 14.8
+   },
+   "regions": {
+    "unknown": {
+     "luma": 54.8,
+     "sd": 4.1,
+     "n": 1450084
+    },
+    "known_lit": {
+     "luma": 85.1,
+     "sd": 15.8,
+     "n": 58999
+    },
+    "lit_cells": 9,
+    "cave_air": {
+     "luma": 39.4,
+     "sd": 19.4,
+     "n": 94383
+    },
+    "rock_near_light": {
+     "luma": 86.3,
+     "sd": 15.4,
+     "n": 65723
+    },
+    "known_solid": {
+     "luma": 88.2,
+     "sd": 15.6,
+     "n": 140921
+    },
+    "known_lit_minus_unknown": 30.3,
+    "known_solid_minus_unknown": 33.4,
+    "unknown_minus_cave_air": 15.4,
+    "lit_minus_cave_air": 45.7,
+    "solid_minus_cave_air": 48.8
+   },
+   "tiles_across": 21.0,
+   "overlay": {
+    "edges_full": 32578,
+    "edges_hudfree": 21134,
+    "playfield_px": 1177994,
+    "overlay_share": 0.351,
+    "art_edge_density": 0.0179
+   },
+   "mean_gradient": 1.19,
+   "flat_share": 0.783,
+   "wall": {
+    "row29.5": {
+     "rock_-0.4tile": 98.0,
+     "lip_peak": 132.0,
+     "undercut_min": 34.0,
+     "air_+0.2tile": 34.0,
+     "samples": [
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      98.0,
+      132.0,
+      63.0,
+      34.0,
+      34.0,
+      34.0,
+      34.0,
+      34.0,
+      34.0,
+      34.0,
+      34.0,
+      34.0,
+      34.0
+     ]
+    },
+    "row31.5": {
+     "rock_-0.4tile": 74.0,
+     "lip_peak": 128.0,
+     "undercut_min": 34.0,
+     "air_+0.2tile": 35.0,
+     "samples": [
+      76.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      74.0,
+      83.0,
+      128.0,
+      62.0,
+      34.0,
+      35.0,
+      35.0,
+      35.0,
+      35.0,
+      35.0,
+      35.0,
+      35.0,
+      35.0,
+      36.0
+     ]
+    }
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 76.5,
+     "b": 24.3
+    },
+    "0.8tile": {
+     "L": 27.9,
+     "b": 1.6
+    },
+    "1.5tile": {
+     "L": 13.7,
+     "b": -5.8
+    }
+   }
+  },
+  "c-site-W01-SITE-4-wreck@2": {
+   "scene": "SITE-4",
+   "panel": "cavern-wide",
+   "backing": 2,
+   "window": [
+    0,
+    0,
+    1440,
+    792
+   ],
+   "rig_anchor": [
+    0.5,
+    0.56
+   ],
+   "target_anchor": [
+    0.273,
+    0.68
+   ],
+   "frame": {
+    "L_mean": 20.3,
+    "L_sd": 8.8,
+    "L_p2": 9.9,
+    "L_p98": 43.2,
+    "L_range_p2_p98": 33.2,
+    "within3_of_mode": 0.51,
+    "warm_pct": 5.48,
+    "cyan_pct": 0.01,
+    "edge_density": 0.031,
+    "luma_mean": 49.1,
+    "luma_sd": 20.0
+   },
+   "regions": {
+    "unknown": {
+     "luma": 52.0,
+     "sd": 3.0,
+     "n": 932580
+    },
+    "known_lit": null,
+    "lit_cells": 1,
+    "cave_air": {
+     "luma": 32.9,
+     "sd": 10.0,
+     "n": 576874
+    },
+    "rock_near_light": {
+     "luma": 93.2,
+     "sd": 6.7,
+     "n": 25232
+    },
+    "known_solid": {
+     "luma": 86.6,
+     "sd": 10.8,
+     "n": 120602
+    },
+    "known_lit_minus_unknown": null,
+    "known_solid_minus_unknown": 34.6,
+    "unknown_minus_cave_air": 19.1,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": 53.7
+   },
+   "tiles_across": 21.0,
+   "overlay": {
+    "edges_full": 40421,
+    "edges_hudfree": 29048,
+    "playfield_px": 1177994,
+    "overlay_share": 0.281,
+    "art_edge_density": 0.0247
+   },
+   "mean_gradient": 1.45,
+   "flat_share": 0.525,
+   "boundary_axis_share": 0.93,
+   "boundary_axis_share_all": 0.928,
+   "headlamp": {
+    "0.35tile": {
+     "L": 77.1,
+     "b": 24.6
+    },
+    "0.8tile": {
+     "L": 28.7,
+     "b": 2.0
+    },
+    "1.5tile": {
+     "L": 14.6,
+     "b": -5.2
+    }
+   }
+  },
+  "p-portrait-02-spawn@3": {
+   "scene": "surface",
+   "panel": "surface-tall",
+   "backing": 2,
+   "window": [
+    0,
+    132.4,
+    393,
+    704.4
+   ],
+   "rig_anchor": [
+    0.499,
+    0.69
+   ],
+   "target_anchor": [
+    0.502,
+    0.69
+   ],
+   "frame": {
+    "L_mean": 30.4,
+    "L_sd": 8.5,
+    "L_p2": 20.2,
+    "L_p98": 54.9,
+    "L_range_p2_p98": 34.7,
+    "within3_of_mode": 0.448,
+    "warm_pct": 0.3,
+    "cyan_pct": 4.45,
+    "edge_density": 0.015,
+    "luma_mean": 71.5,
+    "luma_sd": 20.6
+   },
+   "regions": {
+    "unknown": {
+     "luma": 63.7,
+     "sd": 2.9,
+     "n": 156030
+    },
+    "known_lit": {
+     "luma": 128.6,
+     "sd": 3.5,
+     "n": 14428
+    },
+    "lit_cells": 3,
+    "cave_air": null,
+    "rock_near_light": {
+     "luma": 128.6,
+     "sd": 3.5,
+     "n": 14428
+    },
+    "known_solid": {
+     "luma": 120.6,
+     "sd": 8.2,
+     "n": 33958
+    },
+    "known_lit_minus_unknown": 64.9,
+    "known_solid_minus_unknown": 56.9,
+    "unknown_minus_cave_air": null,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": null
+   },
+   "tiles_across": 10.1,
+   "overlay": {
+    "edges_full": 16120,
+    "edges_hudfree": 6863,
+    "playfield_px": 276625,
+    "overlay_share": 0.574,
+    "art_edge_density": 0.0248
+   }
+  },
+  "p-portrait-03-dive-70m@3": {
+   "scene": "70 m",
+   "panel": "shaft-tall",
+   "backing": 2,
+   "window": [
+    0,
+    0,
+    393,
+    572
+   ],
+   "rig_anchor": [
+    0.5,
+    0.737
+   ],
+   "target_anchor": [
+    0.575,
+    0.758
+   ],
+   "frame": {
+    "L_mean": 27.7,
+    "L_sd": 10.2,
+    "L_p2": 14.4,
+    "L_p98": 55.7,
+    "L_range_p2_p98": 41.3,
+    "within3_of_mode": 0.637,
+    "warm_pct": 0.15,
+    "cyan_pct": 0.02,
+    "edge_density": 0.025,
+    "luma_mean": 65.6,
+    "luma_sd": 24.6
+   },
+   "regions": {
+    "unknown": {
+     "luma": 62.8,
+     "sd": 3.6,
+     "n": 424244
+    },
+    "known_lit": null,
+    "lit_cells": 1,
+    "cave_air": {
+     "luma": 38.7,
+     "sd": 3.6,
+     "n": 61689
+    },
+    "rock_near_light": {
+     "luma": 112.0,
+     "sd": 4.8,
+     "n": 12482
+    },
+    "known_solid": {
+     "luma": 119.8,
+     "sd": 8.3,
+     "n": 31205
+    },
+    "known_lit_minus_unknown": null,
+    "known_solid_minus_unknown": 57.0,
+    "unknown_minus_cave_air": 24.1,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": 81.1
+   },
+   "tiles_across": 8.9,
+   "overlay": {
+    "edges_full": 20859,
+    "edges_hudfree": 10005,
+    "playfield_px": 276625,
+    "overlay_share": 0.52,
+    "art_edge_density": 0.0362
+   },
+   "wall": {
+    "row3.5": {
+     "rock_-0.4tile": 129.0,
+     "lip_peak": 149.0,
+     "undercut_min": 37.0,
+     "air_+0.2tile": 37.0,
+     "samples": [
+      129.0,
+      129.0,
+      129.0,
+      129.0,
+      129.0,
+      129.0,
+      129.0,
+      129.0,
+      130.0,
+      130.0,
+      130.0,
+      130.0,
+      130.0,
+      130.0,
+      101.0,
+      95.0,
+      129.0,
+      149.0,
+      93.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0
+     ]
+    }
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 85.1,
+     "b": 21.1
+    },
+    "0.8tile": {
+     "L": 56.6,
+     "b": 1.4
+    },
+    "1.5tile": {
+     "L": 29.8,
+     "b": -6.0
+    }
+   }
+  },
+  "p-portrait-cavern-site4@3": {
+   "scene": "SITE-4",
+   "panel": "cavern-tall",
+   "backing": 2,
+   "window": [
+    0,
+    13.0,
+    393,
+    621.0
+   ],
+   "rig_anchor": [
+    0.501,
+    0.672
+   ],
+   "target_anchor": [
+    0.226,
+    0.672
+   ],
+   "frame": {
+    "L_mean": 19.7,
+    "L_sd": 12.0,
+    "L_p2": 9.9,
+    "L_p98": 51.3,
+    "L_range_p2_p98": 41.4,
+    "within3_of_mode": 0.581,
+    "warm_pct": 9.37,
+    "cyan_pct": 0.03,
+    "edge_density": 0.033,
+    "luma_mean": 48.4,
+    "luma_sd": 27.4
+   },
+   "regions": {
+    "unknown": {
+     "luma": 54.1,
+     "sd": 4.0,
+     "n": 140353
+    },
+    "known_lit": null,
+    "lit_cells": 1,
+    "cave_air": {
+     "luma": 33.4,
+     "sd": 10.7,
+     "n": 494233
+    },
+    "rock_near_light": {
+     "luma": 92.8,
+     "sd": 6.7,
+     "n": 25398
+    },
+    "known_solid": {
+     "luma": 90.3,
+     "sd": 7.1,
+     "n": 92711
+    },
+    "known_lit_minus_unknown": null,
+    "known_solid_minus_unknown": 36.2,
+    "unknown_minus_cave_air": 20.7,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": 56.9
+   },
+   "tiles_across": 8.5,
+   "overlay": {
+    "edges_full": 25381,
+    "edges_hudfree": 15152,
+    "playfield_px": 276625,
+    "overlay_share": 0.403,
+    "art_edge_density": 0.0548
+   },
+   "boundary_axis_share": 0.922,
+   "boundary_axis_share_all": 0.92,
+   "headlamp": {
+    "0.35tile": {
+     "L": 77.6,
+     "b": 24.8
+    },
+    "0.8tile": {
+     "L": 28.7,
+     "b": 2.0
+    },
+    "1.5tile": {
+     "L": 14.6,
+     "b": -5.2
+    }
+   }
+  }
+ },
+ "concept": {
+  "cavern-tall": {
+   "L_mean": 21.0,
+   "L_sd": 12.3,
+   "L_p2": 8.2,
+   "L_p98": 59.3,
+   "L_range_p2_p98": 51.1,
+   "within3_of_mode": 0.313,
+   "warm_pct": 4.79,
+   "cyan_pct": 0.47,
+   "edge_density": 0.13,
+   "luma_mean": 50.9,
+   "luma_sd": 28.3
+  },
+  "cavern-wide": {
+   "L_mean": 21.0,
+   "L_sd": 11.4,
+   "L_p2": 8.7,
+   "L_p98": 54.2,
+   "L_range_p2_p98": 45.4,
+   "within3_of_mode": 0.335,
+   "warm_pct": 4.04,
+   "cyan_pct": 0.19,
+   "edge_density": 0.112,
+   "luma_mean": 50.9,
+   "luma_sd": 26.0
+  },
+  "shaft-tall": {
+   "L_mean": 30.1,
+   "L_sd": 15.7,
+   "L_p2": 9.7,
+   "L_p98": 79.5,
+   "L_range_p2_p98": 69.8,
+   "within3_of_mode": 0.222,
+   "warm_pct": 2.16,
+   "cyan_pct": 0.06,
+   "edge_density": 0.153,
+   "luma_mean": 72.0,
+   "luma_sd": 37.9
+  },
+  "shaft-wide": {
+   "L_mean": 25.9,
+   "L_sd": 10.7,
+   "L_p2": 11.1,
+   "L_p98": 58.1,
+   "L_range_p2_p98": 47.0,
+   "within3_of_mode": 0.359,
+   "warm_pct": 0.66,
+   "cyan_pct": 0.02,
+   "edge_density": 0.074,
+   "luma_mean": 61.8,
+   "luma_sd": 25.5
+  },
+  "surface-tall": {
+   "L_mean": 27.1,
+   "L_sd": 9.9,
+   "L_p2": 14.1,
+   "L_p98": 58.6,
+   "L_range_p2_p98": 44.5,
+   "within3_of_mode": 0.322,
+   "warm_pct": 1.38,
+   "cyan_pct": 0.38,
+   "edge_density": 0.084,
+   "luma_mean": 64.0,
+   "luma_sd": 23.5
+  },
+  "surface-wide": {
+   "L_mean": 26.3,
+   "L_sd": 10.9,
+   "L_p2": 13.7,
+   "L_p98": 65.4,
+   "L_range_p2_p98": 51.7,
+   "within3_of_mode": 0.358,
+   "warm_pct": 2.6,
+   "cyan_pct": 0.11,
+   "edge_density": 0.086,
+   "luma_mean": 62.3,
+   "luma_sd": 26.0
+  }
+ }
+}
