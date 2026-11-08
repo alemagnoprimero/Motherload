@@ -1,0 +1,324 @@
+{
+ "about": "W01 swatch cards, art item A1 (docs/ART_QUALITY_AUDIT.md 6.1). On-screen targets within 3 L*. Made by scripts/swatch-cards.py from docs/art-audit/data/palette.json.",
+ "colour_space": "sRGB; L*, C and h are CIELAB (D65) as in scripts/art_metrics.py; luma is Rec. 709 on sRGB",
+ "violet_crystal": {
+  "lch": [
+   67.0,
+   60.0,
+   310.0
+  ],
+  "tiers": {
+   "light": "#dabafb",
+   "body": "#bd8df6",
+   "dark": "#9164c9",
+   "sparkle": "#f4eafd"
+  },
+  "decision": "D8"
+ },
+ "bands": {
+  "A": {
+   "name": "Regolith",
+   "rows": [
+    0,
+    10
+   ],
+   "accent": "regolith pebble",
+   "derived_from": null,
+   "hue_turn_degrees": 0.0,
+   "roles": {
+    "unknown": {
+     "hex": "#303941",
+     "L": 23.5,
+     "luma": 55.7,
+     "C": 6.4,
+     "h": 255.4,
+     "source": "shaft_unknown_rock"
+    },
+    "lit": {
+     "hex": "#575e64",
+     "L": 39.5,
+     "luma": 92.9,
+     "C": 4.6,
+     "h": 252.7,
+     "source": "shaft_lit_wall"
+    },
+    "lip": {
+     "hex": "#f0e6d2",
+     "L": 91.6,
+     "luma": 230.7,
+     "C": 11.0,
+     "h": 89.6,
+     "source": "shaft_rim_lip"
+    },
+    "crack": {
+     "hex": "#242e36",
+     "L": 18.3,
+     "luma": 44.5,
+     "C": 6.8,
+     "h": 253.3,
+     "source": "shaft_unknown_crack"
+    },
+    "back wall": {
+     "hex": "#1e282e",
+     "L": 15.4,
+     "luma": 38.3,
+     "C": 5.9,
+     "h": 244.5,
+     "source": "shaft_interior"
+    },
+    "cave air": {
+     "hex": "#17242e",
+     "L": 13.5,
+     "luma": 34.0,
+     "C": 8.7,
+     "h": 254.7,
+     "source": "cave_backwall"
+    },
+    "accent": {
+     "hex": "#3d4750",
+     "L": 29.6,
+     "luma": 69.5,
+     "C": 6.9,
+     "h": 255.6,
+     "source": "ground_rock"
+    }
+   },
+   "sample_unknown_luma": [
+    55.2,
+    9.2
+   ]
+  },
+  "B": {
+   "name": "Broken Plates",
+   "rows": [
+    11,
+    29
+   ],
+   "accent": "regolith pebble",
+   "derived_from": "A",
+   "hue_turn_degrees": -15.0,
+   "roles": {
+    "unknown": {
+     "hex": "#2e3a41",
+     "L": 23.6,
+     "luma": 56.0,
+     "C": 6.7,
+     "h": 243.1,
+     "source": "a unknown, hue -15"
+    },
+    "lit": {
+     "hex": "#555e63",
+     "L": 39.3,
+     "luma": 92.4,
+     "C": 4.7,
+     "h": 240.0,
+     "source": "a lit, hue -15"
+    },
+    "lip": {
+     "hex": "#f5e4d2",
+     "L": 91.5,
+     "luma": 230.3,
+     "C": 11.2,
+     "h": 75.2,
+     "source": "a lip, hue -15"
+    },
+    "crack": {
+     "hex": "#222e34",
+     "L": 18.1,
+     "luma": 43.9,
+     "C": 6.4,
+     "h": 239.0,
+     "source": "a crack, hue -15"
+    },
+    "back wall": {
+     "hex": "#1d282c",
+     "L": 15.3,
+     "luma": 38.0,
+     "C": 5.5,
+     "h": 229.6,
+     "source": "a back wall, hue -15"
+    },
+    "cave air": {
+     "hex": "#14252d",
+     "L": 13.6,
+     "luma": 34.0,
+     "C": 8.7,
+     "h": 240.0,
+     "source": "a cave air, hue -15"
+    },
+    "accent": {
+     "hex": "#3c484f",
+     "L": 29.8,
+     "luma": 70.0,
+     "C": 6.5,
+     "h": 242.6,
+     "source": "a accent, hue -15"
+    }
+   },
+   "sample_unknown_luma": [
+    56.2,
+    10.9
+   ]
+  },
+  "C": {
+   "name": "Iron Shelf",
+   "rows": [
+    30,
+    47
+   ],
+   "accent": "violet crystal",
+   "derived_from": null,
+   "hue_turn_degrees": 0.0,
+   "roles": {
+    "unknown": {
+     "hex": "#303941",
+     "L": 23.5,
+     "luma": 55.7,
+     "C": 6.4,
+     "h": 255.4,
+     "source": "shaft_unknown_rock"
+    },
+    "lit": {
+     "hex": "#575e64",
+     "L": 39.5,
+     "luma": 92.9,
+     "C": 4.6,
+     "h": 252.7,
+     "source": "shaft_lit_wall"
+    },
+    "lip": {
+     "hex": "#f0e6d2",
+     "L": 91.6,
+     "luma": 230.7,
+     "C": 11.0,
+     "h": 89.6,
+     "source": "shaft_rim_lip"
+    },
+    "crack": {
+     "hex": "#242e36",
+     "L": 18.3,
+     "luma": 44.5,
+     "C": 6.8,
+     "h": 253.3,
+     "source": "shaft_unknown_crack"
+    },
+    "back wall": {
+     "hex": "#1b2933",
+     "L": 15.8,
+     "luma": 38.7,
+     "C": 8.8,
+     "h": 252.1,
+     "source": "cave_backwall_silhouette"
+    },
+    "cave air": {
+     "hex": "#17242e",
+     "L": 13.5,
+     "luma": 34.0,
+     "C": 8.7,
+     "h": 254.7,
+     "source": "cave_backwall"
+    },
+    "accent": {
+     "hex": "#bd8df6",
+     "L": 66.9,
+     "luma": 158.8,
+     "C": 59.9,
+     "h": 309.9,
+     "source": "d8, lch 67 60 310"
+    },
+    "rust": {
+     "hex": "#89532b",
+     "L": 40.7,
+     "luma": 91.6,
+     "C": 37.4,
+     "h": 60.0,
+     "source": "rust_drip"
+    }
+   },
+   "sample_unknown_luma": [
+    55.9,
+    10.5
+   ]
+  },
+  "D": {
+   "name": "Core Rubble",
+   "rows": [
+    48,
+    59
+   ],
+   "accent": "crystal seam",
+   "derived_from": "C",
+   "hue_turn_degrees": 15.0,
+   "roles": {
+    "unknown": {
+     "hex": "#323841",
+     "L": 23.3,
+     "luma": 55.4,
+     "C": 6.4,
+     "h": 268.4,
+     "source": "c unknown, hue +15"
+    },
+    "lit": {
+     "hex": "#595e65",
+     "L": 39.7,
+     "luma": 93.4,
+     "C": 4.7,
+     "h": 265.4,
+     "source": "c lit, hue +15"
+    },
+    "lip": {
+     "hex": "#ebe8d3",
+     "L": 91.7,
+     "luma": 231.1,
+     "C": 10.9,
+     "h": 103.5,
+     "source": "c lip, hue +15"
+    },
+    "crack": {
+     "hex": "#262d36",
+     "L": 18.2,
+     "luma": 44.2,
+     "C": 6.8,
+     "h": 265.7,
+     "source": "c crack, hue +15"
+    },
+    "back wall": {
+     "hex": "#1f2833",
+     "L": 15.7,
+     "luma": 38.9,
+     "C": 8.4,
+     "h": 266.0,
+     "source": "c back wall, hue +15"
+    },
+    "cave air": {
+     "hex": "#1b232e",
+     "L": 13.4,
+     "luma": 34.1,
+     "C": 8.4,
+     "h": 269.0,
+     "source": "c cave air, hue +15"
+    },
+    "accent": {
+     "hex": "#bd8df6",
+     "L": 66.9,
+     "luma": 158.8,
+     "C": 59.9,
+     "h": 309.9,
+     "source": "c violet, d8"
+    },
+    "rust": {
+     "hex": "#7e5924",
+     "L": 40.7,
+     "luma": 93.0,
+     "C": 37.0,
+     "h": 74.9,
+     "source": "c rust, hue +15"
+    }
+   },
+   "sample_unknown_luma": [
+    57.1,
+    11.7
+   ]
+  }
+ }
+}

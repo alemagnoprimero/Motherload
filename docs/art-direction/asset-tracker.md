@@ -34,12 +34,12 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 | 14 | Wreck hull, five rib arcs: back, front mound, rust | A5 | SVG; rust from a generated recipe built here and reused by A7 and A14; underlay allowed | P0 | Exists, to rework (shared wedge `site-wreck`) | Art (A5) | T6 for layering in the game |
 | 15 | Beacon tripod, ADD diamond and pool; wall-mounted variant | A6 | SVG; underlay allowed | P0 | Exists, to rework (the game draws the `mission-beacon` object icon at 1.2 × 1.6 tiles, `src/campaign/render/poi-art.ts`; the `site-beacon` wedge is in the atlas but never drawn) | Art (A6) | D14 (which variant leads) |
 | 16 | Stalactites ×9 | A7 | Generator | P0 | Not started | Art (A7) | T5 for placement (prototype render until then) |
-| 17 | Rust drips ×4, drip particle, rust seams | A7 | Generator for drips and particle; seams as a T2 inclusion or a generated strip, settled in A1 | P0 | Not started | Art (A7) | A1 seam call; T5 |
+| 17 | Rust drips ×4, drip particle, rust seams | A7 | Generator for drips and particle; seams as a T2 inclusion on known joints near ceilings, not decal strips (signed in A1, 2026-11-08; T2's acceptance includes the band-C ceiling seams) | P0 | Not started | Art (A7); seams in Code (T2) | T5 for drips; T2 for seams |
 | 18 | Floor rubble ×6 | A7 | Generator (rock-chunk recipe) | P0 | Not started | Art (A7) | T5 |
 | 19 | Foreground boulders ×3 | A7 | Generator (rock-chunk recipe) | P0 | Not started | Art (A7) | T5; T6 (layer 4) |
-| 20 | Amber crystals, ADD sparkle | A7 | Generator; the hue is a parameter | P0 | Not started | Art (A7) | D8 and its recognition test; T5 |
+| 20 | Violet crystals, ADD sparkle (D8; body `#bd8df6` on the band-C card) | A7 | Generator; the hue is a parameter; in high-contrast mode a value of its own, distinct from copper ore (A1 rider, set in A7) | P0 | Not started | Art (A7) | T5 |
 | 21 | Back-wall silhouette strips, band C ×2 | A8 | Generator (periodic strip that tiles by world position) | P0 | Not started | Art (A8) | T4 slots (prototype render until then) |
-| 22 | Material look, bands A, B and C | A9, A10; A15 for band B | Shader (T2); Canvas and Medium pages baked from it | P0 | Exists, to rework (band pages in `assets/campaign/generated/bands`) | Code (T2 with A9, A10; band B in T14 with A15) | D6; swatch cards signed before T2's parameters freeze |
+| 22 | Material look, bands A, B and C | A9, A10; A15 for band B | Shader (T2); Canvas and Medium pages baked from it | P0 | Exists, to rework (band pages in `assets/campaign/generated/bands`) | Code (T2 with A9, A10; band B in T14 with A15) | D6; swatch cards A, B and C (signed 2026-11-08) |
 | 23 | Hard-rock plate fill and cracks, A and C | A9, A10 | Shader (T2); frames baked for Medium and Low | P0 | Not started | Code (T2 with A9, A10) | D6 |
 | 24 | Ore sockets | A12 | Generator (`create-w01-sources.mjs` with new gradient helpers) | P0 | Not started | Code (A12 with T9) | |
 | 25 | Ore and package frames with a small mark, plus HC | A12 | Generator (`create-w01-sources.mjs`) | P0 | Exists, to rework (ore already at concept level; mark and HC change) | Code (A12 with T9) | |
@@ -78,7 +78,7 @@ Effort in executor-days, the audit's artist-day unit, so the numbers drop into �
 
 | Item | Assets | Audit | Now | Owner | Note |
 |---|---|---|---|---|---|
-| A1 | Style guide, swatch cards, review template | 2 to 3 d | not re-estimated | Chat (step 6) | |
+| A1 | Style guide, swatch cards, review template | 2 to 3 d | not re-estimated | Chat (step 6) | Done: signed 2026-11-08, cards A, B and C as delivered, with two riders in `decisions.md` (A7 sets the crystals' high-contrast value; T2's acceptance includes the band-C ceiling seams). Files: `scripts/swatch-cards.py`, cards A to D and `w01-swatches.json` in `docs/art-direction/swatches/`; `style-guide.md` with the review record, Project only |
 | A2 | 1, 3, 4 | 3 to 3.5 d | not re-estimated | Art (A2) | underlay allowed |
 | A3 | 5 to 11 | 5.5 d | not re-estimated | Art (A3) | rocks (10) by generator; builds the rock-chunk recipe |
 | A4 | 12, 13 | 1.5 d | not re-estimated | Art (A4) | first session in the P0 order of `art-programme-sequence.md` (a Project doc in Claude, not in the repo), so it carries the 1 d generator kit |
