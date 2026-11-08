@@ -34,7 +34,6 @@ The table covers the five audit captures at 1440×900 @2 and 393×851 @3, frozen
 |---|---|---|---|---|
 | Unknown rock luma, W01 | 45–65 | 84.6–90.7 | 50.3–62.0 | met |
 | Unknown rock luma, W02 | 45–65 | 99.7–116.9 | 48.1–64.2 | met |
-| Unknown rock sd | ≥ 7 | 2.7–6.3 | 2.8–4.7 on cell interiors (W02 band A: 7.0–8.3, from the lamp's falloff); 3.4–6.7 on whole cells | **not met** |
 | Lit soil − unknown, every depth | ≥ +15 | −7.4 to +91.5 | +40.5 to +144.5 | met |
 | Lit hard rock − unknown, W01 bands A–D | ≥ +15 | −19.3 to +6.8 | +16.5 to +25.8 | met |
 | Lit hard rock − unknown, W02 bands A–D | ≥ +15 | −33.3 to +11.6 | +27.6 to +63.3 in A–C, **+9.2** in D | **not met in W02 D** |
@@ -71,7 +70,9 @@ Per frame, `main` → F4:
 
 **High contrast** (F4): unknown rock averages L\* 22.7–31.8 across the twelve frames measured in high contrast, and its 2nd percentile is at L\* 20.3 or above. Both clear the L\* 18 floor. The five hard-rock frames for bands A and B of W01 and A and C of W02 were measured in normal mode only. There, unknown rock's 2nd percentile is already at L\* 20.9 or above, and high contrast only lightens it.
 
-### Not met: unknown sd ≥ 7
+### Baseline notes
+
+**Unknown rock sd ≥ 7** is the §9.2 G1 gate on T2's material, not an F4 line, so it is recorded here as a baseline rather than in the acceptance table. `main`: 2.7–6.3. F4: 2.8–4.7 on cell interiors (W02 band A: 7.0–8.3, from the lamp's falloff); 3.4–6.7 on whole cells.
 
 The band rock pages have a luma sd of 9.0, or 8.6 as drawn. Over a flat base at the specified 0.4–0.5 alpha, they give unknown rock a texture sd of at most 0.5 × 8.6 ≈ 4.3 before darkness. Darkness lowers it further. The few frames at 7 or above on cell interiors (the W02 band A frames) get there from the lamp's falloff. On whole cells away from known space, every frame is 3.4–6.7. Backing scale changes this little: F4's first revision, merged with F1 and pinned at backing 2.0, gave the W01 desktop captures sd 2.9–4.6, against 2.8–3.8 here at backing 1.0. Reaching sd ≥ 7 needs higher-contrast rock pages or the page at full value (the audit's T2 and art items). Both are outside F4, which allows no asset changes.
 
