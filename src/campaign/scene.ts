@@ -4,10 +4,13 @@ import type { CampaignEvent } from "./events";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
 import { campaignSafeArea, campaignTileSize } from "./layout";
 import {
+  CAMERA_ZOOM,
   CampaignView,
   RenderScaleBudget,
   backoffLine,
+  cameraZoomTarget,
   campaignCameraY,
+  followSpring,
   harnessOptions,
   qualityTier,
   renderDebugOptions,
@@ -110,6 +113,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private diagnostics!: RenderDiagnostics;
     private artQuality = 2;
     private contextZoom = 1;
+    /** F5: the zoom's spring velocity, per second. */
+    private zoomVelocity = 0;
+    /** F5: the followed screen centre in world tiles, and its velocity. */
+    private focusX = 0;
+    private focusY = 0;
+    private focusVelocityX = 0;
+    private focusVelocityY = 0;
     private renderedFrames = 0;
     private presentation:
       | { type: "install" | "construction"; started: number; id?: string }
@@ -912,22 +922,42 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       const viewCampaign = bindings.getCampaign();
       const reduced = Boolean(bindings.reducedMotion?.());
       const mode = bindings.getInterfaceMode?.();
+      // F5: the zoom target blends by depth (view.ts) instead of switching
+      // at the surface line and at 120 m, and the zoom follows it with the
+      // camera's critically damped spring. A new campaign, a jump or reduced
+      // motion sets it at once, as they set the camera.
       const zoomTarget = reduced
         ? 1
         : this.inspection
-          ? 1.08
+          ? CAMERA_ZOOM.inspection
           : mode === "dock" || mode === "welcome"
-            ? 0.88
-            : viewCampaign.depth > 120
-              ? 1.05
-              : 1 - surfaceFraming(viewCampaign.renderY) * 0.12;
-      const zoomStep =
-        1 - Math.exp(-Math.min(0.05, deltaMilliseconds / 1000) * 24);
-      this.contextZoom =
-        Math.round(
-          (this.contextZoom + (zoomTarget - this.contextZoom) * zoomStep) *
-            1000,
-        ) / 1000;
+            ? CAMERA_ZOOM.dock
+            : cameraZoomTarget(viewCampaign.renderY);
+      const zoomJump =
+        viewCampaign !== this.previousCampaign ||
+        viewCampaign.world !== this.previousWorld ||
+        Math.abs(viewCampaign.renderY - this.previousY) > 8 ||
+        Math.abs(
+          delta(this.previousX, viewCampaign.renderX, viewCampaign.world.width),
+        ) > 8;
+      const zoom = followSpring(
+        this.contextZoom,
+        this.zoomVelocity,
+        zoomTarget,
+        Math.min(0.05, deltaMilliseconds / 1000),
+      );
+      if (
+        reduced ||
+        zoomJump ||
+        (Math.abs(zoom.position - zoomTarget) < 0.0005 &&
+          Math.abs(zoom.velocity) < 0.01)
+      ) {
+        this.contextZoom = zoomTarget;
+        this.zoomVelocity = 0;
+      } else {
+        this.contextZoom = zoom.position;
+        this.zoomVelocity = zoom.velocity;
+      }
       const contextTile =
         campaignTileSize(cssWidth, cssHeight) * this.contextZoom;
       this.view.configure(
@@ -1179,7 +1209,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         : undefined;
       if (interfaceMode !== this.previousInterface) {
         this.previousInterface = interfaceMode;
-        this.framingTime = 0.5;
+        // Long enough for the F5 spring to settle a paused reframing (about
+        // 1.3 s for 700 CSS px at DPR 2); the former follow needed 0.5 s.
+        this.framingTime = 1.5;
       }
       let targetX =
         this.unwrappedX * tile -
@@ -1229,19 +1261,43 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         targetY = -surface;
       }
       // An animated zoom changes tile size each frame. It is not a viewport
-      // resize and must never bypass the camera's interpolation.
+      // resize and must never bypass the camera's interpolation. F5: the
+      // camera follows the screen centre in world tiles with a critically
+      // damped spring (about 110 ms), so a zoom change scales the view about
+      // the centre instead of dragging the follow across the world.
+      const focusX = (targetX + width / 2) / tile,
+        focusY = (targetY + height / 2) / tile;
       const size = `${width}:${height}`;
       if (changed || jumped || size !== this.previousSize) {
-        this.cameraX = targetX;
-        this.cameraY = targetY;
+        this.focusX = focusX;
+        this.focusY = focusY;
+        this.focusVelocityX = this.focusVelocityY = 0;
         this.previousSize = size;
       } else if (!paused || this.framingTime > 0 || dock) {
-        const amount = bindings.reducedMotion?.() ? 1 : 1 - Math.exp(-dt * 22);
-        this.cameraX += (targetX - this.cameraX) * amount;
-        this.cameraY += (targetY - this.cameraY) * amount;
+        const x = followSpring(this.focusX, this.focusVelocityX, focusX, dt),
+          y = followSpring(this.focusY, this.focusVelocityY, focusY, dt);
+        // Within a quarter device pixel and slower than that per frame, the
+        // camera rests exactly on its target, so a settled view is stable.
+        const rest = 0.25 / (tile * this.view.dpr);
+        const settled = (
+          spring: { position: number; velocity: number },
+          target: number,
+        ) =>
+          reduced ||
+          (Math.abs(spring.position - target) < rest &&
+            Math.abs(spring.velocity * dt) < rest);
+        [this.focusX, this.focusVelocityX] = settled(x, focusX)
+          ? [focusX, 0]
+          : [x.position, x.velocity];
+        [this.focusY, this.focusVelocityY] = settled(y, focusY)
+          ? [focusY, 0]
+          : [y.position, y.velocity];
       }
       this.framingTime = Math.max(0, this.framingTime - dt);
-      this.view.scroll(this.cameraX, this.cameraY);
+      this.view.scroll(
+        this.focusX * tile - width / 2,
+        this.focusY * tile - height / 2,
+      );
       const cx = this.view.scrollX;
       const cy = this.view.scrollY;
       this.cameraX = cx;
