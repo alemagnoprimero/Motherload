@@ -1473,7 +1473,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             edges.fillStyle(0xffdf9a, 0.95);
             edges.fillCircle(x + side * tile * 1.7, surfaceY - tile * 0.17, 3);
           }
-          if (world.id === "W01" && world.generatorVersion === 2)
+          // F6 (D3): the A and B seam markers show only while the first-
+          // expedition coach is active (ui/guidance.ts sets the body class).
+          if (
+            world.id === "W01" &&
+            world.generatorVersion === 2 &&
+            document.body.classList.contains("campaign-coaching")
+          )
             for (const [entry, name] of [
               [20.5, "A"],
               [21.5, "B"],
@@ -1510,18 +1516,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             1,
             false,
             1,
-          );
-          this.label(
-            x,
-            surfaceY - tile * 3.1,
-            icy
-              ? stage === 3
-                ? "CONDENSER STABILIZED"
-                : "COMET REFUGE"
-              : stage === 3
-                ? "LANDER RESTORED"
-                : "SALVAGE LANDER",
-            "#F6E1AF",
           );
           if (stage >= 1 && !icy)
             this.image(

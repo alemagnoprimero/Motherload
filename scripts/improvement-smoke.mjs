@@ -1191,6 +1191,31 @@ export async function runImprovementSmoke(browser, base, path) {
         await context.close();
       }
     }
+    // F6 (D3): the depth rail shows only while paused or while the HUD's
+    // depth readout is hovered.
+    {
+      const { context, page } = await ready(browser, base);
+      try {
+        await freeze(page);
+        const rail = () =>
+          page.evaluate(
+            () =>
+              getComputedStyle(document.querySelector("#campaign-depth-rail"))
+                .opacity,
+          );
+        assert.equal(await rail(), "0", "The depth rail is hidden in play");
+        await page.hover("#campaign-depth");
+        assert.equal(await rail(), "1", "Hovering the depth readout shows it");
+        await page.mouse.move(720, 450);
+        assert.equal(await rail(), "0", "Leaving the readout hides it again");
+        await click(page, "#campaign-menu-toggle");
+        await advance(page, 100);
+        assert.equal(await rail(), "1", "The pause menu shows the depth rail");
+        noErrors(page);
+      } finally {
+        await context.close();
+      }
+    }
     const manifest = await runArtCaptures(
       browser,
       base,
@@ -1236,6 +1261,28 @@ export async function runImprovementSmoke(browser, base, path) {
     );
     const table = JSON.parse(await readFile(`${harness}/table.json`, "utf8"));
     results.measurements.harness = table;
+    // F6 (D3): no lander nameplate and no " · mission part" suffix in any
+    // frame's playfield text.
+    const nameplates = [
+      "SALVAGE LANDER",
+      "LANDER RESTORED",
+      "COMET REFUGE",
+      "CONDENSER STABILIZED",
+    ];
+    for (const name of SHEET_CAPTURES)
+      for (const item of manifest.captures[name].playfieldText) {
+        assert.ok(
+          !nameplates.includes(item.text),
+          `${name}: the lander nameplate is gone (F6)`,
+        );
+        assert.ok(
+          !item.text.includes("· mission part"),
+          `${name}: no " · mission part" suffix (F6)`,
+        );
+      }
+    console.log(
+      `Playfield text items (HUD left out): ${SHEET_CAPTURES.map((name) => `${name} ${manifest.captures[name].playfieldText.length}`).join(", ")}`,
+    );
     for (const [name, frame] of Object.entries(table.frames)) {
       assert.ok(
         frame.overlay.edges_full > frame.overlay.edges_hudfree,

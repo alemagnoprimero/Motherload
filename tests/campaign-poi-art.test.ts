@@ -44,6 +44,35 @@ describe("physical ownership of mission artwork", () => {
     expect(JSON.stringify(campaign.state)).toBe(before);
   });
 
+  it("captions a mission part with its title alone (F6)", () => {
+    for (const kind of ["valve", "antenna", "core", "catalyst"] as const)
+      expect(
+        poiSecondaryCaption({
+          kind,
+          title: "Pressure valve",
+          status: "source",
+        }),
+      ).toBe("Pressure valve");
+    // The other states keep their suffix.
+    expect(
+      poiSecondaryCaption({
+        kind: "valve",
+        title: "Pressure valve",
+        status: "carried",
+      }),
+    ).toBe("Pressure valve · recovered");
+    expect(
+      poiSecondaryCaption({
+        kind: "beacon",
+        title: "Wreck survey beacon",
+        status: "source",
+      }),
+    ).toBe("Wreck survey beacon · survey signal");
+    expect(
+      poiSecondaryCaption({ kind: "relic", title: "Relic", status: "source" }),
+    ).toBe("Relic · relic");
+  });
+
   it("retains real atlas frames for recoverable mission parts and compact records", () => {
     const campaign = new Campaign(createCampaign(23));
     const frames = atlas.frames as Record<string, unknown>;
