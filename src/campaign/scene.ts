@@ -493,6 +493,26 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           };
         },
         backing: () => this.resolutionBudget.state(),
+        worldLabels: () =>
+          this.labels
+            .filter((label) => label.visible)
+            .map((label) => {
+              const bounds = label.getBounds();
+              return {
+                text: label.text,
+                x: bounds.x,
+                y: bounds.y,
+                width: bounds.width,
+                height: bounds.height,
+              };
+            })
+            .filter(
+              (label) =>
+                label.x < this.view.width &&
+                label.x + label.width > 0 &&
+                label.y < this.view.height &&
+                label.y + label.height > 0,
+            ),
       };
       this.debugHooks = hooks;
       window.__campaignDebug = hooks;

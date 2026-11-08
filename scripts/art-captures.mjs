@@ -180,6 +180,93 @@ export const CAPTURES = [
   },
 ];
 
+/**
+ * The HUD: its row, the menu button, the objective card and the toolbar. The
+ * overlay edge share masks these boxes, and the playfield text count leaves
+ * them out.
+ */
+export const HUD_SELECTORS = [
+  ".campaign-hud",
+  "#campaign-menu-toggle",
+  ".campaign-objective",
+  ".campaign-toolbar",
+];
+
+/**
+ * Audit F6 (§9.2's "text items"): the text drawn over the playfield, HUD
+ * left out. Each visible DOM text node inside the view is one item, as is
+ * each canvas world label inside the view (__campaignDebug.worldLabels()).
+ * Hidden, unpainted (opacity 0) and clipped text does not count, nor does a
+ * closed disclosure's body.
+ */
+export async function playfieldText(page) {
+  return page.evaluate((hud) => {
+    const items = [];
+    const inView = (left, top, right, bottom) =>
+      right > 0 && bottom > 0 && left < innerWidth && top < innerHeight;
+    for (const element of document.querySelectorAll(".campaign-shell *")) {
+      if (
+        element.closest("#campaign-game") ||
+        hud.some((selector) => element.closest(selector)) ||
+        element.closest("[hidden],.sr-only")
+      )
+        continue;
+      const closed = element.closest("details:not([open])");
+      if (
+        closed &&
+        !closed.querySelector(":scope > summary")?.contains(element)
+      )
+        continue;
+      let opacity = 1,
+        visible = true;
+      for (let node = element; node; node = node.parentElement) {
+        const css = getComputedStyle(node);
+        opacity *= Number(css.opacity);
+        if (css.display === "none" || css.visibility === "hidden")
+          visible = false;
+        if (node === document.body || node === document.documentElement)
+          continue;
+        const box = node.getBoundingClientRect();
+        if (
+          (css.overflowX !== "visible" && box.width <= 1) ||
+          (css.overflowY !== "visible" && box.height <= 1)
+        )
+          visible = false;
+      }
+      if (!visible || opacity === 0) continue;
+      for (const child of element.childNodes) {
+        if (child.nodeType !== Node.TEXT_NODE || !child.textContent.trim())
+          continue;
+        const range = document.createRange();
+        range.selectNodeContents(child);
+        const box = range.getBoundingClientRect();
+        if (!box.width || !box.height) continue;
+        if (!inView(box.left, box.top, box.right, box.bottom)) continue;
+        items.push({
+          source: "dom",
+          text: child.textContent.trim(),
+          element: element.id
+            ? "#" + element.id
+            : element.tagName.toLowerCase() + "." + element.className,
+          box: [box.left, box.top, box.right, box.bottom].map(Math.round),
+        });
+      }
+    }
+    for (const label of window.__campaignDebug?.worldLabels?.() ?? [])
+      items.push({
+        source: "canvas",
+        text: label.text,
+        box: [
+          label.x,
+          label.y,
+          label.x + label.width,
+          label.y + label.height,
+        ].map(Math.round),
+      });
+    return items;
+  }, HUD_SELECTORS);
+}
+
 /** The §9 frames: every capture scored against a concept panel. */
 export const SHEET_CAPTURES = CAPTURES.filter((capture) => capture.panel).map(
   (capture) => capture.name,
@@ -253,9 +340,8 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           throw new Error(`${capture.name}: captured during the import fade`);
         const file = `${path}/${capture.name}.png`;
         await page.screenshot({ path: file });
-        const reported = await page
-          .locator("#campaign-game")
-          .evaluate((element) => ({
+        const reported = await page.locator("#campaign-game").evaluate(
+          (element, hudSelectors) => ({
             world: element.dataset.campaignWorld,
             rig: [
               Number(element.dataset.rigWorldX),
@@ -282,18 +368,15 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             },
             // The HUD row, objective card and toolbar in CSS px: the overlay
             // edge share masks them (docs/art-audit/04-overlays.md §6.1).
-            hud: [
-              ".campaign-hud",
-              "#campaign-menu-toggle",
-              ".campaign-objective",
-              ".campaign-toolbar",
-            ].flatMap((selector) =>
+            hud: hudSelectors.flatMap((selector) =>
               [...document.querySelectorAll(selector)]
                 .map((node) => node.getBoundingClientRect())
                 .filter((box) => box.width > 0 && box.height > 0)
                 .map((box) => [box.left, box.top, box.right, box.bottom]),
             ),
-          }));
+          }),
+          HUD_SELECTORS,
+        );
         // The pinned DPR (§9.1): the form's device scale factor, as the page
         // sees it.
         if (reported.devicePixelRatio !== settings.deviceScaleFactor)
@@ -303,6 +386,8 @@ export async function runArtCaptures(browser, base, path, options = {}) {
         // Playwright's frozen clock makes every frame cost 0 ms: a p95 only
         // means something after real-clock play.
         if (!(playSeconds > 0)) reported.frameP95 = null;
+        // F6: the playfield's text items, with every annotation shown.
+        const text = await playfieldText(page);
         const box = await rigBox(page, settings.deviceScaleFactor);
         const image =
           "data:image/png;base64," + (await readFile(file)).toString("base64");
@@ -336,6 +421,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           viewport: settings.viewport,
           deviceScaleFactor: settings.deviceScaleFactor,
           ...reported,
+          playfieldText: text,
           rigBox: box,
           rigKeep2: keep2 === null ? null : Number(keep2.toFixed(3)),
           light: { file: lightFile, ...light },
