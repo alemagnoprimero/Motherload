@@ -22,6 +22,13 @@ const { click, idle, freeze, exportCheckpoint } = await import(
 const [base, out, hc = "0", names = ""] = process.argv.slice(2);
 const highContrast = hc === "1";
 const only = names.split(",").filter(Boolean);
+const AUDIT = [
+  "a02-spawn",
+  "a04-dive-60m",
+  "b-550m-band-D",
+  "c-site-W01-SITE-4",
+  "p-portrait-03-dive-70m",
+];
 await mkdir(out, { recursive: true });
 const browser = await launchBrowser();
 const summary = {};
@@ -90,7 +97,14 @@ try {
         checkpoint: () => fixture("W02", 53, 20.5),
       },
     ];
-    const captures = [...CAPTURES, ...extra].filter(
+    // Without names: the five audit captures F4 measured. CAPTURES also
+    // holds the §9 frames F3 added, which F4's evidence does not use.
+    const captures = [
+      ...CAPTURES.filter(
+        (c) => only.length || AUDIT.some((n) => c.name.startsWith(n)),
+      ),
+      ...extra,
+    ].filter(
       (c) =>
         c.form === form &&
         (!only.length || only.some((n) => c.name.startsWith(n))),

@@ -1,37 +1,61 @@
 /**
- * Art-audit captures, named as docs/ART_QUALITY_AUDIT.md names them (§2, §9.1):
+ * Art-audit captures, named as docs/ART_QUALITY_AUDIT.md names them (§2, §9.1).
+ * The §9 fixtures (scene) and the concept panel each is scored against
+ * (docs/art-direction/d0-target-panels.json):
  *
- *   a02-spawn-1440x900@2.png        fresh world at spawn, surface    1440×900 @2
- *   a04-dive-60m@2.png              60 m shaft, band A               1440×900 @2
- *   b-550m-band-D@2.png             550 m shaft, band D              1440×900 @2
- *   c-site-W01-SITE-4-wreck@2.png   SITE-4 wreck cavern, band C      1440×900 @2
- *   p-portrait-03-dive-70m@3.png    70 m shaft                        393×851 @3
+ *   a02-spawn-1440x900@2.png        surface, spawn         surface-wide  1440×900 @2
+ *   a04-dive-60m@2.png              60 m shaft, band A     shaft-wide    1440×900 @2
+ *   a05-dive-150m@2.png             150 m shaft, band B    shaft-wide    1440×900 @2
+ *   b-330m-plate-band-C@2.png       330 m, plate layer     cavern-wide   1440×900 @2
+ *   c-site-W01-SITE-4-wreck@2.png   SITE-4 wreck cavern    cavern-wide   1440×900 @2
+ *   p-portrait-02-spawn@3.png       surface, spawn         surface-tall   393×851 @3
+ *   p-portrait-03-dive-70m@3.png    70 m shaft             shaft-tall     393×851 @3
+ *   p-portrait-cavern-site4@3.png   SITE-4 wreck cavern    cavern-tall    393×851 @3
+ *
+ * plus b-550m-band-D@2.png (550 m shaft, band D), which no §9 row uses.
  *
  * Built on fixture(), restore() and settledView() from improvement-smoke.mjs
  * (settledView applies settle()'s rule from render-acceptance.mjs to a restored
- * checkpoint) and the campaign-smoke.mjs drive helpers. The shafts are the
- * improvement fixtures. The spawn and SITE-4 frames need a world with sites, so
- * they use fresh-w01.json, the W01 world the audit's captures used
- * (docs/art-audit/prototype/assets/).
+ * checkpoint) and the campaign-smoke.mjs drive helpers. The 60 m, 70 m and
+ * 550 m shafts are the improvement fixtures. The spawn, SITE-4, 150 m and
+ * 330 m frames need sites or the plate layer, so they use fresh-w01.json, the
+ * W01 world the audit's captures used (docs/art-audit/prototype/assets/).
  *
- * Each frame is captured on Playwright's clock after the view settles. With
- * ART_PLAY_SECONDS the game first runs on the real clock at the fixture, so the
- * adaptive backing scale acts as shipped.
+ * Conditions (§9.1): the device pixel ratio is pinned by the form, the backing
+ * scale by ART_BACKING (F1's ?backing= pin), and the scene clock is frozen
+ * before Start, so animated terms (alarm border, rig frames, glints) have the
+ * same phase in every run. Each frame is captured on Playwright's clock after
+ * the view settles and the import fade has ended. With ART_PLAY_SECONDS the
+ * game first runs on the real clock at the fixture, so the adaptive backing
+ * scale acts as shipped.
+ *
+ * Per capture: <name>.png with every annotation, <name>-hudfree.png of the same
+ * frame with annotations hidden (__campaignDebug.overlays(false), as
+ * ?overlays=0 does), <name>-light.png (the light map,
+ * __campaignDebug.lightTexture()) and <name>-state.json (the exported
+ * campaign, for the cell-based measures in scripts/art_metrics.py).
  *
  * Environment: PREVIEW_URL; ART_CAPTURES_DIR (artifacts/art-captures);
  * ART_CAPTURES, a comma list of names or name prefixes; ART_PLAY_SECONDS (0);
  * ART_BACKING, a backing-scale pin of 1, 1.5 or 2.
  *
- * manifest.json records, per capture, the backing scale and quality tier the
- * game reported, the rig's box in device pixels and its keep@2, and after
- * real-clock play the readout's p95 frame cost.
+ * manifest.json records, per capture, the scene and panel, the backing scale
+ * and quality tier the game reported, the camera (tile, scroll, rig position in
+ * CSS px), the rig's box in device pixels and its keep@2, the light map's
+ * geometry, and after real-clock play the readout's p95 frame cost.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { launchBrowser } from "./browser-launch.mjs";
-import { freeze, noErrors, ready } from "./campaign-smoke.mjs";
+import {
+  advance,
+  exportCheckpoint,
+  freeze,
+  noErrors,
+  ready,
+} from "./campaign-smoke.mjs";
 import { fixture, restore, settledView } from "./improvement-smoke.mjs";
-import { keepAt2 } from "./render-probe.mjs";
+import { keepAt2, readCampaignDebug } from "./render-probe.mjs";
 
 const freshW01 = JSON.parse(
   await readFile(
@@ -90,12 +114,34 @@ export const CAPTURES = [
   {
     name: "a02-spawn-1440x900@2",
     form: "desktop",
+    scene: "surface",
+    panel: "surface-wide",
     checkpoint: () => structuredClone(freshW01),
   },
   {
     name: "a04-dive-60m@2",
     form: "desktop",
+    scene: "60 m",
+    panel: "shaft-wide",
     checkpoint: () => fixture("W01", 6),
+  },
+  {
+    // Band B. Column 32 has no deposit above row 15 and a soil floor.
+    name: "a05-dive-150m@2",
+    form: "desktop",
+    scene: "150 m",
+    panel: "shaft-wide",
+    checkpoint: () => fixture("W01", 15, 32.5, freshW01),
+  },
+  {
+    // The plate layer (fresh-w01 rows 30-31, tile 4) at the B→C cut. Column
+    // 29's only deposits are near the surface, far out of frame; the audit
+    // groups this frame with the 300 m cavern panel (§2.3, 01-terrain.md).
+    name: "b-330m-plate-band-C@2",
+    form: "desktop",
+    scene: "330 m",
+    panel: "cavern-wide",
+    checkpoint: () => fixture("W01", 33, 29.5, freshW01),
   },
   {
     // Column 31 opens into a cave at 550 m in this fixture; column 34 has a floor.
@@ -106,14 +152,38 @@ export const CAPTURES = [
   {
     name: "c-site-W01-SITE-4-wreck@2",
     form: "desktop",
+    scene: "SITE-4",
+    panel: "cavern-wide",
     checkpoint: () => siteCheckpoint(freshW01, "W01-SITE-4"),
+  },
+  {
+    name: "p-portrait-02-spawn@3",
+    form: "phone",
+    scene: "surface",
+    panel: "surface-tall",
+    checkpoint: () => structuredClone(freshW01),
   },
   {
     name: "p-portrait-03-dive-70m@3",
     form: "phone",
+    scene: "70 m",
+    panel: "shaft-tall",
     checkpoint: () => fixture("W01", 7),
   },
+  {
+    // The capture docs/art-audit/06-prototype.md adds: SITE-4 on the phone.
+    name: "p-portrait-cavern-site4@3",
+    form: "phone",
+    scene: "SITE-4",
+    panel: "cavern-tall",
+    checkpoint: () => siteCheckpoint(freshW01, "W01-SITE-4"),
+  },
 ];
+
+/** The §9 frames: every capture scored against a concept panel. */
+export const SHEET_CAPTURES = CAPTURES.filter((capture) => capture.panel).map(
+  (capture) => capture.name,
+);
 
 /** The rig sprite's square in device pixels (scene.ts draws it centred). */
 async function rigBox(page, dpr) {
@@ -150,7 +220,13 @@ export async function runArtCaptures(browser, base, path, options = {}) {
   for (const [form, settings] of Object.entries(FORMS)) {
     const captures = selected.filter((capture) => capture.form === form);
     if (!captures.length) continue;
-    const { context, page } = await ready(browser, url.href, settings);
+    const { context, page } = await ready(
+      browser,
+      url.href,
+      settings,
+      // Real-clock play lets the game run as shipped, scene clock included.
+      { freezeSceneClock: !(playSeconds > 0) },
+    );
     try {
       await freeze(page);
       for (const capture of captures) {
@@ -158,6 +234,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
         await restore(page, checkpoint);
         await settledView(page, checkpoint);
         if (playSeconds > 0) {
+          await page.evaluate(() => window.__campaignDebug.sceneClock.resume());
           await page.clock.resume();
           await new Promise((resolve) =>
             setTimeout(resolve, playSeconds * 1000),
@@ -167,7 +244,13 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             await page.evaluate(() => Date.now() + 1000),
           );
           await settledView(page, checkpoint);
+          // Hold the phase play ended on, so the HUD-free twin below shows
+          // the same frame.
+          await page.evaluate(() => window.__campaignDebug.sceneClock.freeze());
         }
+        const before = await page.evaluate(readCampaignDebug);
+        if (before.fade.running)
+          throw new Error(`${capture.name}: captured during the import fade`);
         const file = `${path}/${capture.name}.png`;
         await page.screenshot({ path: file });
         const reported = await page
@@ -186,7 +269,37 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             backingPinned: element.dataset.backingPinned ?? null,
             frameP95: Number(element.dataset.frameP95) || null,
             renderer: element.dataset.renderer,
+            devicePixelRatio: window.devicePixelRatio,
+            // The camera in CSS px: what the cell-based measures need.
+            view: {
+              width: Number(element.dataset.viewWidth),
+              height: Number(element.dataset.viewHeight),
+              tile: Number(element.dataset.viewTile),
+              scrollX: Number(element.dataset.viewCameraX),
+              scrollY: Number(element.dataset.viewCameraY),
+              rigScreenX: Number(element.dataset.rigScreenX),
+              rigScreenY: Number(element.dataset.rigScreenY),
+            },
+            // The HUD row, objective card and toolbar in CSS px: the overlay
+            // edge share masks them (docs/art-audit/04-overlays.md §6.1).
+            hud: [
+              ".campaign-hud",
+              "#campaign-menu-toggle",
+              ".campaign-objective",
+              ".campaign-toolbar",
+            ].flatMap((selector) =>
+              [...document.querySelectorAll(selector)]
+                .map((node) => node.getBoundingClientRect())
+                .filter((box) => box.width > 0 && box.height > 0)
+                .map((box) => [box.left, box.top, box.right, box.bottom]),
+            ),
           }));
+        // The pinned DPR (§9.1): the form's device scale factor, as the page
+        // sees it.
+        if (reported.devicePixelRatio !== settings.deviceScaleFactor)
+          throw new Error(
+            `${capture.name}: devicePixelRatio ${reported.devicePixelRatio}, not ${settings.deviceScaleFactor}`,
+          );
         // Playwright's frozen clock makes every frame cost 0 ms: a p95 only
         // means something after real-clock play.
         if (!(playSeconds > 0)) reported.frameP95 = null;
@@ -194,13 +307,40 @@ export async function runArtCaptures(browser, base, path, options = {}) {
         const image =
           "data:image/png;base64," + (await readFile(file)).toString("base64");
         const keep2 = await page.evaluate(keepAt2, { image, crop: box });
+        // The light map as drawn for this frame (alpha is darkness).
+        const lightFile = `${path}/${capture.name}-light.png`;
+        await writeFile(
+          lightFile,
+          Buffer.from(before.light.dataURL.split(",")[1], "base64"),
+        );
+        // The same frame without annotations: DOM overlays go to opacity 0 at
+        // once; canvas labels, rings and markers drop on the next frame, and
+        // the frozen scene clock keeps everything else as it was.
+        await page.evaluate(() => window.__campaignDebug.overlays(false));
+        await advance(page, 50);
+        const hudFree = `${path}/${capture.name}-hudfree.png`;
+        await page.screenshot({ path: hudFree });
+        await page.evaluate(() => window.__campaignDebug.overlays(true));
+        // The known-cell grid for the region, boundary and wall measures.
+        const exported = await exportCheckpoint(page);
+        const stateFile = `${path}/${capture.name}-state.json`;
+        await writeFile(stateFile, JSON.stringify(exported) + "\n");
+        const { dataURL, ...light } = before.light;
+        void dataURL;
         manifest.captures[capture.name] = {
           file,
+          hudFree,
+          state: stateFile,
+          scene: capture.scene ?? null,
+          panel: capture.panel ?? null,
           viewport: settings.viewport,
           deviceScaleFactor: settings.deviceScaleFactor,
           ...reported,
           rigBox: box,
           rigKeep2: keep2 === null ? null : Number(keep2.toFixed(3)),
+          light: { file: lightFile, ...light },
+          sceneClock: before.sceneClock,
+          backing: before.backing,
         };
         console.log(
           `${capture.name}: backing ${reported.backingScale} (${reported.qualityTier ?? "no tier"}), rig keep@2 ${keep2?.toFixed(3)}`,

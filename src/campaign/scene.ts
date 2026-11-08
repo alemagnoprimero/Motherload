@@ -6,12 +6,15 @@ import { campaignSafeArea, campaignTileSize } from "./layout";
 import {
   CampaignView,
   RenderScaleBudget,
+  backoffLine,
   campaignCameraY,
+  harnessOptions,
   qualityTier,
   renderDebugOptions,
   surfaceFraming,
   type CameraSafeArea,
 } from "./view";
+import type { CampaignDebug } from "./debug";
 import { CampaignPointer, TOUCH_JOYSTICK } from "./pointer";
 import { mergePilotControls } from "./input";
 import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
@@ -30,6 +33,12 @@ export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
 export const FRONTIER_TEXTURE = "campaign-w02";
+/** Canvas markers that are annotations, not scenery: hidden with `?overlays=0`. */
+const ANNOTATION_FRAMES = new Set([
+  "cold-warning",
+  "warning-shelf",
+  FIELD_LOG_FRAME,
+]);
 
 export interface CampaignSceneBindings {
   getCampaign: () => Campaign;
@@ -81,6 +90,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     readonly view = new CampaignView();
     private resolutionBudget = new RenderScaleBudget();
     private renderDebug = renderDebugOptions(location.search);
+    private overlaysVisible = harnessOptions(location.search).overlays;
+    /** Harness hook: hold `elapsed`, so the looping animation keeps its phase. */
+    private sceneClockFrozen = false;
+    private debugHooks: CampaignDebug | undefined;
     private frameReadout: HTMLElement | undefined;
     private frameReadoutTimer = 0;
     private frameP95: number | undefined;
@@ -252,13 +265,16 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           color: "#f6e1af",
           font: "12px/1.3 ui-monospace, monospace",
           pointerEvents: "none",
-          whiteSpace: "pre",
+          // The policy line can outgrow a phone: wrap it inside the screen.
+          whiteSpace: "pre-wrap",
+          maxWidth: "calc(100vw - 24px)",
         });
         // Inside the safe area where env() is supported; 8px stays otherwise.
         this.frameReadout.style.left = "max(8px, env(safe-area-inset-left))";
-        this.frameReadout.textContent = "p95 —\nbacking —";
+        this.frameReadout.textContent = "p95 —\nbacking —\npolicy —";
         document.body.append(this.frameReadout);
       }
+      this.setOverlays(this.overlaysVisible);
       this.terrainLayer = new RetainedTerrain(this);
       this.lightingLayer = new CampaignLighting(this);
       this.background = this.add.graphics().setDepth(0);
@@ -266,6 +282,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.contrastEdges = this.add.graphics().setDepth(12);
       this.effects = this.add.graphics().setDepth(24);
       this.screen = this.add.graphics().setDepth(40);
+      this.installDebugHooks();
       this.wreckMaskShape = this.add.graphics().setVisible(false);
       this.wreckMask = this.wreckMaskShape.createGeometryMask();
       // Stretch a gradient once; only the transparent stars may tile. The
@@ -436,8 +453,60 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.terrainLayer.destroy();
         this.lightingLayer.destroy();
         this.frameReadout?.remove();
+        if (window.__campaignDebug === this.debugHooks)
+          delete window.__campaignDebug;
+        delete document.body.dataset.annotations;
       });
       bindings.onUpdate(0);
+    }
+
+    /** `window.__campaignDebug` (debug.ts): read-only probes and harness switches. */
+    private installDebugHooks() {
+      const hooks: CampaignDebug = {
+        lightTexture: async () => this.lightingLayer.snapshot(),
+        overlays: (visible) => {
+          if (visible !== undefined) this.setOverlays(visible);
+          return this.overlaysVisible;
+        },
+        sceneClock: {
+          freeze: (seconds = this.elapsed) => {
+            this.elapsed = seconds;
+            this.sceneClockFrozen = true;
+            return this.elapsed;
+          },
+          resume: () => {
+            this.sceneClockFrozen = false;
+            return this.elapsed;
+          },
+          read: () => ({
+            elapsed: this.elapsed,
+            frozen: this.sceneClockFrozen,
+          }),
+        },
+        fade: () => {
+          const fade = this.cameras.main.fadeEffect;
+          return {
+            running: fade.isRunning,
+            complete: fade.isComplete,
+            direction: fade.direction ? "out" : "in",
+            progress: fade.progress,
+          };
+        },
+        backing: () => this.resolutionBudget.state(),
+      };
+      this.debugHooks = hooks;
+      window.__campaignDebug = hooks;
+    }
+
+    /**
+     * Annotations off: DOM overlays go to opacity 0 (style.css), so their
+     * boxes still shape the camera and stay clickable; canvas labels, the
+     * screen layer, UI strokes and marker images are not drawn.
+     */
+    private setOverlays(visible: boolean) {
+      this.overlaysVisible = visible;
+      if (visible) delete document.body.dataset.annotations;
+      else document.body.dataset.annotations = "off";
     }
 
     private inspectableAt(screenX: number, screenY: number) {
@@ -523,6 +592,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       flip = false,
       originY = 0.5,
     ) {
+      if (!this.overlaysVisible && ANNOTATION_FRAMES.has(frame)) return false;
       const icy = bindings.getCampaign().state.currentWorld === "W02";
       const sharedUpgrade =
         /^rig-(engine|energy|bay|hull)-2$/.test(frame) ||
@@ -935,7 +1005,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           pointerControls,
         );
         campaign.tick(dt, controls);
-        this.elapsed += dt;
+        if (!this.sceneClockFrozen) this.elapsed += dt;
         this.damageLife = Math.max(0, this.damageLife - dt);
         this.landingLife = Math.max(0, this.landingLife - dt);
         if (bindings.reducedMotion?.()) this.chips = [];
@@ -1881,13 +1951,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         const y = shelf.y * tile - cy;
         if (shelf.warning !== null) {
           this.image("warning-shelf", x, y - tile * 0.25, tile, tile, 17);
-          edges.lineStyle(3, 0xffca6a, 0.85);
-          edges.lineBetween(
-            x - tile * 0.5,
-            y + tile * 0.42,
-            x + tile * 0.5,
-            y + tile * 0.42,
-          );
+          if (this.overlaysVisible) {
+            edges.lineStyle(3, 0xffca6a, 0.85);
+            edges.lineBetween(
+              x - tile * 0.5,
+              y + tile * 0.42,
+              x + tile * 0.5,
+              y + tile * 0.42,
+            );
+          }
           if (Math.abs(x - px) < tile * 4 && !paused)
             this.label(x, y - tile * 0.85, "UNSTABLE SHELF", "#FFCA6A");
         }
@@ -1903,13 +1975,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         const y = (target.y + 0.5) * tile - cy;
         const stage = Math.min(3, Math.floor(campaign.drillProgress * 4));
         if (stage > 0) this.image(`crack-${stage}`, x, y, tile, tile, 16);
-        edges.lineStyle(2, 0xf6e1af, 0.35);
-        edges.strokeRect(
-          x - tile * 0.44,
-          y - tile * 0.44,
-          tile * 0.88,
-          tile * 0.88,
-        );
+        if (this.overlaysVisible) {
+          edges.lineStyle(2, 0xf6e1af, 0.35);
+          edges.strokeRect(
+            x - tile * 0.44,
+            y - tile * 0.44,
+            tile * 0.88,
+            tile * 0.88,
+          );
+        }
       }
       const pointer = this.pointerPilot.current;
       const joystick = this.pointerPilot.joystick;
@@ -1988,6 +2062,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         width,
         height,
         damageLife: this.damageLife,
+        overlays: this.overlaysVisible,
       });
       for (const chip of this.chips) {
         fx.fillStyle(chip.color, Math.min(1, chip.life / chip.total));
@@ -2033,8 +2108,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         }
         this.label(width / 2, labelY, callout, "#F6E1AF");
       }
-      if (titleVisible)
+      if (titleVisible || !this.overlaysVisible)
         for (const label of this.labels) label.setVisible(false);
+      // The screen layer holds only UI: rings, arrows, alarm border, bars.
+      this.screen.setVisible(this.overlaysVisible);
       // Twice a second of scene time: the 10 s p95 and the readout.
       this.frameReadoutTimer += dt;
       if (this.frameReadoutTimer >= 0.5) {
@@ -2044,7 +2121,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           this.frameReadout.textContent =
             `p95 ${this.frameP95 === undefined ? "—" : this.frameP95.toFixed(1) + " ms"}\n` +
             `backing ${Number(this.view.dpr.toFixed(2))}× · ${this.resolutionBudget.tier}` +
-            (this.resolutionBudget.pin === undefined ? "" : " · pinned");
+            (this.resolutionBudget.pin === undefined ? "" : " · pinned") +
+            // One line per policy segment: next step, probation, back-off.
+            `\n${backoffLine(this.resolutionBudget.state()).replaceAll(" · ", "\n")}`;
       }
       const host = document.getElementById("campaign-game");
       if (host) {

@@ -64,14 +64,19 @@ function clear(checkpoint, x, y) {
     )
       item.status = "exposed";
 }
+/**
+ * A shaft fixture: the column at `x` is open from the surface to `row`, the
+ * rig rests on that row's floor and nothing is discovered yet. `source` is
+ * another checkpoint of that world to dig into (art-captures uses the audit's
+ * fresh world); by default it is the improvement fixture.
+ */
 export function fixture(
   worldId = "W01",
   row = 6,
   x = worldId === "W01" ? 31.5 : 12.5,
+  source = fixtures[worldId === "W01" ? "native" : "w02"],
 ) {
-  const checkpoint = structuredClone(
-    fixtures[worldId === "W01" ? "native" : "w02"],
-  );
+  const checkpoint = structuredClone(source);
   const mine = world(checkpoint);
   checkpoint.state.vehicle = { x, y: row - 0.36, energy: 9, hull: 10 };
   for (let y = 0; y < row; y++) clear(checkpoint, x, y);
@@ -162,10 +167,11 @@ async function confirm(page) {
   await closed;
   await idle(page);
 }
-async function hudTexts(page) {
-  return page.evaluate(() => {
+async function hudTexts(page, extraRoots = "") {
+  return page.evaluate((extra) => {
     const roots = document.querySelectorAll(
-      ".campaign-hud,.campaign-objective,.campaign-toolbar,#campaign-menu-toggle,#campaign-message,#campaign-danger,#campaign-extraction,#campaign-dock-toggle",
+      ".campaign-hud,.campaign-objective,.campaign-toolbar,#campaign-menu-toggle,#campaign-message,#campaign-danger,#campaign-extraction,#campaign-dock-toggle" +
+        (extra ? "," + extra : ""),
     );
     const seen = new Set();
     const results = [];
@@ -225,12 +231,12 @@ async function hudTexts(page) {
         }
       }
     return results;
-  });
+  }, extraRoots);
 }
-async function capture(page, path, name, entries) {
+async function capture(page, path, name, entries, extraRoots = "") {
   const image = `${path}/${name}.png`;
   await page.screenshot({ path: image });
-  const texts = await hudTexts(page);
+  const texts = await hudTexts(page, extraRoots);
   const style = await page.addStyleTag({
     content:
       '[data-measure-text="true"]{color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important}',
@@ -863,7 +869,14 @@ export async function runImprovementSmoke(browser, base, path) {
   }
   if (selected.has("fog")) {
     for (const worldId of ["W01", "W02"]) {
-      const { context, page } = await ready(browser, base);
+      // A frozen scene clock keeps glints and rig frames identical between
+      // the captures each check compares. A baseline build predates the hook.
+      const { context, page } = await ready(
+        browser,
+        base,
+        {},
+        { freezeSceneClock: !baseline },
+      );
       try {
         await freeze(page);
         const solid = fixture(worldId, 18),
@@ -907,6 +920,9 @@ export async function runImprovementSmoke(browser, base, path) {
           airFile,
         ]);
         await restore(page, solid);
+        // One frame after an import is the first frame of its 180 ms fade:
+        // compare settled views, not the fade colour with a part-faded frame.
+        await settledView(page, solid);
         const ordinary = `${path}/${worldId}-normal-edges.png`;
         await page.screenshot({ path: ordinary });
         await menu(page);
@@ -1010,12 +1026,18 @@ export async function runImprovementSmoke(browser, base, path) {
     );
   }
   if (selected.has("visual")) {
-    const entries = {};
+    const entries = {},
+      disabledEntries = {};
     for (const [kind, viewport, options] of viewportTypes) {
-      const { context, page } = await ready(browser, base, {
-        viewport,
-        ...options,
-      });
+      // The alarm border's alpha and the rig frames follow the scene clock;
+      // freezing it before Start fixes their phase in every run. A baseline
+      // build predates the hook.
+      const { context, page } = await ready(
+        browser,
+        base,
+        { viewport, ...options },
+        { freezeSceneClock: !baseline },
+      );
       try {
         await freeze(page);
         for (const worldId of ["W01", "W02"]) {
@@ -1047,6 +1069,14 @@ export async function runImprovementSmoke(browser, base, path) {
           if (!baseline) {
             value.state.vehicle.energy = 0;
             await restore(page, value);
+            // A disabled rig pauses the game, but the import's fade still
+            // runs: settle before the screenshot, as the other captures do.
+            await settledView(page, value);
+            assert.equal(
+              await page.evaluate(() => window.__campaignDebug.fade().running),
+              false,
+              kind + ": disabled capture is past the import fade",
+            );
             const target = page.locator("#campaign-disabled-recover"),
               box = await target.boundingBox();
             assert.ok(
@@ -1060,9 +1090,15 @@ export async function runImprovementSmoke(browser, base, path) {
                 box.x + box.width <= viewport.width,
               kind + ": recovery button stays in viewport",
             );
-            await page.screenshot({
-              path: `${path}/${worldId}-${kind}-disabled.png`,
-            });
+            // Measured like the others (dark share, text contrast including
+            // the recovery card), but outside the 12-capture thresholds.
+            await capture(
+              page,
+              path,
+              `${worldId}-${kind}-disabled`,
+              disabledEntries,
+              "#campaign-disabled",
+            );
           }
         }
         noErrors(page);
@@ -1081,6 +1117,20 @@ export async function runImprovementSmoke(browser, base, path) {
     ]);
     const pixels = JSON.parse(await readFile(`${path}/pixels.json`, "utf8"));
     results.measurements.pixels = pixels;
+    if (Object.keys(disabledEntries).length) {
+      await writeFile(
+        `${path}/disabled-manifest.json`,
+        JSON.stringify(disabledEntries, null, 2),
+      );
+      execFileSync("python3", [
+        "scripts/improvement-pixels.py",
+        `${path}/disabled-manifest.json`,
+        `${path}/disabled-pixels.json`,
+      ]);
+      results.measurements.disabledPixels = JSON.parse(
+        await readFile(`${path}/disabled-pixels.json`, "utf8"),
+      );
+    }
     const worst = Math.min(
       ...Object.values(pixels).map((item) => item.minimumHudContrast),
     );
@@ -1110,6 +1160,97 @@ export async function runImprovementSmoke(browser, base, path) {
         "12 frozen world/viewport/state captures retain HUD contrast ≥4.5:1; desktop shafts ≤60% dark pixels",
       );
     }
+  }
+  if (selected.has("harness")) {
+    // Audit F3, per pull request: the §9 fixtures at backing 1 through F1's
+    // pin, each with its HUD-free twin, light map and exported state, scored
+    // by the measures ported from metrics.py. The @2 sheets and the §9.2 table
+    // run nightly in their own job (checks.yml, visual-sheets). Nothing here
+    // asserts a §9 target: those are gates for later phases.
+    const { runArtCaptures, SHEET_CAPTURES } =
+      await import("./art-captures.mjs");
+    const harness = `${path}/harness`;
+    const hudFree = new URL(base);
+    hudFree.searchParams.set("overlays", "0");
+    {
+      const { context, page } = await ready(browser, hudFree.href);
+      try {
+        assert.equal(
+          await page
+            .evaluate(() => [
+              document.body.dataset.annotations,
+              window.__campaignDebug.overlays(),
+              getComputedStyle(document.querySelector(".campaign-hud")).opacity,
+            ])
+            .then(JSON.stringify),
+          JSON.stringify(["off", false, "0"]),
+          "?overlays=0 starts with every annotation hidden",
+        );
+        noErrors(page);
+      } finally {
+        await context.close();
+      }
+    }
+    const manifest = await runArtCaptures(
+      browser,
+      base,
+      `${harness}/captures`,
+      { only: SHEET_CAPTURES, backing: 1 },
+    );
+    for (const name of SHEET_CAPTURES) {
+      const capture = manifest.captures[name];
+      assert.ok(capture, `${name} was captured`);
+      assert.equal(capture.backingScale, 1, `${name}: backing pinned at 1`);
+      assert.equal(
+        capture.devicePixelRatio,
+        capture.deviceScaleFactor,
+        `${name}: device pixel ratio pinned`,
+      );
+      assert.deepEqual(
+        capture.sceneClock,
+        { elapsed: 0, frozen: true },
+        `${name}: scene clock frozen before Start`,
+      );
+      assert.ok(
+        capture.light.width > 0 && capture.light.height > 0,
+        `${name}: light map captured`,
+      );
+    }
+    console.log(
+      execFileSync("python3", [
+        "scripts/art-metrics-check.py",
+        manifest.captures["a04-dive-60m@2"].hudFree,
+      ])
+        .toString()
+        .trim(),
+    );
+    console.log(
+      execFileSync("python3", [
+        "scripts/art-sheets.py",
+        "--captures",
+        `${harness}/captures`,
+        "--out",
+        harness,
+        "--table-only",
+      ]).toString(),
+    );
+    const table = JSON.parse(await readFile(`${harness}/table.json`, "utf8"));
+    results.measurements.harness = table;
+    for (const [name, frame] of Object.entries(table.frames)) {
+      assert.ok(
+        frame.overlay.edges_full > frame.overlay.edges_hudfree,
+        `${name}: the HUD-free frame drops the overlays' edges`,
+      );
+      for (const value of [
+        frame.frame.L_mean,
+        frame.frame.edge_density,
+        frame.tiles_across,
+      ])
+        assert.ok(Number.isFinite(value), `${name}: measures are numbers`);
+    }
+    pass(
+      `${SHEET_CAPTURES.length} §9 fixtures at backing 1 with HUD-free frames, light maps and the measures ported from metrics.py`,
+    );
   }
   if (selected.has("perf")) {
     const context = await browser.newContext({
@@ -1172,14 +1313,22 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  const browser = await launchBrowser();
-  try {
-    await runImprovementSmoke(
-      browser,
-      process.env.PREVIEW_URL || "http://127.0.0.1:5173/",
-      process.env.IMPROVEMENT_ARTIFACTS || "artifacts/improvement",
-    );
-  } finally {
-    await browser.close();
-  }
+  // Not a top-level await: the harness section imports art-captures.mjs,
+  // which imports this module, and that import cannot finish while this
+  // module is still evaluating.
+  (async () => {
+    const browser = await launchBrowser();
+    try {
+      await runImprovementSmoke(
+        browser,
+        process.env.PREVIEW_URL || "http://127.0.0.1:5173/",
+        process.env.IMPROVEMENT_ARTIFACTS || "artifacts/improvement",
+      );
+    } finally {
+      await browser.close();
+    }
+  })().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }

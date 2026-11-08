@@ -2,6 +2,10 @@ import Phaser from "phaser";
 import type { Campaign } from "../model";
 import type { CampaignView } from "../view";
 import { fogDarkness, renderBand } from "./bands";
+import type { LightTextureSnapshot } from "../debug";
+
+/** Light pixels per CSS pixel. */
+const LIGHT_SCALE = 0.25;
 
 /** Canvas compositing is the reference implementation for both Phaser renderers. */
 export class CampaignLighting {
@@ -9,6 +13,8 @@ export class CampaignLighting {
   private fog: HTMLCanvasElement;
   private image: Phaser.GameObjects.Image;
   private last = "";
+  private blur = 0;
+  private skyRows = 0;
   bytes = 0;
   constructor(private scene: Phaser.Scene) {
     this.texture = scene.textures.createCanvas("campaign-light-map", 1, 1)!;
@@ -24,7 +30,7 @@ export class CampaignLighting {
     reducedMotion: boolean,
     highContrast: boolean,
   ) {
-    const scale = 0.25,
+    const scale = LIGHT_SCALE,
       w = Math.ceil(view.width * scale),
       h = Math.ceil(view.height * scale);
     if (this.texture.width !== w || this.texture.height !== h) {
@@ -83,7 +89,8 @@ export class CampaignLighting {
           tile + 0.5,
         );
       }
-    ctx.filter = `blur(${Math.max(2, tile * 0.35)}px)`;
+    this.blur = Math.max(2, tile * 0.35);
+    ctx.filter = `blur(${this.blur}px)`;
     ctx.drawImage(this.fog, 0, 0);
     ctx.filter = "none";
     const px = view.width * 0.5 * scale;
@@ -155,11 +162,25 @@ export class CampaignLighting {
     ctx.globalCompositeOperation = "source-over";
     this.texture.refresh();
     const skyRows = Math.max(0, Math.min(h, Math.floor(-view.scrollY * scale)));
+    this.skyRows = skyRows;
     this.image
       .setDisplaySize(view.width, view.height)
       .setCrop(0, skyRows, w, h - skyRows)
       .setVisible(skyRows < h);
     void px;
+  }
+  /** The texture as last drawn, for the harness; it allocates no texture. */
+  snapshot(): LightTextureSnapshot {
+    return {
+      key: this.texture.key,
+      width: this.texture.width,
+      height: this.texture.height,
+      scale: LIGHT_SCALE,
+      blur: this.blur,
+      cropTop: this.skyRows,
+      visible: this.image.visible,
+      dataURL: this.texture.canvas.toDataURL("image/png"),
+    };
   }
   destroy() {
     this.image.destroy();

@@ -3,7 +3,9 @@ import {
   BACKING_LEVELS,
   CampaignView,
   RenderScaleBudget,
+  backoffLine,
   campaignCameraY,
+  harnessOptions,
   qualityTier,
   renderDebugOptions,
   surfaceFraming,
@@ -420,5 +422,97 @@ describe("render scale budget (F1)", () => {
       backingPin: undefined,
       frameTime: false,
     });
+  });
+  it("parses the HUD-free switch from the URL (F3)", () => {
+    expect(harnessOptions("?overlays=0")).toEqual({ overlays: false });
+    expect(
+      harnessOptions("?mode=campaign&backing=1&overlays=0&debug=frametime"),
+    ).toEqual({ overlays: false });
+    for (const search of ["", "?overlays=1", "?overlays=", "?overlays=off"])
+      expect(harnessOptions(search)).toEqual({ overlays: true });
+  });
+  it("reports its state for the readout's back-off line (F3)", () => {
+    const desktop = budgetFor("high");
+    frames(desktop, 5, 2);
+    expect(desktop.state()).toMatchObject({
+      pinned: false,
+      level: 2,
+      floor: 2,
+      cap: 2,
+      next: undefined,
+      wait: undefined,
+      backoff: [],
+      raised: undefined,
+    });
+    expect(backoffLine(desktop.state())).toBe("at ceiling");
+
+    const phone = budgetFor("medium");
+    frames(phone, 40, 4, { dpr: 3 });
+    expect(phone.state()).toMatchObject({ level: 1.5, next: 2, wait: 10 });
+    frames(phone, 5, 4.5, { dpr: 3 });
+    expect(Math.floor(phone.state().cheapSeconds)).toBe(4);
+    expect(backoffLine(phone.state())).toBe("next 2× after 4/10 s");
+
+    phone.hold(1);
+    expect(phone.state().held).toBe(1);
+    expect(backoffLine(phone.state())).toBe("held 1.0 s");
+
+    phone.pin = 1;
+    // A pin replaces the policy: the pinned scale, no floor or ceiling.
+    expect(phone.state()).toMatchObject({
+      pinned: true,
+      level: 1,
+      floor: undefined,
+      cap: undefined,
+      next: undefined,
+      wait: undefined,
+    });
+    expect(backoffLine(phone.state())).toBe("policy off (pinned)");
+  });
+  it("never counts a reset below 0 while a hold delays it (F3)", () => {
+    const budget = budgetFor("medium");
+    play(budget, 20, ({ scale }) => (scale === 2 ? 20 : 11), 3);
+    for (let n = 0; n < 40 && !budget.state().raised; n++)
+      play(budget, 1, () => 6, 3);
+    // A long hold (a slow world load) runs past the 60 s mark: the reset
+    // waits for the first measured frame.
+    budget.hold(70);
+    frames(budget, 6, 65, { dpr: 3 });
+    expect(budget.state().raised!.age).toBeGreaterThan(60);
+    expect(backoffLine(budget.state())).toBe(
+      "held 5.0 s · back-off 2× 20 s (resets in 0 s)",
+    );
+  });
+  it("shows a failed raise's doubled wait and a raise on probation (F3)", () => {
+    const budget = budgetFor("medium");
+    // Cheap at 1.5, expensive at 2 (as above): the first raise fails.
+    play(budget, 20, ({ scale }) => (scale === 2 ? 20 : 11), 3);
+    expect(budget.state().backoff).toEqual([{ level: 2, wait: 20 }]);
+    expect(backoffLine(budget.state())).toMatch(/· back-off 2× 20 s$/);
+    // Cheap everywhere: after 20 s the next raise comes, on probation, and
+    // holding 60 s clears the doubled wait.
+    for (let n = 0; n < 40 && !budget.state().raised; n++)
+      play(budget, 1, () => 6, 3);
+    play(budget, 2, () => 6, 3);
+    expect(backoffLine(budget.state())).toMatch(
+      /^at ceiling · probation 2× 2\/8 s · back-off 2× 20 s \(resets in 5[78] s\)$/,
+    );
+    play(budget, 7, () => 6, 3);
+    expect(backoffLine(budget.state())).toMatch(
+      /^at ceiling · back-off 2× 20 s \(resets in 5[01] s\)$/,
+    );
+    play(budget, 52, () => 6, 3);
+    expect(budget.state()).toMatchObject({ backoff: [], raised: undefined });
+    expect(backoffLine(budget.state())).toBe("at ceiling");
+
+    const raised = budgetFor("medium");
+    play(raised, 4, () => 40, 3);
+    play(raised, 13, () => 6, 3);
+    expect(raised.state().raised).toMatchObject({ to: 2 });
+    expect(raised.state().raised!.age).toBeGreaterThan(0);
+    expect(raised.state().raised!.age).toBeLessThan(3);
+    expect(backoffLine(raised.state())).toMatch(
+      /^(held \d\.\d s|at ceiling) · probation 2× [0-2]\/8 s$/,
+    );
   });
 });
