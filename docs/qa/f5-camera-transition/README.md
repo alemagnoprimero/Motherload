@@ -73,7 +73,7 @@ The second command runs on a checkout of `main` with this branch's `scripts/came
 ## Verification
 
 The whole `verify` job of `checks.yml` passed locally before the push, every step exiting 0, in 757 s:
-- `npm test` (277 passed, 5 skipped), `format:check` and `build`;
+- `npm test` (276 passed, 5 skipped), `format:check` and `build`;
 - `test:improvements` with `behavior,visual,fog,harness`: the fog check, whose views must settle on the same camera twice; the 12 visual captures and the §9 harness, all taken after `settledView`;
 - `test:campaign:storage`, `test:feel`, `test:audio` and `test:plan-ui`;
 - `test:render`, including the camera round trip, which restores byte-identical terrain pixels after five camera shifts on Canvas and WebGL;
