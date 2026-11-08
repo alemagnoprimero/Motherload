@@ -89,6 +89,10 @@ def measure(name, c):
         air, hard = m.cave_air_mask(state, view, dpr, free.shape[:2])
         out['boundary_axis_share'] = round(m.axis_share_excluding(air, hard), 3)
         out['boundary_axis_share_all'] = round(m.axis_share(air), 3)
+    # §9.2 sets the headlamp core for every underground frame. The F3 port
+    # read it on SITE-4 only, where the prototype measured it; T1-lite lights
+    # the shaft too.
+    if scene_kind(c) in ('shaft', 'cavern'):
         out['headlamp'] = m.headlamp_axis(free, view, dpr, rig)
     return out
 
@@ -197,7 +201,7 @@ row('Tile-normalised mean gradient', '≥2.5 (G1)',
     lambda g, _: '—' if 'mean_gradient' not in g else f"{g['mean_gradient']:.2f}{ok(g['mean_gradient'] >= 2.5)}")
 row('Playfield within 10 luma of one value', '≤25 % (G2)',
     lambda g, _: '—' if 'flat_share' not in g else f"{100 * g['flat_share']:.1f} %{ok(g['flat_share'] <= 0.25)}")
-row('Headlamp core L\\* / b\\* (0.35 tile)', '≥70 / +15 to +30 (G1), cavern',
+row('Headlamp core L\\* / b\\* (0.35 tile)', '≥70 / +15 to +30 (G1); shaft and cavern',
     lambda g, _: '—' if not g.get('headlamp', {}).get('0.35tile') else f"{g['headlamp']['0.35tile']['L']:.1f} / {g['headlamp']['0.35tile']['b']:+.1f}{ok(g['headlamp']['0.35tile']['L'] >= 70 and 15 <= g['headlamp']['0.35tile']['b'] <= 30)}")
 row('Overlay edge share', '≤20 % (G1)',
     lambda g, _: '—' if g['overlay']['overlay_share'] is None else f"{100 * g['overlay']['overlay_share']:.0f} %{ok(g['overlay']['overlay_share'] <= 0.20)}")
@@ -206,7 +210,8 @@ row('Framing, tiles across', 'per D1, still pending (G1)', lambda g, _: f"{g['ti
 NOT_MEASURED = [
     ('Brightness order: lamp > rims > walls > unknown > interior and cave air', 'needs the T1 light layers'),
     ('Floor contact; walls and ceilings visual vs collision air', 'needs the T2 field geometry'),
-    ('Headlamp core outside the cavern; warm accents by emitter', 'needs T1 emitters'),
+    ('Headlamp occlusion test; bore spill in the down pose', 'needs the T1 light stack'),
+    ('Warm accents by emitter', 'needs T1 emitters'),
     ('Objective size; HAUL; bar labels; tier badge diameter', 'HUD work (H items); DOM boxes are in the manifest'),
     ('Board inventory; prop grounding; hero props structural', 'art items and owner review'),
     ('p95 on a physical phone', 'read on a remote real device with ?debug=frametime'),

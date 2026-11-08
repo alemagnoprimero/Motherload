@@ -23,6 +23,7 @@ import { RetainedTerrain } from "./render/terrain";
 import { CampaignLighting } from "./render/lighting";
 import { CampaignArt } from "./render/art";
 import { renderRig } from "./render/rig";
+import { T1LiteHeadlamp } from "./render/t1-lite-headlamp";
 import { RenderDiagnostics } from "./render/diagnostics";
 import {
   FIELD_LOG_FRAME,
@@ -107,6 +108,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       | undefined;
     private terrainLayer!: RetainedTerrain;
     private lightingLayer!: CampaignLighting;
+    /** T1-lite: the interim headlamp core, until T1's light stack. */
+    private headlamp!: T1LiteHeadlamp;
+    /** T1-lite: the rig's cabin sprite as drawn this frame, for the lamp. */
+    private rigCabin: Phaser.GameObjects.Image | undefined;
     private background!: Phaser.GameObjects.Graphics;
     private edges!: Phaser.GameObjects.Graphics;
     private contrastEdges!: Phaser.GameObjects.Graphics;
@@ -277,6 +282,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.setOverlays(this.overlaysVisible);
       this.terrainLayer = new RetainedTerrain(this);
       this.lightingLayer = new CampaignLighting(this);
+      // T1-lite: additive headlamp core above the darkness, below the rig.
+      this.headlamp = new T1LiteHeadlamp(this);
       this.background = this.add.graphics().setDepth(0);
       this.edges = this.add.graphics().setDepth(11);
       this.contrastEdges = this.add.graphics().setDepth(12);
@@ -452,6 +459,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.diagnostics.destroy();
         this.terrainLayer.destroy();
         this.lightingLayer.destroy();
+        this.headlamp.destroy(); // T1-lite
         this.frameReadout?.remove();
         if (window.__campaignDebug === this.debugHooks)
           delete window.__campaignDebug;
@@ -718,6 +726,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         ) +
           image.displayHeight * this.view.dpr * originY) /
         this.view.dpr;
+      // T1-lite: remember the cabin, whose lens the headlamp core sits on.
+      if (frame === "rig-cabin") this.rigCabin = image;
       return true;
     }
 
@@ -1245,6 +1255,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       for (const label of this.labels) label.setVisible(false);
       this.imageIndex = 0;
       this.labelIndex = 0;
+      this.rigCabin = undefined; // T1-lite
 
       // The opaque retained terrain and sky cover the view. Older parallax
       // polygons behind them were fully occluded but still consumed fill rate.
@@ -2064,6 +2075,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         damageLife: this.damageLife,
         overlays: this.overlaysVisible,
       });
+      // T1-lite: the headlamp core follows the cabin sprite just drawn.
+      this.headlamp.render(this.rigCabin, tile);
       for (const chip of this.chips) {
         fx.fillStyle(chip.color, Math.min(1, chip.life / chip.total));
         fx.fillRect(
