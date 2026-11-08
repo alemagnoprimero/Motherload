@@ -78,6 +78,8 @@ def measure(name, c):
         'regions': m.region_stats(free, state, view, dpr, rig, keep),
         'tiles_across': round(view['width'] / view['tile'], 1),
         'overlay': m.overlay_edge_share(full, free, (view['width'], view['height']), c.get('hud', [])),
+        # F6: the playfield's text items (HUD left out), as art-captures counts them.
+        'text_items': None if 'playfieldText' not in c else [t['text'] for t in c['playfieldText']],
     }
     if dpr == 2 and full.shape[:2] == (1800, 2880):
         grad, flat = m.mean_grad_flat(free, view['tile'] * dpr)
@@ -205,6 +207,8 @@ row('Headlamp core L\\* / b\\* (0.35 tile)', '≥70 / +15 to +30 (G1); shaft and
     lambda g, _: '—' if not g.get('headlamp', {}).get('0.35tile') else f"{g['headlamp']['0.35tile']['L']:.1f} / {g['headlamp']['0.35tile']['b']:+.1f}{ok(g['headlamp']['0.35tile']['L'] >= 70 and 15 <= g['headlamp']['0.35tile']['b'] <= 30)}")
 row('Overlay edge share', '≤20 % (G1)',
     lambda g, _: '—' if g['overlay']['overlay_share'] is None else f"{100 * g['overlay']['overlay_share']:.0f} %{ok(g['overlay']['overlay_share'] <= 0.20)}")
+row('Text items in the playfield, HUD left out', '≤1 with Scan off (G1)',
+    lambda g, _: '—' if g.get('text_items') is None else f"{len(g['text_items'])}{ok(len(g['text_items']) <= 1)}")
 row('Framing, tiles across', 'per D1, still pending (G1)', lambda g, _: f"{g['tiles_across']:.1f}")
 
 NOT_MEASURED = [

@@ -33,7 +33,11 @@ export function poiArtwork(
 /** A small readable record marker, never the full survey-mast scenery. */
 export const FIELD_LOG_FRAME = "ui-mission";
 
-/** Ore already has tile art and active route guidance; extra labels obscure it. */
+/**
+ * Ore already has tile art and active route guidance; extra labels obscure
+ * it. A mission part's caption is its title alone: F6 dropped the
+ * " · mission part" suffix.
+ */
 export function poiSecondaryCaption(
   poi: Pick<MissionPoi, "kind" | "title" | "status">,
 ) {
@@ -48,6 +52,6 @@ export function poiSecondaryCaption(
           ? "survey signal"
           : poi.kind === "relic"
             ? "relic"
-            : "mission part";
-  return `${poi.title} · ${suffix}`;
+            : undefined;
+  return suffix ? `${poi.title} · ${suffix}` : poi.title;
 }

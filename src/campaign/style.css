@@ -2672,7 +2672,7 @@ small,
 }
 body[data-campaign-overlay] .campaign-coach,
 body[data-campaign-overlay] .campaign-return,
-body[data-campaign-overlay] .depth-rail {
+body[data-campaign-overlay]:not([data-campaign-overlay="menu"]) .depth-rail {
   display: none;
 }
 .pause-tabs,
@@ -3539,6 +3539,20 @@ body[data-campaign-volatile="cutting"] .campaign-message.visible {
   width: 8px;
   display: block;
   pointer-events: none;
+}
+/*
+ * F6 (D3): the depth rail shows while the game is paused (the pause menu
+ * included) or while the HUD's depth readout is hovered, not through play.
+ */
+.depth-rail {
+  opacity: 0;
+}
+body[data-campaign-paused="true"] .depth-rail,
+body:has(.readout:hover > #campaign-depth) .depth-rail {
+  opacity: 1;
+}
+.readout:has(> #campaign-depth) {
+  pointer-events: auto;
 }
 .depth-rail .rail-safe {
   position: absolute;

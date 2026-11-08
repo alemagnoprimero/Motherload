@@ -52,6 +52,20 @@ export interface CampaignDebug {
   };
   /** F1's backing policy: level, next raise, wait and back-off (the pin, when pinned). */
   backing(): BackingBudgetState;
+  /**
+   * The canvas world labels drawn this frame that fall inside the view, in
+   * CSS px: the harness counts them with the DOM's playfield text (F6).
+   */
+  worldLabels(): WorldLabelSnapshot[];
+}
+
+/** A canvas world label as last drawn, in CSS px. */
+export interface WorldLabelSnapshot {
+  text: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 declare global {
