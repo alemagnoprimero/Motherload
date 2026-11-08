@@ -1167,7 +1167,7 @@ export async function runImprovementSmoke(browser, base, path) {
     // by the measures ported from metrics.py. The @2 sheets and the §9.2 table
     // run nightly in their own job (checks.yml, visual-sheets). Nothing here
     // asserts a §9 target: those are gates for later phases.
-    const { runArtCaptures, SHEET_CAPTURES } =
+    const { runArtCaptures, SHEET_CAPTURES, TEST_RASTER_CAPTURE } =
       await import("./art-captures.mjs");
     const harness = `${path}/harness`;
     const hudFree = new URL(base);
@@ -1195,7 +1195,13 @@ export async function runImprovementSmoke(browser, base, path) {
       browser,
       base,
       `${harness}/captures`,
-      { only: SHEET_CAPTURES, backing: 1 },
+      // T13a: also the 60 m fixture with the placeholder raster frame.
+      { only: [...SHEET_CAPTURES, TEST_RASTER_CAPTURE], backing: 1 },
+    );
+    assert.equal(
+      manifest.captures[TEST_RASTER_CAPTURE]?.testRaster,
+      "true",
+      "The raster-source placeholder (T13a) is drawn in the 60 m fixture",
     );
     for (const name of SHEET_CAPTURES) {
       const capture = manifest.captures[name];
@@ -1249,7 +1255,7 @@ export async function runImprovementSmoke(browser, base, path) {
         assert.ok(Number.isFinite(value), `${name}: measures are numbers`);
     }
     pass(
-      `${SHEET_CAPTURES.length} §9 fixtures at backing 1 with HUD-free frames, light maps and the measures ported from metrics.py`,
+      `${SHEET_CAPTURES.length} §9 fixtures at backing 1 with HUD-free frames, light maps and the measures ported from metrics.py; the T13a raster placeholder drawn at 60 m`,
     );
   }
   if (selected.has("perf")) {

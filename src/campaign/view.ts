@@ -158,15 +158,21 @@ export function qualityTier(
   return fragmentHighp && !coarsePointer ? "high" : "medium";
 }
 
-/** `?backing=1|1.5|2` pins the backing scale; `?debug=frametime` shows the readout. */
+/**
+ * `?backing=1|1.5|2` pins the backing scale. `?debug=` takes a comma list:
+ * `frametime` shows the readout, and `test-raster` draws T13a's placeholder
+ * raster frame in the 60 m scene.
+ */
 export function renderDebugOptions(search: string) {
   const params = new URLSearchParams(search);
   const pin = Number(params.get("backing"));
+  const debug = (params.get("debug") ?? "").split(",");
   return {
     backingPin: (BACKING_LEVELS as readonly number[]).includes(pin)
       ? pin
       : undefined,
-    frameTime: (params.get("debug") ?? "").split(",").includes("frametime"),
+    frameTime: debug.includes("frametime"),
+    testRaster: debug.includes("test-raster"),
   };
 }
 

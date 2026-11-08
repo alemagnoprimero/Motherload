@@ -34,6 +34,14 @@ export { campaignSafeArea, campaignTileSize } from "./layout";
 
 export const CAMPAIGN_TEXTURE = "campaign-w01";
 export const FRONTIER_TEXTURE = "campaign-w02";
+/**
+ * Audit T13a: with `?debug=test-raster`, the dev placeholder for the raster
+ * asset path stands in the 60 m scene, in the improvement fixture's W01 shaft
+ * (column 31) two tiles above the rig, at scenery depth under the light map,
+ * so a delivered PNG can be reviewed in context. A debug aid: it is drawn
+ * whether or not its cell is known.
+ */
+const TEST_RASTER = { frame: "test-raster", world: "W01", x: 31.5, y: 3.5 };
 /** Canvas markers that are annotations, not scenery: hidden with `?overlays=0`. */
 const ANNOTATION_FRAMES = new Set([
   "cold-warning",
@@ -1976,6 +1984,20 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         }
       }
 
+      let testRasterDrawn = false;
+      if (this.renderDebug.testRaster && world.id === TEST_RASTER.world)
+        testRasterDrawn = this.image(
+          TEST_RASTER.frame,
+          (this.unwrappedX +
+            delta(campaign.renderX, TEST_RASTER.x, world.width)) *
+            tile -
+            cx,
+          TEST_RASTER.y * tile - cy,
+          tile,
+          tile,
+          14,
+        );
+
       if (campaign.drillTarget) {
         const target = campaign.drillTarget;
         const x =
@@ -2232,6 +2254,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           poiMarkerY,
           worldCallout: String(Boolean(callout)),
           inspection: this.inspection && callout ? callout : "",
+          // T13a: whether the placeholder frame was drawn, under its flag only.
+          ...(this.renderDebug.testRaster
+            ? { testRaster: String(testRasterDrawn) }
+            : {}),
         }))
           if (host.dataset[key] !== value) host.dataset[key] = value;
         const shell = host.parentElement;

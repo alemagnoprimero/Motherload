@@ -407,21 +407,33 @@ describe("render scale budget (F1)", () => {
     expect(renderDebugOptions("?backing=2")).toEqual({
       backingPin: 2,
       frameTime: false,
+      testRaster: false,
     });
     expect(
       renderDebugOptions("?mode=campaign&backing=1.5&debug=frametime"),
     ).toEqual({
       backingPin: 1.5,
       frameTime: true,
+      testRaster: false,
     });
     expect(renderDebugOptions("?backing=3&debug=x,frametime")).toEqual({
       backingPin: undefined,
       frameTime: true,
+      testRaster: false,
     });
     expect(renderDebugOptions("")).toEqual({
       backingPin: undefined,
       frameTime: false,
+      testRaster: false,
     });
+  });
+  it("parses the raster placeholder switch from the URL (T13a)", () => {
+    expect(renderDebugOptions("?debug=test-raster").testRaster).toBe(true);
+    expect(
+      renderDebugOptions("?debug=frametime,test-raster&backing=2"),
+    ).toEqual({ backingPin: 2, frameTime: true, testRaster: true });
+    expect(renderDebugOptions("?debug=test-rasters").testRaster).toBe(false);
+    expect(renderDebugOptions("?test-raster=1").testRaster).toBe(false);
   });
   it("parses the HUD-free switch from the URL (F3)", () => {
     expect(harnessOptions("?overlays=0")).toEqual({ overlays: false });

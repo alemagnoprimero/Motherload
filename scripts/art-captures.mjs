@@ -12,7 +12,10 @@
  *   p-portrait-03-dive-70m@3.png    70 m shaft             shaft-tall     393×851 @3
  *   p-portrait-cavern-site4@3.png   SITE-4 wreck cavern    cavern-tall    393×851 @3
  *
- * plus b-550m-band-D@2.png (550 m shaft, band D), which no §9 row uses.
+ * plus b-550m-band-D@2.png (550 m shaft, band D), which no §9 row uses, and
+ * t13a-test-raster-60m@2.png: the 60 m fixture with ?debug=test-raster, where
+ * the game draws T13a's placeholder raster frame (a capture's `search` adds
+ * URL parameters; it throws unless the game reports the frame drawn).
  *
  * Built on fixture(), restore() and settledView() from improvement-smoke.mjs
  * (settledView applies settle()'s rule from render-acceptance.mjs to a restored
@@ -110,6 +113,9 @@ function siteCheckpoint(saved, id) {
   return checkpoint;
 }
 
+/** T13a: the 60 m fixture with the placeholder raster frame (verify runs it). */
+export const TEST_RASTER_CAPTURE = "t13a-test-raster-60m@2";
+
 export const CAPTURES = [
   {
     name: "a02-spawn-1440x900@2",
@@ -148,6 +154,14 @@ export const CAPTURES = [
     name: "b-550m-band-D@2",
     form: "desktop",
     checkpoint: () => fixture("W01", 55, 34.5),
+  },
+  {
+    // T13a: a PNG listed in frames.json with "source": "raster" reaches the
+    // game. The placeholder stands in the shaft two tiles above the rig.
+    name: TEST_RASTER_CAPTURE,
+    form: "desktop",
+    search: { debug: "test-raster" },
+    checkpoint: () => fixture("W01", 6),
   },
   {
     name: "c-site-W01-SITE-4-wreck@2",
@@ -217,12 +231,24 @@ export async function runArtCaptures(browser, base, path, options = {}) {
     backingPin: backing ?? null,
     captures: {},
   };
-  for (const [form, settings] of Object.entries(FORMS)) {
-    const captures = selected.filter((capture) => capture.form === form);
-    if (!captures.length) continue;
+  // One page per form and per set of extra URL parameters.
+  const groups = [];
+  for (const [form, settings] of Object.entries(FORMS))
+    for (const capture of selected.filter((item) => item.form === form)) {
+      const search = new URLSearchParams(capture.search ?? {}).toString();
+      const group = groups.find(
+        (item) => item.form === form && item.search === search,
+      );
+      if (group) group.captures.push(capture);
+      else groups.push({ form, settings, search, captures: [capture] });
+    }
+  for (const { settings, search, captures } of groups) {
+    const pageUrl = new URL(url);
+    for (const [key, value] of new URLSearchParams(search))
+      pageUrl.searchParams.set(key, value);
     const { context, page } = await ready(
       browser,
-      url.href,
+      pageUrl.href,
       settings,
       // Real-clock play lets the game run as shipped, scene clock included.
       { freezeSceneClock: !(playSeconds > 0) },
@@ -269,6 +295,8 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             backingPinned: element.dataset.backingPinned ?? null,
             frameP95: Number(element.dataset.frameP95) || null,
             renderer: element.dataset.renderer,
+            // T13a's placeholder: "true" when drawn, absent without its flag.
+            testRaster: element.dataset.testRaster ?? null,
             devicePixelRatio: window.devicePixelRatio,
             // The camera in CSS px: what the cell-based measures need.
             view: {
@@ -299,6 +327,16 @@ export async function runArtCaptures(browser, base, path, options = {}) {
         if (reported.devicePixelRatio !== settings.deviceScaleFactor)
           throw new Error(
             `${capture.name}: devicePixelRatio ${reported.devicePixelRatio}, not ${settings.deviceScaleFactor}`,
+          );
+        if (
+          new URLSearchParams(search)
+            .get("debug")
+            ?.split(",")
+            .includes("test-raster") &&
+          reported.testRaster !== "true"
+        )
+          throw new Error(
+            `${capture.name}: the test-raster frame was not drawn (${reported.testRaster})`,
           );
         // Playwright's frozen clock makes every frame cost 0 ms: a p95 only
         // means something after real-clock play.
@@ -333,6 +371,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           state: stateFile,
           scene: capture.scene ?? null,
           panel: capture.panel ?? null,
+          search: search || null,
           viewport: settings.viewport,
           deviceScaleFactor: settings.deviceScaleFactor,
           ...reported,

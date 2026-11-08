@@ -19,12 +19,22 @@ const lab = (rgb) => {
   ].map((v) => (v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116));
   return [116 * xyz[1] - 16, 500 * (xyz[0] - xyz[1]), 200 * (xyz[1] - xyz[2])];
 };
+// Audit T13a: raster-source frames reach the runtime pages at every scale.
+const rasterFrames = JSON.parse(
+  await readFile(
+    new URL("../assets/campaign/source/frames.json", import.meta.url),
+    "utf8",
+  ),
+)
+  .frames.filter((frame) => frame.source === "raster")
+  .map((frame) => frame.name);
 let frames = 0;
 for (const world of ["w01", "w02"])
   for (const scale of [2, 3]) {
     const index = await json(`${world}-pages-runtime-${scale}x.json`);
     assert.equal(index.scale, scale);
-    const names = new Set();
+    const names = new Set(),
+      raster = new Set();
     for (const page of index.pages) {
       const png = await readFile(new URL(page.image, directory));
       const atlas = await json(page.data);
@@ -37,9 +47,16 @@ for (const world of ["w01", "w02"])
         names.add(name);
         assert.equal(frame.sourceSize.w / frame.logicalSize.w, scale);
         assert.equal(frame.sourceSize.h / frame.logicalSize.h, scale);
+        if (frame.source === "raster") raster.add(name);
         frames++;
       }
     }
+    if (world === "w01")
+      for (const name of rasterFrames)
+        assert.ok(
+          raster.has(name),
+          `Raster frame ${name} is missing from the @${scale}x runtime pages`,
+        );
     assert.ok(names.has("sky-body"));
     assert.ok(names.has(world === "w01" ? "rig-cabin" : "mission-sample"));
   }
