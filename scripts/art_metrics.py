@@ -12,7 +12,9 @@ These are metrics.py's inline steps made into functions over a game capture:
 
     mean_grad_flat   mean_grad_and_flat() on an image instead of a path
     wall_profile     the shaft wall probe (rows 2.5 and 4.5 of world x = 20)
-    headlamp_axis    the cavern headlamp core samples
+    headlamp_axis    the headlamp core samples (metrics.py took them in the
+                     cavern; the harness takes them on every shaft and
+                     cavern frame)
 
 and these are new:
 

@@ -68,6 +68,12 @@ Recorded 2026-11-07 with F4, the value re-key. In W02 band D (the 850 m frame), 
 
 Known hard rock draws its band's rock page at full opacity, so it takes the page's value: mean luma 65 in W02 band D, where unknown rock is luma 64 before darkness. F4's darkness values cannot widen the gap without failing another line: more unknown darkness takes unknown rock below luma 45, and less visible darkness takes unknown rock minus cave air below +10. The margin is left to X1 (the W02 retune) and assets 47–48 (W02 materials, inclusions and back walls). The measurements are in [`docs/qa/f4-value-rekey/`](qa/f4-value-rekey/README.md).
 
+### T1-lite headlamp core on band-B soil (open)
+
+Recorded 2026-11-08 with T1-lite, the interim additive headlamp core. The F3 harness reads the core at L\* ≥ 70 with b\* +15 to +30 on every shaft and cavern frame but one: at 150 m (W01 band B) the probe falls on lit blue soil, and the core reads L\* 99.6, b\* +3.9.
+
+An additive light clips that soil's red and green and turns it cream. One colour and intensity cannot also lift dark cave air to L\* 70 and keep its b\* at or below +30: the settings that pass all six frames have at most 0.45 of margin. T1's 0–2× modulate composite keeps the surface's own colour under the lamp, so the gap is left to T1. The measurements are in [`docs/qa/t1-lite-headlamp/`](qa/t1-lite-headlamp/README.md).
+
 ### Rendering measurements and remaining limits
 
 A separate maximum-quality probe pins actual DPR 2 and lets both worlds’ neighbouring art pages finish loading. Desktop textures measure **45.64 MiB at boot / 55.77 MiB in W01 / 63.52 MiB in W02**, under 64 MiB; the W02 fixture has 0.48 MiB headroom. Phone measurements are **19.43 / 29.55 / 31.80 MiB**, under 20 MiB boot and 40 MiB active. Terrain sampling is capped at 1.5 with 2× macro pages; foreground sprites retain native 3× pages and the canvas/text can use DPR 2. This measured fixture does not certify every possible future content combination. `npm run test:render:memory` retains this strict check in CI.
