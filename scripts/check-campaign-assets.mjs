@@ -284,6 +284,42 @@ export function checkCampaignAtlas(
   return { count: frames.length, width, height, bytes: png.length };
 }
 
+/**
+ * Audit T13a: a frame listed with `"source": "raster"` is a PNG beside the
+ * SVGs, which the build resamples to each page. Its PNG must exist, keep the
+ * frame's proportions and be at least the frame's @2x size (a smaller one
+ * would be enlarged on every page), and the atlas must carry the frame with
+ * its raster mark.
+ */
+export async function checkRasterSources(sourceDirectory, manifest, atlas) {
+  const raster = manifest.frames.filter((frame) => frame.source === "raster");
+  for (const frame of raster) {
+    const png = await readFile(new URL(`${frame.name}.png`, sourceDirectory));
+    assert.equal(
+      png.subarray(0, 8).toString("hex"),
+      PNG_SIGNATURE,
+      `Raster source is not a PNG: ${frame.name}`,
+    );
+    const width = png.readUInt32BE(16),
+      height = png.readUInt32BE(20);
+    assert.equal(
+      width * frame.logicalHeight,
+      height * frame.logicalWidth,
+      `Raster source changes the frame's proportions: ${frame.name}`,
+    );
+    assert.ok(
+      width >= frame.width && height >= frame.height,
+      `Raster source is smaller than its @2x frame: ${frame.name}`,
+    );
+    assert.equal(
+      atlas.frames[frame.name]?.source,
+      "raster",
+      `Raster frame is missing from the atlas or lost its mark: ${frame.name}`,
+    );
+  }
+  return raster.map((frame) => frame.name);
+}
+
 /** Pixel checks stay in the normal Node-only production asset audit. */
 export async function checkCampaignReadability(directory, world, png, atlas) {
   const backgrounds = {};
@@ -444,6 +480,12 @@ if (
     png,
     atlas,
   );
+  const source = new URL("../assets/campaign/source/", import.meta.url);
+  const rasterFrames = await checkRasterSources(
+    source,
+    JSON.parse(await readFile(new URL("frames.json", source), "utf8")),
+    atlas,
+  );
   assert.deepEqual(
     atlas.meta?.size,
     { w: result.width, h: result.height },
@@ -597,5 +639,8 @@ if (
   );
   console.log(
     `W01 readability: material ΔE ≥${readability.minimumDeltaE.toFixed(1)}, ΔL ≥${readability.minimumDeltaL.toFixed(1)}; seamless backgrounds.`,
+  );
+  console.log(
+    `W01 raster sources (T13a): ${rasterFrames.length ? rasterFrames.join(", ") : "none"}.`,
   );
 }

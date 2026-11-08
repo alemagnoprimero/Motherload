@@ -1327,6 +1327,15 @@
       "logicalWidth": 96,
       "logicalHeight": 48,
       "category": "scenery"
+    },
+    {
+      "name": "test-raster",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "debug",
+      "source": "raster"
     }
   ],
   "backgrounds": [

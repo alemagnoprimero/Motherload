@@ -858,6 +858,22 @@ for (const name of [
 ])
   await save(`ui-${name}`, 96, 96, glyph(name), { category: "glyph" });
 for(const frame of sceneryFrames()) await save(frame.name,frame.width,frame.height,frame.body,{category:frame.category});
+// Audit T13a: raster frames are PNGs delivered beside these SVGs
+// (`<name>.png`, `"source": "raster"`). They are listed here so frames.json
+// keeps them, but nothing is drawn. test-raster is the dev placeholder from
+// create-test-raster.py, which the game shows only with ?debug=test-raster.
+for (const frame of [
+  { name: "test-raster", width: 96, height: 96, category: "debug" },
+])
+  frameList.push({
+    name: frame.name,
+    width: frame.width,
+    height: frame.height,
+    logicalWidth: frame.width / 2,
+    logicalHeight: frame.height / 2,
+    category: frame.category,
+    source: "raster",
+  });
 const backgrounds = [
   { name: "w01-sky", width: 1024, height: 512, body: stars() },
   { name: "w01-ridge-far", width: 1024, height: 384, body: ridges(false) },
@@ -884,6 +900,8 @@ await writeFile(
     2,
   ) + "\n",
 );
+const rasterCount = frameList.filter((frame) => frame.source === "raster")
+  .length;
 console.log(
-  `W01 source: ${frameList.length} SVG frames and ${backgrounds.length} backgrounds in ${fileURLToPath(source)}`,
+  `W01 source: ${frameList.length - rasterCount} SVG frames, ${rasterCount} raster frame(s) and ${backgrounds.length} backgrounds in ${fileURLToPath(source)}`,
 );

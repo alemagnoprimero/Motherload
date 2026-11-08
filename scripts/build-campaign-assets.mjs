@@ -30,7 +30,7 @@ if height>2048:raise ValueError(f'Atlas height {height} exceeds mobile budget')
 atlas=Image.new('RGBA',(width,height));frames={}
 for f in m['frames']:
  x,y,w,h=positions[f['name']];im=Image.open(renders/(f['name']+'.png')).convert('RGBA');atlas.paste(im,(x,y))
- frames[f['name']]={'frame':{'x':x,'y':y,'w':w,'h':h},'rotated':False,'trimmed':False,'spriteSourceSize':{'x':0,'y':0,'w':w,'h':h},'sourceSize':{'w':w,'h':h},'pivot':f.get('pivot',{'x':.5,'y':.5}),'logicalSize':{'w':f['logicalWidth'],'h':f['logicalHeight']}}
+ frames[f['name']]={'frame':{'x':x,'y':y,'w':w,'h':h},'rotated':False,'trimmed':False,'spriteSourceSize':{'x':0,'y':0,'w':w,'h':h},'sourceSize':{'w':w,'h':h},'pivot':f.get('pivot',{'x':.5,'y':.5}),'logicalSize':{'w':f['logicalWidth'],'h':f['logicalHeight']},**({'source':'raster'} if f.get('source')=='raster' else {})}
 atlas.save(out/'w01-atlas.png',optimize=True)
 (out/'w01-atlas.json').write_text(json.dumps({'frames':frames,'meta':{'app':'Motherload original W01 2D artwork','version':'0.1','image':'w01-atlas.png','format':'RGBA8888','size':{'w':width,'h':height},'scale':'2','logicalTile':48,'rigPivot':m['rigPivot'],'rigTreadBaseline':m['rigTreadBaseline'],'framePadding':padding}},indent=2)+'\n')
 for f in m['backgrounds']:
@@ -74,6 +74,10 @@ await writeFile(
       logicalTile: 48,
       authorScale: 2,
       frameCount: manifest.frames.length,
+      // Audit T13a: PNGs beside the SVGs, resampled per page.
+      rasterFrames: manifest.frames
+        .filter((frame) => frame.source === "raster")
+        .map((frame) => frame.name),
     },
     null,
     2,

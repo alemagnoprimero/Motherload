@@ -7,5 +7,8 @@
   "packing": "Node.js orchestrates Pillow lossless RGBA packing",
   "logicalTile": 48,
   "authorScale": 2,
-  "frameCount": 174
+  "frameCount": 175,
+  "rasterFrames": [
+    "test-raster"
+  ]
 }

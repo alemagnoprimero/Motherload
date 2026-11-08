@@ -1,4 +1,6 @@
-"""Lossless trimmed multi-page packing. Source rectangles preserve all rig anchors."""
+"""Lossless trimmed multi-page packing. Source rectangles preserve all rig anchors.
+Frames with "source": "raster" (audit T13a) are packed like the others and keep
+that mark in their atlas entry."""
 import json, math, sys
 from pathlib import Path
 from PIL import Image
@@ -28,7 +30,7 @@ for n,(entries,height) in enumerate(pages):
  atlas=Image.new('RGBA',(width,height));frames={}
  for record,image,box,x,y in entries:
   w,h=box[2]-box[0],box[3]-box[1];atlas.paste(image.crop(box),(x,y));sw,sh=image.size
-  frames[record['name']]={'frame':{'x':x,'y':y,'w':w,'h':h},'rotated':False,'trimmed':box!=(0,0,sw,sh),'spriteSourceSize':{'x':box[0],'y':box[1],'w':w,'h':h},'sourceSize':{'w':sw,'h':sh},'pivot':record.get('pivot',{'x':.5,'y':.5}),'logicalSize':{'w':record['logicalWidth'],'h':record['logicalHeight']}}
+  frames[record['name']]={'frame':{'x':x,'y':y,'w':w,'h':h},'rotated':False,'trimmed':box!=(0,0,sw,sh),'spriteSourceSize':{'x':box[0],'y':box[1],'w':w,'h':h},'sourceSize':{'w':sw,'h':sh},'pivot':record.get('pivot',{'x':.5,'y':.5}),'logicalSize':{'w':record['logicalWidth'],'h':record['logicalHeight']},**({'source':'raster'} if record.get('source')=='raster' else {})}
  atlas.save(out/(name+'.png'),optimize=True)
  data={'frames':frames,'meta':{'app':'Deep Frontier original layered SVG artwork','version':'0.2','image':name+'.png','format':'RGBA8888','size':{'w':width,'h':height},'scale':str(scale),'logicalTile':48,'rigPivot':[v*scale/2 for v in manifest['rigPivot']],'rigTreadBaseline':manifest['rigTreadBaseline']*scale/2,'framePadding':padding}}
  (out/(name+'.json')).write_text(json.dumps(data,indent=2)+'\n')

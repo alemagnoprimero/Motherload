@@ -77,6 +77,7 @@
         "icon-core",
         "site-geode",
         "crack-1",
+        "test-raster",
         "relic",
         "icon-energy",
         "icon-rack",
@@ -181,8 +182,8 @@
         "rig-hull-0"
       ],
       "width": 2048,
-      "height": 1984,
-      "bytes": 16252928
+      "height": 2048,
+      "bytes": 16777216
     }
   ]
 }
