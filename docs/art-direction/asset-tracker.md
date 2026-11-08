@@ -29,8 +29,8 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 | 9 | Cable spool, tool rack, jerry can | A3 | SVG | P0 | Not started | Art (A3) | |
 | 10 | Regolith rocks ×8 | A3 | Generator (rock-chunk recipe, shared with 18 and 19) | P0 | Not started | Art (A3) | |
 | 11 | Salvage heaps ×3 | A3 | SVG | P0 | Exists, to rework (`surface-salvage`) | Art (A3) | |
-| 12 | W01 ridges far, mid, near | A4 | Generator (extends `ridges()` in `assets/campaign/phase0-sources.mjs`) | P0 | Exists, to rework (2 layers today) | Art (A4) | T7 for the third parallax layer |
-| 13 | Sky-body recolour, keeping the board's crescent | A4 | Generator (`skyBody()` in the same file) | P0 | Exists, to rework | Art (A4) | |
+| 12 | W01 ridges far, mid, near | A4 | Generator (`ridges()` and `w01RidgeLayout()` in `assets/campaign/phase0-sources.mjs`, preset "pyramids"; art kit in `assets/campaign/kit/`) | P0 | Done: signed 2026-11-08 at round 2 in the a02 spawn capture (variant A of three; one dominant peak a page, foothills to 1.45 tiles). Pages `w01-ridge-far`, `-mid`, `-near`, 1024 × 384 at @2x; evidence in `docs/qa/a4-ridges-sky/` | Art (A4) | T7 for the far layer's 0.2 slot; until then the game's 0.35 slot shows the mid layer (`src/campaign/render/art.ts`) |
+| 13 | Sky-body recolour, keeping the board's crescent | A4 | Generator (`skyBody()` in the same file) | P0 | Done: signed 2026-11-08 with asset 12. The board's crescent unflipped, disc `#334a57`, crescent `#d79a61` darkening to the tips; the W01 sky gradient (`scene.ts`) moves to `#112631` to `#354c59`, horizon L\* 28 at spawn | Art (A4) | T7 for the gradient's anchoring to the ground and the planet's size (disc 2.85 tiles in game, about 2.1 on the board) |
 | 14 | Wreck hull, five rib arcs: back, front mound, rust | A5 | SVG; rust from a generated recipe built here and reused by A7 and A14; underlay allowed | P0 | Exists, to rework (shared wedge `site-wreck`) | Art (A5) | T6 for layering in the game |
 | 15 | Beacon tripod, ADD diamond and pool; wall-mounted variant | A6 | SVG; underlay allowed | P0 | Exists, to rework (the game draws the `mission-beacon` object icon at 1.2 × 1.6 tiles, `src/campaign/render/poi-art.ts`; the `site-beacon` wedge is in the atlas but never drawn) | Art (A6) | D14 (which variant leads) |
 | 16 | Stalactites ×9 | A7 | Generator | P0 | Not started | Art (A7) | T5 for placement (prototype render until then) |
@@ -72,6 +72,15 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 
 **Where this differs from §5.6's Pipe column.** D5 removes every C: 16 to 21, 30, 31 and 38 become generators; 22, 23 and 29 become shader parameters; 14 stays SVG with rust from a generated recipe; 36 becomes an SVG base with generated crystal clusters; 44 to 48 split as their rows say. Four rows also move from B (B/C for 10) to a generator although D5 does not require it: 12 and 13, because today's ridges and sky body already come from `ridges()` and `skyBody()`; 10, because the eight rocks are variants of one shape; 51, because the six plume frames are one shape at six phases. They still output layered SVG, and the director can send any of them back to hand-written SVG at the start of its session.
 
+## Director's notes from reviews
+
+Every note from a review becomes a tracked item (audit §6.4), with the item that owns it.
+
+| Date, review | Note | Owner | State |
+|---|---|---|---|
+| 2026-11-08, A4 round 2 (a02 spawn) | The lit ground under the rig is a flat, square, even row: the light map gives every visible cell the same light (`lighting.ts`), so its edge follows the grid and the headlamp's radial adds nothing inside it | T1 (pool and headlamp falloff) with T2's material (rock sd ≥ 15 within 3 tiles of a light); an interim soft pool may come first | Open |
+| 2026-11-08, A4 round 2 (a02 spawn) | Minerals sit on top of the blocks, grey lumps with a white-ringed badge; on the board the ore is set into the block, with no ring | A12 (assets 24, 25) with T9 | Open |
+
 ## Art items
 
 Effort in executor-days, the audit's artist-day unit, so the numbers drop into §5.7. Only A7, A8 and A14 are re-estimated; the rest keep the audit's figures until their own sessions re-estimate them.
@@ -81,7 +90,7 @@ Effort in executor-days, the audit's artist-day unit, so the numbers drop into �
 | A1 | Style guide, swatch cards, review template | 2 to 3 d | not re-estimated | Chat (step 6) | Done: signed 2026-11-08, cards A, B and C as delivered, with two riders in `decisions.md` (A7 sets the crystals' high-contrast value; T2's acceptance includes the band-C ceiling seams). Files: `scripts/swatch-cards.py`, cards A to D and `w01-swatches.json` in `docs/art-direction/swatches/`; `style-guide.md` with the review record, Project only |
 | A2 | 1, 3, 4 | 3 to 3.5 d | not re-estimated | Art (A2) | underlay allowed |
 | A3 | 5 to 11 | 5.5 d | not re-estimated | Art (A3) | rocks (10) by generator; builds the rock-chunk recipe |
-| A4 | 12, 13 | 1.5 d | not re-estimated | Art (A4) | first session in the P0 order of `art-programme-sequence.md` (a Project doc in Claude, not in the repo), so it carries the 1 d generator kit |
+| A4 | 12, 13 | 1.5 d | not re-estimated | Art (A4) | Done: signed 2026-11-08 at round 2 (variants A, B and C at the board's scale, A picked; two rounds in the a02 spawn capture). Built the shared generator kit (`assets/campaign/kit/`, `scripts/art-review.py`, `scripts/art-unchanged-pngs.py`) and the surface measures in `scripts/art_metrics.py` |
 | A5 | 14 | 3.5 to 4.5 d | not re-estimated | Art (A5) | rust generated, not painted; underlay allowed |
 | A6 | 15 | 2 d | not re-estimated | Art (A6) | underlay allowed |
 | A7 | 16 to 20 | 5.5 d painted | **3.5 to 4.25 d** | Art (A7) | re-estimated below |
@@ -100,7 +109,7 @@ Effort in executor-days, the audit's artist-day unit, so the numbers drop into �
 | A7, cave dressing (16 to 20) | 5.5 d | 3.5 to 4.25 d | 2 to 3 | Recipes: stalactites 0.5, rust drips and drip particle 0.5, rust seam strips 0 to 0.25 (none if A1 makes seams a T2 inclusion, §5.6 row 17), rubble 0.25, boulders 0.5, crystals with the ADD sparkle 0.75. Review set-up in context 0.5. Revisions 0.5 to 1 |
 | A8, band-C back-wall strips (21) | 1 d | 0.5 to 0.75 d | none of its own; reviewed with A7 | A two-layer periodic silhouette strip, cool and without outlines, 2 variants at @2x density, tiling by world position |
 | A14, plate and shelf page (38) | 2 to 3 d | 1 to 1.5 d | 1 to 2 | A new periodic page script that reuses the band pages' wrap masks and hash noise from `render-sources.mjs` (today's plate layer is code-drawn stripes, so there is no plate art to extend): rivets, rust from the shared recipe, top-lit bevels, 3 crack decals for the unstable states (with `warning-shelf`); checks greyscale ΔL\* ≥ 8 against soil (T14) |
-| Shared generator kit | none | 1 d, once | none | Seeded random source, palette tokens from the A1 cards, facet and bevel helpers, the outline rule, `-emissive` siblings, `frames.json` and provenance writers, and a review sheet at matched scale with the IoU duplicate check. Built in A4, the first session in the P0 order, and reused |
+| Shared generator kit | none | 1 d, once | none | Seeded random source, palette tokens from the A1 cards, facet and bevel helpers, the outline rule, `-emissive` siblings, `frames.json` and provenance writers, and a review sheet at matched scale with the IoU duplicate check. Built in A4 (2026-11-08): `assets/campaign/kit/` with `scripts/art-review.py`; `docs/qa/a4-ridges-sky/README.md` lists what each module gives |
 | **Total** | **8.5 to 9.5 d** | **5 to 6.5 d, plus the 1 d kit** | **3 to 5** | |
 
 **Why it drops.** Code writes the variants: one recipe yields every stalactite, rubble pile and crystal cluster, and a revision is a parameter edit that regenerates all of them. Late decisions cost little for the same reason: D6 (band colour), D8 (crystal hue) and D1 (page density) change parameters, not drawings.

@@ -51,7 +51,7 @@ for assetid,record in assetmap['assets'].items():
  im=Image.open(renders/(icon+'.png')).convert('RGBA')
  for size in record.get('iconSizes',[64,128]):im.resize((size,size),Image.Resampling.LANCZOS).save(icons/(assetid.lower()+f'-icon-{size}.png'),optimize=True)
 (out/'w01-assets.json').write_text(json.dumps(assetmap,indent=2)+'\n')
-print(f"W01 atlas: {len(frames)} original frames, {width}x{height}, {(out/'w01-atlas.png').stat().st_size//1024}KiB; icons and three backgrounds exported.")
+print(f"W01 atlas: {len(frames)} original frames, {width}x{height}, {(out/'w01-atlas.png').stat().st_size//1024}KiB; icons and {len(m['backgrounds'])} backgrounds exported.")
 `;
 const result = spawnSync(
   process.env.PYTHON || "python",

@@ -10,6 +10,12 @@ export const WORLD_ART = {
   W01: { atlas: "campaign-w01", prefix: "campaign", file: "w01" },
   W02: { atlas: "campaign-w02", prefix: "frontier", file: "w02" },
 };
+// Art item A4, interim until T7 adds the far (0.2) parallax slot: W01's 0.35
+// slot ("ridge-far") shows the mid ridge layer, which stands on the page's
+// bottom edge as that slot does. w01-ridge-far.png waits for T7.
+const BACKGROUND_FILES: Record<string, Record<string, string>> = {
+  W01: { "ridge-far": "ridge-mid" },
+};
 
 /** Current world art and neighbouring strata stream independently of saved world data. */
 export class CampaignArt {
@@ -41,15 +47,17 @@ export class CampaignArt {
     );
   }
   private queueBackgrounds(id: string) {
-    const world = WORLD_ART[id === "W02" ? "W02" : "W01"];
+    const worldId = id === "W02" ? "W02" : "W01";
+    const world = WORLD_ART[worldId];
     for (const part of ["sky", "ridge-far", "ridge-near"]) {
       const key = world.prefix + "-" + part;
       if (this.scene.textures.exists(key) || this.pending.has(key)) continue;
       this.pending.add(key);
+      const file = BACKGROUND_FILES[worldId]?.[part] ?? part;
       this.scene.load.image(
         key,
         asset(
-          world.file + "-" + part + (part === "sky" ? "-runtime" : "") + ".png",
+          world.file + "-" + file + (part === "sky" ? "-runtime" : "") + ".png",
         ),
       );
     }

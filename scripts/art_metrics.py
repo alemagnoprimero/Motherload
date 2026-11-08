@@ -416,3 +416,68 @@ def matched_window(view, panel):
 def crop_device(rgb, box, dpr):
     x0, y0, x1, y1 = (int(round(v * dpr)) for v in box)
     return rgb[y0:y1, x0:x1]
+
+
+# ---- surface measures (art item A4; T7's acceptance) -------------------------
+# T7: horizon L* 26-31; ridges >= 22 % of frame height; warm accents 1.5-4 %.
+# 02-lighting.md §6.6 adds three ridge-layer L* values at least 4 apart and a
+# crescent chroma >= 35. "Peaks at X % of frame height" is (ground line - peak
+# top) / frame height, as 02-lighting.md §2.5 measured it (11 % in a02, about
+# 31 % on the board).
+
+def skyline_tops(ridge, ground):
+    """Per column, the first row from the top where `ridge` (a boolean mask:
+    ridge pixels) is set and stays set down to the ground line, or `ground`
+    where the column has no ridge. Stars and the sky body are never connected
+    to the ground, so they do not count."""
+    h, w = ridge.shape
+    tops = np.full(w, ground, int)
+    for x in range(w):
+        y = ground - 1
+        while y >= 0 and ridge[y, x]:
+            y -= 1
+        tops[x] = y + 1
+    return tops
+
+
+def gradient_sky(top, bottom, sky_height, shape):
+    """The game's sky gradient as scene.ts draws it: a linear gradient in
+    sRGB from `top` at the frame's top row to `bottom` at the surface line,
+    `sky_height` device px down, as an (h, w, 3) array. Rows below the sky
+    keep the bottom colour."""
+    def rgb(hex_):
+        return np.array([int(hex_[i:i + 2], 16) for i in (1, 3, 5)], float)
+    a, b = rgb(top), rgb(bottom)
+    t = np.clip((np.arange(shape[0]) + 0.5) / sky_height, 0, 1)[:, None]
+    column = a + t * (b - a)
+    return np.repeat(column[:, None, :], shape[1], axis=1)
+
+
+def ridge_mask_from_sky(rgb, sky_rgb, tolerance=6):
+    """Ridge pixels: where a frame differs from its sky alone (the same frame
+    drawn without ridges, or the sky gradient's model) by more than
+    `tolerance` levels in any channel."""
+    return np.abs(rgb.astype(int) - sky_rgb.astype(int)).max(-1) > tolerance
+
+
+def horizon_lstar(rgb, tops, ground, exclude=None, band=(6, 2)):
+    """Horizon L*: the median L* of the sky just above the skyline, rows
+    top - 6 to top - 2 of each column with a ridge, leaving out the columns
+    in `exclude` (a boolean array, e.g. under the sky body)."""
+    values = []
+    for x, top in enumerate(tops):
+        if top >= ground or (exclude is not None and exclude[x]):
+            continue
+        y0, y1 = max(0, top - band[0]), max(0, top - band[1])
+        if y1 > y0:
+            values.append(lstar(rgb[y0:y1, x]).ravel())
+    return round(float(np.median(np.concatenate(values))), 1) if values else None
+
+
+def ridge_heights(tops, ground, frame_height, tile):
+    """The skyline above the ground line: its peak as a share of the frame
+    height and in tiles, and its mean height in tiles."""
+    heights = ground - np.asarray(tops)
+    return {'peak_share': round(float(heights.max()) / frame_height, 3),
+            'peak_tiles': round(float(heights.max()) / tile, 2),
+            'mean_tiles': round(float(heights.mean()) / tile, 2)}

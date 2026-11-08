@@ -1347,12 +1347,23 @@
     {
       "name": "w01-ridge-far",
       "width": 1024,
-      "height": 384
+      "height": 384,
+      "groundY": 384,
+      "parallax": 0.2
+    },
+    {
+      "name": "w01-ridge-mid",
+      "width": 1024,
+      "height": 384,
+      "groundY": 384,
+      "parallax": 0.35
     },
     {
       "name": "w01-ridge-near",
       "width": 1024,
-      "height": 384
+      "height": 384,
+      "groundY": 300,
+      "parallax": 0.6
     }
   ]
 }
