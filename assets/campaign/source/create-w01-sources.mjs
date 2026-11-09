@@ -1,7 +1,8 @@
 /** Original editable W01 drawings. Run explicitly to regenerate source SVGs. */
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { sceneryFrames, oreBadge } from "../render-sources.mjs";
+import { createHash } from "node:crypto";
+import { sceneryFrames } from "../render-sources.mjs";
 import {
   stars,
   skyBody,
@@ -10,6 +11,14 @@ import {
   materialRim,
   W01_RIDGE_LAYERS,
 } from "../phase0-sources.mjs";
+import {
+  oreFrame,
+  packageFrame,
+  depositSocket,
+  tierMarkHighContrastFrame,
+  SOCKET_VARIANT,
+} from "./w01-ore.mjs";
+import { writeProvenance } from "../kit/records.mjs";
 
 const source = new URL("./", import.meta.url);
 const O = "#14232b",
@@ -141,71 +150,6 @@ function cracks(level) {
         2,
       ) + path("M49 4 L42 26 L54 42 L38 61 L44 91", "none", "#cfbd94", 1.7);
   return layer("fracture-overlay", s);
-}
-const oreColours = [
-  ["#657681", "#394954", "#a0adb3"],
-  ["#d79967", "#955b42", "#f4c397"],
-  ["#d1e7e6", "#71a6b3", "#f5fff6"],
-  ["#edb44d", "#a16b39", "#ffe5a0"],
-];
-function ore(i, pack = false) {
-  const [hi, lo, lit] = oreColours[i];
-  let p = "";
-  if (i === 0)
-    p =
-      path(
-        "M14 60 L22 38 L40 32 L49 42 L67 37 L84 57 L77 76 L49 82 L25 75 Z",
-        lo,
-      ) +
-      path("M22 38 L40 32 L49 42 L42 59 L16 60 Z", hi) +
-      path("M49 42 L67 37 L84 57 L61 64 L42 59 Z", lit) +
-      path("M42 59 L61 64 L49 82 L25 75 L16 60 Z", hi) +
-      path("M61 64 L84 57 L77 76 L49 82 Z", lo);
-  if (i === 1)
-    p =
-      path("M15 66 L25 27 L44 18 L53 45 L67 29 L82 53 L77 76 L45 84 Z", lo) +
-      path("M25 27 L44 18 L40 62 L15 66 Z", lit) +
-      path("M44 18 L53 45 L45 84 L40 62 Z", hi) +
-      path("M67 29 L82 53 L61 65 L53 45 Z", lit) +
-      path("M61 65 L82 53 L77 76 L45 84 Z", hi);
-  if (i === 2)
-    p =
-      path(
-        "M11 72 L17 43 L32 34 L42 11 L56 25 L58 46 L76 35 L87 55 L78 78 L49 88 Z",
-        lo,
-      ) +
-      path("M42 11 L56 25 L44 61 L32 34 Z", lit) +
-      path("M32 34 L44 61 L49 88 L23 77 L17 43 Z", hi) +
-      path("M56 25 L58 46 L44 61 Z", lo) +
-      path("M76 35 L87 55 L60 74 L58 46 Z", lit) +
-      path("M60 74 L87 55 L78 78 L49 88 Z", hi) +
-      path("M17 43 L32 34 L23 77 L11 72 Z", lit);
-  if (i === 3)
-    p =
-      path("M12 52 L27 22 L45 34 L61 17 L84 39 L79 76 L52 88 L25 79 Z", lo) +
-      path("M27 22 L45 34 L33 53 L12 52 Z", lit) +
-      path("M61 17 L84 39 L64 49 L45 34 Z", hi) +
-      path("M12 52 L33 53 L39 73 L25 79 Z", hi) +
-      path("M64 49 L84 39 L79 76 L61 68 Z", lit) +
-      path("M25 79 L39 73 L61 68 L79 76 L52 88 Z", hi) +
-      path("M33 53 L45 34 L64 49 L61 68 L39 73 Z", "#17232b", O, 3);
-  let s = layer("mineral-facets", p);
-  const notches = i + 1;
-  for (let n = 0; n < notches; n++)
-    s += rect(34 + n * 9, 87, 5, 4, "#e6d8b8", 1, "none", 0);
-  if (pack)
-    s =
-      `<g transform="translate(13 10) scale(.74)">${s}</g>` +
-      layer(
-        "cargo-harness",
-        path(
-          "M16 55 L25 77 H72 L82 53 M25 77 V88 H73 V77 M35 80 V87 M62 80 V87",
-          "none",
-          "#b3c0bd",
-          5,
-        ) + rect(40, 73, 17, 13, "#f0a43c", 3, O, 3),
-      );
-  return s + oreBadge(i + 1);
 }
 function body(frame) {
   let s = layer(
@@ -763,9 +707,19 @@ await save("sky-body", 256, 256, skyBody());
 for (let i = 0; i < 4; i++) await save(`stone-${i}`, 96, 96, stone(i));
 for (let i = 1; i <= 3; i++) await save(`crack-${i}`, 96, 96, cracks(i));
 for (let i = 0; i < 4; i++) {
-  await save(`ore-o${i + 1}`, 96, 96, ore(i));
-  await save(`package-o${i + 1}`, 96, 96, ore(i, true));
+  await save(`ore-o${i + 1}`, 96, 96, oreFrame(i));
+  await save(`package-o${i + 1}`, 96, 96, packageFrame(i));
 }
+// Art item A12 with T9 (./w01-ore.mjs): the deposit socket the game draws
+// under every deposit (asset 24; one generic frame, shared by W02, which has
+// none of its own), and the high-contrast tier marks drawn over the ore when
+// high contrast is on (asset 25's HC variant, as small overlay frames; W02
+// draws its own at its mark centres).
+await save("deposit-socket", 96, 96, depositSocket(), { category: "decal" });
+for (let tier = 1; tier <= 4; tier++)
+  await save(`tier-mark-hc-${tier}`, 96, 96, tierMarkHighContrastFrame(tier), {
+    category: "overlay",
+  });
 for (let i = 0; i < 8; i++)
   await save(
     `rig-body-${i}`,
@@ -914,6 +868,82 @@ await writeFile(
     2,
   ) + "\n",
 );
+// Art item A12: provenance records for assets 24 and 25 (audit §6.2, D5).
+// Dates are passed in, never read from the clock, so the records rebuild
+// byte-identically.
+const A12_DATE = "2026-11-09";
+const shaftBoard = "docs/art-direction/d0-target-shaft-wide.png";
+const shaftBoardSha = createHash("sha256")
+  .update(await readFile(new URL(`../../../${shaftBoard}`, import.meta.url)))
+  .digest("hex");
+const a12Reviewer = {
+  name: "Alejandro (art director)",
+  signed: null,
+  state: "in review (A12 pull request)",
+  fixtures: ["a04-dive-60m@2", "a04p-dive-60m-phone@3"],
+};
+await writeProvenance("w01-ore-sockets", {
+  asset: 24,
+  item: "A12 (with T9)",
+  method: "seeded generator writing layered SVG (decision D5)",
+  source: {
+    generator:
+      "assets/campaign/source/w01-ore.mjs: depositSocket(), SOCKET_VARIANTS, SOCKET_VARIANT",
+    variant: SOCKET_VARIANT,
+    seeds: [`a12-socket/${SOCKET_VARIANT}`],
+    kit: "assets/campaign/kit/ (palette, svg, random)",
+    palette:
+      "outline #14232b (style guide §2) as the translucent recess; band A lip #f0e6d2 (docs/art-direction/swatches/w01-swatches.json) as the lit lip",
+    frames: ["deposit-socket"],
+  },
+  reference: {
+    file: shaftBoard,
+    sha256: shaftBoardSha,
+    use: "ore set into the block (a lit rim above the ore, a contact shadow below) judged beside the board's shaft crop at its tile scale; no pixels read into the drawing",
+    audit: "docs/ART_QUALITY_AUDIT.md §5.3 T9, §5.6 row 24, §6.1",
+  },
+  reviewer: {
+    ...a12Reviewer,
+    rounds:
+      "variants shallow, deep and cracked at the board's scale (docs/qa/a12-ore-sockets); the default ships until the director's pick",
+  },
+  redrawnShare: 0,
+  underlays: [],
+  boardPixelsCopied: false,
+  recorded: A12_DATE,
+  notes:
+    "One generic frame for every deposit in both worlds (W02 has none of its own and falls back to the W01 atlas); the game draws it at 1 tile under the ore, known cells only.",
+});
+await writeProvenance("w01-ore-frames", {
+  asset: 25,
+  item: "A12 (with T9)",
+  method: "generator writing layered SVG (decision D5)",
+  source: {
+    generator:
+      "assets/campaign/source/w01-ore.mjs: oreFrame(), packageFrame(), tierMarkHighContrastFrame(); assets/campaign/render-sources.mjs: oreBadge(), oreMarkGeometry(), oreMarkHighContrast()",
+    kit: "assets/campaign/kit/ (palette, svg)",
+    palette:
+      "docs/art-audit/data/palette.json: ore_copper (copper body), ore_silver_top (silver lit top); slag grey #657681 (O1, lifted to L* 74/60/34) and gold #edb44d / #a16b39 (O4) kept from the earlier frames, which the board has no sample for",
+    frames: [
+      ...[1, 2, 3, 4].flatMap((tier) => [`ore-o${tier}`, `package-o${tier}`]),
+      ...[1, 2, 3, 4].map((tier) => `tier-mark-hc-${tier}`),
+    ],
+  },
+  reference: {
+    file: shaftBoard,
+    sha256: shaftBoardSha,
+    use: "facet tones, outline weight and the tier mark (dark disc, light glyph, no ring, lower right) judged beside the board's ores at its tile scale; no pixels read into the drawing",
+    audit:
+      "docs/ART_QUALITY_AUDIT.md §5.3 T9, §5.6 row 25, §6.1; high-contrast variant as overlay marks (docs/art-direction/decisions.md, accepted deviations)",
+  },
+  reviewer: a12Reviewer,
+  redrawnShare: 0,
+  underlays: [],
+  boardPixelsCopied: false,
+  recorded: A12_DATE,
+  notes:
+    "W02's ore and package frames take the same mark from oreBadge() at W02's own centres (fitted to its minerals) and lose their notches and tag squares; W02 writes its own tier-mark-hc-1..4 at those centres; its drawings are otherwise unchanged.",
+});
 const rasterCount = frameList.filter((frame) => frame.source === "raster")
   .length;
 console.log(

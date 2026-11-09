@@ -72,6 +72,9 @@ def measure(name, c):
     keep[y0:y1, x0:x1] = True
     out = {
         'scene': c['scene'], 'panel': c['panel'], 'backing': c['backingScale'],
+        # The form from the capture's viewport, not its name: the 60 m phone
+        # twin (a04p-...) is a phone frame whose name starts like a04's.
+        'form': 'phone' if c['viewport']['width'] < 600 else 'desktop',
         'window': [round(v, 1) for v in window], 'rig_anchor': [round(v, 3) for v in anchor],
         'target_anchor': panel['rig_anchor_fraction'],
         'frame': {**stats, 'luma_mean': r1(l.mean()), 'luma_sd': r1(l.std())},
@@ -225,7 +228,7 @@ NOT_MEASURED = [
 
 def table_markdown(results, concepts, manifest):
     names = list(results)
-    head = '| Check | Target | ' + ' | '.join(f"{results[n]['scene']} ({'phone' if n.startswith('p-') else 'desktop'})" for n in names) + ' |'
+    head = '| Check | Target | ' + ' | '.join(f"{results[n]['scene']} ({results[n]['form']})" for n in names) + ' |'
     lines = [head, '|' + '---|' * (len(names) + 2)]
     for label, target, cell in ROWS:
         lines.append(f'| {label} | {target} | ' + ' | '.join(cell(results[n], concepts[results[n]['panel']]) for n in names) + ' |')

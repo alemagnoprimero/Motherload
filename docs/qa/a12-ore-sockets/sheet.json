@@ -1,0 +1,681 @@
+{
+  "ores": {
+    "ore-o1": {
+      "zone": "iron",
+      "tiers": 3,
+      "levels": [
+        [
+          34.0,
+          0.252
+        ],
+        [
+          55.0,
+          0.45
+        ],
+        [
+          74.0,
+          0.273
+        ]
+      ],
+      "structural": 3,
+      "structuralLevels": [
+        [
+          34.0,
+          0.333
+        ],
+        [
+          55.0,
+          0.333
+        ],
+        [
+          74.0,
+          0.333
+        ]
+      ]
+    },
+    "ore-o2": {
+      "zone": "copper",
+      "tiers": 5,
+      "levels": [
+        [
+          44.0,
+          0.384
+        ],
+        [
+          57.0,
+          0.104
+        ],
+        [
+          69.0,
+          0.309
+        ],
+        [
+          80.0,
+          0.156
+        ],
+        [
+          87.0,
+          0.047
+        ]
+      ],
+      "structural": 4,
+      "structuralLevels": [
+        [
+          44.1,
+          0.25
+        ],
+        [
+          57.2,
+          0.25
+        ],
+        [
+          69.1,
+          0.25
+        ],
+        [
+          80.2,
+          0.25
+        ]
+      ]
+    },
+    "ore-o3": {
+      "zone": "silver",
+      "tiers": 4,
+      "levels": [
+        [
+          46.0,
+          0.395
+        ],
+        [
+          77.0,
+          0.32
+        ],
+        [
+          91.0,
+          0.251
+        ],
+        [
+          98.0,
+          0.034
+        ]
+      ],
+      "structural": 3,
+      "structuralLevels": [
+        [
+          46.5,
+          0.333
+        ],
+        [
+          77.4,
+          0.333
+        ],
+        [
+          91.3,
+          0.333
+        ]
+      ]
+    },
+    "ore-o4": {
+      "zone": "gold",
+      "tiers": 4,
+      "levels": [
+        [
+          24.0,
+          0.219
+        ],
+        [
+          50.0,
+          0.17
+        ],
+        [
+          77.0,
+          0.29
+        ],
+        [
+          87.0,
+          0.305
+        ]
+      ],
+      "structural": 4,
+      "structuralLevels": [
+        [
+          24.1,
+          0.25
+        ],
+        [
+          50.0,
+          0.25
+        ],
+        [
+          76.8,
+          0.25
+        ],
+        [
+          87.2,
+          0.25
+        ]
+      ]
+    }
+  },
+  "sockets": {
+    "shallow": {
+      "band A soil": {
+        "tiers": 3,
+        "levels": [
+          [
+            42.0,
+            0.214
+          ],
+          [
+            49.0,
+            0.728
+          ],
+          [
+            54.0,
+            0.057
+          ]
+        ],
+        "tiersByOre": [
+          3,
+          3,
+          3,
+          2
+        ],
+        "blockL": 51.6,
+        "shadowDL": -9.6,
+        "lipDL": 2.4,
+        "recessDL": -2.6,
+        "darkestL": 41.7,
+        "lightestL": 54.0,
+        "aboveUnknown": 17.7
+      },
+      "band B rock": {
+        "tiers": 3,
+        "levels": [
+          [
+            29.0,
+            0.215
+          ],
+          [
+            33.0,
+            0.729
+          ],
+          [
+            38.0,
+            0.056
+          ]
+        ],
+        "tiersByOre": [
+          2,
+          2,
+          2,
+          1
+        ],
+        "blockL": 34.4,
+        "shadowDL": -5.4,
+        "lipDL": 3.6,
+        "recessDL": -1.4,
+        "darkestL": 28.7,
+        "lightestL": 38.0,
+        "aboveUnknown": 4.7
+      },
+      "band C rock": {
+        "tiers": 3,
+        "levels": [
+          [
+            29.0,
+            0.215
+          ],
+          [
+            33.0,
+            0.729
+          ],
+          [
+            38.0,
+            0.056
+          ]
+        ],
+        "tiersByOre": [
+          3,
+          3,
+          3,
+          2
+        ],
+        "blockL": 34.8,
+        "shadowDL": -5.8,
+        "lipDL": 3.2,
+        "recessDL": -1.8,
+        "darkestL": 28.9,
+        "lightestL": 38.4,
+        "aboveUnknown": 4.9
+      },
+      "coverage": 0.336,
+      "maxAlpha": 65,
+      "shareAbove160": 0.0
+    },
+    "deep": {
+      "band A soil": {
+        "tiers": 3,
+        "levels": [
+          [
+            38.0,
+            0.354
+          ],
+          [
+            47.0,
+            0.602
+          ],
+          [
+            54.0,
+            0.043
+          ]
+        ],
+        "tiersByOre": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "blockL": 51.6,
+        "shadowDL": -13.6,
+        "lipDL": 2.4,
+        "recessDL": -4.6,
+        "darkestL": 38.3,
+        "lightestL": 54.0,
+        "aboveUnknown": 14.3
+      },
+      "band B rock": {
+        "tiers": 3,
+        "levels": [
+          [
+            27.0,
+            0.354
+          ],
+          [
+            32.0,
+            0.603
+          ],
+          [
+            38.0,
+            0.042
+          ]
+        ],
+        "tiersByOre": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "blockL": 34.4,
+        "shadowDL": -7.4,
+        "lipDL": 3.6,
+        "recessDL": -2.4,
+        "darkestL": 26.5,
+        "lightestL": 38.0,
+        "aboveUnknown": 2.5
+      },
+      "band C rock": {
+        "tiers": 3,
+        "levels": [
+          [
+            27.0,
+            0.354
+          ],
+          [
+            32.0,
+            0.603
+          ],
+          [
+            38.0,
+            0.042
+          ]
+        ],
+        "tiersByOre": [
+          3,
+          3,
+          3,
+          3
+        ],
+        "blockL": 34.8,
+        "shadowDL": -7.8,
+        "lipDL": 3.2,
+        "recessDL": -2.8,
+        "darkestL": 27.0,
+        "lightestL": 38.4,
+        "aboveUnknown": 3.0
+      },
+      "coverage": 0.544,
+      "maxAlpha": 89,
+      "shareAbove160": 0.0
+    },
+    "cracked": {
+      "band A soil": {
+        "tiers": 3,
+        "levels": [
+          [
+            42.0,
+            0.243
+          ],
+          [
+            49.0,
+            0.704
+          ],
+          [
+            54.0,
+            0.053
+          ]
+        ],
+        "tiersByOre": [
+          2,
+          1,
+          1,
+          1
+        ],
+        "blockL": 51.6,
+        "shadowDL": -9.6,
+        "lipDL": 2.4,
+        "recessDL": -2.6,
+        "darkestL": 41.7,
+        "lightestL": 54.0,
+        "aboveUnknown": 17.7
+      },
+      "band B rock": {
+        "tiers": 2,
+        "levels": [
+          [
+            32.0,
+            0.949
+          ],
+          [
+            38.0,
+            0.051
+          ]
+        ],
+        "tiersByOre": [
+          2,
+          2,
+          2,
+          1
+        ],
+        "blockL": 34.4,
+        "shadowDL": -2.4,
+        "lipDL": 3.6,
+        "darkestL": 28.7,
+        "lightestL": 38.0,
+        "aboveUnknown": 4.7
+      },
+      "band C rock": {
+        "tiers": 2,
+        "levels": [
+          [
+            32.0,
+            0.949
+          ],
+          [
+            38.0,
+            0.051
+          ]
+        ],
+        "tiersByOre": [
+          2,
+          2,
+          3,
+          1
+        ],
+        "blockL": 34.8,
+        "shadowDL": -2.8,
+        "lipDL": 3.2,
+        "darkestL": 28.9,
+        "lightestL": 38.4,
+        "aboveUnknown": 4.9
+      },
+      "coverage": 0.365,
+      "maxAlpha": 109,
+      "shareAbove160": 0.0
+    }
+  },
+  "iou": {
+    "sockets": {
+      "shallow/deep": 0.618,
+      "shallow/cracked": 0.894,
+      "deep/cracked": 0.638
+    },
+    "ore": {
+      "o1/o2": 0.688,
+      "o1/o3": 0.658,
+      "o1/o4": 0.638,
+      "o2/o3": 0.64,
+      "o2/o4": 0.613,
+      "o3/o4": 0.667
+    },
+    "ore-nomark": {
+      "o1/o2": 0.677,
+      "o1/o3": 0.647,
+      "o1/o4": 0.627,
+      "o2/o3": 0.646,
+      "o2/o4": 0.603,
+      "o3/o4": 0.658
+    },
+    "package": {
+      "o1/o2": 0.741,
+      "o1/o3": 0.772,
+      "o1/o4": 0.734,
+      "o2/o3": 0.74,
+      "o2/o4": 0.692,
+      "o3/o4": 0.771
+    },
+    "package-nomark": {
+      "o1/o2": 0.792,
+      "o1/o3": 0.785,
+      "o1/o4": 0.735,
+      "o2/o3": 0.768,
+      "o2/o4": 0.72,
+      "o3/o4": 0.77
+    }
+  },
+  "marks": {
+    "ore-o1": {
+      "world": "W01",
+      "overlap": 0.315,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "package-o1": {
+      "world": "W01",
+      "overlap": 0.213,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "tier-mark-hc-1": {
+      "world": "W01",
+      "discL": 95.1,
+      "lightShare": 0.865,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    },
+    "ore-o2": {
+      "world": "W01",
+      "overlap": 0.303,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "package-o2": {
+      "world": "W01",
+      "overlap": 0.309,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "tier-mark-hc-2": {
+      "world": "W01",
+      "discL": 95.1,
+      "lightShare": 0.752,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    },
+    "ore-o3": {
+      "world": "W01",
+      "overlap": 0.305,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "package-o3": {
+      "world": "W01",
+      "overlap": 0.295,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "tier-mark-hc-3": {
+      "world": "W01",
+      "discL": 95.1,
+      "lightShare": 0.726,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    },
+    "ore-o4": {
+      "world": "W01",
+      "overlap": 0.292,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "package-o4": {
+      "world": "W01",
+      "overlap": 0.287,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "tier-mark-hc-4": {
+      "world": "W01",
+      "discL": 95.1,
+      "lightShare": 0.777,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    },
+    "w02-ore-o1": {
+      "world": "W02",
+      "overlap": 0.294,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-package-o1": {
+      "world": "W02",
+      "overlap": 0.294,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-tier-mark-hc-1": {
+      "world": "W02",
+      "discL": 95.1,
+      "lightShare": 0.865,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    },
+    "w02-ore-o2": {
+      "world": "W02",
+      "overlap": 0.308,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-package-o2": {
+      "world": "W02",
+      "overlap": 0.299,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-tier-mark-hc-2": {
+      "world": "W02",
+      "discL": 95.1,
+      "lightShare": 0.752,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    },
+    "w02-ore-o3": {
+      "world": "W02",
+      "overlap": 0.281,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-package-o3": {
+      "world": "W02",
+      "overlap": 0.305,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-tier-mark-hc-3": {
+      "world": "W02",
+      "discL": 95.1,
+      "lightShare": 0.726,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    },
+    "w02-ore-o4": {
+      "world": "W02",
+      "overlap": 0.313,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-package-o4": {
+      "world": "W02",
+      "overlap": 0.294,
+      "diameter": 0.167,
+      "pixelSpan": 0.164,
+      "rimL95": 6.5,
+      "outsideLightPx": 0
+    },
+    "w02-tier-mark-hc-4": {
+      "world": "W02",
+      "discL": 95.1,
+      "lightShare": 0.777,
+      "copperBodyL": 69.1,
+      "dL": 26.0,
+      "copperMedianL": 61.0,
+      "dLMedian": 34.1
+    }
+  },
+  "default": "shallow",
+  "socketAlphaThreshold": 12,
+  "tile": 44.140127388535035
+}

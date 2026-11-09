@@ -41,8 +41,8 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 | 21 | Back-wall silhouette strips, band C ×2 | A8 | Generator (periodic strip that tiles by world position) | P0 | Not started | Art (A8) | T4 slots (prototype render until then) |
 | 22 | Material look, bands A, B and C | A9, A10; A15 for band B | Shader (T2); Canvas and Medium pages baked from it | P0 | Exists, to rework (band pages in `assets/campaign/generated/bands`) | Code (T2 with A9, A10; band B in T14 with A15) | D6; swatch cards A, B and C (signed 2026-11-08) |
 | 23 | Hard-rock plate fill and cracks, A and C | A9, A10 | Shader (T2); frames baked for Medium and Low | P0 | Not started | Code (T2 with A9, A10) | D6 |
-| 24 | Ore sockets | A12 | Generator (`create-w01-sources.mjs` with new gradient helpers) | P0 | Not started | Code (A12 with T9) | |
-| 25 | Ore and package frames with a small mark, plus HC | A12 | Generator (`create-w01-sources.mjs`) | P0 | Exists, to rework (ore already at concept level; mark and HC change) | Code (A12 with T9) | |
+| 24 | Ore sockets | A12 | Generator (`source/w01-ore.mjs` `depositSocket()`, saved by `create-w01-sources.mjs`; flat translucent tiers, no gradients) | P0 | In review (A12 PR): one generic `deposit-socket` frame for every deposit in both worlds, seat hugging O1, lit lip on its top edge only (+2 to +4 L\*), contact shadow (−5 to −10 L\*); variants shallow, deep and cracked in `docs/qa/a12-ore-sockets`, shallow ships until the director's pick | Code (A12 with T9) | |
+| 25 | Ore and package frames with a small mark, plus HC | A12 | Generator (`source/w01-ore.mjs`; mark in `render-sources.mjs` `oreBadge()`, `oreMarkGeometry(tier, world)`) | P0 | In review (A12 PR): ore-o1..o4 and package-o1..o4 redrawn with the kit (O1 lighter than before: L\* 74 / 55 / 34), ringless mark (0.167 of the frame, legend glyphs, centres per world), notches and tag squares gone in both worlds; HC as `tier-mark-hc-N` overlay marks in each world instead of full-size HC frames (accepted deviation, `decisions.md`) | Code (A12 with T9) | |
 | 26 | Light brushes: cone, halo, flare, glint, mote | A11 | Generator (procedural, built in T1) | P0 | Not started | Code (T1) | T2 |
 | 27 | Drill FX: chunks, dust, spark, bit glow, cracks 1 to 4 | A11 | Generator (procedural in T12; cracks extend `crack-1` to `crack-3`) | P0; cracks P1 | Exists, to rework (rectangle debris, 3 crack frames) | Code (T12; cracks in W6) | T1 |
 | 28 | Edge chevron, pulse ring, Scan glyph, leader tick | T8 | SVG | P0 | Not started | Code (T8) | D3 |
@@ -79,7 +79,7 @@ Every note from a review becomes a tracked item (audit §6.4), with the item tha
 | Date, review | Note | Owner | State |
 |---|---|---|---|
 | 2026-11-08, A4 round 2 (a02 spawn) | The lit ground under the rig is a flat, square, even row: the light map gives every visible cell the same light (`lighting.ts`), so its edge follows the grid and the headlamp's radial adds nothing inside it | T1 (pool and headlamp falloff) with T2's material (rock sd ≥ 15 within 3 tiles of a light); an interim soft pool may come first | Open |
-| 2026-11-08, A4 round 2 (a02 spawn) | Minerals sit on top of the blocks, grey lumps with a white-ringed badge; on the board the ore is set into the block, with no ring | A12 (assets 24, 25) with T9 | Open |
+| 2026-11-08, A4 round 2 (a02 spawn) | Minerals sit on top of the blocks, grey lumps with a white-ringed badge; on the board the ore is set into the block, with no ring | A12 (assets 24, 25) with T9 | Addressed by A12, awaiting review: a socket decal (faint seat, lit lip, contact shadow), O1 lifted off the soil block (body facet L\* 55; in a04 it reads 8.5 above its soil cell, main 2.1), a ringless mark (`docs/qa/a12-ore-sockets`). O1 stays a slag grey by design (the board's pebble is silver) |
 
 ## Art items
 
