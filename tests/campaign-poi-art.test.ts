@@ -12,20 +12,26 @@ describe("physical ownership of mission artwork", () => {
   it("keeps the opening ore routes from creating phantom survey wrecks", () => {
     const campaign = new Campaign(createCampaign(23));
     const entry = campaignPois(campaign).filter((poi) => poi.y < 10);
+    // D14: the 95 m route cell lost its beacon; only the marked seams remain.
     expect(entry.map((poi) => poi.id).sort()).toEqual([
-      "W01-BEACON",
       "W01-SEAM-A",
       "W01-SEAM-B",
     ]);
-    const independentObjects = entry
-      .map(poiArtwork)
-      .filter((art) => art.marker || art.scenery);
-    expect(independentObjects).toHaveLength(1);
-    expect(independentObjects[0]!.marker).toBe("mission-beacon");
-    expect(independentObjects[0]!.scenery).toBeUndefined();
-    expect(independentObjects[0]!.height).toBeGreaterThan(1);
+    expect(
+      entry.map(poiArtwork).filter((art) => art.marker || art.scenery),
+    ).toHaveLength(0);
     for (const poi of entry.filter((poi) => poi.kind === "seam"))
       expect(poiSecondaryCaption(poi)).toBeUndefined();
+    // One beacon, and it is the objective: the tripod in the SITE-4 gallery.
+    const beacons = campaignPois(campaign).filter(
+      (poi) => poi.kind === "beacon",
+    );
+    expect(beacons).toHaveLength(1);
+    expect(beacons[0]).toMatchObject({ id: "W01-BEACON", y: 45.5 });
+    const art = poiArtwork(beacons[0]!);
+    expect(art.marker).toBe("mission-beacon");
+    expect(art.scenery).toBeUndefined();
+    expect(art.height).toBeGreaterThan(1);
   });
 
   it("does not duplicate caches, field records or relics when the chapter unlocks their radio signals", () => {

@@ -17,12 +17,22 @@ function atDock(game: Campaign) {
 describe("persistent stage mission guidance", () => {
   it("distinguishes carried ore from banked proof and earned credits from payment", () => {
     const game = new Campaign(createCampaign(42));
-    expect(campaignMission(game).next).toContain("100 m");
+    // D14: M1 is "bank three ordinary packages"; there is no beacon task.
+    expect(campaignMission(game).title).toBe("Prove the claim");
+    expect(campaignMission(game).tasks.map((item) => item.id)).toEqual([
+      "ore",
+      "construction",
+    ]);
+    expect(campaignMission(game).next).toBe(
+      "Mine marked seam A · 70 m → Bank ore",
+    );
     expect(task(game, "construction").label).toContain("20/200 CR");
-    game.state.progress.beacon = true;
     for (const item of game.world.packages.slice(0, 3)) item.status = "carried";
     expect(task(game, "ore").status).toBe("carried");
     expect(task(game, "ore").label).toContain("0/3");
+    // The marked seam still has room in the hold, so the guide keeps mining.
+    expect(campaignMission(game).next).toContain("seam A");
+    for (const item of game.world.packages.slice(0, 7)) item.status = "carried";
     expect(campaignMission(game).next).toBe("Return to lander → Bank ore");
 
     atDock(game);
@@ -40,13 +50,17 @@ describe("persistent stage mission guidance", () => {
 
   it("keeps mission objects actionable through collection, banking, recovery and reload", () => {
     const game = new Campaign(createCampaign(43));
-    game.state.progress.beacon = true;
     game.state.progress.bankedOre = 3;
     game.state.credits = 2000;
     atDock(game);
-    game.payMilestone();
+    expect(game.payMilestone()).toBe(true);
     expect(task(game, "W01-VALVE").label).toContain("250 m");
     expect(task(game, "W01-ANTENNA").label).toContain("400 m");
+    expect(task(game, "W01-BEACON")).toEqual({
+      id: "W01-BEACON",
+      label: "Survey the wreck beacon · 460 m",
+      status: "pending",
+    });
     const valve = game.world.missions.find((item) => item.id === "W01-VALVE")!;
     valve.status = "carried";
     expect(task(game, valve.id).status).toBe("carried");
@@ -60,6 +74,15 @@ describe("persistent stage mission guidance", () => {
     const reloaded = new Campaign(decodeCampaign(JSON.stringify(game.state)));
     expect(campaignMission(reloaded)).toEqual(campaignMission(game));
     expect(task(reloaded, "W01-ANTENNA").status).toBe("pending");
+    // Both parts banked: the wreck survey is the remaining M2 proof.
+    game.world.missions.find((item) => item.id === "W01-ANTENNA")!.status =
+      "banked";
+    expect(game.missionReady).toBe(false);
+    expect(campaignMission(game).next).toBe("Survey the wreck beacon · 460 m");
+    game.state.progress.beacon = true;
+    expect(task(game, "W01-BEACON").label).toBe("Wreck beacon · surveyed");
+    expect(task(game, "W01-BEACON").status).toBe("complete");
+    expect(game.missionReady).toBe(true);
   });
 
   it("advances from restoring the core to a separate launch objective", () => {

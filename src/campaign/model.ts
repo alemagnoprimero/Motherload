@@ -16,6 +16,7 @@ import {
   W01_GEAR,
   W01_MILESTONES,
   W01_ORES,
+  W01_SURVEY_MILESTONE,
   WORLD_CATALOG,
   formatCredits,
 } from "./config";
@@ -542,12 +543,15 @@ export class Campaign {
       if (milestone.id === 1) return this.bankedSamples >= 5;
       if (milestone.id === 2) return this.bankedIntact >= 3;
     }
-    if (milestone.id === 1)
-      return this.state.progress.beacon && this.state.progress.bankedOre >= 3;
-    return milestone.requiredMissionIds.every((id) =>
-      this.world.missions.some(
-        (mission) => mission.id === id && mission.status === "banked",
-      ),
+    // D14: M1 proves the claim with banked ore; the wreck survey belongs to M2.
+    if (milestone.id === 1) return this.state.progress.bankedOre >= 3;
+    return (
+      (milestone.id !== W01_SURVEY_MILESTONE || this.state.progress.beacon) &&
+      milestone.requiredMissionIds.every((id) =>
+        this.world.missions.some(
+          (mission) => mission.id === id && mission.status === "banked",
+        ),
+      )
     );
   }
   tile(x: number, y: number) {
@@ -1201,18 +1205,23 @@ export class Campaign {
     state.stats.largestDepth = Math.max(state.stats.largestDepth, this.depth);
     this.record().deepest = Math.max(this.record().deepest, this.depth);
     this.advanceContracts("depth", this.depth);
+    // The wreck beacon answers once the claim is proven (M1 built): its survey
+    // is M2 proof, and an earlier visit (possible only without the fused plate)
+    // waits for the stage that asks for it.
     if (
       state.currentWorld === "W01" &&
       !state.progress.beacon &&
+      state.progress.completed.includes(1) &&
       Math.hypot(
-        this.delta(vehicle.x, W01.spawnX),
+        this.delta(vehicle.x, W01.beaconX),
         vehicle.y - (W01.beaconRow + 0.5),
       ) < 1.15
     ) {
       state.progress.beacon = true;
       this.emit({ type: "mission", id: "W01-BEACON", phase: "surveyed" });
-      this.message =
-        "Wreck beacon surveyed. Bank three ore packages at the lander.";
+      this.message = this.missionReady
+        ? "Wreck beacon surveyed. Return to the lander to fund construction."
+        : "Wreck beacon surveyed. Bank the lander parts to finish the stage.";
     }
     for (const item of this.world.packages) {
       if (
@@ -2471,11 +2480,13 @@ export function decodeCampaign(raw: string): CampaignState {
       !frontier?.completed?.includes(3)
     )
       throw new Error("The Planetary certificate lacks comet completion.");
-    if (
-      state.progress.completed.includes(1) &&
-      (!state.progress.beacon || state.progress.bankedOre < 3)
-    )
+    if (state.progress.completed.includes(1) && state.progress.bankedOre < 3)
       throw new Error("The first milestone lacks its banked proof.");
+    if (
+      state.progress.completed.includes(W01_SURVEY_MILESTONE) &&
+      !state.progress.beacon
+    )
+      throw new Error("The second milestone lacks its wreck survey.");
     for (const milestone of W01_MILESTONES)
       if (
         state.progress.completed.includes(milestone.id) &&

@@ -6,7 +6,7 @@ import {
   HARDWARE_PRICES,
   W01_GEAR,
 } from "../src/campaign/config.ts";
-import { W02_GEAR, W02_HAZARDS } from "../src/campaign/frontier.ts";
+import { W02_GEAR, W02_HAZARDS, W02_ORES } from "../src/campaign/frontier.ts";
 import { campaignTileSize } from "../src/campaign/layout.ts";
 import { launchBrowser } from "./browser-launch.mjs";
 import {
@@ -162,12 +162,46 @@ async function close(page, advanceMs = 50) {
   if (advanceMs) await advance(page, advanceMs);
 }
 async function play(page, advanceMs = 50) {
-  for (let n = 0; n < 3; n++) {
+  // After an import the menu insists on Resume; a map opened from it comes
+  // back once more after Resume (the menu reopened over it), so allow a few
+  // closes before asserting that play actually resumed.
+  let closed = false;
+  for (let n = 0; n < 6; n++) {
     if (!(await page.evaluate(() => document.body.dataset.campaignOverlay)))
       break;
     await close(page, 0);
+    closed = true;
   }
-  if (advanceMs) await advance(page, advanceMs);
+  // A sale, install or construction now plays a short paused receipt beat in
+  // the first frame after its terminal closes; let it finish instead of
+  // skipping it. Callers that pass 0 keep exact control of game time.
+  let remaining = advanceMs;
+  if (closed && advanceMs) {
+    await advance(page, 50);
+    remaining = Math.max(0, advanceMs - 50);
+    for (
+      let elapsed = 0;
+      elapsed < 6000 &&
+      ((await page.locator("#campaign-reward").isVisible()) ||
+        (await page.locator("#campaign-launch").isVisible()));
+      elapsed += 50
+    ) {
+      await advance(page, 50);
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+  }
+  if (remaining) await advance(page, remaining);
+  // The HUD publishes the end of that beat on the next frame.
+  for (
+    let n = 0;
+    closed &&
+    advanceMs &&
+    n < 20 &&
+    (await page.evaluate(() => document.body.dataset.campaignPaused)) ===
+      "true";
+    n++
+  )
+    await advance(page, 50);
   assert.equal(
     await page.evaluate(() => document.body.dataset.campaignPaused),
     "false",
@@ -237,6 +271,9 @@ async function confirm(page, accept = true) {
 }
 async function enterDock(page) {
   await keys(page, []);
+  // Interact commands are debounced for 300 ms of game time, and the frozen
+  // clock barely moves between back-to-back terminal visits.
+  await advance(page, 320);
   await page.keyboard.press("e");
   assert.equal(
     await page.evaluate(() => document.body.dataset.campaignOverlay),
@@ -636,22 +673,44 @@ export async function runFrontierSmoke(
         await restore(page, legacy, false);
         const migrated = await exportCheckpoint(page);
         assert.equal(migrated.state.schema, 3);
-        for (const key of ["tiles", "packages", "missions"])
+        for (const key of ["tiles", "missions"])
           assert.deepEqual(
             migrated.state.worlds.W01[key],
             legacy.state.worlds.W01[key],
             "Schema1 import preserves original " + key,
           );
+        // Packages keep identity and stamped economics; display names now
+        // resolve by item ID (Ironium → Slag iron), as the unit migration
+        // test also expects.
+        const economics = (packages) =>
+          packages.map(({ name, ...item }) => item);
+        assert.deepEqual(
+          economics(migrated.state.worlds.W01.packages),
+          economics(legacy.state.worlds.W01.packages),
+          "Schema1 import preserves original packages",
+        );
         assert.deepEqual(migrated.state.hardware, legacy.state.hardware);
+        // The map now always opens: before W01 M2 it shows the surveyed claim
+        // map instead of the star map, and comet travel stays locked.
         await command(page, "map");
         assert.equal(
           await page.evaluate(() => document.body.dataset.campaignOverlay),
-          "menu",
+          "map",
+        );
+        assert.equal(
+          await page.locator("#campaign-claim-map").isVisible(),
+          true,
+          "Before W01 M2 the map opens on the claim, not the star map",
+        );
+        assert.equal(
+          await page.locator("#campaign-map-worlds").isVisible(),
+          false,
           "The initial star map remains gated by W01 M2",
         );
-        assert.match(
-          await page.locator("#campaign-message").textContent(),
-          /M2|lander parts|star map/i,
+        const lockedTravel = page.locator('[data-command="travel-W02"]');
+        assert.ok(
+          !(await lockedTravel.count()) || (await lockedTravel.isDisabled()),
+          "Ice comet travel stays locked before departure",
         );
         await play(page);
         const restored = completedAsteroid(initial);
@@ -809,28 +868,36 @@ export async function runFrontierSmoke(
       await bootComet(page);
       const start = await snapshot(page);
       await steerTo(page, 24.5);
+      // Balance 0.3 made frost iron and blue nickel bulk 1 (cryosilicate and
+      // helion stay bulk 2): the starter column fills the 7-bulk hold at
+      // 70 m, and the eighth package stays exposed in the cleared shaft.
       await downUntil(
         page,
         async () =>
           Number.parseInt(await page.locator("#campaign-depth").innerText()) >=
-          40,
+          80,
       );
       const mined = await snapshot(page);
       const carried = world(mined).packages.filter(
         (item) => item.status === "carried",
       );
-      assert.equal(carried.length, 3);
-      assert.ok(carried.every((item) => item.bulk === 2));
+      assert.equal(carried.length, 7);
+      for (const item of carried)
+        assert.equal(
+          item.bulk,
+          W02_ORES.find((ore) => ore.id === item.itemId).bulk,
+          "Each comet package keeps its stamped bulk",
+        );
       assert.match(
         await page.locator("#campaign-cargo").innerText(),
-        /6\s*\/\s*7/,
+        /7\s*\/\s*7/,
       );
       assert.equal(
         world(mined).packages.find(
-          (item) => Math.floor(item.x) === 24 && Math.floor(item.y) === 3,
+          (item) => Math.floor(item.x) === 24 && Math.floor(item.y) === 7,
         ).status,
         "exposed",
-        "Fourth bulk2 package remains when only one bulk fits",
+        "The package that no longer fits remains exposed",
       );
       await page.screenshot({ path: `${path}-native-early-mining.png` });
       await keys(page, ["ArrowUp"]);
@@ -867,7 +934,9 @@ export async function runFrontierSmoke(
       assert.ok(upgraded.state.ownedGear.includes("W02-R1"));
       assert.equal(
         sold.state.credits - upgraded.state.credits,
-        12000 + HARDWARE_PRICES.drill[1] + HARDWARE_PRICES.drill[2],
+        W02_GEAR.find((gear) => gear.id === "W02-R1").price +
+          HARDWARE_PRICES.drill[1] +
+          HARDWARE_PRICES.drill[2],
       );
       assert.match(
         await page.locator("#campaign-drill-name").innerText(),
@@ -876,7 +945,7 @@ export async function runFrontierSmoke(
       await page.screenshot({ path: `${path}-thermal-rank2-rig.png` });
       noErrors(page);
       pass(
-        "native early comet mining, bulk2 capacity, return/sale and active thermal/rank2 purchases (upgrade funding fixture-assisted)",
+        "native early comet mining, stamped-bulk capacity, return/sale and active thermal/rank2 purchases (upgrade funding fixture-assisted)",
       );
     } finally {
       await context.close();
@@ -1244,8 +1313,11 @@ export async function runFrontierSmoke(
       );
       assert.equal(preserved.value, precisionSource.value * 1.3);
       assert.deepEqual(preserved.processedBy, ["W02-R3"]);
+      // The condenser now banks the refund in the steam reserve (used with the
+      // Reserve tool) instead of topping up the tank directly.
       assert.ok(
-        precise.state.vehicle.energy > pending.state.vehicle.energy,
+        (precise.state.vehicle.reserve ?? 0) >
+          (pending.state.vehicle.reserve ?? 0),
         "Condenser returns spent ice-drilling energy after extraction",
       );
       await restore(page, precise);
@@ -1282,8 +1354,10 @@ export async function runFrontierSmoke(
       assert.deepEqual(world(afterM3).completed, [1, 2, 3]);
       assert.ok(afterM3.state.progress.unlockedWorlds.includes("W04"));
       assert.deepEqual(afterM3.state.progress.completed, [1, 2, 3]);
+      // The chip shows one live goal (here the optional salvage); completed
+      // rows stay in the tracker list but are not the visible primary row.
       assert.match(
-        await page.locator("#campaign-objective-progress").innerText(),
+        await page.locator("#campaign-objective-progress").textContent(),
         /Planetary certificate earned/,
       );
       await enterDock(page);

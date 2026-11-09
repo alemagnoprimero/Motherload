@@ -1,7 +1,7 @@
 import { itemName } from "../names";
 import type { Campaign } from "../model";
 import { savePilotPreferences, type PilotPreferences } from "../input";
-import { openingSurveyPending, campaignPois } from "../poi";
+import { campaignPois } from "../poi";
 import { coachStep } from "../onboarding";
 import { patchMarkup, byId as $, setText, setHidden } from "./dom";
 import { contractMarkup } from "./journal";
@@ -103,7 +103,6 @@ export function renderGuidance(
       energyRatio: s.vehicle.energy / campaign.maxEnergy,
       upgraded: Object.values(s.hardware).some((rank) => rank > 0),
       row: s.vehicle.y,
-      beacon: s.progress.beacon && !openingSurveyPending(campaign),
     },
     preferences.coachStep,
   );

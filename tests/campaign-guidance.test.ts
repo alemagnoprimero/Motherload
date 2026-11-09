@@ -7,14 +7,15 @@ import {
 import {
   campaignSignal,
   openingRoute,
-  openingSurveyPending,
+  openingSeamPending,
 } from "../src/campaign/poi";
 import { campaignMission } from "../src/campaign/missions";
 import { createW01V1 } from "../src/campaign/world";
 import type { CampaignControls } from "../src/campaign/types";
 
+/** The start of M2 under D14: the claim is proven, the wreck not yet surveyed. */
 function stageTwo(game: Campaign) {
-  game.state.progress.beacon = true;
+  game.state.progress.beacon = false;
   game.state.progress.bankedOre = 7;
   game.state.progress.completed = [1];
 }
@@ -49,35 +50,51 @@ function followSignal(game: Campaign, stop: () => boolean, seconds = 45) {
 }
 
 describe("first-sortie route and continuing chapter guidance", () => {
-  it("finishes the 100 m survey before returning despite a full hold or early proximity proof", () => {
+  it("fills the hold from marked seam A, then turns home without a 95 m survey", () => {
     const game = new Campaign(createCampaign(10));
+    expect(openingSeamPending(game)).toBe(true);
+    expect(campaignSignal(game)?.targetId).toBe("W01-SEAM-A");
+    expect(campaignSignal(game)?.action).toContain("seam A");
+    expect(campaignMission(game).next).toContain("seam A");
+    followSignal(game, () => game.cargoBulk === 1);
+    // One package is not the turn-home cue: the marked seam still has room.
+    expect(campaignSignal(game)?.targetId).toBe("W01-SEAM-A");
     followSignal(game, () => game.cargoBulk === 7);
     expect(game.depth).toBe(70);
-    expect(campaignSignal(game)?.targetId).toBe("W01-BEACON");
-    followSignal(game, () => game.state.progress.beacon);
-    expect(game.depth).toBeLessThan(100);
-    expect(openingSurveyPending(game)).toBe(true);
-    expect(campaignSignal(game)?.targetId).toBe("W01-BEACON");
-    expect(campaignSignal(game)?.returning).toBe(false);
-    followSignal(game, () => game.depth >= 100);
+    expect(openingSeamPending(game)).toBe(false);
+    expect(campaignSignal(game)).toMatchObject({
+      targetId: "W01-LANDER",
+      returning: true,
+    });
+    expect(game.state.progress.beacon).toBe(false);
+    followSignal(game, () => game.atDock);
+    game.bank();
+    expect(game.state.progress.bankedOre).toBe(7);
+    expect(game.missionReady).toBe(true);
     expect(campaignSignal(game)?.targetId).toBe("W01-LANDER");
+    expect(campaignMission(game).next).toContain("Sell ore");
+    game.sell();
+    expect(campaignMission(game).next).toContain("Fund construction");
+    expect(game.payMilestone()).toBe(true);
+    expect(game.state.progress.beacon).toBe(false);
   });
 
   it("follows the actual tracker through two native trips and buys the tank with a minor-impact reserve", () => {
     const times: number[] = [];
     for (const seed of [4, 10, 999]) {
       const game = new Campaign(createCampaign(seed));
-      followSignal(game, () => game.depth >= 100);
-      expect(game.state.progress.beacon).toBe(true);
-      expect(game.state.stats.largestDepth).toBeGreaterThanOrEqual(100);
+      followSignal(game, () => game.cargoBulk === 7);
+      expect(game.state.progress.beacon).toBe(false);
+      expect(game.state.stats.largestDepth).toBe(70);
       expect(game.cargoValue).toBe(3800);
       // A local optional ceiling fixture exercises the real warning, collapse
-      // and damage path. No vehicle teleport or direct hull edit is used.
-      game.world.tiles[7 * game.world.width + 20] = 1;
+      // and damage path. No vehicle teleport or direct hull edit is used. The
+      // rig rests in row 6 after seam A, so the shelf hangs two rows above it.
+      game.world.tiles[4 * game.world.width + 20] = 1;
       game.world.shelves.push({
         id: "opening-incident",
         x: 20.5,
-        y: 7.5,
+        y: 4.5,
         warning: null,
         collapsed: false,
       });
@@ -162,6 +179,7 @@ describe("first-sortie route and continuing chapter guidance", () => {
   it("keeps launch first, then guides optional cache salvage when its specialist tool is equipped", () => {
     const game = new Campaign(createCampaign(21));
     stageTwo(game);
+    game.state.progress.beacon = true;
     game.state.progress.completed = [1, 2, 3];
     const cache = game.world.sites!.find((site) => site.kind === "cache")!;
     expect(campaignSignal(game)?.targetId).toBe("W01-LANDER");

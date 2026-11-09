@@ -467,8 +467,12 @@ function presentationMessage(message: string) {
     return "";
   return message
     .replace(
-      "Wreck beacon surveyed. Bank three ore packages at the lander.",
-      "Beacon surveyed · Return to the lander",
+      "Wreck beacon surveyed. Return to the lander to fund construction.",
+      "Wreck beacon surveyed · Return to the lander",
+    )
+    .replace(
+      "Wreck beacon surveyed. Bank the lander parts to finish the stage.",
+      "Wreck beacon surveyed · Bank the lander parts",
     )
     .replace(
       " recovered. Bank it safely at the lander.",
@@ -532,8 +536,11 @@ function syncMissionSignal(objectiveNext: string) {
 
   // Range ticks are readouts, not announcements. A closer signal band alerts
   // once per target; drifting around a boundary cannot repeat the same alert.
+  // M1's marked seam A lies under the spawn and the coach introduces it, so
+  // its bands are shown, not announced (D14 made it the first target).
   const rank = { distant: 0, near: 1, close: 2, at: 3 }[signal.band];
   if (
+    signal.targetId !== "W01-SEAM-A" &&
     rank > (announcedSignalBands.get(signal.targetId) ?? 0) &&
     !paused() &&
     !document.hidden &&

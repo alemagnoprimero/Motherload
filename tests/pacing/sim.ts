@@ -581,8 +581,6 @@ export class Sim {
     const m = g.currentMilestone;
     if (!m) return out;
     if (this.s.currentWorld === "W01") {
-      if (m.id === 1 && !this.s.progress.beacon)
-        out.push({ node: this.node(20, 9), id: "beacon" });
       if (m.id >= 2)
         for (const id of m.requiredMissionIds) {
           const mis = g.world.missions.find((x) => x.id === id)!;
@@ -592,6 +590,11 @@ export class Sim {
               id,
             });
         }
+      if (m.id === 2 && !this.s.progress.beacon)
+        out.push({
+          node: this.node(Math.floor(W01.beaconX), W01.beaconRow),
+          id: "beacon",
+        });
     } else {
       if (m.id === 1)
         for (const mis of g.world.missions)

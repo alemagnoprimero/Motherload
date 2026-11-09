@@ -47,6 +47,35 @@ function dock(game: Campaign) {
   drive(game, W01.dockX);
   expect(game.atDock).toBe(true);
 }
+/**
+ * D14: from the route shaft at the antenna, continue to the SITE-4 gallery,
+ * survey the wreck beacon on its floor and climb back into the shaft. Native
+ * drilling and flight only.
+ */
+function surveyWreck(game: Campaign) {
+  until(game, { down: true }, () => game.depth >= 440);
+  until(game, {}, () => !game.drillTarget);
+  // Steer to the beacon's column the way a pilot would; holding Left at full
+  // speed flies past the gallery floor before the rig drops onto it.
+  for (let tick = 0; tick < 60 * 8 && !game.state.progress.beacon; tick++) {
+    const delta = campaignDelta(game.state.vehicle.x, W01.beaconX);
+    const direction = Math.max(-3, Math.min(3, delta * 3)) - game.velocityX;
+    game.tick(dt, { left: direction < -0.15, right: direction > 0.15 });
+  }
+  expect(game.state.progress.beacon, game.message).toBe(true);
+  for (let tick = 0; tick < 60 * 12; tick++) {
+    const { x, y } = game.state.vehicle;
+    const delta = campaignDelta(x, 20.5);
+    if (y < 42.6 && Math.abs(delta) < 0.2) return;
+    const direction = Math.max(-3, Math.min(3, delta * 3)) - game.velocityX;
+    game.tick(dt, {
+      up: true,
+      left: direction < -0.15,
+      right: direction > 0.15,
+    });
+  }
+  throw new Error(`Cannot climb back into the shaft: ${game.message}`);
+}
 function trip(game: Campaign, column: number, depth: number) {
   drive(game, column + 0.5);
   until(game, { down: true }, () => game.depth >= depth, 60);
@@ -131,7 +160,8 @@ describe("W01 campaign expedition and economic transactions", () => {
   it("finishes two native opening trips, funds M1 and a useful purchase after a shelf hit", () => {
     const game = new Campaign(createCampaign(10));
     until(game, { down: true }, () => game.depth >= 100, 30);
-    expect(game.state.progress.beacon).toBe(true);
+    // D14: the 95 m route cell no longer holds a beacon; M1 is the banked haul.
+    expect(game.state.progress.beacon).toBe(false);
     expect(game.cargoValue).toBe(3800);
     // A taught optional ceiling incident exercises the actual warning/damage
     // rule without replacing the seeded opening or teleporting the vehicle.
@@ -219,8 +249,11 @@ describe("W01 campaign expedition and economic transactions", () => {
     expect(game.state.credits).toBe(4000);
     expect(game.sell()).toBe(false);
     expect(game.state.credits).toBe(4000);
-    expect(game.payMilestone()).toBe(false);
-    expect(game.state.progress.completed).toEqual([]);
+    // D14: three banked ordinary packages are M1's whole proof.
+    expect(game.payMilestone()).toBe(true);
+    expect(game.state.progress.completed).toEqual([1]);
+    expect(game.state.credits).toBe(2000);
+    expect(game.state.progress.beacon).toBe(false);
   });
 
   it("supports partial service to a tenth of a credit and fills purchased capacities", () => {
@@ -432,6 +465,9 @@ describe("campaign motion, tools and completion", () => {
       game.world.missions.find((item) => item.id === "W01-ANTENNA")!.status,
     ).toBe("carried");
     until(game, { left: true }, () => game.state.vehicle.x <= 20.9, 5);
+    expect(game.state.progress.beacon).toBe(false);
+    surveyWreck(game);
+    expect(game.state.progress.beacon).toBe(true);
     dock(game);
     game.bank();
     game.sell();

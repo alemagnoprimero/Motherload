@@ -1,5 +1,5 @@
 import type { Campaign } from "./model";
-import { HARDWARE_PRICES, W01 } from "./config";
+import { HARDWARE_PRICES, W01, W01_SURVEY_MILESTONE } from "./config";
 import { W02 } from "./frontier";
 
 export type MissionPoiKind =
@@ -99,16 +99,16 @@ const PARTS = [
 const wrapDelta = (from: number, to: number, width: number) =>
   ((((to - from + width / 2) % width) + width) % width) - width / 2;
 
-/** Finish the marked first shaft before turning; never revoke banked/older proof. */
-export function openingSurveyPending(campaign: Campaign) {
+/** M1 fills the hold from marked seam A before turning home (D14). */
+export function openingSeamPending(campaign: Campaign) {
   return (
     campaign.state.currentWorld === "W01" &&
-    campaign.world.generatorVersion === 2 &&
     campaign.currentMilestone?.id === 1 &&
-    campaign.state.progress.bankedOre === 0 &&
-    campaign.state.stats.expeditions === 0 &&
-    campaign.state.stats.largestDepth < 100 &&
-    campaign.state.vehicle.y >= 0
+    !campaign.missionReady &&
+    campaign.cargoBulk < campaign.capacity &&
+    campaignPois(campaign).some(
+      (poi) => poi.id === "W01-SEAM-A" && poi.status === "source",
+    )
   );
 }
 
@@ -128,7 +128,6 @@ export function openingRoute(campaign: Campaign): OpeningRoute | undefined {
     state.currentWorld !== "W01" ||
     world.generatorVersion !== 2 ||
     campaign.currentMilestone?.id !== 2 ||
-    !state.progress.beacon ||
     Object.values(state.hardware).some((rank) => rank > 0) ||
     world.missions.some((mission) => mission.status !== "source")
   )
@@ -238,10 +237,10 @@ export function campaignPois(campaign: Campaign): MissionPoi[] {
       kind: "beacon",
       name: "Wreck survey beacon",
       title: "Survey wreck",
-      x: W01.spawnX,
+      x: W01.beaconX,
       y: W01.beaconRow + 0.5,
       frame: "mission-beacon",
-      stage: 1,
+      stage: W01_SURVEY_MILESTONE,
       status: campaign.state.progress.beacon ? "surveyed" : "source",
     }),
   ];
@@ -446,17 +445,26 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
     }
   } else if (!milestone) returnReason = "launch";
   else if (milestone.id === 1) {
-    if (!state.progress.beacon || openingSurveyPending(campaign))
-      poi = pois.find((item) => item.kind === "beacon");
-    else if (campaign.missionReady) returnReason = "construction";
+    if (campaign.missionReady) returnReason = "construction";
+    else if (openingSeamPending(campaign))
+      poi = pois.find((item) => item.id === "W01-SEAM-A");
     else if (campaign.cargo.some((item) => item.tags.includes("ordinary")))
       returnReason = "ore";
   } else {
-    const required = pois.filter((item) =>
-      milestone.requiredMissionIds.some((id) => id === item.id),
+    const required = pois.filter(
+      (item) =>
+        milestone.requiredMissionIds.some((id) => id === item.id) ||
+        (item.kind === "beacon" && milestone.id === W01_SURVEY_MILESTONE),
+    );
+    // A survey carries nothing, so a recovered part need not go home first
+    // when the wreck beacon is within the local band (the antenna room is
+    // about 70 m from it); a farther beacon waits for the next dive.
+    const wreck = required.find(
+      (item) => item.kind === "beacon" && item.status === "source",
     );
     if (required.some((item) => item.status === "carried"))
-      returnReason = "mission";
+      if (wreck && distance(wreck) <= MISSION_SIGNAL_RANGES.near) poi = wreck;
+      else returnReason = "mission";
     else if (campaign.missionReady) returnReason = "construction";
     else
       poi = required
@@ -493,12 +501,10 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
     at =
       poi.kind === "lander"
         ? campaign.atDock
-        : poi.kind === "beacon" && openingSurveyPending(campaign)
-          ? false
-          : cells <
-            (poi.kind === "beacon"
-              ? MISSION_SIGNAL_RANGES.beacon
-              : MISSION_SIGNAL_RANGES.part),
+        : cells <
+          (poi.kind === "beacon"
+            ? MISSION_SIGNAL_RANGES.beacon
+            : MISSION_SIGNAL_RANGES.part),
     band: MissionSignalBand = at
       ? "at"
       : cells <= MISSION_SIGNAL_RANGES.close
@@ -585,7 +591,10 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
           : "Return to the lander to fund construction"
         : "Sell ore at the lander to fund construction";
   else if (poi.kind === "seam")
-    action = "Mine seam B to 70 m, then return and sell";
+    action =
+      poi.id === "W01-SEAM-A"
+        ? "Mine seam A to 70 m, then return and bank"
+        : "Mine seam B to 70 m, then return and sell";
   else if (poi.kind === "relic")
     action = poi.buried
       ? "Excavate the named relic"
@@ -596,10 +605,7 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
       ? "Excavate the sealed cache"
       : "Approach and open the sealed cache";
   else if (poi.kind === "beacon")
-    action =
-      state.progress.beacon && openingSurveyPending(campaign)
-        ? "Finish the marked shaft to 100 m, then return"
-        : "Approach the wreck beacon to survey";
+    action = "Approach the wreck beacon to survey";
   else if (poi.kind === "sample")
     action = poi.buried
       ? "Excavate the marked Helion sample pods"
@@ -617,7 +623,14 @@ export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
       ? "Excavate the marked debris"
       : "Approach to recover the mission part";
 
-  if (!returnReason && band === "distant" && poi.buried && poi.kind !== "seam")
+  // The wreck beacon stands in open gallery air, so it is never "buried", but
+  // from afar the useful advice is still its depth.
+  if (
+    !returnReason &&
+    band === "distant" &&
+    (poi.buried || poi.kind === "beacon") &&
+    poi.kind !== "seam"
+  )
     action = `Descend to ${poi.depthMeters} m (${arrows[direction]})`;
 
   if (returnReason && !campaign.atDock && cells <= 3 && state.vehicle.y < 0)

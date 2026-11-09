@@ -1,0 +1,38 @@
+[
+  {
+    "world": "fresh-w01",
+    "seed": 1152857004,
+    "gameSeconds": 44.7,
+    "gallerySeconds": 43.67,
+    "wallSeconds": 133.4,
+    "energyLeft": 4.19,
+    "hull": 10,
+    "rig": {
+      "x": 18.062308527266104,
+      "y": 44.601632307514805,
+      "energy": 4.18564150000017,
+      "hull": 10,
+      "reserve": 0
+    },
+    "discoveredBefore": 9,
+    "discoveredAfter": 239
+  },
+  {
+    "world": "generated",
+    "seed": 1019952531,
+    "gameSeconds": 45,
+    "gallerySeconds": 43.67,
+    "wallSeconds": 107.8,
+    "energyLeft": 4.19,
+    "hull": 10,
+    "rig": {
+      "x": 17.79243541978019,
+      "y": 44.50452688157145,
+      "energy": 4.187066875000208,
+      "hull": 10,
+      "reserve": 0
+    },
+    "discoveredBefore": 9,
+    "discoveredAfter": 244
+  }
+]

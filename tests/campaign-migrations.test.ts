@@ -289,6 +289,60 @@ describe("schema 3 and versioned balance migration", () => {
     expect(() => decodeCampaign(JSON.stringify(source))).toThrow();
   });
 
+  it("moves the retired 95 m survey out of M1 and keeps proof for started stages (D14)", () => {
+    // A save in M1 that surveyed the old route beacon: M1 no longer asks for a
+    // survey and the old beacon is gone, so the flag drops and M2 will ask for
+    // the wreck. Its banked ore still proves the claim.
+    for (const source of [oldState(), createCampaign(118)]) {
+      source.progress.beacon = true;
+      source.progress.bankedOre = 4;
+      const midStageOne = decodeCampaign(JSON.stringify(source));
+      expect(midStageOne.progress.beacon).toBe(false);
+      const game = new Campaign(midStageOne);
+      expect(game.currentMilestone?.id).toBe(1);
+      expect(game.missionReady).toBe(true);
+      expect(decodeCampaign(JSON.stringify(midStageOne))).toEqual(midStageOne);
+    }
+    // A pending old survey in M1 changes nothing but the proof M1 needs.
+    const pending = createCampaign(119);
+    pending.progress.bankedOre = 2;
+    const restored = new Campaign(decodeCampaign(JSON.stringify(pending)));
+    expect(restored.state.progress.beacon).toBe(false);
+    expect(restored.missionReady).toBe(false);
+    // A save past M1 keeps its survey: M2 does not ask again.
+    const stageTwo = oldState();
+    stageTwo.progress.beacon = true;
+    stageTwo.progress.bankedOre = 3;
+    stageTwo.progress.completed = [1];
+    for (const mission of stageTwo.worlds.W01.missions)
+      if (mission.id !== "W01-Q") mission.status = "banked";
+    const kept = new Campaign(decodeCampaign(JSON.stringify(stageTwo)));
+    expect(kept.state.progress.beacon).toBe(true);
+    expect(kept.currentMilestone?.id).toBe(2);
+    expect(kept.missionReady).toBe(true);
+  });
+
+  it("rejects stage proof that the D14 rules cannot produce", () => {
+    const stageTwo = createCampaign(120);
+    stageTwo.progress.bankedOre = 2;
+    stageTwo.progress.completed = [1];
+    expect(() => decodeCampaign(JSON.stringify(stageTwo))).toThrow(
+      /first milestone lacks its banked proof/,
+    );
+    const stageThree = createCampaign(121);
+    stageThree.progress.bankedOre = 3;
+    stageThree.progress.completed = [1, 2];
+    for (const mission of stageThree.worlds.W01!.missions)
+      if (mission.id !== "W01-Q") mission.status = "banked";
+    expect(() => decodeCampaign(JSON.stringify(stageThree))).toThrow(
+      /second milestone lacks its wreck survey/,
+    );
+    stageThree.progress.beacon = true;
+    expect(decodeCampaign(JSON.stringify(stageThree)).progress.beacon).toBe(
+      true,
+    );
+  });
+
   it("applies each world's tile range rather than the current global generator", () => {
     const legacy = oldState();
     legacy.worlds.W01.tiles[0] = 4;
