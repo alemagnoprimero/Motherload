@@ -135,6 +135,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private artQuality = 2;
     /** Frames image() could not draw (no resident page holds them), by name. */
     private frameMisses = new Map<string, number>();
+    /** The F1 readout group of each texture key, classified once (T13b). */
+    private textureGroups = new Map<string, TextureGroup>();
     private contextZoom = 1;
     /** F5: the zoom's spring velocity, per second. */
     private zoomVelocity = 0;
@@ -297,7 +299,22 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         cap,
         matchMedia("(pointer: coarse)").matches,
       );
+      // Rows surely on screen around the rig: campaignCameraY anchors it at
+      // 43–57 % of the usable height, with up to a tile of look-ahead, and the
+      // context zoom is at most the inspection zoom.
+      const safe = this.view.safe,
+        usable = Math.max(100, cssHeight - safe.top - safe.bottom),
+        largest =
+          (tile ?? campaignTileSize(cssWidth, cssHeight)) *
+          CAMERA_ZOOM.inspection;
       return {
+        viewRows: {
+          above: Math.max(0, (safe.top + usable * 0.43) / largest - 1),
+          below: Math.max(
+            0,
+            (cssHeight - safe.top - usable * 0.57) / largest - 1,
+          ),
+        },
         pxPerTile: devicePxPerTile(cssWidth, cssHeight, cap, tile),
         tier,
         layerBytes:
@@ -726,20 +743,26 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       }
     }
 
-    /** Resident texture bytes in all and per F1 readout group (T13b). */
+    /**
+     * Resident texture bytes in all and per F1 readout group (T13b), every
+     * frame for the dataset: one pass over the TextureManager, with each key's
+     * group classified once.
+     */
     private residentTextures() {
       const groups = Object.fromEntries(
         TEXTURE_GROUPS.map((group) => [group, 0]),
       ) as Record<TextureGroup, number>;
       let total = 0;
+      const pages: string[] = [];
       for (const [key, texture] of Object.entries(this.textures.list)) {
-        const bytes = texture.source.reduce(
-          (sum: number, source: Phaser.Textures.TextureSource) =>
-            sum + source.width * source.height * 4,
-          0,
-        );
-        groups[textureGroup(key)] += bytes;
+        let bytes = 0;
+        for (const source of texture.source)
+          bytes += source.width * source.height * 4;
+        let group = this.textureGroups.get(key);
+        if (!group) this.textureGroups.set(key, (group = textureGroup(key)));
+        groups[group] += bytes;
         total += bytes;
+        if (group === "atlas") pages.push(key);
       }
       const art = this.art.state();
       const zone = art ? rigZone(art.band, art.row) : "surface";
@@ -751,9 +774,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         zone,
         density: plain === hero ? `${plain}` : `${plain}/${hero}`,
         guard: art?.stepped ?? [],
-        pages: Object.keys(this.textures.list)
-          .filter((key) => textureGroup(key) === "atlas")
-          .sort(),
+        /** The guard's projection is over the form's §7 budget. */
+        over: art?.fits === false,
+        pages: pages.sort(),
       };
     }
 
@@ -1542,7 +1565,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       // The opaque retained terrain and sky cover the view. Older parallax
       // polygons behind them were fully occluded but still consumed fill rate.
       this.skyGradient.setVisible(surfaceY > 0);
-      this.sky.setVisible(surfaceY > 0);
+      // A tile sprite under 1 px high has a 0-high canvas, which Canvas 2D
+      // cannot draw (drawImage throws and stops the game loop).
+      this.sky.setVisible(surfaceY >= 1);
       this.ridgeFar.setVisible(surfaceY > 0);
       this.ridgeNear.setVisible(surfaceY > 0);
       let skyBodyVisible = false;
@@ -2485,6 +2510,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             (resident.guard.length
               ? ` · guard ${resident.guard.join(",")} @2x`
               : "") +
+            (resident.over ? " · over §7" : "") +
             // One line per policy segment: next step, probation, back-off.
             `\n${backoffLine(this.resolutionBudget.state()).replaceAll(" · ", "\n")}`;
       }

@@ -125,7 +125,7 @@ try {
           Object.entries(sample.groups)
             .map(([group, bytes]) => `${group} ${mib(bytes)}`)
             .join(" · ") +
-          ` · pages @${sample.density}${sample.guard ? ` (guard ${sample.guard})` : ""}`,
+          ` · pages @${sample.density.replace("/", "x/@")}x${sample.guard ? ` (guard ${sample.guard} @2x)` : ""}`,
       );
       console.log(JSON.stringify(sample));
       assert.equal(

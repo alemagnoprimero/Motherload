@@ -214,10 +214,11 @@ export interface PagePlan {
   /** Every page to keep resident. */
   pages: ZonePage[];
   /**
-   * The pages the scene waits for before it draws (art.ready): the cores and
-   * the zones of the rig's own band with its lander stage. Neighbour zones and
-   * the next lander stage stream ahead without stopping the game, so crossing
-   * a band or finishing a construction never pauses it.
+   * The pages the scene waits for before it draws in continuous play
+   * (art.ready): the cores and the zones of the rig's own band with its
+   * lander stage. Neighbour zones and the next lander stage stream ahead
+   * without stopping the game, so crossing a band or finishing a construction
+   * never pauses it. After a jump art.ts also waits for the zones on screen.
    */
   gate: ZonePage[];
   /** The current world's sky and ridges (band A, as its surface pages). */
@@ -281,10 +282,11 @@ export const pageBytes = (pages: readonly ZonePage[]) =>
 
 const MiB = 2 ** 20;
 /**
- * §7 resident budgets per form. The form comes from F1's render tier, never
- * from the pointer: High (WebGL with highp on a fine pointer) has the desktop
- * 64 MiB; Medium and Low have the phone's 20 MiB at boot (taken as band A,
- * the surface and the first shaft band) and 40 MiB in play.
+ * §7 resident budgets per form. The form is F1's render tier, as F1 decides
+ * it (High is WebGL with highp on a fine pointer, so F1 reads the pointer
+ * there; D1's density never does): High has the desktop 64 MiB; Medium and
+ * Low have the phone's 20 MiB at boot (at the dock, until the rig first leaves
+ * it: render-memory's boot sample) and 40 MiB in play.
  */
 export function memoryBudget(tier: QualityTier, boot: boolean) {
   if (tier === "high") return 64 * MiB;
@@ -308,16 +310,20 @@ export interface GuardResult {
   plan: PagePlan;
   /** Projected resident bytes with the plan's pages. */
   projected: number;
-  /** Zones whose non-hero pages the guard stepped down, in order. */
+  /** Zones whose non-hero pages this call stepped down, in order. */
   stepped: string[];
+  /** The projection is within the budget. */
+  fits: boolean;
 }
 /**
- * The T13b budget guard (decisions.md D1): when the pages D1 asks for would
+ * The T13b budget guard (decisions.md D1): when the pages asked for would
  * take the projected resident bytes over the form's budget, step non-hero
  * zones down to @2x, the step that saves most first, until they fit or none
- * is left. Hero pages (the rig, ore and hero props) keep their D1 density.
- * `fixedBytes` is everything but the atlas pages: render layers, band pages
- * and backgrounds, projected for the same position.
+ * is left (a form over its budget even then keeps the fewest bytes it can,
+ * and `fits` says so). Hero pages (the rig, ore and hero props) keep their D1
+ * density. `fixedBytes` is everything but the atlas pages: render layers,
+ * band pages and backgrounds, projected for the same position. render/art.ts
+ * keeps the steps for the session (a ratchet), so they never undo.
  */
 export function guardDensities(
   densities: PageDensities,
@@ -355,7 +361,13 @@ export function guardDensities(
     projected = best.bytes;
     stepped.push(best.zone);
   }
-  return { densities, plan: current, projected, stepped };
+  return {
+    densities,
+    plan: current,
+    projected,
+    stepped,
+    fits: projected <= budget,
+  };
 }
 
 /** The F1 readout's texture groups. */

@@ -9,11 +9,17 @@ import w02Near from "../assets/campaign/generated/w02-ridge-near.png?inline";
 import zonesSource from "../src/campaign/render/zones.ts?raw";
 import artSource from "../src/campaign/render/art.ts?raw";
 import sceneSource from "../src/campaign/scene.ts?raw";
+import lightingSource from "../src/campaign/render/lighting.ts?raw";
 import { campaignTileSize, retainedTerrainGrid } from "../src/campaign/layout";
 import { renderDebugOptions } from "../src/campaign/view";
+import type Phaser from "phaser";
+import type { Campaign } from "../src/campaign/model";
+import { CampaignArt } from "../src/campaign/render/art";
 import {
   BACKGROUND_BYTES,
   BAND_BYTES,
+  LIGHT_MAP_SCALE,
+  SMALL_TEXTURE_BYTES,
   ZONE_MANIFESTS,
   ZONE_NAMES,
   d1Densities,
@@ -277,6 +283,23 @@ describe("the T13b budget guard", () => {
     for (const page of result.plan.pages)
       if (page.hero) expect(page.density).toBe(3);
   });
+  it("steps to @2x everywhere when only that fits, keeping hero pages", () => {
+    const base = d1Densities(112);
+    const floor = pageBytes(
+      planner({
+        hero: 3,
+        plain: { core: 2, surface: 2, shaft: 2, cave: 2 },
+      }).pages,
+    );
+    const result = guardDensities(base, 20 * MiB, 20 * MiB - floor, planner);
+    expect(new Set(result.stepped)).toEqual(
+      new Set(["surface", "core", "shaft"]),
+    );
+    for (const page of result.plan.pages)
+      expect(page.density).toBe(page.hero ? 3 : 2);
+    expect(result.fits).toBe(true);
+    expect(result.projected).toBe(20 * MiB);
+  });
   it("stops at @2x everywhere when nothing fits, keeping hero pages", () => {
     const result = guardDensities(
       d1Densities(112),
@@ -289,7 +312,13 @@ describe("the T13b budget guard", () => {
     );
     for (const page of result.plan.pages)
       expect(page.density).toBe(page.hero ? 3 : 2);
+    expect(result.fits).toBe(false);
     expect(result.projected).toBeGreaterThan(20 * MiB);
+  });
+  it("keeps lighting.ts's light map scale in its projection", () => {
+    // lighting.ts does not export it; a change there must change zones.ts.
+    expect(lightingSource).toMatch(/\bconst LIGHT_SCALE = 0\.25;/);
+    expect(LIGHT_MAP_SCALE).toBe(0.25);
   });
   it("takes each form's §7 budget from the render tier", () => {
     expect(memoryBudget("high", true)).toBe(64 * MiB);
@@ -355,5 +384,145 @@ describe("the F1 readout's texture groups", () => {
     expect(rigZone(1, 18)).toBe("shaft");
     expect(rigZone(2, 43)).toBe("cave");
     expect(rigZone(3, 55)).toBe("cave");
+  });
+});
+
+describe("CampaignArt: the guard's budget and ratchet, the jump gate", () => {
+  /** A Phaser scene as far as render/art.ts uses it; loads finish on demand. */
+  function fakeScene() {
+    const resident = new Set<string>(),
+      queued: string[] = [],
+      done: (() => void)[] = [];
+    let loading = false;
+    const scene = {
+      textures: {
+        exists: (key: string) => resident.has(key),
+        remove: (key: string) => resident.delete(key),
+        get: () => ({ getSourceImage: () => ({}) }),
+        addCanvas: (key: string) => resident.add(key),
+      },
+      load: {
+        atlas: (key: string) => queued.push(key),
+        image: (key: string) => queued.push(key),
+        isLoading: () => loading,
+        once: (_event: string, callback: () => void) => done.push(callback),
+        start: () => (loading = true),
+      },
+      registry: { inc: () => undefined },
+    };
+    const finish = () => {
+      for (const key of queued.splice(0)) resident.add(key);
+      loading = false;
+      for (const callback of done.splice(0)) callback();
+    };
+    return { scene, resident, finish };
+  }
+  const campaign = (world: WorldId, row: number) =>
+    ({
+      world: { id: world },
+      state: {
+        vehicle: { y: row },
+        worlds: world === "W02" ? { W02: {} } : {},
+      },
+      completedMilestones: [],
+    }) as unknown as Campaign;
+  /** The phone with D1 option B's 56 CSS px tile (Medium tier), as scene.ts lays it out. */
+  const terrain = retainedTerrainGrid(393, 851, 56, 2, true);
+  const layout = {
+    pxPerTile: px(393, 851, 3, 56),
+    tier: "medium" as const,
+    layerBytes:
+      terrain.pixelWidth * terrain.pixelHeight * 4 +
+      Math.ceil(393 * LIGHT_MAP_SCALE) * Math.ceil(851 * LIGHT_MAP_SCALE) * 4 +
+      SMALL_TEXTURE_BYTES,
+    // Rows surely on screen around the rig (scene.ts artLayout's formula).
+    viewRows: { above: 4.5, below: 4.5 },
+  };
+  const start = (world: WorldId, row: number) => {
+    vi.stubGlobal("document", {
+      createElement: () => ({ getContext: () => ({ drawImage() {} }) }),
+    });
+    const fake = fakeScene();
+    const art = new CampaignArt(fake.scene as unknown as Phaser.Scene);
+    art.preload(campaign(world, row), layout);
+    fake.finish();
+    art.created();
+    return { ...fake, art };
+  };
+  /** One scene frame: stream, let loads finish, and report whether it draws. */
+  const frame = (
+    fake: ReturnType<typeof start>,
+    world: WorldId,
+    row: number,
+  ) => {
+    fake.art.update(campaign(world, row), layout);
+    fake.finish();
+    return fake.art.ready(campaign(world, row));
+  };
+
+  it("keeps the phone's 20 MiB boot budget at the dock only, until the rig leaves it", () => {
+    const fake = start("W01", 0);
+    expect(fake.art.state()).toMatchObject({
+      boot: true,
+      budget: 20 * MiB,
+      stepped: ["surface"],
+      fits: true,
+    });
+    expect(frame(fake, "W01", 0)).toBe(true);
+    expect(frame(fake, "W01", 5)).toBe(true);
+    expect(fake.art.state()).toMatchObject({ boot: false, budget: 40 * MiB });
+    // Back at the dock the session is in play: the active budget holds.
+    expect(frame(fake, "W01", 0)).toBe(true);
+    expect(fake.art.state()).toMatchObject({ boot: false, budget: 40 * MiB });
+  });
+  it("keeps a stepped zone at @2x for the session, so pages never swap back up", () => {
+    const fake = start("W01", 0);
+    const surfacePages = () =>
+      [...fake.resident].filter((key) => key.includes("-surface-2x-"));
+    expect(surfacePages()).toEqual(["campaign-w01-surface-2x-0"]);
+    for (const row of [1, 2, 6, 10, 11, 18, 10, 2, 0]) {
+      expect(frame(fake, "W01", row)).toBe(true);
+      expect(fake.art.state()?.densities.plain.surface).toBe(2);
+      expect(fake.art.state()?.stepped).toEqual(["surface"]);
+    }
+    expect(fake.resident.has("campaign-w01-surface-3x-0")).toBe(false);
+  });
+  it("draws while neighbour zones stream in continuous play, waits after a jump for those on screen", () => {
+    const cave = (key: string) => /-cave-/.test(key);
+    // A jump whose neighbour zone may be off screen draws at once (feel-smoke
+    // imports W01 row 19.64 and expects the next frame drawn): band C starts
+    // 10 rows below.
+    const deep = start("W01", 0);
+    expect(frame(deep, "W01", 0)).toBe(true);
+    deep.art.update(campaign("W01", 19.64), layout);
+    expect(deep.art.ready(campaign("W01", 19.64))).toBe(true);
+    expect([...deep.resident].some(cave)).toBe(false);
+    const fake = start("W02", 0);
+    expect(frame(fake, "W02", 0)).toBe(true);
+    // A jump to row 43 (band B) with the vent's band C on screen: the scene
+    // waits until the cave pages of both atlases are resident.
+    fake.art.update(campaign("W02", 43), layout);
+    expect([...fake.resident].some(cave)).toBe(false);
+    expect(fake.art.ready(campaign("W02", 43))).toBe(false);
+    fake.finish();
+    expect([...fake.resident].filter(cave).sort()).toEqual([
+      "campaign-w01-cave-3x-0",
+      "campaign-w02-cave-3x-0",
+    ]);
+    expect(fake.art.ready(campaign("W02", 43))).toBe(true);
+    // Continuous play: a step down in band B draws while band C streams.
+    for (const key of [...fake.resident].filter(cave))
+      fake.resident.delete(key);
+    fake.art.update(campaign("W02", 43.5), layout);
+    expect(fake.art.ready(campaign("W02", 43.5))).toBe(true);
+  });
+  it("ends harness holds on release()", () => {
+    const fake = start("W01", 0);
+    void fake.art.hold(["site-geode"], "W01");
+    expect(frame(fake, "W01", 0)).toBe(true);
+    expect(fake.resident.has("campaign-w01-cave-3x-0")).toBe(true);
+    fake.art.release();
+    expect(frame(fake, "W01", 0)).toBe(true);
+    expect(fake.resident.has("campaign-w01-cave-3x-0")).toBe(false);
   });
 });

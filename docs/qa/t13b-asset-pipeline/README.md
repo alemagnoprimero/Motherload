@@ -8,23 +8,24 @@ Evidence for audit item T13b: `docs/ART_QUALITY_AUDIT.md` §5.3 row T13b ("Raste
 | `bb47b80` | (b), (c) build | Zone pages at @2x, @3x and @4x, the per-world manifests and the zone checks. Moves the rig's track edge onto the tread baseline. |
 | `3929c6e` | (b), (c) runtime | The game streams zone pages by band and picks their density by device px per tile. Adds the budget guard, the F1 readout and the memory report. Removes the legacy pages. |
 | `2fdae94` | (a) | `-emissive` siblings drawn ADD above the darkness, starting with the beacon's lamp. |
-| this commit | evidence | Resident bytes before and after, the captures, this README and the docs. |
+| `aadf312` | evidence | Resident bytes before and after, the captures, this README and the docs. |
+| this commit | review fixes | The packer keeps `-emissive` siblings on their base's page when a group spills; the budget guard's boot budget (the dock only) and its ratchet; after a jump the scene waits for the zones on screen; the Canvas sky crash below 1 px; docs and nits ("Review fixes"). |
 
 **Files also touched by other open PRs:**
-- `src/campaign/scene.ts`. This item changes it in `3929c6e` and `2fdae94`. PR #14 (ground light) also touches it, at an import, a field, the constructor, `destroy` and the render call. None of this item's hunks are at those places, and a three-way merge of `2fdae94`'s `scene.ts` with PR #14's hunks has no conflict.
+- `src/campaign/scene.ts`. This item changes it in `3929c6e`, `2fdae94` and the review fixes. PR #14 (ground light) also touches it, at an import, a field, the constructor, `destroy` and the render call. None of this item's hunks are at those places, and a three-way merge of the final `scene.ts` with PR #14's own commit (`a7cbe26`, `git merge-file`) has no conflict.
 - `src/campaign/render/lighting.ts`. This item does **not** touch it; `zones.ts` keeps its own copy of the light map's 0.25 scale as `LIGHT_MAP_SCALE`.
 - `scripts/campaign-smoke.mjs`. PR #16 (D14 beacon) rewrites parts of it. This item changes only `ready()` and leaves the stale "300 CR" line for PR #16 to fix.
 - `tests/campaign-poi-art.test.ts`. PR #16 edits it too; this item's change is two lines, to read `w01-zones.json`.
 - `src/campaign/poi.ts`. PR #16 edits it. If D14 renames or redraws `mission-beacon`, `mission-beacon-emissive` must follow.
 
-The sections below go in this order: what changed; the zones and pages; the density rule; the resident bytes; the captures; the emissive convention; the rasterizer; the checks run; the acceptance table; how to reproduce. "Reproducible rasterizer" keeps the first stage's evidence as it was written, and "Checks run" keeps each stage's own verification.
+The sections below go in this order: what changed; the zones and pages; the density rule; the resident bytes; the captures; the emissive convention; the rasterizer; the review fixes; the checks run; the acceptance table; how to reproduce. "Reproducible rasterizer" keeps the first stage's evidence as it was written, and "Checks run" keeps each stage's own verification.
 
 ## What changed
 
 ### (a) Emissive siblings
 
 - **The frames.** A frame `<base>-emissive` in `frames.json` has the same size as its base and is authored with the kit's `emissivePair`. The base draws the lit parts with the power off; the sibling holds only the light.
-- **Packing.** The zone function gives a sibling its base's zone, page set and page at every density.
+- **Packing.** The zone function gives a sibling its base's zone and page set, and the packer keeps it on its base's page at every density, also when a group spills onto a second page.
 - **Checks.** `check-campaign-assets.mjs` fails a sibling unless its base, in the same world, is the same size, sits on the same page and has the same source size and pivot.
 - **The ADD pass** (`src/campaign/render/emissive.ts`, called from `scene.ts`). After the frame's last sprite, it draws the sibling of every base drawn this frame:
   - with the ADD blend (Canvas `lighter`), from a pool of its own;
@@ -45,7 +46,7 @@ The sections below go in this order: what changed; the zones and pages; the dens
 - **Off the pages.** Terrain tiles, DOM-only icons and frames nothing draws stay off the pages, matched by exact regexes. The old prefix filter also dropped `ice-vent`, so the W02 vent marker was never drawn. It is drawn now (Captures).
 - **The pages.** There are pages per world, zone, page set (hero frames, each lander stage, the rest) and density.
   - Each page is at most 2048 × 1024; the largest is 832 × 1024.
-  - They are packed by the shelf packer, generalized, at the width with the fewest decoded bytes.
+  - They are packed by the shelf packer, generalized: as few pages as possible, then the width with the fewest decoded bytes.
   - `generated/w01-zones.json` and `w02-zones.json` list them.
 - **Loading** (`src/campaign/render/zones.ts`, `render/art.ts`).
   - The game loads W01's core always, W02's core when it is needed, and the zones of the rig's band ±1.
@@ -64,16 +65,16 @@ The sections below go in this order: what changed; the zones and pages; the dens
 ### (c) Pages by device px per tile
 
 - **The rule.** Device px per tile = the base tile × F1's backing ceiling. Density = clamp(ceil(device px per tile / 48), 2, 4) for hero pages and clamp(…, 2, 3) for the rest.
-- **Pointer type.** The pointer-type tests are gone.
+- **Pointer type.** D1's density never reads it; the pointer-type tests are gone. The guard's budget form is F1's render tier, which reads the pointer as F1 always has ("Density rule").
 - **Rendering.** Every density is rendered from source: @2x at scale 1, @3x at 1.5, and @4x at 2 for the hero set only.
-- **The budget guard.** It steps non-hero zones down to @2x when the projected resident bytes would pass the form's §7 budget.
+- **The budget guard.** It steps non-hero zones down to @2x when the projected resident bytes would pass the form's §7 budget, only when that reaches the budget, and keeps each step for the session.
 - **The honest consequence.** At today's tiles, 1440 × 900 @2 picks @3x and 393 × 851 @3 picks @2x. Both D1 paths are proven in a browser:
   - 1728 × 1117 @2 and `?tile=82` load the @4x hero pages;
   - a phone with `?tile=56` loads the @3x zone pages.
 
 ### (d) Reproducible rasterizer
 
-- **Rendering and encoding.** resvg (`@resvg/resvg-js` 2.6.2, pinned) renders every SVG. A canonical PNG encoder (pako 2.1.0, pinned) then rewrites every PNG under `assets/campaign`.
+- **Rendering and encoding.** resvg (`@resvg/resvg-js` 2.6.2, pinned) renders every SVG. A canonical PNG encoder (pako 2.1.0, pinned) then rewrites every PNG the builds write under `assets/campaign`. The hand-made raster source `source/test-raster.png` (T13a, written once by `create-test-raster.py`) is an input, not rebuilt, and keeps its committed encoding.
 - **Rebuild.** `npm run assets:rebuild` regenerates everything.
 - **CI.** A step in `verify` rebuilds and fails on any difference.
 - **Test.** A golden-hash test pins the encoder.
@@ -83,6 +84,7 @@ The sections below go in this order: what changed; the zones and pages; the dens
 
 - **Art change.** The rig's track edge moved from 99.5 to 100 units, so the tread meets the floor at every density. Only `rig-body-0..7` change.
 - **Pressure seams.** They are now drawn only within a tile of the view. Off-screen seams used to ask for the cave pages from band A.
+- **Canvas sky.** The sky tile sprite is drawn only when at least 1 px of sky shows; below that its canvas is 0 px high and Canvas 2D stopped the game loop. The crash predates this item ("Review fixes").
 - **Debug hooks.**
   - `?tile=N` and `?debug=no-emissive`, next to `?backing=`;
   - `window.__campaignDebug.textures()`, `frameMisses()`, `drawnFrames()` and `emissives()`;
@@ -119,20 +121,20 @@ The sections below go in this order: what changed; the zones and pages; the dens
 - **Hero set and @4x.** The hero set is all `rig-*`, `thrust-*`, `ore-*`, `package-*`, `relic`, `deposit-socket`, `tier-mark-hc-*`, `mission-beacon` (asset 15), `site-wreck` (asset 14) and the lander `dock-stage-*` (assets 1 and 2), plus the rig's mounted tools `tool-*`. The tools are drawn by `render/rig.ts` as rig layers at the rig's size, so a @3x tool on a @4x rig would look visibly softer. The hero set gets pages at @2x, @3x and @4x. Everything else stops at @3x. The raster-source frame (`test-raster`) never gets a @4x page because it has no @4x master (D5).
 - **Page sets.** Inside a zone, hero frames and the rest go on separate pages. A zone drawn at @4x therefore loads its hero frames once, from the @4x page, and the rest from @3x, with no frame loaded twice. Each lander stage gets pages of its own (`surface-stage<n>`), because `scene.ts` draws one stage at a time (`dock-stage-min(3, completed milestones)`). Only the current stage needs to be resident, which is 0.70 MiB at @3x instead of 3.28 to 4.98 MiB for all four stages.
 - **Densities from source.** Each density is rendered from the SVGs (D5): @2x at scale 1, @3x at 1.5 and @4x at 2. The renders go to `.cache/campaign-renders{,-3x,-4x}` and `.cache/frontier-renders{,-3x,-4x}`. Only the hero set is rendered at @4x. The full @2x atlases are packed from the same renders.
-- **Packing.** `scripts/pack-campaign-atlas.py` keeps its shelf packer, now a function, and adds a `zones` mode. The world build (`scripts/build-zone-pages.mjs`) writes a plan from `pageGroups()`. The packer packs each (zone, page set, density) group into pages of at most 2048 × 1024. It tries every page width that is a multiple of 64 and keeps the one with the fewest decoded bytes (on a tie, fewer pages, then the narrowest width). Several pages per group are allowed. The page JSON keeps the Phaser JSONHash format with `meta.zone`, `meta.hero` and `meta.stage`. Before writing the manifest, the build deletes any zone page that a smaller group no longer has. `w0X-sky-runtime.png` is now written in this mode, so it survives the deletion of the legacy pages.
+- **Packing.** `scripts/pack-campaign-atlas.py` keeps its shelf packer, now a function, and adds a `zones` mode. The world build (`scripts/build-zone-pages.mjs`) writes a plan from `pageGroups()`. The packer packs each (zone, page set, density) group into pages of at most 2048 × 1024. It tries every page width that is a multiple of 64 and keeps the one with the fewest pages, then the fewest decoded bytes, then the narrowest width, so a group never splits while one page holds it. Several pages per group are allowed. A group that spills is packed again with each base and its `-emissive` siblings as one unit that never straddles a page break; the packer proves that path on a synthetic group before each run and stops if a sibling still lands away from its base ("Review fixes"). The page JSON keeps the Phaser JSONHash format with `meta.zone`, `meta.hero` and `meta.stage`. Before writing the manifest, the build deletes any zone page that a smaller group no longer has. `w0X-sky-runtime.png` is now written in this mode, so it survives the deletion of the legacy pages.
 - **Manifest** `generated/w01-zones.json` and `w02-zones.json`. Each holds the page limit, the density → scale map, `maxDensity {hero: 4, plain: 3}`, the zones (`bands`, `rows`, `worlds`, frame count), `frames` (frame → zone for every runtime frame), `hero`, `excluded` (by reason) and `pages`. Each page entry is `{key, zone, hero, stage?, density, image, data, width, height, bytes, frames}`. Keys are `campaign-<file stem>`, such as `campaign-w01-core-hero-3x-0`. They keep the `campaign-w01` / `campaign-w02` prefix that `scripts/surface-render-smoke.mjs` needs, and none ends in `-wall` (`art.ts complete()` downsamples those). An `-emissive` sibling always takes its base's zone, page set and page (`zoneOf(emissiveOf(name) ?? name)`).
 - **Removed.** `w01-atlas-3x-0.*`, `w02-atlas-3x-0.*` and `w0X-pages-3x.json` (the full @3x atlases) are removed because nothing in the game read them. Their readers move to the zone pages: the art-audit prototype (`docs/art-audit/prototype/proto.js` and `render.mjs` load the W01 @3x zone pages through `w01-zones.json`; checked by rendering two scenes in a private copy), and `docs/qa/t13a-raster-source/compare-frames.py` skips a page missing on one side. The full @2x atlases (`w01-atlas`, `w02-atlas`) stay, because the checks read them. The legacy runtime pages went with the runtime switch (`3929c6e`).
 - **Tread baseline at @4x.** `check-campaign-assets` requires the lowest opaque row of every `rig-body-*` frame to end at the tread baseline, 100 × scale / 2. The track's outer edge was at 99.5 units (`rect` y 79, height 23, stroke 5, shifted −5), which lands on a pixel boundary at @4x: the check read 199 for 200. At @2x and @3x it passed only because the last row was half or a quarter covered. The fix is at the source. In `create-w01-sources.mjs` the track is 23.5 units tall, so its outer edge sits exactly on the baseline at every density, as the simulator assumes (`rigTreadBaseline 100`, `bodyHalfY 0.36`). It is the only art change of the zone-page stage (the emissive stage splits the beacon's lamp). `compare-frames.py 84e4005` reports `rig-body-0..7` and no other frame: 163–164 px changed at @2x (max 128, the bottom row going from half to full alpha and the lower corner arcs), 303–308 px at @3x (max 192), and at @4x one more full row. The tread grows by half a unit (0.5 px at @2x, 0.65 device px at 1440 × 900 @2) and now meets the floor. `tread-baseline.png` shows `rig-body-0`'s tread corner at @2x, @3x and @4x (rows), before and after (columns), magnified six times over the floor line (grey). The check keeps its threshold at every density.
 
 ### Pages
 
-Decoded MiB = width × height × 4. PNG = committed canonical bytes.
+Decoded MiB = width × height × 4. PNG = committed canonical bytes. `pages-table.py` prints these tables from the manifests and the committed files (the final tree: the W01 core hero pages hold the beacon's `-emissive` sibling).
 
 | page (key `campaign-<page>`) | zone | set | density | size | decoded MiB | PNG KiB | frames |
 |---|---|---|---|---|---|---|---|
-| `w01-core-hero-2x-0` | core | hero | @2x | 256 × 960 | 0.938 | 55.1 | 73 |
-| `w01-core-hero-3x-0` | core | hero | @3x | 512 × 960 | 1.875 | 82.4 | 73 |
-| `w01-core-hero-4x-0` | core | hero | @4x | 832 × 1024 | 3.250 | 106.7 | 73 |
+| `w01-core-hero-2x-0` | core | hero | @2x | 256 × 960 | 0.938 | 55.2 | 74 |
+| `w01-core-hero-3x-0` | core | hero | @3x | 512 × 960 | 1.875 | 82.6 | 74 |
+| `w01-core-hero-4x-0` | core | hero | @4x | 832 × 1024 | 3.250 | 107.0 | 74 |
 | `w01-core-2x-0` | core | rest | @2x | 512 × 256 | 0.500 | 19.3 | 12 |
 | `w01-core-3x-0` | core | rest | @3x | 768 × 384 | 1.125 | 30.4 | 12 |
 | `w01-surface-stage0-2x-0` | surface | lander stage 0 | @2x | 384 × 256 | 0.375 | 4.4 | 1 |
@@ -175,7 +177,7 @@ Decoded MiB = width × height × 4. PNG = committed canonical bytes.
 | `w02-cave-2x-0` | cave | rest | @2x | 128 × 128 | 0.063 | 1.4 | 1 |
 | `w02-cave-3x-0` | cave | rest | @3x | 128 × 128 | 0.063 | 1.9 | 1 |
 
-44 pages, 731.6 KiB of PNG. The two manifests are 21.2 KiB (W01) and 12.7 KiB (W02).
+44 pages, 732.2 KiB of PNG. The two manifests are 20.9 KiB (W01) and 12.4 KiB (W02).
 
 Decoded MiB per (world, zone, density). Surface counts one lander stage, with all four in brackets. At @4x a zone's non-hero frames come from @3x, which this table does not add.
 
@@ -203,10 +205,10 @@ Decoded MiB per (world, zone, density). Surface counts one lander stage, with al
   | D | C, D | core, cave | core, cave |
 
 - **Streaming** (`art.update`, before anything is drawn). A page that becomes required is queued first. A page leaves only when nothing needs it, and a page that another density of the same pages replaces leaves only once that density is resident. Nothing leaves while the scene is waiting (`ready()` false), because the scene then keeps last frame's sprites on screen. The tile sprites of the sky and ridges keep their own copy of their texture (Phaser 3.90 `TileSprite.fillCanvas`), so while their texture is out they point at Phaser's 32 px default, which frees that copy too, and back once it is resident.
-- **`art.ready()`** is now "the cores and the zones of the rig's own band resident (at any density while a swap loads), with the sky and ridges in band A" (a deviation, recorded in decisions.md). Neighbour bands and the next lander stage stream ahead without gating. The plan asked for "every required page"; the scene's wait calls `onUpdate(0)`, so gating on neighbours would pause the simulation for the frames a neighbour page takes to load each time the rig crosses into a new band. With this split, only a jump (travel, an import, a long fall) waits, as before.
+- **`art.ready()`** is now "the cores and the zones of the rig's own band resident (at any density while a swap loads), with the sky and ridges in band A" (a deviation, recorded in decisions.md). Neighbour bands and the next lander stage stream ahead without gating. The plan asked for "every required page"; the scene's wait calls `onUpdate(0)`, so gating on neighbours would pause the simulation for the frames a neighbour page takes to load each time the rig crosses into a new band. After a jump (another world, or more than 8 rows from the last drawn frame: an import, travel, a respawn; a fall is continuous and never counts) it also waits for the zones of the bands surely on screen (`ArtLayout.viewRows`: the rows `campaignCameraY` keeps on screen above and below the rig at any context zoom and look-ahead), so nothing in view pops in, while a zone that may be off screen still streams (review fixes).
 - **`create()`** checks the manifests (the frames the game needs are listed in W01's, and in W02's when W02 is current) and that the core pages are resident. It no longer looks for `sky-body` or `dock-stage-*` in a texture.
 - **Frame lookup** (`scene.image()`). The owner atlas comes from the manifests exactly as before: W02's only for W02 frames in W02, `tool-*` and the shared upgrades, and only when W02's manifest has the frame (`frameOwner`). Residency never decides it, so W01's lander cannot flash in W02 while W02's surface page loads. The page is the resident one at the planned density, else another resident density of the same pages. `art.textureFor(frame, worldId, quality?)` returns that key (the surface smoke uses it). A frame no resident page holds is counted (`__campaignDebug.frameMisses()`).
-- **F1 readout** (`?debug=frametime`) gains a line: `tex 34.9 MiB · W01 surface (atlas 6.4 · bands 5.1 · bg 3.5 · layers 19.9 · other 0.0) · pages @3x`, with `pages @2x/@3x · guard surface @2x` when hero and other pages differ and the guard stepped. Groups (`zones.ts textureGroup`): atlas = zone pages, bands = band material pages, bg = the streamed sky and ridges, layers = retained terrain, light map and T1-lite, other = gradients, glints and Phaser's defaults. The zone is where the rig is: surface (band A, row ≤ 1), shaft (bands A–B) or cave (C–D).
+- **F1 readout** (`?debug=frametime`) gains a line: `tex 34.9 MiB · W01 surface (atlas 6.4 · bands 5.1 · bg 3.5 · layers 19.9 · other 0.0) · pages @3x`, with `pages @2x/@3x · guard surface @2x` when hero and other pages differ and the guard stepped, and ` · over §7` when the projection is over the form's budget even so. Groups (`zones.ts textureGroup`): atlas = zone pages, bands = band material pages, bg = the streamed sky and ridges, layers = retained terrain, light map and T1-lite, other = gradients, glints and Phaser's defaults. The zone is where the rig is: surface (band A, row ≤ 1), shaft (bands A–B) or cave (C–D).
 - **Dataset**, next to `data-resident-texture-bytes`: `data-resident-texture-zone`, `data-resident-texture-groups` (JSON bytes per group), `data-atlas-density` (`3` or `3/4`: the rig zone's other pages / hero pages), `data-atlas-guard` (zones the guard stepped) and `data-atlas-pages` (the resident zone pages). `data-world-texture` keeps its `campaign-w01` / `campaign-w02` world label for `frontier-smoke.mjs`.
 - **`window.__campaignDebug`** gains `textures()` (`[{key, bytes, width, height, group, zone, density, world}]`), `frameMisses(reset?)` and `drawnFrames()` (`[{frame, texture}]` this frame).
 - **`scripts/render-memory.mjs`** gains a cave stage (W01 row 43, band C) and prints the bytes per group, the zone, the densities and the guard per stage; the gates are unchanged (64 MiB desktop; touch 20 boot / 40 active).
@@ -227,11 +229,12 @@ Decoded MiB per (world, zone, density). Surface counts one lander stage, with al
   - Page caps and keys, and one lander stage per stage page.
   - The unused frames stay unreachable (a tripwire on the refuge and relay draws and the site kinds), and every frame name spelled out in `src/campaign` is on a page.
 - **`tests/campaign-poi-art.test.ts`** checks POI markers and scenery against `w01-zones.json` instead of `w01-runtime.json`. That is a two-line change; PR #16 also edits this file.
-- **`tests/campaign-zones-runtime.test.ts`** (51 tests, runtime stage) covers:
-  - D1's density cases (table in "Density rule"), and that the pointer is never read;
+- **`tests/campaign-zones-runtime.test.ts`** (51 tests in the runtime stage, 57 after the review fixes) covers:
+  - D1's density cases (table in "Density rule"), and that D1 never reads the pointer;
   - the resident set per band in both worlds;
   - owner atlases;
-  - the guard;
+  - the guard, and on `CampaignArt` with a stand-in scene its boot budget (the dock until the rig leaves it), its ratchet over a descent and a climb, the jump gate (a jump waits for zones on screen, not for one that may be off screen) and `release()`;
+  - that `lighting.ts` still declares the 0.25 light-map scale `zones.ts` copies;
   - the projection constants against the band manifest and the PNG headers;
   - the readout groups.
 - **`tests/campaign-emissive.test.mjs`** (12 tests, emissive stage) iterates every sibling in both manifests ("Emissive convention and its cost").
@@ -246,10 +249,11 @@ Decoded MiB per (world, zone, density). Surface counts one lander stage, with al
 - **Not the context zoom.** The 0.88–1.08 context zoom is ignored. It moves with depth, so a page swap partway down would buy at most 8 % of sharpness.
 - **Density.** clamp(ceil(px / 48), 2, 4) for the hero pages and clamp(…, 2, 3) for the rest: 96 px or less → @2x, up to 144 → @3x, more than 144 → @4x.
 
-**Pointer type.** It is never read:
+**Pointer type.** D1's density never reads it:
 - `scene.ts`'s coarse-pointer `artQuality` and `art.ts`'s `(pointer: coarse)` gate on the @3x pages are gone.
 - `scene.artQuality` stays numeric: the hero density, 2, 3 or 4.
-- A unit test stubs `matchMedia` to throw, and greps both files.
+- A unit test stubs `matchMedia` to throw, and greps `zones.ts` and `art.ts`.
+- The budget guard does read it, indirectly, as F1 always has: its budget form is F1's render tier (High needs a fine pointer), and its projection sizes the retained terrain as `render/terrain.ts` does, pointer included. Two devices with the same device px per tile therefore get the same D1 densities but can get different guard budgets: a coarse tablet is Medium and takes the phone's budgets.
 
 **D1's cases.** "Measured" means read in a browser by `zone-runtime.mjs` ("Resident texture bytes"); the unit tests are in `tests/campaign-zones-runtime.test.ts`.
 
@@ -257,12 +261,12 @@ Decoded MiB per (world, zone, density). Surface counts one lander stage, with al
 |---|---|---|---|---|---|---|
 | desktop 1440 × 900 @2 (CI form) | 65.45 | 2 | 130.9 | @3x | @3x | measured; unit test |
 | desktop 1440 × 900 @1 | 65.45 | 1 | 65.5 | @2x | @2x | unit test |
-| coarse tablet 1366 × 1024 @2 (Medium tier) | 62 | 2 | 124 | @3x | @3x by D1; the guard holds them at @2x (about 17 MiB of retained terrain alone) | unit test |
+| coarse tablet 1366 × 1024 @2 (Medium tier) | 62 | 2 | 124 | @3x | @3x by D1; over the phone budgets even at @2x (17.5 MiB of retained terrain alone), so the guard holds them at @2x for the session: 30.93 MiB at boot, 41.29 at W01 row 18 | measured (review fixes); unit test |
 | desktop 1728 × 1117 @2 (a real viewport) | 78.55 | 2 | 157.1 | **@4x** | @3x | measured: @4x proof |
 | desktop 1440 × 900 @2, `?tile=82` (D1 option B) | 82 | 2 | 164 | **@4x** | @3x | measured: @4x proof; unit test |
 | D1 option B on desktop, after T11 (80–85 CSS px) | 80–85 | 2 | 160–170 | @4x | @3x | D1's own case |
 | phone 393 × 851 @3 (CI form) | 44 | 2 | 88 | @2x | @2x | measured; unit test |
-| phone 393 × 851 @3, `?tile=56` (D1 option B, portrait) | 56 | 2 | 112 | **@3x** | @3x; at boot the guard keeps the surface's at @2x | measured: phone @3x proof; unit test |
+| phone 393 × 851 @3, `?tile=56` (D1 option B, portrait) | 56 | 2 | 112 | **@3x** | @3x; the guard keeps the surface's at @2x from boot for the W01 session | measured: phone @3x proof; unit test |
 
 **What this means at today's tiles** (reported, not hidden):
 - **Desktop.** A 1440 × 900 @2 desktop has 130.9 device px per tile and loads @3x, not @4x. D1's "160 to 170 device px per tile" assumes T11's 80 to 85 CSS px tile. Today a desktop needs a tile of at least 72.1 CSS px at backing 2 to load @4x, as 1728 × 1117 does with its 78.5.
@@ -274,7 +278,7 @@ Decoded MiB per (world, zone, density). Surface counts one lander stage, with al
   - The debug tile `?tile=82` at 1440 × 900 @2 loads the same pages: 39.09 to 49.77 MiB.
 - **@3x zone pages on a DPR 3 phone with a tile over 48 CSS px.**
   - `?tile=56` at 393 × 851 @3 loads the @3x core hero, core and lander pages at boot. The budget guard keeps the surface's other page (sky body, refuge and relay) at @2x: 19.79 MiB against the 20 MiB boot budget, where it would be 20.69 without the guard.
-  - From band B on, every page is @3x: 31.36 MiB at W01 row 18, 24.57 in the cave and 30.83 at W02 row 26, against the 40 MiB active budget.
+  - Below the dock every other page is @3x. The guard's surface step lasts for the W01 session, so W01 row 18 holds 30.46 MiB (31.36 before the review fixes, when the page stepped back up); the cave holds 24.57 and W02 row 26 (another world, so no step) 30.83, against the 40 MiB active budget.
 
 ![1728 × 1117 @2 at boot: pages @3x/@4x](f1/desktop-1728-boot.png)
 
@@ -282,18 +286,19 @@ Decoded MiB per (world, zone, density). Surface counts one lander stage, with al
 
 ![393 × 851 @3 with ?tile=56 at boot: pages @2x/@3x, guard surface @2x](f1/phone-tile56-boot.png)
 
-![393 × 851 @3 with ?tile=56 at W01 row 18: pages @3x](f1/phone-tile56-W01.png)
+![393 × 851 @3 with ?tile=56 at W01 row 18: pages @3x, guard surface @2x](f1/phone-tile56-W01.png)
 
-**The budget guard** (decisions.md D1, "Budget guard"):
-- **What it does.** When the planned pages would take the projected resident bytes over the form's §7 budget, non-hero zones step down to @2x, the largest saving first, until they fit or none is left. Hero pages keep their D1 density.
-- **Where the form comes from.** F1's render tier, never the pointer: High has the desktop's 64 MiB; Medium and Low have the phone's 20 MiB in band A and 40 MiB below it.
+**The budget guard** (decisions.md D1, "Budget guard"; its budget and ratchet come from the review fixes):
+- **What it does.** When the planned pages would take the projected resident bytes over the form's §7 budget, non-hero zones step down to @2x, the largest saving first, until they fit or none is left. Hero pages keep their D1 density. A form over its budget even then keeps those fewest bytes, and the readout adds `over §7`.
+- **A ratchet.** A step lasts for the session in that world, render tier and D1 density, so densities never step back up mid-play: a descent and a climb load each page at most once per density.
+- **Which budget.** The form is F1's render tier as F1 decides it (High needs a fine pointer). High has the desktop's 64 MiB. Medium and Low have the phone's 20 MiB at boot, which is at the dock until the rig first leaves it (render-memory's boot sample), and 40 MiB everywhere else, the dock included once the rig has left it.
 - **What the projection counts:**
   - the retained terrain, sized exactly as `render/terrain.ts` sizes it (now one pure function, `layout.ts retainedTerrainGrid`);
   - the light map, plus 0.25 MiB for small canvases;
   - the band pages (5.06 MiB per band) and the sky and ridges (3.5 MiB) for the rig's position;
   - the planned pages.
 - **When it decides.** The same way in `preload()` and in play, so boot does not load one density and then swap.
-- **Where it acts in the measured forms.** Only on the phone with `?tile=56` at boot, on the Canvas desktop (the Low tier takes the phone's budget, so in band A its core and surface non-hero pages stay @2x: 33.28 MiB against WebGL's 34.89), and on coarse tablets.
+- **Where it acts in the measured forms.** Not on the CI forms (desktop 1440 × 900 @2, phone 393 × 851 @3). On the phone with `?tile=56` it holds the surface's other page at @2x from boot for the W01 session (19.79 MiB at boot, 30.46 at W01 row 18). The Canvas desktop (Low tier, so the phone's budgets) and a coarse 1366 × 1024 @2 tablet (Medium) are over those budgets even at @2x, because of their retained terrain (19.5 and 17.5 MiB), so every non-hero zone stays @2x for the session: the Canvas desktop holds 33.28 MiB at boot and 43.64 at W01 row 18 (WebGL's 34.89 and 45.57), the tablet 30.93 and 41.29, both with `over §7` in the readout at boot and in band B.
 
 **`?tile=N`** is debug only, part of `renderDebugOptions` next to `?backing=`. It sets the base tile in CSS px (32–160) in place of `campaignTileSize()`, for the scene, the retained terrain and the page choice. It previews D1's option B before T11. Without it nothing changes.
 
@@ -316,7 +321,7 @@ Decoded MiB per (world, zone, density). Surface counts one lander stage, with al
 - W01 row 43: band C, the cave zone;
 - W02 row 26: band B.
 
-Both runs were repeated on the final tree for this commit. Every value equals the runtime stage's, byte for byte. MiB = decoded RGBA at 4 bytes per pixel. `resident-before.json` and `resident-after.json` hold every sample, with each texture's key, bytes, group, zone and density. `resident-table.py` prints the per-form tables below from them. `f1/` holds the 20 readouts.
+Both runs were repeated on the evidence commit, every value equal to the runtime stage's. The "after" run was repeated again on the review-fix tree: 19 of the 20 samples are byte for byte the same, and `phone-tile56` at W01 row 18 holds 30.46 MiB instead of 31.36, because the guard's surface step from boot now lasts for the session ("Review fixes"); its readout, and the cave's, now end in `guard surface @2x`. MiB = decoded RGBA at 4 bytes per pixel. `resident-before.json` and `resident-after.json` hold every sample, with each texture's key, bytes, group, zone and density. `resident-table.py` prints the per-form tables below from them. `f1/` holds the 20 readouts.
 
 | form | device px per tile → pages | boot (surface) | W01 row 18 | W01 row 43 (cave) | W02 row 26 | §7 gate |
 |---|---|---|---|---|---|---|
@@ -327,7 +332,7 @@ Both runs were repeated on the final tree for this commit. Every value equals th
 | desktop 1728 × 1117 @2, before | quality 3 | 55.87 | 66.00 ✗ | 66.00 ✗ | 73.75 ✗ | 64 |
 | desktop 1728 × 1117 @2, after | 157.1 → hero @4x, rest @3x | **47.76** | **58.43** | **50.56** | **58.42** | 64 |
 | desktop 1440 × 900 @2, `?tile=82`, after | 164 → hero @4x, rest @3x | **39.09** | **49.77** | **41.89** | **49.75** | 64 |
-| phone 393 × 851 @3, `?tile=56`, after | 112 → @3x; at boot the guard keeps the surface's other page at @2x | **19.79** (20.69 without the guard) | **31.36** | **24.57** | **30.83** | 20 / 40 |
+| phone 393 × 851 @3, `?tile=56`, after | 112 → @3x; the guard keeps the surface's other page at @2x from boot for the W01 session | **19.79** (20.69 without the guard) | **30.46** | **24.57** | **30.83** | 20 / 40 |
 
 ### By group
 
@@ -404,16 +409,16 @@ The "pages after" row is `data-atlas-density` (the other pages' density / the he
 
 | group | boot (surface) | W01 row 18 (shaft) | W01 row 43 (cave) | W02 row 26 (shaft) |
 |---|---|---|---|---|
-| atlas pages | — → **5.53** | — → **6.98** | — → **3.69** | — → **6.45** |
-| atlas by world, zone and density | — → W01 core 3.00 @3x; W01 shaft 0.14 @3x; W01 surface 0.84 @2x + 1.55 @3x | — → W01 cave 0.55 @3x; W01 core 3.00 @3x; W01 shaft 0.14 @3x; W01 surface 3.30 @3x | — → W01 cave 0.55 @3x; W01 core 3.00 @3x; W01 shaft 0.14 @3x | — → W01 cave 0.55 @3x; W01 core 3.00 @3x; W02 cave 0.06 @3x; W02 core 0.97 @3x; W02 surface 1.88 @3x |
+| atlas pages | — → **5.53** | — → **6.08** | — → **3.69** | — → **6.45** |
+| atlas by world, zone and density | — → W01 core 3.00 @3x; W01 shaft 0.14 @3x; W01 surface 0.84 @2x + 1.55 @3x | — → W01 cave 0.55 @3x; W01 core 3.00 @3x; W01 shaft 0.14 @3x; W01 surface 0.84 @2x + 1.55 @3x | — → W01 cave 0.55 @3x; W01 core 3.00 @3x; W01 shaft 0.14 @3x | — → W01 cave 0.55 @3x; W01 core 3.00 @3x; W02 cave 0.06 @3x; W02 core 0.97 @3x; W02 surface 1.88 @3x |
 | band pages | — → **5.06** | — → **15.19** | — → **15.19** | — → **15.19** |
 | sky and ridges | — → **3.50** | — → **3.50** | — → **0.00** | — → **3.50** |
 | layers (terrain, light map, T1-lite) | — → **5.66** | — → **5.66** | — → **5.66** | — → **5.66** |
 | other | — → **0.03** | — → **0.03** | — → **0.03** | — → **0.03** |
-| **total** | — → **19.79** | — → **31.36** | — → **24.57** | — → **30.83** |
+| **total** | — → **19.79** | — → **30.46** | — → **24.57** | — → **30.83** |
 | §7 limit (MiB) | 20 | 40 | 40 | 40 |
 | pass | — → pass | — → pass | — → pass | — → pass |
-| pages after (data-atlas-density: other / hero; guard) | @2/3 · guard surface | @3 | @3 | @3 |
+| pages after (data-atlas-density: other / hero; guard) | @2/3 · guard surface | @3 · guard surface | @3 · guard surface | @3 |
 
 **Where the savings come from.** The desktop atlases fall from 17.00 MiB (24.75 in W02) to 3.69–6.98, for four reasons:
 - the @2x page is no longer resident beside the @3x one;
@@ -431,7 +436,7 @@ The 1728 × 1117 desktop went over 64 MiB at three of four stages before. It now
 - forms: `desktop`, `phone`, `desktop-1728`, `desktop-tile82`, `phone-tile56`;
 - stages: `boot`, `W01`, `cave`, `W02`.
 
-The readout's line is `tex <total> MiB · <world> <zone> (atlas · bands · bg · layers · other) · pages @<other>/@<hero>[ · guard <zones> @2x]`. Its zone is where the rig is: surface (band A, row ≤ 1), shaft (bands A–B) or cave (bands C–D). The surface and cave zones on the two CI forms:
+The readout's line is `tex <total> MiB · <world> <zone> (atlas · bands · bg · layers · other) · pages @<other>/@<hero>[ · guard <zones> @2x][ · over §7]`. `phone-tile56-W01` and `phone-tile56-cave` were refreshed by the review fixes; the other 18 are the evidence commit's. Its zone is where the rig is: surface (band A, row ≤ 1), shaft (bands A–B) or cave (bands C–D). The surface and cave zones on the two CI forms:
 
 ![desktop 1440 × 900 @2, boot (surface)](f1/desktop-boot.png)
 
@@ -749,19 +754,62 @@ python3 docs/qa/t13b-asset-pipeline/compare-renders.py 1a0b5db docs/qa/t13b-asse
 python3 scripts/art-unchanged-pngs.py
 ```
 
+## Review fixes
+
+Three reviews (a CI replica, a code review, a runtime and memory review) ran on `aadf312`. This commit fixes what they found, or says why not. The probes named here (`descent.mjs`, `bytes.mjs`, `jump.mjs`, `sky-zero.mjs`) are the runtime reviewer's scripts, kept outside the repo, rerun against a private copy of this tree (Chrome 156, port 5271) with only their paths changed and `bytes.mjs` taught to take `RENDERER` and print the densities and the guard.
+
+| finding (severity, reviewer) | what changed | evidence |
+|---|---|---|
+| The packer did not keep an `-emissive` sibling on its base's page (major, code). `shelf_pack` sorts by trimmed height, so the lamp-only sibling falls to the last shelves, and the cost `(bytes, pages, width)` let a group split whenever two pages cost fewer bytes. The first group to spill would have put `mission-beacon-emissive` on another page than `mission-beacon`, and `check-campaign-assets` would have failed the build | `pack-campaign-atlas.py`: the cost is now `(pages, bytes, width)`, so a group never splits while one 2048 × 1024 page holds it. A group that spills is packed again with each base and its siblings as one unit that never straddles a page break. The packer proves that path on a synthetic group before every zones run and stops if any sibling lands away from its base. A latent bug went with it: a page closed on overflow was measured from the next shelf, so a spilled page could round up 64 px past the 1024 limit; it is now measured from its last shelf | No group spills today, so the rebuild is byte-identical to `aadf312` (683 files). On the real renders, the best two-page split of `w01-core-hero` at @2x, @3x and @4x (widths 192, 448, 640) put the lamp on the other page in every case before; `pack()` keeps them together. Pages capped at 512 px high, which forces 2 to 4 pages, keep them together too. 300 random groups × 3 widths: no sibling apart, no overlap, no page over its cap |
+| The Canvas renderer stops for good when the surface line lands less than 1 CSS px into the view (major, runtime; predates this item). The sky tile sprite gets a 0-high canvas and `drawImage` throws inside the game loop | `scene.ts`: the sky tile sprite is drawn only when at least 1 px of sky shows (the gradient behind it still draws) | `sky-zero.mjs` at 1440 × 841 @2, Canvas, rig at row 7: before, `scrollY` −0.5, the throw, and the loop stuck at frame 39. After, `scrollY` −0.5 with the sky hidden, no error, and the scan runs on to 860 px |
+| The budget guard took band A as boot, had no hysteresis, and stepped even when that could not meet the budget (minor, code and runtime). The phone's 20 MiB applied from row 2 to row 10 as well, so the default phone sat over it at 21.9 MiB; with `?tile=56` the core, surface and shaft pages swapped density at rows 1↔2 and 10↔11 (15 page loads per descent and climb, a 25.75 MiB peak during a swap); the Canvas desktop swapped at every B/C crossing | `zones.ts` and `art.ts`: the boot budget applies only at the dock until the rig first leaves it (render-memory's boot sample); 40 MiB applies everywhere else. A step lasts for the session in that world, render tier and D1 density (a ratchet), so densities never step back up mid-play. The F1 readout adds `over §7` when the projection is over the budget. decisions.md D1 records the rule | Descent and climb through W01 (`descent.mjs`), zone-page loads: `?tile=56` 15 → 5, Canvas desktop 11 → 5, the phone 5 → 5, with no misses and no waiting frames. `?tile=56`: 19.79 MiB at boot (unchanged), 24.85 in band A below the dock (against 40), 30.46 at W01 row 18 (was 31.36), 24.57 in the cave. The CI forms (`test:render:memory`, `test:feel`) are byte for byte unchanged |
+| The reviewers also suggested leaving D1's densities alone when even every non-hero zone at @2x cannot fit | Not taken. With the ratchet, stepping no longer causes churn, and on the two forms it concerns (both over budget at @2x) leaving them would cost memory: measured, the coarse 1366 × 1024 @2 tablet would hold 32.54 MiB at boot and 43.21 at W01 row 18, above item 1's 31.60 and 41.72, and the Canvas desktop 34.89 and 44.66. The guard keeps the fewest bytes instead: tablet 30.93 and 41.29 (35.40 in the cave), Canvas desktop 33.28 and 43.64 | `bytes.mjs` on both rules, WebGL for the tablet and Canvas for the desktop |
+| A jump drew frames from a neighbour zone before their page loaded (minor, runtime): W02 surface → row 44 drew a frame with `ice-vent` missing | `art.ts`: after a jump (another world, or more than 8 rows from the last drawn frame) the scene also waits for the zones of the bands surely on screen, from `ArtLayout.viewRows` (the rows `campaignCameraY` keeps on screen above and below the rig at any context zoom and look-ahead, from `scene.ts artLayout`). Zones that may be off screen still stream. A first version waited for every page of the window and failed `test:feel`: its 200 m check imports row 19.64 and expects the next frame drawn while band C's cave pages, 10 rows below and off screen, load | `jump.mjs`: frame 0 after the jump now waits (no miss), frame 1 draws the vent from `campaign-w02-cave-3x-0`; 0 frames with a miss on desktop and phone (before: 1). `test:feel` passes |
+| The docs said the guard's form "never" comes from the pointer (minor, code) | Reworded in `zones.ts`, decisions.md D1 and this README: D1's density never reads the pointer; the guard's budget form is F1's tier, which does, as F1 always has, and the terrain projection does too. The coarse-tablet consequence is stated | "Density rule" |
+| The "Pages" table showed the zone-page stage's numbers (minor, code) | Regenerated from the final tree by the new `pages-table.py` (74 frames on the W01 core hero pages, 732.2 KiB of PNG, manifests 20.9 and 12.4 KiB) | "Pages" |
+| The Firefox leg of `surface-render-smoke.mjs` (`firefox.yml`) was not run (minor, code) | No Firefox build is installed here (`/opt/pw-browsers` holds only Chromium), so it could not be run. It first runs in CI's Firefox workflow; the PR body says so | `test:surface:render` on Chromium: 8 cases pass |
+| `test:campaign:browser`'s masked-tail comparison (filed as a blocker by the CI replica) | No change: it is not a defect of this branch. The replica's own check shows that with the stale "/300/" line accepted, both `1a0b5db` and this branch fail at the same next assertion (the export menu's pointer input), in the smoke flow PR #16 rewrites. The script is not in CI | The replica's log |
+| Nits | `residentTextures()` makes one pass over the TextureManager with each key's group classified once (no second walk, filter or regex per key per frame). A source-text test ties `LIGHT_MAP_SCALE` to `lighting.ts`'s `LIGHT_SCALE = 0.25` (lighting.ts stays untouched). `campaign-zones.mjs` names `tests/campaign-zones.test.mjs`. `render-memory.mjs` prints `pages @3x`, `@3x/@4x` and `(guard surface @2x)`. `art.release()` ends harness holds; `hold()` is marked harness-only. The canonical-PNG claim now says every PNG the builds write (`source/test-raster.png` is a hand-made input) | `npx vitest`, `npm run test:render:memory` |
+| Nits not changed | The lock records no `libc` for the resvg packages, so `npm ci` on glibc also fetches the musl binary; resvg loads the gnu one, so output is unaffected (one extra download per CI run). The shaft zone holds only `test-raster` (`?debug=test-raster`), 0.06 / 0.14 MiB resident in bands A–C: dropping it would move every resident number in this evidence for 0.14 MiB, and it goes with the T13a placeholder. The guard's projection has no margin for the moment both densities of a page are resident during a swap: §7's figures are steady state, load-then-swap is the plan's rule (D-d), and with the ratchet a density swap happens only on a resize or tier change; the closest form, 1920 × 1200 @2 (not a CI form), sits at 63.60 of 64 MiB. `frontier-smoke.mjs`'s "Returning uses the asteroid atlas again" now checks a world label only; it fails earlier on both trees ("Schema1 import preserves original packages"), so an added assertion could not run here: when PR #16 rewrites it, it should also check that `data-atlas-pages` holds a `campaign-w01-core` page | — |
+
+**Files also touched by other open PRs, in this commit:** `src/campaign/scene.ts` (a field after `frameMisses`, `residentTextures()`, the readout line, the sky's visibility and `artLayout()`; none at PR #14's import, field, constructor, `destroy` or render-call lines, and `git merge-file` with PR #14's commit `a7cbe26` has no conflict). `src/campaign/render/lighting.ts` is not touched.
+
 ## Checks run
 
-### On the final tree (this commit)
+### On the final tree (review fixes, this commit)
 
-This commit adds evidence, docs and the evidence scripts; the runtime and the assets are those of `2fdae94`. The browser checks ran in a private copy of the tree (Chrome 156, `vite` on port 5241). The "before" runs used `git archive 1a0b5db` on port 5242.
+The browser checks ran in a fresh private copy of the final tree (Chrome 156, `vite` on port 5271).
 
 | check | result |
 |---|---|
-| `npm test -- --maxWorkers=2` | 376 passed, 5 skipped (this commit changes no test) |
+| `npm test -- --maxWorkers=2` | 382 passed, 5 skipped (376 + 6 in `tests/campaign-zones-runtime.test.ts`: the guard at @2x everywhere, the light-map scale, and four `CampaignArt` tests with a stand-in scene) |
+| `npm run format:check` | pass |
+| `npm run build` (the asset checks, `tsc`, `vite build`) | pass. W01 has 100 runtime frames on 23 zone pages and W02 33 on 21, with only the hero set at @4x; all 44 pages pass the pixel checks; band seam 0 |
+| `PYTHON=python3 npm run assets:rebuild` twice, `.cache` deleted before each run (Node 22.23.4, Pillow 12.3.0) | All 683 files under `assets/campaign` identical between the runs and to the working tree (the packer change moves no byte, since no group spills). 14.2 s and 14.4 s |
+| The CI step extracted from `checks.yml`, in a snapshot of the final tree (a private copy committed to a fresh repository), with Node 24.22.2 and `python3` from a venv holding Pillow 12.0.0 and numpy 2.5.3 | Exit 0 in 15 s; `git status --porcelain --untracked-files=all` empty |
+| `npm run test:render` | pass, 30 s. Hidden geology identical to solid rock on Canvas and WebGL in W01 and W02; 3 WebGL draws; textures 30.99 / 30.81 MiB |
+| `IMPROVEMENT_CHECKS=behavior,visual,fog,harness npm run test:improvements` (CI's set) | pass, 356 s: the behaviour checks, the fog check ("Both worlds hide caves identically to solid rock"), the visual captures and the 8 §9 harness fixtures (the T13a placeholder drawn) |
+| `npm run test:render:memory` | pass, byte for byte as before: desktop 34.89 / 45.57 / 38.77 / 45.03 MiB, phone 16.84 / 27.19 / 22.10 / 27.01 MiB |
+| `npm run test:feel` | pass, 68 s: touch boot 16.84 (portrait), 16.83 (landscape), 14.96 MiB (small); desktop 34.89 on WebGL and 33.28 on Canvas, as on `aadf312` |
+| `test:hud:surface`, `test:campaign:storage`, `test:audio`, `test:plan-ui`, `test:camera`, `test:opening:browser` (desktop and portrait) | pass (the rest of CI's browser block) |
+| `npm run test:surface:render` (`art.hold()` and `art.owner()`) | pass, 8 cases on Chromium, with the same mean errors as on `aadf312`. The Firefox leg (`firefox.yml`) could not run: no Firefox build is installed here |
+| `npm run test:campaign:browser` (not in CI) | 3 passes, then the known stale "/300/" line, as on `1a0b5db` |
+| `npm run test:frontier`, `npm run test:poi` (not in CI) | Not rerun: their scripts and failures are unchanged (identical on `1a0b5db`; PR #16 rewrites both) |
+| The runtime reviewer's probes | "Review fixes": descents (page loads, misses, waiting frames), the jump to the vent, the Canvas sky at 0.5 px, resident bytes on the tablet, the Canvas desktop and `?tile=56`, and the F1 line (`over §7` on the tablet and the Canvas desktop at boot) |
+| `zone-runtime.mjs resident` (5 forms × 4 stages) | 19 samples byte for byte as before; `phone-tile56` W01 row 18 30.46 MiB (was 31.36). No `image()` miss |
+| Three-way merge of the final `scene.ts` with PR #14's `a7cbe26` (`git merge-file`) | 0 conflicts |
+
+### On the evidence commit (`aadf312`)
+
+That commit added evidence, docs and the evidence scripts; the runtime and the assets were those of `2fdae94`. The browser checks ran in a private copy of the tree (Chrome 156, `vite` on port 5241). The "before" runs used `git archive 1a0b5db` on port 5242.
+
+| check | result |
+|---|---|
+| `npm test -- --maxWorkers=2` | 376 passed, 5 skipped (that commit changed no test) |
 | `npm run format:check` | pass. The evidence scripts `captures.mjs` and `zone-runtime.mjs` are prettier-clean too |
 | `npm run build` (the asset checks, `tsc`, `vite build`) | pass. W01 has 100 runtime frames on 23 zone pages and W02 33 on 21, all ≤ 2048 × 1024, with only the hero set at @4x. All 44 zone pages at @2x, @3x and @4x pass the pixel checks. Band seam 0 |
 | `PYTHON=python3 npm run assets:rebuild` twice, with `.cache` deleted before each run (Node 22.23.4, Pillow 12.3.0) | All 683 files under `assets/campaign` have identical SHA-256 between the runs and against the committed tree. 14.8 s and 14.4 s |
-| The CI step extracted from `checks.yml`, run on `git archive` of this commit's tree as staged before this table was filled in (it differs only in this README), with Node 24.22.2 and `python3` from a venv holding Pillow 12.0.0 and numpy 2.5.3 (CI's pins) | Exit 0 in 13.6 s. `git status --porcelain --untracked-files=all -- assets/campaign` is empty |
+| The CI step extracted from `checks.yml`, run on `git archive` of that commit's tree as staged before its table was filled in (it differs only in this README), with Node 24.22.2 and `python3` from a venv holding Pillow 12.0.0 and numpy 2.5.3 (CI's pins) | Exit 0 in 13.6 s. `git status --porcelain --untracked-files=all -- assets/campaign` is empty |
 | `npm run test:render` | pass, 32 s. Hidden geology is identical to solid rock on Canvas and WebGL in W01 and W02. 3 WebGL draws, 0 texture uploads per stationary frame, textures 30.99 / 30.81 MiB |
 | `IMPROVEMENT_CHECKS=behavior,visual,fog,harness npm run test:improvements` (CI's set) | pass, 382 s: 6 behaviour checks, the fog check ("Both worlds hide caves identically to solid rock"), 12 visual captures and the 8 §9 harness fixtures |
 | `npm run test:render:memory` | pass. Desktop 34.89 / 45.57 / 38.77 / 45.03 MiB and phone 16.84 / 27.19 / 22.10 / 27.01 MiB (boot / W01 row 18 / W01 row 43 / W02 row 26) |
@@ -770,7 +818,7 @@ This commit adds evidence, docs and the evidence scripts; the runtime and the as
 | `zone-runtime.mjs resident` on both trees | The tables above. None of the 20 "after" samples has an `image()` miss |
 | `captures.mjs` on both trees | The sheets above. `ice-vent` is drawn from the W02 cave pages |
 | `npm run test:campaign:browser` (not in CI) | 3 passes, then the known failure: the stale `campaign-smoke.mjs` "/300/" expectation against "Construction · 200/600 CR". It fails the same way on `1a0b5db`, and PR #16 refreshes it |
-| `npm run test:frontier`, `npm run test:poi` (not in CI) | Not rerun. The runtime stage found that both fail the same way on `1a0b5db`, in scripts PR #16 rewrites, and this commit changes no runtime code |
+| `npm run test:frontier`, `npm run test:poi` (not in CI) | Not rerun. The runtime stage found that both fail the same way on `1a0b5db`, in scripts PR #16 rewrites, and that commit changed no runtime code |
 
 The rasterizer, zone-page, runtime and emissive stages each ran their own checks on their commits; their tables follow.
 
@@ -843,10 +891,10 @@ Browser checks ran in a private copy of the tree (Chrome 156, `vite` on port 523
 | (b) zone atlases: pages per zone (surface, shaft bands, cave bands), ≤ 2048 × 1024, at @3x | met | 44 pages at @2x, @3x and @4x, the largest 832 × 1024. Zones map to bands A–D with stated rows ("Zones and pages"). `check-campaign-assets.mjs` enforces the limit |
 | (b) loaded by zone; resident texture bytes within the §7 budgets | met | Streaming by band ±1. Every measured stage of every form is within §7, the proof forms included ("Resident texture bytes") |
 | (b) bytes before and after in the surface and cave zones, via the F1 debug readout | met | Before/after tables per group. The F1 readouts in `f1/` cover desktop and phone at the surface and in the cave, plus W01 row 18, W02 row 26 and the proof forms |
-| (c) pages chosen by device px per tile, not by pointer type | met | `zones.ts` `devicePxPerTile` / `pageDensity`. The pointer tests are removed, and a unit test proves `matchMedia` is never read |
+| (c) pages chosen by device px per tile, not by pointer type | met | `zones.ts` `devicePxPerTile` / `pageDensity`. The pointer tests are removed, and a unit test proves D1 never reads `matchMedia`. The guard's budget form is F1's render tier, which reads the pointer as F1 always has ("Density rule") |
 | (c) desktop at backing 2 loads @4x for the rig, ore and hero props | partly: by D1's rule | Loads @4x hero pages at backing 2 with tiles of at least 72.1 CSS px: 1728 × 1117 @2 (78.5 CSS px) and `?tile=82`. The 1440 × 900 @2 CI form (65.45 CSS px, 130.9 device px) loads @3x until T11's 80–85 CSS px tile |
-| (c) phones at DPR 3 load @3x | partly: by D1's rule | 393 × 851 @3 has a 44 CSS px tile (88 device px) and loads @2x. With a tile over 48 CSS px (`?tile=56`) it loads the @3x zone pages, within the 20 MiB boot budget thanks to the guard |
-| audit: "a DPR 3 phone with tiles > 48 CSS px loads @3x zone pages" | met (debug tile) | `phone-tile56`: hero @3x at boot, everything @3x from band B (`data-atlas-pages`, `f1/phone-tile56-*.png`) |
+| (c) phones at DPR 3 load @3x | partly: by D1's rule | 393 × 851 @3 has a 44 CSS px tile (88 device px) and loads @2x. With a tile over 48 CSS px (`?tile=56`) it loads the @3x zone pages, within the 20 MiB boot budget thanks to the guard, whose surface step lasts for the session |
+| audit: "a DPR 3 phone with tiles > 48 CSS px loads @3x zone pages" | met (debug tile) | `phone-tile56`: hero @3x at boot, every page but the surface's other page @3x below the dock (`data-atlas-pages`, `f1/phone-tile56-*.png`) |
 | (c) all densities re-render from source (D5) | met | @2x at scale 1, @3x at 1.5, @4x at 2, rendered from the SVGs by resvg. The tread, pivot and mark gates hold at @4x |
 | (d) resvg (`@resvg/resvg-js`, pinned) | met | 2.6.2, exact, in `package.json` and the lock with its 12 platform packages |
 | (d) CI rebuild equals the committed atlas byte for byte, enforced by a CI step that rebuilds and diffs | met (step in place; CI not yet run) | The `verify` step rebuilds and runs `git status --porcelain --untracked-files=all -- assets/campaign`, with an artifact on failure. The exact step passed on `git archive` of the tree under Node 24.22.2 and Pillow 12.0.0, and its failure branch was tested |
@@ -876,6 +924,7 @@ npx vitest run tests/png-canonical.test.mjs tests/campaign-zones.test.mjs \
 # resident texture bytes and the F1 readouts (in each tree; on 1a0b5db use FORMS=desktop,phone,desktop-1728)
 PREVIEW_URL=http://127.0.0.1:P/ node docs/qa/t13b-asset-pipeline/zone-runtime.mjs resident OUT
 python3 docs/qa/t13b-asset-pipeline/resident-table.py BEFORE/results.json AFTER/results.json
+python3 docs/qa/t13b-asset-pipeline/pages-table.py   # the "Pages" tables, from the committed pages
 PREVIEW_URL=http://127.0.0.1:P/ npm run test:render:memory          # the CI gate, with the cave stage
 
 # cross-world frames: no image() misses

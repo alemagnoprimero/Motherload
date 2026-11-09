@@ -19,7 +19,7 @@
  * Shaft or cave is decided by where each frame is actually placed
  * (src/campaign/world.ts placeSites() and placeHazards(), the POI scenery of
  * src/campaign/render/poi-art.ts), at the band rows of
- * src/campaign/world-content.ts; tests/campaign-zones.test.ts regenerates
+ * src/campaign/world-content.ts; tests/campaign-zones.test.mjs regenerates
  * both worlds and checks this table against them.
  *
  * Densities: every page is rendered from source (D5) at @2x (scale 1), @3x
@@ -66,7 +66,7 @@ export const DOM_ONLY = /^(icon-|world-|ui-(?!mission$))/;
  * docs/art-direction/asset-tracker.md row 15), and scene.ts draws the refuge
  * as refuge-stage-min(2, stage) from stage 1 and the relay as
  * relay-stage-min(2, stage - 1) from stage 2, so neither stage 0 is reached.
- * tests/campaign-zones.test.ts trips if those draws change.
+ * tests/campaign-zones.test.mjs trips if those draws change.
  */
 export const UNUSED = new Set([
   "site-beacon",

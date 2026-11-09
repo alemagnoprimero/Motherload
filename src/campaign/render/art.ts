@@ -12,6 +12,7 @@ import {
   framePages,
   guardDensities,
   memoryBudget,
+  pageWorld,
   planPages,
   siblingPages,
   type GuardResult,
@@ -48,6 +49,11 @@ export interface ArtLayout {
   tier: QualityTier;
   /** Projected bytes of the render layers (terrain, light map, small canvases). */
   layerBytes: number;
+  /**
+   * Rows surely on screen above and below the rig, whatever the context zoom
+   * and look-ahead (scene.ts artLayout); the jump gate waits for their zones.
+   */
+  viewRows?: { above: number; below: number };
 }
 type Resolved = GuardResult & {
   signature: string;
@@ -55,7 +61,10 @@ type Resolved = GuardResult & {
   band: number;
   row: number;
   budget: number;
+  boot: boolean;
 };
+/** A move of more rows than this between drawn frames is a jump (scene.ts fades in). */
+const JUMP_ROWS = 8;
 
 /**
  * Audit T13b: the zone pages (render/zones.ts decides which), the current
@@ -63,6 +72,11 @@ type Resolved = GuardResult & {
  * becomes required loads first; a page it replaces (another density of the
  * same pages) is removed only once the new one is resident, inside update(),
  * before anything is drawn.
+ *
+ * The budget guard's form budget is the boot one only at the dock until the
+ * rig first leaves it, and its steps last for the session in that world, form
+ * and D1 density (a ratchet): densities never step back up mid-play, so a
+ * descent and a climb load each page at most once per density.
  */
 export class CampaignArt {
   private pending = new Set<string>();
@@ -73,6 +87,12 @@ export class CampaignArt {
   private holds: { keys: string[]; resolve: () => void }[] = [];
   private layout: ArtLayout | undefined;
   private resolved: Resolved | undefined;
+  /** At the dock since the scene started: the §7 boot budget applies. */
+  private booting = true;
+  /** The guard's steps so far, for one world, tier and D1 density. */
+  private ratchet = { key: "", zones: [] as string[] };
+  /** Where the scene last drew; a move of more than JUMP_ROWS from it is a jump. */
+  private drawnAt: { world: WorldId; row: number } | undefined;
   constructor(private scene: Phaser.Scene) {}
   preload(campaign: Campaign, layout: ArtLayout) {
     this.layout = layout;
@@ -105,38 +125,62 @@ export class CampaignArt {
     const layout = this.layout;
     if (!layout) return undefined;
     const at = this.position(campaign);
-    const signature = [
-      at.world,
-      at.band,
-      at.neighbours,
-      at.w02,
-      at.stage,
-      layout.pxPerTile,
-      layout.tier,
-      layout.layerBytes,
-    ].join(":");
-    if (this.resolved?.signature === signature) {
+    if (at.neighbours) this.booting = false;
+    const boot = this.booting;
+    const base = d1Densities(layout.pxPerTile);
+    const ratchetKey = [at.world, layout.tier, base.hero, base.plain.core].join(
+      ":",
+    );
+    if (this.ratchet.key !== ratchetKey)
+      this.ratchet = { key: ratchetKey, zones: [] };
+    const carried = this.ratchet.zones;
+    const signatureOf = (zones: readonly string[]) =>
+      [
+        at.world,
+        at.band,
+        at.neighbours,
+        at.w02,
+        at.stage,
+        layout.pxPerTile,
+        layout.tier,
+        layout.layerBytes,
+        boot,
+        zones.join(","),
+      ].join(":");
+    if (this.resolved?.signature === signatureOf(carried)) {
       this.resolved.row = at.row;
       return this.resolved;
     }
     const plan = (densities: GuardResult["densities"]) =>
       planPages({ ...at, densities });
-    const base = d1Densities(layout.pxPerTile),
-      first = plan(base);
+    // Zones the guard stepped earlier stay at @2x (the ratchet).
+    const start: GuardResult["densities"] = {
+      hero: base.hero,
+      plain: {
+        ...base.plain,
+        ...Object.fromEntries(carried.map((zone) => [zone, 2 as const])),
+      },
+    };
+    const first = plan(start);
     // Everything but the atlas pages, projected for this position: render
     // layers, the band pages art.ts streams (the same window) and the sky.
     const fixed =
       layout.layerBytes +
       first.window.length * BAND_BYTES +
       (first.backgrounds ? BACKGROUND_BYTES : 0);
-    const budget = memoryBudget(layout.tier, at.band === 0);
+    const budget = memoryBudget(layout.tier, boot);
+    const guard = guardDensities(start, budget, fixed, plan);
+    this.ratchet.zones = [...carried, ...guard.stepped];
     this.resolved = {
-      ...guardDensities(base, budget, fixed, plan),
-      signature,
+      ...guard,
+      stepped: this.ratchet.zones,
+      // Starting from the new ratchet gives this same result.
+      signature: signatureOf(this.ratchet.zones),
       world: at.world,
       band: at.band,
       row: at.row,
       budget,
+      boot,
     };
     return this.resolved;
   }
@@ -229,18 +273,61 @@ export class CampaignArt {
   /**
    * The scene draws once the cores and the zones of the rig's own band are
    * resident (at any density while a swap loads), with the sky and ridges in
-   * band A. Neighbour bands and the next lander stage stream ahead.
+   * band A; neighbour bands and the next lander stage stream ahead, so
+   * continuous play never waits on them. After a jump (another world, or more
+   * than JUMP_ROWS rows from where the scene last drew: an import, travel, a
+   * respawn, where the scene fades in) it also waits for the zones of the
+   * bands surely on screen (ArtLayout.viewRows), so a neighbour zone's frames
+   * in view never pop in; zones that may be off screen still stream.
    */
   ready(campaign: Campaign) {
     const resolved = this.resolve(campaign);
     if (!resolved) return false;
-    if (!resolved.plan.gate.every((page) => this.drawable(page))) return false;
-    return (
-      !resolved.plan.backgroundsGate ||
-      backgroundKeys(resolved.world).every((key) =>
+    const jump =
+      this.drawnAt !== undefined &&
+      (this.drawnAt.world !== resolved.world ||
+        Math.abs(resolved.row - this.drawnAt.row) > JUMP_ROWS);
+    const plan = resolved.plan;
+    let gate = plan.gate,
+      backgrounds = plan.backgroundsGate;
+    if (jump) {
+      const visible = this.visibleBands(resolved.world, resolved.row);
+      const stage = this.position(campaign).stage;
+      gate = plan.pages.filter((page) => {
+        if (plan.gate.includes(page)) return true;
+        const zone =
+          ZONE_MANIFESTS[pageWorld(page.key) ?? "W01"].zones[page.zone];
+        return (
+          Boolean(zone?.bands.some((band) => visible.includes(band))) &&
+          (page.stage === undefined || page.stage === stage)
+        );
+      });
+      backgrounds ||= plan.backgrounds && visible.includes("A");
+    }
+    if (!gate.every((page) => this.drawable(page))) return false;
+    if (
+      backgrounds &&
+      !backgroundKeys(resolved.world).every((key) =>
         this.scene.textures.exists(key),
       )
-    );
+    )
+      return false;
+    // The scene draws this frame from here.
+    this.drawnAt = { world: resolved.world, row: resolved.row };
+    return true;
+  }
+  /** Bands A..D of the rows surely on screen around the rig at `row`. */
+  private visibleBands(world: WorldId, row: number) {
+    const rows = this.layout?.viewRows ?? { above: 0, below: 0 };
+    const bands = RENDER_BANDS[world] ?? RENDER_BANDS.W01!;
+    const index = (at: number) =>
+      Math.max(
+        0,
+        bands.findIndex((band) => band.id === renderBand(world, at).id),
+      );
+    const first = index(Math.max(0, row - rows.above)),
+      last = index(row + rows.below);
+    return ["A", "B", "C", "D"].slice(first, last + 1);
   }
   /** The core pages of every atlas in play are resident (create()). */
   coreReady(campaign: Campaign) {
@@ -345,13 +432,16 @@ export class CampaignArt {
           stepped: resolved.stepped,
           projected: resolved.projected,
           budget: resolved.budget,
+          boot: resolved.boot,
+          fits: resolved.fits,
         }
       : undefined;
   }
   /**
-   * Harness hook (surface-render-smoke): keeps the pages that draw `frames`
-   * in `currentWorld` resident, at the planned densities, and resolves once
-   * they are, so a check can draw frames the plan does not need right now.
+   * Harness hook (surface-render-smoke), never called by the game: keeps the
+   * pages that draw `frames` in `currentWorld` resident, at the planned
+   * densities, until release(), and resolves once they are, so a check can
+   * draw frames the plan does not need right now.
    */
   hold(frames: readonly string[], currentWorld: string) {
     const densities = this.resolved?.densities,
@@ -372,6 +462,10 @@ export class CampaignArt {
       this.holds.push({ keys, resolve });
       this.settleHolds();
     });
+  }
+  /** Harness hook: ends every hold(); the plan decides those pages again. */
+  release() {
+    this.held.clear();
   }
   private settleHolds() {
     this.holds = this.holds.filter((hold) => {
