@@ -156,7 +156,10 @@ function body(frame) {
     "undercarriage",
     path("M23 79 L32 70 H94 L107 80 L102 97 H29 Z", "#344853", INK, 5),
   );
-  s += layer("track", rect(21, 79, 85, 23, "#1c2c34", 11, INK, 5));
+  // The track's outer edge sits on rigTreadBaseline (100 after the -5 shift):
+  // 79 + 23.5 + 5/2 = 105. At 23 it stopped half a unit short, on a pixel
+  // boundary at @4x, where the tread-baseline check read 199 for 200 (T13b).
+  s += layer("track", rect(21, 79, 85, 23.5, "#1c2c34", 11, INK, 5));
   for (const x of [34, 51, 68, 86, 96])
     s +=
       circle(x, 91, x === 34 || x === 96 ? 8 : 6, "#65767c", INK, 3) +

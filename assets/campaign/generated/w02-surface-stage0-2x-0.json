@@ -1,0 +1,53 @@
+{
+  "frames": {
+    "dock-stage-0": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 379,
+        "h": 171
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 110,
+        "w": 379,
+        "h": 171
+      },
+      "sourceSize": {
+        "w": 384,
+        "h": 288
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 192,
+        "h": 144
+      }
+    }
+  },
+  "meta": {
+    "app": "Deep Frontier original layered SVG artwork",
+    "version": "0.3",
+    "image": "w02-surface-stage0-2x-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 384,
+      "h": 192
+    },
+    "scale": "2",
+    "logicalTile": 48,
+    "rigPivot": [
+      64.0,
+      64.0
+    ],
+    "rigTreadBaseline": 100.0,
+    "framePadding": 2,
+    "zone": "surface",
+    "hero": true,
+    "stage": 0
+  }
+}

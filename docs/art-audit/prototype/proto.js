@@ -1,7 +1,8 @@
 'use strict';
 /* Deep Frontier technique prototype.
  * Render-only. Reads the real W01 world (assets/fresh-w01.json) and the game's own
- * atlas (assets/w01-atlas-3x-0.*). Imports no game code: the few game rules it needs
+ * @3x zone pages (assets/w01-zones.json and the pages it lists; audit T13b replaced
+ * the single w01-atlas-3x-0 page). Imports no game code: the few game rules it needs
  * (discovery ray test, camera framing, tile size) are re-implemented and cited.
  * Everything marked PROTOTYPE ART is a placeholder drawn here, not production art.
  */
@@ -69,13 +70,18 @@
 
   // ------------------------------------------------------------------ data
   const loadImg = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
-  const [save, atlasJson, atlas, wreckImg, beaconImg] = await Promise.all([
+  const [save, zones, wreckImg, beaconImg] = await Promise.all([
     fetch('assets/fresh-w01.json').then((r) => r.json()),
-    fetch('assets/w01-atlas-3x-0.json').then((r) => r.json()),
-    loadImg('assets/w01-atlas-3x-0.png'),
+    fetch('assets/w01-zones.json').then((r) => r.json()),
     loadImg('assets/proto-wreck.svg'),
     loadImg('assets/proto-beacon.svg'),
   ]);
+  // Every W01 frame at @3x: name -> { f (its atlas entry), img (its page) }.
+  const atlasFrames = {};
+  await Promise.all(zones.pages.filter((p) => p.density === 3).map(async (p) => {
+    const [data, img] = await Promise.all([fetch('assets/' + p.data).then((r) => r.json()), loadImg('assets/' + p.image)]);
+    for (const [name, f] of Object.entries(data.frames)) atlasFrames[name] = { f, img };
+  }));
   const world = save.state.worlds.W01;
   const W = world.width, R = world.rows;
   const wrapX = (x) => ((x % W) + W) % W;
@@ -502,10 +508,11 @@
 
   // ------------------------------------------------------------------ atlas helpers
   function drawFrame(ctx, name, cx, cy, w, h, originY = 0.5, flip = false) {
-    const f = atlasJson.frames[name]; if (!f) return;
+    if (!atlasFrames[name]) return;
+    const { f, img } = atlasFrames[name];
     const sx = w / f.sourceSize.w, sy = h / f.sourceSize.h;
     ctx.save(); ctx.translate(cx, cy - h * originY + h * 0.5); if (flip) ctx.scale(-1, 1);
-    ctx.drawImage(atlas, f.frame.x, f.frame.y, f.frame.w, f.frame.h, -w / 2 + f.spriteSourceSize.x * sx, -h / 2 + f.spriteSourceSize.y * sy, f.frame.w * sx, f.frame.h * sy);
+    ctx.drawImage(img, f.frame.x, f.frame.y, f.frame.w, f.frame.h, -w / 2 + f.spriteSourceSize.x * sx, -h / 2 + f.spriteSourceSize.y * sy, f.frame.w * sx, f.frame.h * sy);
     ctx.restore();
   }
   const shadeHex = (c, k) => `rgb(${clamp(c[0] * k, 0, 255) | 0},${clamp(c[1] * k, 0, 255) | 0},${clamp(c[2] * k, 0, 255) | 0})`;
@@ -673,7 +680,7 @@
     sock.addColorStop(0, 'rgba(6,8,10,0.5)'); sock.addColorStop(0.65, 'rgba(6,8,10,0.22)'); sock.addColorStop(1, 'rgba(6,8,10,0)');
     ctx.fillStyle = sock; ctx.beginPath(); ctx.ellipse(x, y + S(0.05), S(0.5), S(0.42), 0, 0, Math.PI * 2); ctx.fill();
     if (n) {
-      const f = atlasJson.frames[`ore-o${n}`], size = S(0.84), sc = size / f.sourceSize.w;
+      const { f } = atlasFrames[`ore-o${n}`], size = S(0.84), sc = size / f.sourceSize.w;
       ctx.save(); ctx.beginPath(); ctx.rect(x - size / 2, y - size / 2, size, size * (126 / 144)); ctx.clip();
       ctx.beginPath(); ctx.rect(x - size, y - size, size * 2, size * 2); ctx.arc(x - size / 2 + 114 * sc, y - size / 2 + 114 * sc, 24 * sc, 0, Math.PI * 2); ctx.clip('evenodd');
       drawFrame(ctx, `ore-o${n}`, x, y, size, size);

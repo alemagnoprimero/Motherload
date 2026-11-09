@@ -6,7 +6,7 @@ import {
   poiArtwork,
   poiSecondaryCaption,
 } from "../src/campaign/render/poi-art";
-import atlas from "../assets/campaign/generated/w01-runtime.json";
+import zones from "../assets/campaign/generated/w01-zones.json";
 
 describe("physical ownership of mission artwork", () => {
   it("keeps the opening ore routes from creating phantom survey wrecks", () => {
@@ -75,7 +75,8 @@ describe("physical ownership of mission artwork", () => {
 
   it("retains real atlas frames for recoverable mission parts and compact records", () => {
     const campaign = new Campaign(createCampaign(23));
-    const frames = atlas.frames as Record<string, unknown>;
+    // On a W01 zone page (audit T13b), the pages the game loads.
+    const frames = zones.frames as Record<string, string>;
     for (const poi of campaignPois(campaign)) {
       const art = poiArtwork(poi);
       if (art.marker) expect(frames[art.marker], poi.id).toBeDefined();

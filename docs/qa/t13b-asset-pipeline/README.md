@@ -1,6 +1,6 @@
 # T13b: asset pipeline
 
-Evidence for audit item T13b (`docs/ART_QUALITY_AUDIT.md` §5.3 row T13b, acceptance "Byte-identical rebuilds"; `docs/art-direction/decisions.md` D1 and D5). The item lands in stages; this folder grows with each. This first stage, part (d) of the item, makes the asset build reproducible. It changes no source and no art.
+Evidence for audit item T13b (`docs/ART_QUALITY_AUDIT.md` §5.3 row T13b, acceptance "Byte-identical rebuilds"; `docs/art-direction/decisions.md` D1 and D5). The item lands in stages; this folder grows with each. The first stage, part (d) of the item, makes the asset build reproducible; it changes no source and no art ("Reproducible rasterizer"). The second builds the zone pages of parts (b) and (c) at @2x, @3x and @4x with their manifests and checks ("Zone pages and densities"); the game switches to them in a later stage.
 
 ## Reproducible rasterizer
 
@@ -147,8 +147,173 @@ PYTHON=python3 npm run assets:rebuild
 (find assets/campaign -type f | LC_ALL=C sort | xargs sha256sum) > /tmp/a.txt
 rm -rf .cache && PYTHON=python3 npm run assets:rebuild
 (find assets/campaign -type f | LC_ALL=C sort | xargs sha256sum) | cmp - /tmp/a.txt
-# the frame comparison with the last Chromium-built tree
+# the frame comparison with the last Chromium-built tree (in a checkout of
+# 84e4005: the zone-page stage removed the @3x full atlases it reads)
 python3 docs/qa/t13b-asset-pipeline/compare-renders.py 1a0b5db docs/qa/t13b-asset-pipeline
 # diagnostic only: which modified PNGs changed pixels, not just bytes
 python3 scripts/art-unchanged-pngs.py
+```
+
+## Zone pages and densities
+
+The build side of parts (b) and (c). Both world builds now write zone pages at @2x, @3x and, for the hero set, @4x, plus one manifest per world. The game still loads the legacy runtime pages (`w01-runtime*`, `w02-runtime*`) until the runtime stage switches it to the manifests and deletes them.
+
+### What changed
+
+- **One classification.** New `scripts/campaign-zones.mjs` sorts every frame of a world's `frames.json`. A frame either stays off the runtime pages or belongs to exactly one zone. Both world builds use it, and so do the asset checks and the tests. The game reads only what the builds write from it, the manifest.
+- **Zones.** The user's "surface, shaft bands, cave bands" map to the game's bands A to D (`src/campaign/world-content.ts`) like this:
+
+  | zone | bands | W01 rows | W02 rows | frames |
+  |---|---|---|---|---|
+  | core | all | 0–59 | 0–99 | always resident. All `rig-*` and `tool-*`, `thrust-*`, `ore-*`, `package-*`, `relic`, `deposit-socket`, `tier-mark-hc-*`, `crack-*`, the `mission-*` POI markers, `ui-mission`, `warning-shelf` and `surface-salvage`, plus every frame drawn in more than one zone: `site-wreck`, `site-survey` and `site-mission` (W01 and W02, shaft and cave rows), `cold-pocket` and `cold-warning` (W02 rows 28–30 and 61–63) |
+  | surface | A (drawn above row 0) | 0–10 | 0–14 | `sky-body`, `dock-stage-0..3`, `refuge-stage-1..2`, `relay-stage-1..2` (W02: `sky-body`, `dock-stage-0..3`) |
+  | shaft | A, B | 0–29 | 0–44 | frames drawn only in the shaft bands: `test-raster` (W01 row 3, `?debug=test-raster`). W02 has none |
+  | cave | C, D | 30–59 | 45–99 | frames drawn only in the cave bands: `site-geode` (W01 53, W02 86), `site-cache` (56, 94), `site-core` (the scenery behind the navigation core, row 59, and the catalyst, row 99), `pressure-seam` (W01 45–59, W02 75–99); W02 `ice-vent` (rows 48–50 and 83–85) |
+
+  Shaft or cave is decided from where each frame is actually placed: `placeSites()` and `placeHazards()` in `src/campaign/world.ts`, the mission rows and the POI scenery of `src/campaign/render/poi-art.ts`. The table in `campaign-zones.mjs` (`PLACEMENT`) is checked against five generated seeds of both worlds by `tests/campaign-zones.test.mjs`. Generator v1 worlds place no sites or hazards. W02 draws W01's core and cave frames (sites, pressure seams, cold pockets, the rig), so the W01 manifest lists `worlds: ["W01", "W02"]` for those zones. W01 draws W02's core frames (`rig-*-2`, `tool-*`) once W02 hardware is owned.
+- **Off the pages.** These frames stay off the runtime pages, matched by exact names:
+  - Terrain, `^(soil|stone|ice|frozen-rock|bedrock)(-edge)?-\d+$`: 59 W01 and 60 W02 frames. The game draws terrain from the band pages.
+  - DOM-only frames, `^(icon-|world-|ui-(?!mission$))`: 18 W01 frames and 1 W02 frame. The HUD draws them from `generated/icons`.
+  - Four W01 frames the game never draws: `site-beacon` and `site-antenna` (no such site kind), `refuge-stage-0` (the refuge is drawn as `refuge-stage-min(2, stage)` from stage 1) and `relay-stage-0` (`relay-stage-min(2, stage − 1)` from stage 2). A test trips if those draws change.
+
+  The legacy runtime filter was a prefix test, `split('-')[0] in ('soil','stone','ice','frozen','bedrock')`, which also dropped **`ice-vent`**. That is why `scene.ts`'s `this.image("ice-vent", …)` always returned false and the W02 vent marker was never drawn. The exact regex keeps it: `ice-vent` is on the W02 cave pages at @2x and @3x, so the W02 vent marker renders once the game reads the zone pages.
+- **Hero set and @4x.** The hero set is all `rig-*`, `thrust-*`, `ore-*`, `package-*`, `relic`, `deposit-socket`, `tier-mark-hc-*`, `mission-beacon` (asset 15), `site-wreck` (asset 14) and the lander `dock-stage-*` (assets 1 and 2), plus the rig's mounted tools `tool-*`. The tools are drawn by `render/rig.ts` as rig layers at the rig's size, so a @3x tool on a @4x rig would look visibly softer. The hero set gets pages at @2x, @3x and @4x. Everything else stops at @3x. The raster-source frame (`test-raster`) never gets a @4x page because it has no @4x master (D5).
+- **Page sets.** Inside a zone, hero frames and the rest go on separate pages. A zone drawn at @4x therefore loads its hero frames once, from the @4x page, and the rest from @3x, with no frame loaded twice. Each lander stage gets pages of its own (`surface-stage<n>`), because `scene.ts` draws one stage at a time (`dock-stage-min(3, completed milestones)`). Only the current stage needs to be resident, which is 0.70 MiB at @3x instead of 3.28 to 4.98 MiB for all four stages.
+- **Densities from source.** Each density is rendered from the SVGs (D5): @2x at scale 1, @3x at 1.5 and @4x at 2. The renders go to `.cache/campaign-renders{,-3x,-4x}` and `.cache/frontier-renders{,-3x,-4x}`. Only the hero set is rendered at @4x. The full and legacy pages are packed from the same renders.
+- **Packing.** `scripts/pack-campaign-atlas.py` keeps its shelf packer, now a function, and adds a `zones` mode. The world build (`scripts/build-zone-pages.mjs`) writes a plan from `pageGroups()`. The packer packs each (zone, page set, density) group into pages of at most 2048 × 1024. It tries every page width that is a multiple of 64 and keeps the one with the fewest decoded bytes (on a tie, fewer pages, then the narrowest width). Several pages per group are allowed. The page JSON keeps the Phaser JSONHash format with `meta.zone`, `meta.hero` and `meta.stage`. Before writing the manifest, the build deletes any zone page that a smaller group no longer has. `w0X-sky-runtime.png` is now written in this mode, so it survives the deletion of the legacy pages.
+- **Manifest** `generated/w01-zones.json` and `w02-zones.json`. Each holds the page limit, the density → scale map, `maxDensity {hero: 4, plain: 3}`, the zones (`bands`, `rows`, `worlds`, frame count), `frames` (frame → zone for every runtime frame), `hero`, `excluded` (by reason) and `pages`. Each page entry is `{key, zone, hero, stage?, density, image, data, width, height, bytes, frames}`. Keys are `campaign-<file stem>`, such as `campaign-w01-core-hero-3x-0`. They keep the `campaign-w01` / `campaign-w02` prefix that `scripts/surface-render-smoke.mjs` needs, and none ends in `-wall` (`art.ts complete()` downsamples those). An `-emissive` sibling always takes its base's zone, page set and page (`zoneOf(emissiveOf(name) ?? name)`).
+- **Removed.** `w01-atlas-3x-0.*`, `w02-atlas-3x-0.*` and `w0X-pages-3x.json` (the full @3x atlases) are removed because nothing in the game read them. Their readers move to the zone pages: the art-audit prototype (`docs/art-audit/prototype/proto.js` and `render.mjs` load the W01 @3x zone pages through `w01-zones.json`; checked by rendering two scenes in a private copy), and `docs/qa/t13a-raster-source/compare-frames.py` skips a page missing on one side. The full @2x atlases (`w01-atlas`, `w02-atlas`) stay, because the checks read them. The legacy runtime pages stay until the runtime switch.
+- **Tread baseline at @4x.** `check-campaign-assets` requires the lowest opaque row of every `rig-body-*` frame to end at the tread baseline, 100 × scale / 2. The track's outer edge was at 99.5 units (`rect` y 79, height 23, stroke 5, shifted −5), which lands on a pixel boundary at @4x: the check read 199 for 200. At @2x and @3x it passed only because the last row was half or a quarter covered. The fix is at the source. In `create-w01-sources.mjs` the track is 23.5 units tall, so its outer edge sits exactly on the baseline at every density, as the simulator assumes (`rigTreadBaseline 100`, `bodyHalfY 0.36`). This is the only art change in this stage. `compare-frames.py 84e4005` reports `rig-body-0..7` and no other frame: 163–164 px changed at @2x (max 128, the bottom row going from half to full alpha and the lower corner arcs), 303–308 px at @3x (max 192), and at @4x one more full row. The tread grows by half a unit (0.5 px at @2x, 0.65 device px at 1440 × 900 @2) and now meets the floor. `tread-baseline.png` shows `rig-body-0`'s tread corner at @2x, @3x and @4x (rows), before and after (columns), magnified six times over the floor line (grey). The check keeps its threshold at every density.
+
+### Pages
+
+Decoded MiB = width × height × 4. PNG = committed canonical bytes.
+
+| page (key `campaign-<page>`) | zone | set | density | size | decoded MiB | PNG KiB | frames |
+|---|---|---|---|---|---|---|---|
+| `w01-core-hero-2x-0` | core | hero | @2x | 256 × 960 | 0.938 | 55.1 | 73 |
+| `w01-core-hero-3x-0` | core | hero | @3x | 512 × 960 | 1.875 | 82.4 | 73 |
+| `w01-core-hero-4x-0` | core | hero | @4x | 832 × 1024 | 3.250 | 106.7 | 73 |
+| `w01-core-2x-0` | core | rest | @2x | 512 × 256 | 0.500 | 19.3 | 12 |
+| `w01-core-3x-0` | core | rest | @3x | 768 × 384 | 1.125 | 30.4 | 12 |
+| `w01-surface-stage0-2x-0` | surface | lander stage 0 | @2x | 384 × 256 | 0.375 | 4.4 | 1 |
+| `w01-surface-stage0-3x-0` | surface | lander stage 0 | @3x | 576 × 320 | 0.703 | 7.6 | 1 |
+| `w01-surface-stage0-4x-0` | surface | lander stage 0 | @4x | 768 × 448 | 1.313 | 9.5 | 1 |
+| `w01-surface-stage1-2x-0` | surface | lander stage 1 | @2x | 384 × 256 | 0.375 | 5.3 | 1 |
+| `w01-surface-stage1-3x-0` | surface | lander stage 1 | @3x | 576 × 384 | 0.844 | 8.7 | 1 |
+| `w01-surface-stage1-4x-0` | surface | lander stage 1 | @4x | 768 × 448 | 1.313 | 11.2 | 1 |
+| `w01-surface-stage2-2x-0` | surface | lander stage 2 | @2x | 384 × 256 | 0.375 | 6.8 | 1 |
+| `w01-surface-stage2-3x-0` | surface | lander stage 2 | @3x | 576 × 384 | 0.844 | 11.0 | 1 |
+| `w01-surface-stage2-4x-0` | surface | lander stage 2 | @4x | 768 × 448 | 1.313 | 14.2 | 1 |
+| `w01-surface-stage3-2x-0` | surface | lander stage 3 | @2x | 384 × 256 | 0.375 | 7.9 | 1 |
+| `w01-surface-stage3-3x-0` | surface | lander stage 3 | @3x | 576 × 384 | 0.844 | 12.8 | 1 |
+| `w01-surface-stage3-4x-0` | surface | lander stage 3 | @4x | 768 × 512 | 1.500 | 16.4 | 1 |
+| `w01-surface-2x-0` | surface | rest | @2x | 1152 × 192 | 0.844 | 13.9 | 5 |
+| `w01-surface-3x-0` | surface | rest | @3x | 896 × 512 | 1.750 | 21.8 | 5 |
+| `w01-shaft-2x-0` | shaft | rest | @2x | 128 × 128 | 0.063 | 7.4 | 1 |
+| `w01-shaft-3x-0` | shaft | rest | @3x | 192 × 192 | 0.141 | 2.7 | 1 |
+| `w01-cave-2x-0` | cave | rest | @2x | 192 × 320 | 0.234 | 7.7 | 4 |
+| `w01-cave-3x-0` | cave | rest | @3x | 320 × 448 | 0.547 | 11.3 | 4 |
+| `w02-core-hero-2x-0` | core | hero | @2x | 192 × 512 | 0.375 | 27.3 | 23 |
+| `w02-core-hero-3x-0` | core | hero | @3x | 384 × 512 | 0.750 | 41.7 | 23 |
+| `w02-core-hero-4x-0` | core | hero | @4x | 384 × 896 | 1.313 | 49.5 | 23 |
+| `w02-core-2x-0` | core | rest | @2x | 128 × 256 | 0.125 | 7.8 | 4 |
+| `w02-core-3x-0` | core | rest | @3x | 448 × 128 | 0.219 | 12.0 | 4 |
+| `w02-surface-stage0-2x-0` | surface | lander stage 0 | @2x | 384 × 192 | 0.281 | 4.7 | 1 |
+| `w02-surface-stage0-3x-0` | surface | lander stage 0 | @3x | 576 × 320 | 0.703 | 8.5 | 1 |
+| `w02-surface-stage0-4x-0` | surface | lander stage 0 | @4x | 768 × 384 | 1.125 | 11.0 | 1 |
+| `w02-surface-stage1-2x-0` | surface | lander stage 1 | @2x | 384 × 256 | 0.375 | 4.2 | 1 |
+| `w02-surface-stage1-3x-0` | surface | lander stage 1 | @3x | 576 × 320 | 0.703 | 6.5 | 1 |
+| `w02-surface-stage1-4x-0` | surface | lander stage 1 | @4x | 768 × 448 | 1.313 | 8.8 | 1 |
+| `w02-surface-stage2-2x-0` | surface | lander stage 2 | @2x | 384 × 256 | 0.375 | 6.0 | 1 |
+| `w02-surface-stage2-3x-0` | surface | lander stage 2 | @3x | 576 × 320 | 0.703 | 9.6 | 1 |
+| `w02-surface-stage2-4x-0` | surface | lander stage 2 | @4x | 768 × 448 | 1.313 | 12.9 | 1 |
+| `w02-surface-stage3-2x-0` | surface | lander stage 3 | @2x | 384 × 256 | 0.375 | 7.5 | 1 |
+| `w02-surface-stage3-3x-0` | surface | lander stage 3 | @3x | 576 × 320 | 0.703 | 11.7 | 1 |
+| `w02-surface-stage3-4x-0` | surface | lander stage 3 | @4x | 768 × 448 | 1.313 | 15.6 | 1 |
+| `w02-surface-2x-0` | surface | rest | @2x | 256 × 256 | 0.250 | 3.4 | 1 |
+| `w02-surface-3x-0` | surface | rest | @3x | 384 × 320 | 0.469 | 4.8 | 1 |
+| `w02-cave-2x-0` | cave | rest | @2x | 128 × 128 | 0.063 | 1.4 | 1 |
+| `w02-cave-3x-0` | cave | rest | @3x | 128 × 128 | 0.063 | 1.9 | 1 |
+
+44 pages, 731.6 KiB of PNG. The two manifests are 21.2 KiB (W01) and 12.7 KiB (W02).
+
+Decoded MiB per (world, zone, density). Surface counts one lander stage, with all four in brackets. At @4x a zone's non-hero frames come from @3x, which this table does not add.
+
+| world | zone | @2x | @3x | @4x (hero pages only) |
+|---|---|---|---|---|
+| W01 | core | 1.438 | 3.000 | 3.250 |
+| W01 | surface | 1.219 (2.344) | 2.453 (4.984) | 1.313 (5.438) |
+| W01 | shaft | 0.063 | 0.141 | — |
+| W01 | cave | 0.234 | 0.547 | — |
+| W02 | core | 0.500 | 0.969 | 1.313 |
+| W02 | surface | 0.531 (1.656) | 1.172 (3.281) | 1.125 (5.063) |
+| W02 | cave | 0.063 | 0.063 | — |
+
+### Atlas bytes per fixture (projection; the runtime stage measures them)
+
+The density rule the runtime stage implements (D1): pxPerTile = campaignTileSize(css) × the backing ceiling, and density = clamp(ceil(pxPerTile / 48), 2, 4 for hero pages, 3 for the rest). Required pages are core plus the zones of the rig's band ±1: surface goes with band A, and the current lander stage only. Today's figures are the legacy pages the game loads now.
+
+| fixture | px/tile → density | today (legacy atlases) | zone pages |
+|---|---|---|---|
+| desktop 1440 × 900 @2, W01 surface (boot, stage 0; stages 1–3 add 0.14) | 130.9 → @3x | 17.00 (`w01-runtime` 5.50 + `-3x-0` 11.50) | 5.45 (core 3.00, stage 0 0.70, surface rest 1.75) |
+| desktop, W01 row 18 (band B) | @3x | 17.00 | 6.14 (+ shaft 0.14, cave 0.55) |
+| desktop, W01 row 43 (band C) | @3x | 17.00 | 3.69 (core, shaft, cave; surface unloaded) |
+| desktop, W02 row 26 (band B) | @3x | 24.75 | 5.75 (W01 core 3.00 and cave 0.55, W02 core 0.97, surface 1.17, cave 0.06) |
+| desktop with a 82 CSS px tile (D1 B) | 164 → hero @4x, rest @3x | 17.00 | 7.44 at the surface (core hero 3.25 + rest 1.13, stage 0 1.31, surface rest 1.75) |
+| phone 393 × 851 @3 (backing 2), W01 surface | 88 → @2x | 5.50 | 2.66 |
+| phone, W01 row 43 | @2x | 5.50 | 1.73 |
+| phone with a 56 CSS px tile (D1 B) | 112 → @3x | 5.50 | 5.45 at the surface |
+
+The phone @3x path has the same atlas bytes as today's @2x phone, because the lander is per stage and the terrain and DOM frames are gone. The terrain canvas still grows with the tile. Whether boot stays under 20 MiB is measured by the runtime stage.
+
+What the user should know about D1 at today's tile sizes: 1440 × 900 @2 has 130.9 device px per tile and picks @3x, not @4x. D1's 160–170 px assumes T11's 80–85 CSS px tile. 393 × 851 @3 has a 44 CSS px tile × backing 2 = 88 px and picks @2x, while the audit's T13b acceptance line is about phones whose tiles are over 48 CSS px. The @4x pages exist and pass every gate; the runtime stage proves both D1 paths in a browser with a debug tile override.
+
+### Checks and tests
+
+- **`check-campaign-assets.mjs`** gains `checkZonePages(directory, world, frames)`, run for both worlds. It reads headers and JSON only. The manifest must agree with `campaign-zones.mjs` (frame → zone, hero, excluded). Every runtime frame must be on exactly one page for each density it needs, and no excluded frame on any page. Each page must be in its own zone, page set and lander stage, with a `campaign-<world>` key that does not end in `-wall`. Its PNG size must match the manifest and be at most 2048 × 1024, with bytes = w × h × 4, and its JSON must match the manifest's frame list and density. @4x pages may hold only the hero set. An `-emissive` frame must have a base of the same size in the same world, on the same page at every density. No zone page file may sit in `generated/` unlisted. Mutation runs in a private copy failed as they should on each of these: an emissive of the wrong size, a stale page file, a page dropped from the manifest, a manifest zone edited by hand, and a page height of 2048. A stand-in `mission-beacon-emissive` frame (built in that copy) landed on `mission-beacon`'s page at @2x, @3x and @4x.
+- **`check-render-assets.mjs`** checks every zone page at @2x, @3x and @4x. Each page runs through `checkCampaignAtlas`, which covers gutters, trims, source sizes and the tread baseline. It also checks `meta.scale`, the rig pivot 32 × d and baseline 50 × d, source size / logical size = d, no frame repeated within a density, the raster frame at @2x and @3x but not at @4x, and the anchor frames. The tier-mark, high-contrast and socket gates (item 1) now read the zone pages and also run at @4x, at the same thresholds. The legacy runtime pages are still checked as before until the runtime switch removes them.
+- **`tests/campaign-zones.test.mjs`** (8 tests) covers these points:
+  - The band rows equal `WORLD_BANDS`.
+  - `PLACEMENT` equals the bands where five generated seeds of each world draw each frame.
+  - Every frame has exactly one zone or one exclusion, and is on exactly one page per density it needs.
+  - `-emissive` siblings share the base's zone, set and page group.
+  - The hero set, and @4x pages holding only hero frames. Raster frames stop at @3x.
+  - The terrain regex keeps `ice-vent`, and it is on the W02 cave pages.
+  - Page caps and keys, and one lander stage per stage page.
+  - The unused frames stay unreachable (a tripwire on the refuge and relay draws and the site kinds), and every frame name spelled out in `src/campaign` is on a page.
+- **`tests/campaign-poi-art.test.ts`** checks POI markers and scenery against `w01-zones.json` instead of `w01-runtime.json`. That is a two-line change; PR #16 also edits this file.
+
+### Assets checks after this stage
+
+| measure (gate) | stage 1 (`84e4005`) | this stage |
+|---|---|---|
+| W01 / W02 material ΔE (≥ 12) | ≥ 15.4 / ≥ 21.2 | ≥ 15.4 / ≥ 21.2 |
+| band seam (≤ 6), material ΔL (≥ 8), band ΔE (≥ 10) | 0, 9.1, 12.4 | 0, 9.1, 12.4 |
+| tier mark span (≤ 0.18 + 1 px) | ≤ 0.177 (@2x, @3x) | ≤ 0.177 (@2x, @3x, @4x) |
+| identification edge ΔE / ΔL (≥ 30 / ≥ 15) | ≥ 45.2 / ≥ 45.1 | ≥ 45.2 / ≥ 45.1 (@4x included) |
+| HC mark over copper (≥ 20 L\*), light share (≥ 45 %) | ≥ 26.0, ≥ 56 % | ≥ 26.0, ≥ 56 % (@4x included) |
+| socket alpha (≤ 160) | ≤ 66 | ≤ 66 (@4x included) |
+| rig tread baseline | @2x, @3x | @2x, @3x, @4x |
+
+### Proofs and verification
+
+| Check | Result |
+|---|---|
+| `npm run assets:rebuild` twice in the working checkout, the render caches deleted before each run (Node 22.23.4, Pillow 12.3.0) | SHA-256 of all 694 files under `assets/campaign` identical; 15.2 s and 14.6 s (stage 1: 13.3 to 13.5 s; the extra time is the @4x renders and the zone packing) |
+| The CI condition: `git archive` of the staged tree into a private copy, then the exact CI step script extracted from `checks.yml`, under Node 24.22.2 with `PYTHON` set to a venv holding Pillow 12.0.0 (`package.json` and the lock are unchanged since stage 1, whose proof ran a fresh `npm ci`) | exit 0 in 16.6 s; `git status --porcelain --untracked-files=all -- assets/campaign` empty |
+| `npm run assets:check` | pass, numbers above |
+| `npm test -- --maxWorkers=2` | 313 passed, 5 skipped (stage 1's 305 + 8 in `tests/campaign-zones.test.mjs`) |
+| `npm run format:check`, `npm run build` | pass |
+| `npm run test:render` (private copy, Chrome 156, port 5221) | pass: hidden geology identical to solid on canvas and WebGL in W01 and W02; textures 33.16 / 35.41 MiB and 3 WebGL draws, as in stage 1 (the game still loads the legacy pages) |
+| `npm run test:render:memory` (same copy) | pass, byte for byte stage 1's numbers: desktop 47,663,924 / 58,280,756 / 66,407,220; phone 20,176,176 / 30,793,008 / 33,152,304 |
+| `IMPROVEMENT_CHECKS=visual,fog,harness npm run test:improvements` (same copy) | pass: fog (both worlds hide caves identically to solid rock), visual (12 captures), harness (8 §9 fixtures, the T13a placeholder drawn) |
+
+### Reproduce (zone pages)
+
+```bash
+PYTHON=python3 npm run assets:rebuild            # writes the zone pages and w0X-zones.json
+npm run assets:check                             # zone page gates, then every page's pixels
+npx vitest run tests/campaign-zones.test.mjs     # classification against the generated worlds
+python3 docs/qa/t13a-raster-source/compare-frames.py 84e4005   # only rig-body-0..7 change
 ```

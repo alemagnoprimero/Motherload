@@ -37,8 +37,13 @@ def frame(atlas, image, name):
 def main():
     revision = sys.argv[1] if len(sys.argv) > 1 else 'origin/main'
     for page in PAGES:
-        old_atlas, old_image = load(revision, page)
-        new_atlas, new_image = load(None, page)
+        try:
+            old_atlas, old_image = load(revision, page)
+            new_atlas, new_image = load(None, page)
+        except (OSError, subprocess.CalledProcessError):
+            # Audit T13b removed the @3x full atlas (and later the runtime pages).
+            print(f'{page}: missing on one side, skipped')
+            continue
         old, new = set(old_atlas['frames']), set(new_atlas['frames'])
         changed = []
         for name in sorted(old & new):

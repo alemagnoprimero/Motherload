@@ -10,6 +10,7 @@ import {
   rasterizeCampaignSources,
 } from "./rasterize-campaign-svgs.mjs";
 import { CANONICAL_PNG, canonicalizePngs, pngFiles } from "./png-canonical.mjs";
+import { buildZonePages } from "./build-zone-pages.mjs";
 
 const root = new URL("../", import.meta.url);
 const source = new URL("assets/campaign/w02/", root);
@@ -57,41 +58,41 @@ const result = spawnSync(
 );
 if (result.status !== 0) process.exit(result.status || 1);
 
-for (const scale of [2, 3]) {
-  if (scale === 3) {
-    const renders3 = new URL(".cache/frontier-renders-3x/", root);
-    await mkdir(renders3, { recursive: true });
-    await rasterizeCampaignSources(
-      source,
-      renders3,
-      { ...manifest, backgrounds: [] },
-      1.5,
-    );
-  }
+// Every density is rendered from source (decisions.md D5): @3x at scale 1.5.
+const renders3 = new URL(".cache/frontier-renders-3x/", root);
+await mkdir(renders3, { recursive: true });
+await rasterizeCampaignSources(
+  source,
+  renders3,
+  { ...manifest, backgrounds: [] },
+  1.5,
+);
+const pack = (...args) => {
   const packed = spawnSync(
     process.env.PYTHON || "python",
     [
       fileURLToPath(new URL("scripts/pack-campaign-atlas.py", root)),
       fileURLToPath(root),
       "w02",
-      String(scale),
+      ...args,
     ],
     { stdio: "inherit" },
   );
   if (packed.status !== 0) process.exit(packed.status || 1);
-  const runtime = spawnSync(
-    process.env.PYTHON || "python",
-    [
-      fileURLToPath(new URL("scripts/pack-campaign-atlas.py", root)),
-      fileURLToPath(root),
-      "w02",
-      String(scale),
-      "runtime",
-    ],
-    { stdio: "inherit" },
-  );
-  if (runtime.status !== 0) process.exit(runtime.status || 1);
-}
+};
+// The full @2x atlas: every frame, for the asset checks.
+pack("2");
+// Legacy runtime pages, loaded by the game until it reads the zone pages.
+pack("2", "runtime");
+pack("3", "runtime");
+// Audit T13b: zone pages at @2x, @3x and (hero set) @4x, and their manifest.
+await buildZonePages({
+  root,
+  world: "W02",
+  source,
+  manifest,
+  renders: temporary,
+});
 
 // Audit T13b: one encoding for every PNG this build wrote.
 const canonical = await canonicalizePngs([

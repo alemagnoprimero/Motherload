@@ -1,0 +1,164 @@
+{
+  "frames": {
+    "relay-stage-1": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 171,
+        "h": 179
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 7,
+        "w": 171,
+        "h": 179
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 96
+      }
+    },
+    "relay-stage-2": {
+      "frame": {
+        "x": 177,
+        "y": 2,
+        "w": 171,
+        "h": 179
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 7,
+        "w": 171,
+        "h": 179
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 96
+      }
+    },
+    "sky-body": {
+      "frame": {
+        "x": 352,
+        "y": 2,
+        "w": 171,
+        "h": 166
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 45,
+        "y": 45,
+        "w": 171,
+        "h": 166
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 128,
+        "h": 128
+      }
+    },
+    "refuge-stage-1": {
+      "frame": {
+        "x": 527,
+        "y": 2,
+        "w": 286,
+        "h": 144
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 43,
+        "w": 286,
+        "h": 144
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "logicalSize": {
+        "w": 144,
+        "h": 96
+      }
+    },
+    "refuge-stage-2": {
+      "frame": {
+        "x": 817,
+        "y": 2,
+        "w": 286,
+        "h": 144
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 43,
+        "w": 286,
+        "h": 144
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "logicalSize": {
+        "w": 144,
+        "h": 96
+      }
+    }
+  },
+  "meta": {
+    "app": "Deep Frontier original layered SVG artwork",
+    "version": "0.3",
+    "image": "w01-surface-2x-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1152,
+      "h": 192
+    },
+    "scale": "2",
+    "logicalTile": 48,
+    "rigPivot": [
+      64.0,
+      64.0
+    ],
+    "rigTreadBaseline": 100.0,
+    "framePadding": 2,
+    "zone": "surface",
+    "hero": false
+  }
+}

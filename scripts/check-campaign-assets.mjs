@@ -1,7 +1,20 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { inflateSync } from "node:zlib";
 import { pathToFileURL } from "node:url";
+import { emissiveOf } from "../assets/campaign/kit/emissive.mjs";
+import {
+  DENSITIES,
+  PAGE_LIMIT,
+  classifyFrames,
+  densitiesOf,
+  isHero,
+  pageSet,
+  pageStem,
+  stageOf,
+  zoneOf,
+  zonePageFile,
+} from "./campaign-zones.mjs";
 
 const PNG_SIGNATURE = "89504e470d0a1a0a";
 const MAX_PAGE = 2048;
@@ -321,6 +334,172 @@ export async function checkRasterSources(sourceDirectory, manifest, atlas) {
     );
   }
   return raster.map((frame) => frame.name);
+}
+
+/**
+ * Audit T13b: the zone pages the game loads, from generated/<world>-zones.json.
+ * Every frame the runtime draws (scripts/campaign-zones.mjs) is on exactly one
+ * page per density it needs, in its own zone and page set; every page fits
+ * 2048 × 1024 and its PNG and JSON agree with the manifest; @4x pages hold
+ * only the hero set; an `-emissive` frame has a base of the same size in the
+ * same world, on the same page at every density. Reads PNG headers and JSON
+ * only; check-render-assets.mjs decodes and checks each page's pixels.
+ */
+export async function checkZonePages(directory, world, frames) {
+  const lower = world.toLowerCase();
+  const manifest = JSON.parse(
+    await readFile(new URL(`${lower}-zones.json`, directory), "utf8"),
+  );
+  assert.equal(
+    manifest.world,
+    world,
+    `${lower}-zones.json is for another world`,
+  );
+  assert.deepEqual(
+    manifest.pageLimit,
+    PAGE_LIMIT,
+    `${world} page limit changed`,
+  );
+  const { zones, hero, excluded } = classifyFrames(frames);
+  assert.deepEqual(
+    {
+      frames: manifest.frames,
+      hero: manifest.hero,
+      excluded: manifest.excluded,
+    },
+    { frames: zones, hero, excluded },
+    `${lower}-zones.json disagrees with scripts/campaign-zones.mjs; rebuild the assets`,
+  );
+  const byName = new Map(frames.map((frame) => [frame.name, frame]));
+  const pageOf = new Map(); // "density:name" → page key
+  const listed = new Set();
+  let decoded = 0;
+  for (const page of manifest.pages) {
+    const stem = page.image.replace(/\.png$/, "");
+    assert.equal(page.data, `${stem}.json`, `${page.key}: data file`);
+    assert.ok(
+      zonePageFile(world).test(page.image),
+      `${page.key}: page file name`,
+    );
+    assert.equal(page.key, `campaign-${stem}`, `${page.key}: texture key`);
+    // surface-render-smoke keys pages by world; art.ts downsamples "-wall" keys.
+    assert.ok(
+      page.key.startsWith(`campaign-${lower}`),
+      `${page.key}: key prefix`,
+    );
+    assert.ok(
+      !page.key.endsWith("-wall"),
+      `${page.key}: a "-wall" key is a band wall`,
+    );
+    assert.ok(DENSITIES.includes(page.density), `${page.key}: density`);
+    listed.add(page.image).add(page.data);
+    const png = await readFile(new URL(page.image, directory));
+    assert.equal(
+      png.subarray(0, 8).toString("hex"),
+      PNG_SIGNATURE,
+      `${page.key}: PNG`,
+    );
+    const width = png.readUInt32BE(16),
+      height = png.readUInt32BE(20);
+    assert.ok(
+      width <= PAGE_LIMIT.width && height <= PAGE_LIMIT.height,
+      `${page.key} is ${width}×${height}, over the ${PAGE_LIMIT.width}×${PAGE_LIMIT.height} page limit`,
+    );
+    assert.deepEqual(
+      [page.width, page.height, page.bytes],
+      [width, height, width * height * 4],
+      `${page.key}: manifest size`,
+    );
+    decoded += page.bytes;
+    const atlas = JSON.parse(
+      await readFile(new URL(page.data, directory), "utf8"),
+    );
+    assert.deepEqual(
+      atlas.meta.size,
+      { w: width, h: height },
+      `${page.key}: meta size`,
+    );
+    assert.equal(
+      Number(atlas.meta.scale),
+      page.density,
+      `${page.key}: meta scale`,
+    );
+    assert.deepEqual(
+      Object.keys(atlas.frames).sort(),
+      [...page.frames].sort(),
+      `${page.key}: manifest frames`,
+    );
+    assert.ok(page.frames.length, `${page.key} is empty`);
+    for (const name of page.frames) {
+      const frame = byName.get(name);
+      assert.ok(frame, `${page.key}: ${name} is not a ${world} frame`);
+      assert.equal(
+        zoneOf(name),
+        page.zone,
+        `${page.key}: ${name} is not a ${page.zone} frame`,
+      );
+      const set = pageSet(name);
+      assert.equal(
+        set !== "",
+        page.hero,
+        `${page.key}: ${name} is in the wrong page set`,
+      );
+      assert.equal(
+        stageOf(name) ?? undefined,
+        page.stage,
+        `${page.key}: ${name} stage`,
+      );
+      assert.equal(
+        stem.replace(/-\d+$/, ""),
+        pageStem(world, page.zone, set, page.density),
+        `${page.key}: page group`,
+      );
+      assert.ok(
+        densitiesOf(frame).includes(page.density),
+        `${page.key}: ${name} has no @${page.density}x page`,
+      );
+      if (page.density === 4)
+        assert.ok(isHero(name), `${page.key}: ${name} is not in the hero set`);
+      const key = `${page.density}:${name}`;
+      assert.ok(!pageOf.has(key), `${name} is on two @${page.density}x pages`);
+      pageOf.set(key, page.key);
+    }
+  }
+  for (const frame of frames) {
+    const zone = zoneOf(frame.name);
+    for (const density of DENSITIES) {
+      const needed = zone !== null && densitiesOf(frame).includes(density);
+      assert.equal(
+        pageOf.has(`${density}:${frame.name}`),
+        needed,
+        needed
+          ? `${world} ${frame.name} (${zone}) has no @${density}x zone page`
+          : `${world} ${frame.name} must not be on a @${density}x zone page`,
+      );
+    }
+    const base = emissiveOf(frame.name);
+    if (base === null) continue;
+    const owner = byName.get(base);
+    assert.ok(owner, `${world} ${frame.name} has no base frame ${base}`);
+    assert.deepEqual(
+      [frame.width, frame.height, frame.logicalWidth, frame.logicalHeight],
+      [owner.width, owner.height, owner.logicalWidth, owner.logicalHeight],
+      `${world} ${frame.name} is not the size of ${base}`,
+    );
+    for (const density of DENSITIES)
+      assert.equal(
+        pageOf.get(`${density}:${frame.name}`),
+        pageOf.get(`${density}:${base}`),
+        `${world} ${frame.name} is not on ${base}'s @${density}x page`,
+      );
+  }
+  for (const file of await readdir(directory))
+    assert.ok(
+      !zonePageFile(world).test(file) || listed.has(file),
+      `${file} is a zone page the manifest does not list; rebuild the assets`,
+    );
+  const runtime = Object.keys(zones).length;
+  return { pages: manifest.pages.length, frames: runtime, decoded };
 }
 
 // W01 has three ridge layers (art item A4); W02 keeps two until X2.
@@ -666,4 +845,19 @@ if (
   console.log(
     `W01 raster sources (T13a): ${rasterFrames.length ? rasterFrames.join(", ") : "none"}.`,
   );
+  for (const [world, folder] of [
+    ["W01", "source"],
+    ["W02", "w02"],
+  ]) {
+    const frames = JSON.parse(
+      await readFile(
+        new URL(`../assets/campaign/${folder}/frames.json`, import.meta.url),
+        "utf8",
+      ),
+    ).frames;
+    const zones = await checkZonePages(directory, world, frames);
+    console.log(
+      `${world} zone pages (T13b): ${zones.frames} runtime frames on ${zones.pages} pages ≤ ${PAGE_LIMIT.width}×${PAGE_LIMIT.height}, ${(zones.decoded / 2 ** 20).toFixed(2)} MiB decoded at all densities; @4x holds the hero set only.`,
+    );
+  }
 }
