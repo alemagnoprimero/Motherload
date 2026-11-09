@@ -29,6 +29,12 @@ export function migrateProgress(state: CampaignState) {
   if (progress.records === undefined) progress.records = {};
   if (progress.waypoints === undefined) progress.waypoints = [];
   if (progress.caches === undefined) progress.caches = [];
+  // D14 moved the W01 beacon from the 95 m route cell to the SITE-4 crew
+  // gallery and its survey from M1 to M2, which is the only stage that can
+  // record it. A save still in M1 can hold only the retired 95 m survey: M1 no
+  // longer needs it, and M2 will ask for the wreck instead. A save past M1
+  // keeps its survey, so no started stage loses proof it already has.
+  if (!progress.completed.includes(1)) progress.beacon = false;
   if (!integer(progress.volatileTraining, 0, 1e7))
     invalid("volatile training history");
   if (

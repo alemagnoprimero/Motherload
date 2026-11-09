@@ -166,7 +166,9 @@ try {
   const checkpoint = await exportCheckpoint(page, true);
   assert.equal(checkpoint.state.hardware.energy, 1);
   assert.equal(checkpoint.state.stats.recoveries, 0);
-  assert.equal(checkpoint.state.progress.beacon, true);
+  // D14: the 95 m route cell has no beacon; M1 is the banked seam-A haul and
+  // the wreck survey waits for M2 at the SITE-4 gallery.
+  assert.equal(checkpoint.state.progress.beacon, false);
   assert.ok(checkpoint.state.progress.completed.includes(1));
   assert.ok(checkpoint.state.credits >= 250);
   noErrors(page);
@@ -176,7 +178,7 @@ try {
   );
   await record("09-loop-complete");
   console.log(
-    "PASS native opening two-haul loop, survey, construction, service and tank upgrade without state injection",
+    "PASS native opening two-haul loop, construction, service and tank upgrade without state injection",
   );
   await context.close();
 } finally {

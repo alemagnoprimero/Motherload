@@ -8,17 +8,19 @@ The root address opens the campaign front door, with Continue for an existing sa
 
 The 40-column, 60-row asteroid wraps horizontally and reaches 600 m. Surface air has negative coordinates, so it does not reduce the exploration depth. Wall-occluded discovery conceals minerals and caves until explored; the claim map and waypoints show discovered ground rather than revealing the whole mine.
 
-The two marked opening veins at columns 20/21 contain seven ordinary packages worth 380/480 CR. The opening coach and tracker guide the first haul, return, sale, construction, second seam and upgrade. Coach progress is a pilot preference and can be skipped without blocking controls. The survey beacon is at 100 m; the valve, antenna and navigation core are at 250/400/600 m.
+The two marked opening veins at columns 20/21 contain seven ordinary packages each, worth 380/480 CR per seam. The opening coach and tracker guide the first haul from marked seam A (to 70 m), return, sale, construction, second seam and upgrade. Coach progress is a pilot preference and can be skipped without blocking controls. The valve, antenna and navigation core are at 250/400/600 m; the wreck survey beacon stands in the SITE-4 crew gallery at 460 m (decision D14).
 
 | Stage | Required proof | Construction fee | Result |
 | --- | --- | --- | --- |
-| M1: Survey the wreck | Survey the 100 m beacon and bank three ordinary packages | 200 CR | Rank-1 hardware and the shaft brace |
-| M2: Recover the lander parts | Bank the valve and antenna | 600 CR | External cargo rack |
+| M1: Prove the claim | Bank three ordinary packages | 200 CR | Rank-1 hardware and the shaft brace |
+| M2: Recover the lander parts | Bank the valve and antenna, and survey the wreck beacon | 600 CR | External cargo rack |
 | M3: Restore the lander | Bank the navigation core | 1,000 CR | Frontier certificate and departure; Ice comet playable, Fractured moon charted |
+
+**The wreck beacon (D14).** There is one beacon and it is the M2 objective. It stands on the crew gallery's flat floor beside the wreck (SITE-4, "Collapsed crew gallery"), one cell clear of the wreck on the route side: cell (17, 45), drawn at (17.5, 45.5), with solid floor in row 46. Generator 2 always leaves air in row 45 and floor in row 46 at columns 16–18, so the cell is the same for every seed; generator-1 claims have no gallery and dig the same cell like a buried part. The beacon answers within the survey radius (1.15 cells) once M1 is built, so its survey only ever counts for M2. The route cell at 95 m no longer holds a beacon. A part recovered within 80 m of the beacon (the antenna room is about 70 m from it) guides to the survey before turning home; the valve goes home first.
 
 Basic banking, trade, refuelling and repair are available at the arrival lander before M1. Each paid stage changes its construction. Neither the rack nor all three local tools are mandatory for departure.
 
-New generator-2 worlds have a continuous fused plate across rows 30–31 (310–320 m). It includes cells that would otherwise be cave air, so horizontal wrapping cannot bypass it. A rank-1 drill is required and cuts plate 2.5 times more slowly than the equivalent ordinary material. Existing generator-1 claims retain their original terrain and receive no retroactive barrier.
+New generator-2 worlds have a continuous fused plate across rows 30–31 (310–320 m). It includes cells that would otherwise be cave air, so horizontal wrapping cannot bypass it. A rank-1 drill is required and cuts plate 2.5 times more slowly than the equivalent ordinary material, so the wreck gallery below it is reached after M1's rank-1 hardware. Existing generator-1 claims retain their original terrain and receive no retroactive barrier.
 
 ## Economy and equipment
 
@@ -69,7 +71,7 @@ Keyboard, mouse, floating touch joystick and controller share named actions. Mou
 
 Shaft alignment assists Down entry from small offsets, including ledges above the deepest excavation. The brace enables side cuts against a wall without requiring a floor. Air braking and bay assistance reduce overshoot. The settings expose accessibility and input preferences, including reduced motion, high contrast, type scaling, sound and remapping. Sound unlocks after a user action and remembered mute is respected. Physical controller/Android comfort is still a playtest concern.
 
-Mission wreckage, source beacons and wrapped proximity guidance identify the survey and recoverable parts. Home guidance remains available below the surface. Persistent danger notices are separate from routine pickups; disabled rigs have a recovery action with a preview of cost and retained/lost resources. Browser modifier shortcuts and focused form keys do not become pilot movement.
+Mission wreckage, the wreck survey beacon and wrapped proximity guidance identify the survey and recoverable parts. Home guidance remains available below the surface. Persistent danger notices are separate from routine pickups; disabled rigs have a recovery action with a preview of cost and retained/lost resources. Browser modifier shortcuts and focused form keys do not become pilot movement.
 
 The rendering implementation and asset pipeline are documented in [CAMPAIGN_ASSETS.md](CAMPAIGN_ASSETS.md). World-to-screen mapping and measured HUD safe areas do not alter simulation or save coordinates.
 
@@ -77,7 +79,7 @@ The rendering implementation and asset pipeline are documented in [CAMPAIGN_ASSE
 
 IndexedDB database `motherload.campaign.v1` retains its version-1 checkpoint envelope and store. Current/backup writes use compare-and-swap protection; archive insertion, valid-archive pruning and replacement share that transaction. Three valid campaign archives survive later autosaves. Corrupt/future data and unsupported archive bytes are protected rather than silently deleted. BroadcastChannel informs other tabs, with revision checks still authoritative.
 
-Schema 1/2 checkpoints migrate to schema 3 in memory. Old worlds remain generator 1 / balance 0.1 and retain excavation, discoveries and package economics. Current names resolve by item ID. New reserve, training, contract, record, waypoint, cache, site, log and hazard fields receive explicit defaults and validation. Old W01 campaigns can travel into a newly generated W02 without changing their original claim. Exports are canonical schema-3 snapshots; loading alone does not rewrite the source bytes.
+Schema 1/2 checkpoints migrate to schema 3 in memory. Old worlds remain generator 1 / balance 0.1 and retain excavation, discoveries and package economics. Saves from before D14 keep their stage: a save still in M1 drops the retired 95 m survey (M1 now needs only its banked ore, and M2 will ask for the wreck), while a save past M1 keeps its survey as M2 proof, so no started stage loses proof. Current names resolve by item ID. New reserve, training, contract, record, waypoint, cache, site, log and hazard fields receive explicit defaults and validation. Old W01 campaigns can travel into a newly generated W02 without changing their original claim. Exports are canonical schema-3 snapshots; loading alone does not rewrite the source bytes.
 
 All restored expeditions remain paused until Resume. World timers, pressure/volatile warnings, construction, cargo and conditions persist; velocity, gestures, animation and partial cuts are transient. The state limit remains 2 MiB and transport limit 16 MiB. Those are enforced bounds, not a claim that a future fifteen-world campaign fits this format.
 

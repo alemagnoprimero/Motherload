@@ -364,7 +364,15 @@ export const W01 = {
   spawnX: 20.5,
   budget: improvedW01 ? 59500 : 53500,
   minOrdinary: improvedW01 ? 178500 : 160500,
-  beaconRow: 9,
+  /**
+   * The wreck beacon (D14) stands on the SITE-4 crew gallery's flat floor,
+   * one cell clear of the wreck on the route side. Generator 2 always leaves
+   * air in row 45 and solid floor in row 46 at columns 16–18 (the gallery
+   * ellipse and the row-48 branch are seed-independent there); generator-1
+   * claims have no gallery, so the same cell is excavated like a buried part.
+   */
+  beaconX: 17.5,
+  beaconRow: 45,
   valveRow: 24,
   antennaRow: 39,
   coreRow: 59,
@@ -473,18 +481,17 @@ export const W01_EFFECTS = {
 export const W01_MILESTONES = [
   {
     id: 1,
-    name: "Survey the wreck",
+    name: "Prove the claim",
     fee: 2000,
     description:
-      "Survey the beacon at 100 m and bank three ore packages. Construction unlocks the shaft brace; surface services are already available.",
+      "Bank three ordinary ore packages at the lander. Construction unlocks the shaft brace; surface services are already available.",
     requiredMissionIds: [],
   },
   {
     id: 2,
     name: "Recover the lander parts",
     fee: improvedW01 ? 6000 : 3000,
-    description:
-      "Bank the valve from 250 m and antenna from 400 m. A rank-1 drill crosses the fused plate at 310 m. Construction unlocks the external cargo rack.",
+    description: `Bank the valve from 250 m and antenna from 400 m, and survey the wreck beacon in the crew gallery at ${(W01.beaconRow + 1) * 10} m. A rank-1 drill crosses the fused plate at 310 m. Construction unlocks the external cargo rack.`,
     requiredMissionIds: ["W01-VALVE", "W01-ANTENNA"],
   },
   {
@@ -496,6 +503,8 @@ export const W01_MILESTONES = [
     requiredMissionIds: ["W01-Q"],
   },
 ] as const;
+/** The W01 stage whose proof includes the wreck beacon survey (D14). */
+export const W01_SURVEY_MILESTONE = 2;
 /** Sources describe further destinations; they are intentionally not playable yet. */
 export function isWorldUnlocked(
   id: string,

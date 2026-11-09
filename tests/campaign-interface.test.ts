@@ -56,15 +56,19 @@ const opening: CoachContext = {
   energyRatio: 1,
   upgraded: false,
   row: -0.4,
-  beacon: false,
 };
 describe("ordered first-expedition guide", () => {
-  it("does not send a full hold home before the survey beacon", () => {
+  it("sends a full hold from the marked seam straight home (no 95 m survey)", () => {
+    const partial = { ...opening, mined: 3, cargo: 3, row: 2.5 };
+    expect(coachStep(partial, 1).next).toBe(1);
     const full = { ...opening, mined: 7, cargo: 7, row: 6.5 };
     expect(coachStep(full, 1).next).toBe(2);
-    expect(coachStep(full, 2).text).toContain("Survey");
-    expect(coachStep({ ...full, row: -0.4 }, 2).next).toBe(2);
-    expect(coachStep({ ...full, beacon: true, row: -0.4 }, 2).next).toBe(3);
+    expect(coachStep(full, 2).text).toBe("Hold Up. Return home.");
+    expect(coachStep(full, 2).next).toBe(2);
+    expect(coachStep({ ...full, row: -0.4 }, 2).next).toBe(3);
+    expect(coachStep({ ...full, atDock: true }, 5).text).toBe(
+      "Fund the first construction.",
+    );
   });
   it("waits for actual banking, construction and the useful tank purchase", () => {
     expect(coachStep({ ...opening, atDock: true, cargo: 7 }, 4).next).toBe(4);
@@ -83,7 +87,6 @@ describe("ordered first-expedition guide", () => {
   it("resumes exactly the persisted cursor without revisiting earlier completed steps", () => {
     const restored = {
       ...opening,
-      beacon: true,
       milestone: 1,
       mined: 16,
       row: 2,

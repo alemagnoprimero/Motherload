@@ -4,10 +4,11 @@ import {
   W01,
   W01_GEAR,
   W01_MILESTONES,
+  W01_SURVEY_MILESTONE,
   formatCredits,
 } from "./config";
 import { W02, W02_GEAR } from "./frontier";
-import { openingRoute, openingSurveyPending, postChapterGoal } from "./poi";
+import { openingRoute, openingSeamPending, postChapterGoal } from "./poi";
 
 export interface MissionTask {
   id: string;
@@ -88,13 +89,6 @@ export function campaignMission(campaign: Campaign) {
   const tasks: MissionTask[] = [];
   let next = "";
   if (milestone.id === 1) {
-    tasks.push({
-      id: "beacon",
-      label: state.progress.beacon
-        ? "Beacon surveyed"
-        : `Survey beacon · ${(W01.beaconRow + 1) * 10} m`,
-      status: state.progress.beacon ? "complete" : "pending",
-    });
     const banked = Math.min(3, state.progress.bankedOre);
     tasks.push({
       id: "ore",
@@ -104,12 +98,12 @@ export function campaignMission(campaign: Campaign) {
         (banked < 3 && carriedOre ? ` · ${carriedOre} onboard` : ""),
       status: banked === 3 ? "complete" : carriedOre ? "carried" : "pending",
     });
-    if (!state.progress.beacon || openingSurveyPending(campaign))
-      next = `Survey the beacon at ${(W01.beaconRow + 1) * 10} m`;
-    else if (banked < 3)
-      next = carriedOre
-        ? "Return to lander → Bank ore"
-        : `Mine ${3 - banked} ore packages and bank them`;
+    if (banked < 3)
+      next = openingSeamPending(campaign)
+        ? "Mine marked seam A · 70 m → Bank ore"
+        : carriedOre
+          ? "Return to lander → Bank ore"
+          : `Mine ${3 - banked} ore packages and bank them`;
   } else {
     const labels: Record<string, { name: string; row: number }> = {
       "W01-VALVE": { name: "Pressure valve", row: W01.valveRow },
@@ -137,10 +131,22 @@ export function campaignMission(campaign: Campaign) {
               : "pending",
       });
     }
+    if (milestone.id === W01_SURVEY_MILESTONE)
+      tasks.push({
+        id: "W01-BEACON",
+        label: state.progress.beacon
+          ? "Wreck beacon · surveyed"
+          : `Survey the wreck beacon · ${(W01.beaconRow + 1) * 10} m`,
+        status: state.progress.beacon ? "complete" : "pending",
+      });
     const carried = tasks.find((task) => task.status === "carried");
     const missing = tasks.find((task) => task.status === "pending");
     if (carried) next = "Return to lander → Bank mission cargo";
-    else if (missing) next = "Recover " + missing.label.toLowerCase();
+    else if (missing)
+      next =
+        missing.id === "W01-BEACON"
+          ? missing.label
+          : "Recover " + missing.label.toLowerCase();
   }
 
   const funded = state.credits >= milestone.fee;

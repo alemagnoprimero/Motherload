@@ -45,7 +45,8 @@ describe("progression plan native acceptance", () => {
     for (const seed of [4, 10, 999]) {
       const game = new Campaign(createCampaign(seed));
       until(game, { down: true }, () => game.depth >= 100, 30);
-      expect(game.state.progress.beacon).toBe(true);
+      // D14: the 95 m route cell no longer holds a beacon; M1 is the banked haul.
+      expect(game.state.progress.beacon).toBe(false);
       expect(game.cargoValue).toBe(3800);
       // Isolate the opening economy's required minor impact; hazard timing has
       // separate native coverage and is not approximated by this cost fixture.
