@@ -64,7 +64,11 @@ const PATTERNS = RIG_LAYERS.map(
   ({ layer, frames }) => [layer, new RegExp(frames)] as const,
 );
 
-/** The rig layer a frame is drawn on, or undefined for a non-rig frame. */
+/**
+ * The rig layer a frame is drawn on, or undefined for a non-rig frame. The
+ * game picks layers by call site in rig.ts; tests use this to check that
+ * every rig frame in the manifests has a layer in the table.
+ */
 export function rigLayerOf(frame: string): RigLayer | undefined {
   return PATTERNS.find(([, pattern]) => pattern.test(frame))?.[0];
 }

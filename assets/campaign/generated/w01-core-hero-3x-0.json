@@ -761,7 +761,7 @@
         "x": 278,
         "y": 590,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -769,7 +769,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -789,7 +789,7 @@
         "x": 326,
         "y": 590,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -797,7 +797,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -817,7 +817,7 @@
         "x": 374,
         "y": 590,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -825,7 +825,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -845,7 +845,7 @@
         "x": 422,
         "y": 590,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -853,7 +853,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -873,7 +873,7 @@
         "x": 470,
         "y": 590,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -881,7 +881,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -901,7 +901,7 @@
         "x": 518,
         "y": 590,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -909,7 +909,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -929,7 +929,7 @@
         "x": 2,
         "y": 655,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -937,7 +937,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -957,7 +957,7 @@
         "x": 50,
         "y": 655,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "rotated": false,
       "trimmed": true,
@@ -965,7 +965,7 @@
         "x": 74,
         "y": 133,
         "w": 44,
-        "h": 59
+        "h": 58
       },
       "sourceSize": {
         "w": 192,
@@ -1096,7 +1096,7 @@
       "frame": {
         "x": 315,
         "y": 655,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1104,7 +1104,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1122,17 +1122,17 @@
     },
     "rig-drill-left-0": {
       "frame": {
-        "x": 378,
+        "x": 377,
         "y": 655,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1150,17 +1150,17 @@
     },
     "rig-drill-left-1": {
       "frame": {
-        "x": 441,
+        "x": 439,
         "y": 655,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1178,17 +1178,17 @@
     },
     "rig-drill-left-2": {
       "frame": {
-        "x": 504,
+        "x": 501,
         "y": 655,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1207,16 +1207,16 @@
     "rig-drill-left-3": {
       "frame": {
         "x": 2,
-        "y": 718,
-        "w": 59,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1234,17 +1234,17 @@
     },
     "rig-drill-left-4": {
       "frame": {
-        "x": 65,
-        "y": 718,
-        "w": 59,
+        "x": 64,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1262,17 +1262,17 @@
     },
     "rig-drill-left-5": {
       "frame": {
-        "x": 128,
-        "y": 718,
-        "w": 59,
+        "x": 126,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1290,17 +1290,17 @@
     },
     "rig-drill-left-6": {
       "frame": {
-        "x": 191,
-        "y": 718,
-        "w": 59,
+        "x": 188,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1318,17 +1318,17 @@
     },
     "rig-drill-left-7": {
       "frame": {
-        "x": 254,
-        "y": 718,
-        "w": 59,
+        "x": 250,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 1,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1346,9 +1346,9 @@
     },
     "rig-drill-right-0": {
       "frame": {
-        "x": 317,
-        "y": 718,
-        "w": 59,
+        "x": 312,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1356,7 +1356,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1374,9 +1374,9 @@
     },
     "rig-drill-right-1": {
       "frame": {
-        "x": 380,
-        "y": 718,
-        "w": 59,
+        "x": 374,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1384,7 +1384,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1402,9 +1402,9 @@
     },
     "rig-drill-right-2": {
       "frame": {
-        "x": 443,
-        "y": 718,
-        "w": 59,
+        "x": 436,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1412,7 +1412,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1430,9 +1430,9 @@
     },
     "rig-drill-right-3": {
       "frame": {
-        "x": 506,
-        "y": 718,
-        "w": 59,
+        "x": 498,
+        "y": 717,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1440,7 +1440,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1459,8 +1459,8 @@
     "rig-drill-right-4": {
       "frame": {
         "x": 2,
-        "y": 766,
-        "w": 59,
+        "y": 765,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1468,7 +1468,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1486,9 +1486,9 @@
     },
     "rig-drill-right-5": {
       "frame": {
-        "x": 65,
-        "y": 766,
-        "w": 59,
+        "x": 64,
+        "y": 765,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1496,7 +1496,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1514,9 +1514,9 @@
     },
     "rig-drill-right-6": {
       "frame": {
-        "x": 128,
-        "y": 766,
-        "w": 59,
+        "x": 126,
+        "y": 765,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1524,7 +1524,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1542,9 +1542,9 @@
     },
     "rig-drill-right-7": {
       "frame": {
-        "x": 191,
-        "y": 766,
-        "w": 59,
+        "x": 188,
+        "y": 765,
+        "w": 58,
         "h": 44
       },
       "rotated": false,
@@ -1552,7 +1552,7 @@
       "spriteSourceSize": {
         "x": 133,
         "y": 80,
-        "w": 59,
+        "w": 58,
         "h": 44
       },
       "sourceSize": {
@@ -1570,8 +1570,8 @@
     },
     "thrust-3": {
       "frame": {
-        "x": 254,
-        "y": 766,
+        "x": 250,
+        "y": 765,
         "w": 93,
         "h": 43
       },
@@ -1598,8 +1598,8 @@
     },
     "rig-bay-1": {
       "frame": {
-        "x": 351,
-        "y": 766,
+        "x": 347,
+        "y": 765,
         "w": 47,
         "h": 42
       },
@@ -1626,8 +1626,8 @@
     },
     "rig-engine-0": {
       "frame": {
-        "x": 402,
-        "y": 766,
+        "x": 398,
+        "y": 765,
         "w": 35,
         "h": 40
       },
@@ -1654,8 +1654,8 @@
     },
     "thrust-1": {
       "frame": {
-        "x": 441,
-        "y": 766,
+        "x": 437,
+        "y": 765,
         "w": 93,
         "h": 37
       },
@@ -1683,7 +1683,7 @@
     "rig-damage-1": {
       "frame": {
         "x": 2,
-        "y": 814,
+        "y": 813,
         "w": 101,
         "h": 36
       },
@@ -1711,7 +1711,7 @@
     "rig-feet-stowed": {
       "frame": {
         "x": 107,
-        "y": 814,
+        "y": 813,
         "w": 125,
         "h": 33
       },
@@ -1736,38 +1736,10 @@
         "h": 64
       }
     },
-    "rig-cabin-emissive": {
-      "frame": {
-        "x": 236,
-        "y": 814,
-        "w": 36,
-        "h": 33
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 126,
-        "y": 46,
-        "w": 36,
-        "h": 33
-      },
-      "sourceSize": {
-        "w": 192,
-        "h": 192
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      },
-      "logicalSize": {
-        "w": 64,
-        "h": 64
-      }
-    },
     "rig-bay-0": {
       "frame": {
-        "x": 276,
-        "y": 814,
+        "x": 236,
+        "y": 813,
         "w": 30,
         "h": 33
       },
@@ -1794,8 +1766,8 @@
     },
     "thrust-4": {
       "frame": {
-        "x": 310,
-        "y": 814,
+        "x": 270,
+        "y": 813,
         "w": 93,
         "h": 32
       },
@@ -1820,10 +1792,38 @@
         "h": 64
       }
     },
+    "rig-cabin-emissive": {
+      "frame": {
+        "x": 367,
+        "y": 813,
+        "w": 35,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 126,
+        "y": 46,
+        "w": 35,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
     "thrust-2": {
       "frame": {
-        "x": 407,
-        "y": 814,
+        "x": 406,
+        "y": 813,
         "w": 93,
         "h": 29
       },
@@ -1850,8 +1850,8 @@
     },
     "rig-drill-collar-down-1": {
       "frame": {
-        "x": 504,
-        "y": 814,
+        "x": 503,
+        "y": 813,
         "w": 57,
         "h": 29
       },
@@ -1879,7 +1879,7 @@
     "rig-hull-1": {
       "frame": {
         "x": 2,
-        "y": 854,
+        "y": 853,
         "w": 93,
         "h": 28
       },
@@ -1907,7 +1907,7 @@
     "thrust-0": {
       "frame": {
         "x": 99,
-        "y": 854,
+        "y": 853,
         "w": 93,
         "h": 25
       },
@@ -1935,7 +1935,7 @@
     "tier-mark-hc-1": {
       "frame": {
         "x": 196,
-        "y": 854,
+        "y": 853,
         "w": 25,
         "h": 25
       },
@@ -1963,7 +1963,7 @@
     "tier-mark-hc-3": {
       "frame": {
         "x": 225,
-        "y": 854,
+        "y": 853,
         "w": 24,
         "h": 25
       },
@@ -1991,7 +1991,7 @@
     "tier-mark-hc-4": {
       "frame": {
         "x": 253,
-        "y": 854,
+        "y": 853,
         "w": 24,
         "h": 25
       },
@@ -2019,7 +2019,7 @@
     "tier-mark-hc-2": {
       "frame": {
         "x": 281,
-        "y": 854,
+        "y": 853,
         "w": 25,
         "h": 24
       },
@@ -2047,7 +2047,7 @@
     "mission-beacon-emissive": {
       "frame": {
         "x": 310,
-        "y": 854,
+        "y": 853,
         "w": 20,
         "h": 21
       },
@@ -2075,7 +2075,7 @@
     "rig-hull-0": {
       "frame": {
         "x": 334,
-        "y": 854,
+        "y": 853,
         "w": 84,
         "h": 18
       },

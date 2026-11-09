@@ -1,5 +1,5 @@
 {
- "base": "http://127.0.0.1:5321/?debug=no-emissive&backing=2",
+ "base": "http://127.0.0.1:5361/?debug=no-emissive&backing=2",
  "backingPin": 2,
  "frames": {
   "a04-dive-60m@2": {
@@ -69,8 +69,8 @@
    },
    "tiles_across": 22.0,
    "overlay": {
-    "edges_full": 24753,
-    "edges_hudfree": 14480,
+    "edges_full": 24752,
+    "edges_hudfree": 14479,
     "playfield_px": 1177994,
     "overlay_share": 0.415,
     "art_edge_density": 0.0123
@@ -82,7 +82,7 @@
     "\u2191 HOME \u00b7 155 m",
     "Wreck survey beacon \u00b7 117 m"
    ],
-   "mean_gradient": 1.03,
+   "mean_gradient": 1.02,
    "flat_share": 0.875,
    "wall": {
     "row4.5": {
@@ -205,8 +205,8 @@
    },
    "tiles_across": 8.9,
    "overlay": {
-    "edges_full": 17635,
-    "edges_hudfree": 9270,
+    "edges_full": 17636,
+    "edges_hudfree": 9271,
     "playfield_px": 276625,
     "overlay_share": 0.474,
     "art_edge_density": 0.0335

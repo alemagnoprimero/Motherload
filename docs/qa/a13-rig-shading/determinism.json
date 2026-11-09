@@ -216,7 +216,7 @@
   },
   "after (A13)": {
     "webgl a04": {
-      "silhouette px (shrunk 2 px)": 11413,
+      "silhouette px (shrunk 2 px)": 11377,
       "drawn": [
         "rig-body-0",
         "rig-engine-0",
@@ -257,15 +257,15 @@
         "outside max": 0
       },
       "N (no-emissive)": {
-        "px": 473,
-        "outside the silhouette grown 1 px": 3,
+        "px": 416,
+        "outside the silhouette grown 1 px": 0,
         "never brighter without the emissive": true,
         "max lift": 200
       },
       "comparisons with silhouette pixels changed": 0
     },
     "canvas a04": {
-      "silhouette px (shrunk 2 px)": 11413,
+      "silhouette px (shrunk 2 px)": 11377,
       "drawn": [
         "rig-body-0",
         "rig-engine-0",
@@ -306,15 +306,15 @@
         "outside max": 0
       },
       "N (no-emissive)": {
-        "px": 473,
-        "outside the silhouette grown 1 px": 3,
+        "px": 412,
+        "outside the silhouette grown 1 px": 0,
         "never brighter without the emissive": true,
         "max lift": 200
       },
       "comparisons with silhouette pixels changed": 0
     },
     "webgl r1": {
-      "silhouette px (shrunk 2 px)": 13238,
+      "silhouette px (shrunk 2 px)": 13204,
       "drawn": [
         "rig-body-0",
         "rig-engine-1",
@@ -359,7 +359,7 @@
         "outside max": 2
       },
       "N (no-emissive)": {
-        "px": 531,
+        "px": 460,
         "outside the silhouette grown 1 px": 0,
         "never brighter without the emissive": true,
         "max lift": 200
@@ -367,7 +367,7 @@
       "comparisons with silhouette pixels changed": 0
     },
     "canvas r1": {
-      "silhouette px (shrunk 2 px)": 13238,
+      "silhouette px (shrunk 2 px)": 13204,
       "drawn": [
         "rig-body-0",
         "rig-engine-1",
@@ -412,7 +412,7 @@
         "outside max": 0
       },
       "N (no-emissive)": {
-        "px": 525,
+        "px": 451,
         "outside the silhouette grown 1 px": 0,
         "never brighter without the emissive": true,
         "max lift": 200

@@ -19,7 +19,8 @@
  *   rank1           engine/energy/bay/hull 1, feet deployed, rack, collar 1
  *   rank1-down      rank 1 drilling down (drill-down-3, collar down 1)
  *   thrust-damage   thrust-3, damage 3
- *   rank2-w02       W02's rank-2 modules, tools and collar over the W01
+ *   rank2-w02       W02's rank-2 modules, its three tools (thermal,
+ *                   condenser, preservation) and collar over the W01
  *                   cabin/body
  *   rank2-down      the same drilling down (W02's collar down 2)
  *
@@ -29,8 +30,9 @@
  * (CONCEPT_TILE: 128 units = 58.85 px, written 59), at @2 (128 px), @3
  * (192) and @4 (256). It also rasterizes rig-body-0, rig-cabin and
  * rig-cabin-emissive alone at @2/@3/@4 (the tread-row check), every rig and
- * thrust frame of each set at @2 (contact sheet) and of each variant at @4
- * with its zone twin (the per-frame visible-tier check), the eight
+ * thrust frame of each set at @2 (contact sheet) and of each variant at
+ * @2, @3 and @4 with its zone twin (the per-frame visible-tier check at
+ * every page density), the eight
  * rig-drill-right/down frames of each set at every scale (the animation
  * check), and the HUD icons at 25, 50, 64 and 128 px (before, as shipped,
  * and each variant's rework); then writes review.json for
@@ -38,6 +40,11 @@
  *
  *   node scripts/art-review-a13.mjs OUT [--before REV]
  *   python3 scripts/art-review-a13.py OUT/review.json docs/qa/a13-rig-shading
+ *
+ * REV defaults to 2a6185a, item 2's tip (T13b, PR #18), which A13 is built
+ * on. After a squash merge that commit may be missing from a fresh clone:
+ * fetch it (git fetch origin pull/18/head) or pass the merged commit as
+ * --before; the script stops if REV does not resolve.
  *
  * Authoring only (rasterizes with scripts/rasterize-campaign-svgs.mjs).
  */
@@ -74,6 +81,17 @@ const beforeAt = args.indexOf("--before");
 // The rig before A13: item 2's tip (T13b), the commit A13 is built on.
 const BEFORE_REV = beforeAt >= 0 ? args[beforeAt + 1] : "2a6185a";
 const root = new URL("../", import.meta.url);
+try {
+  execFileSync("git", ["rev-parse", "--verify", `${BEFORE_REV}^{commit}`], {
+    cwd: new URL(".", root),
+    stdio: "ignore",
+  });
+} catch {
+  console.error(
+    `art-review-a13: --before ${BEFORE_REV} is not a commit here. The default is item 2's tip (T13b, PR #18): fetch it (git fetch origin pull/18/head) or pass --before <the commit A13 is built on>.`,
+  );
+  process.exit(2);
+}
 
 const bodyOf = (text) =>
   text
@@ -98,17 +116,30 @@ const gitShow = (rev, path) =>
   execFileSync("git", ["show", `${rev}:${path}`], {
     cwd: new URL(".", root),
     encoding: "utf8",
-    stdio: ["ignore", "pipe", "ignore"],
+    stdio: ["ignore", "pipe", "pipe"],
   });
-/** name -> body of the committed sources at REV (the rig before A13). */
+/** Whether REV's tree has `path` (git cat-file -e: exit 0 when it does). */
+const gitHas = (rev, path) => {
+  try {
+    execFileSync("git", ["cat-file", "-e", `${rev}:${path}`], {
+      cwd: new URL(".", root),
+      stdio: "ignore",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+};
+/**
+ * name -> body of the committed sources at REV (the rig before A13). A frame
+ * the old rig did not have (rig-cabin-emissive) is left out; any other git
+ * failure stops the run, so a composite never silently loses a frame.
+ */
 function committedFrames(rev, names) {
   const frames = {};
   for (const name of names) {
-    try {
-      frames[name] = bodyOf(gitShow(rev, `assets/campaign/source/${name}.svg`));
-    } catch {
-      // A frame the old rig did not have (rig-cabin-emissive).
-    }
+    const path = `assets/campaign/source/${name}.svg`;
+    if (gitHas(rev, path)) frames[name] = bodyOf(gitShow(rev, path));
   }
   return frames;
 }
@@ -122,6 +153,7 @@ for (const name of [
   "rig-drill-collar-down-2",
   "tool-thermal",
   "tool-condenser",
+  "tool-preservation",
 ])
   W02[name] = bodyOf(
     await readFile(new URL(`assets/campaign/w02/${name}.svg`, root), "utf8"),
@@ -238,6 +270,7 @@ const POSES = {
     ["rig-hull-2"],
     ["tool-condenser"],
     ["tool-thermal"],
+    ["tool-preservation"],
     ["rig-drill-idle"],
     ["rig-drill-collar-right-2"],
   ],
@@ -250,6 +283,7 @@ const POSES = {
     ["rig-hull-2"],
     ["tool-condenser"],
     ["tool-thermal"],
+    ["tool-preservation"],
     ["rig-drill-down-3"],
     ["rig-drill-collar-down-2"],
   ],
@@ -405,14 +439,16 @@ for (const [set, frames] of Object.entries(sets)) {
   review.sets[set] = record;
 }
 // Every frame of every set at @2 for the contact sheet; every frame of each
-// variant at @4 with its zone twin, for the per-frame visible tiers; and the
-// sources for the structural tier counts.
+// variant at @2, @3 and @4 with its zone twin, for the per-frame visible
+// tiers at each page density; and the sources for the structural tier
+// counts.
 for (const [set, frames] of Object.entries(sets)) {
   review.frames[set] = {};
   for (const [name, body] of Object.entries(frames)) {
-    const scales = set === "before" ? ["x2"] : ["x2", "x4"];
+    const scales = set === "before" ? ["x2"] : ["x2", "x3", "x4"];
     add(`${set}-all-${name}`, body, scales);
-    if (set !== "before") add(`${set}-allz-${name}`, zoneIdBody(body), ["x4"]);
+    if (set !== "before")
+      add(`${set}-allz-${name}`, zoneIdBody(body), ["x2", "x3", "x4"]);
     review.frames[set][name] = `${set}-all-${name}`;
   }
 }

@@ -1,5 +1,5 @@
 import type Phaser from "phaser";
-import { RIG_EMISSIVE_DEPTH } from "./rig-layers";
+import { RIG_EMISSIVE_DEPTH, RIG_LAYERS } from "./rig-layers";
 import { ZONE_MANIFESTS, type WorldId } from "./zones";
 
 /*
@@ -33,13 +33,16 @@ export const SCENERY_EMISSIVE_DEPTH = 17.6;
 export { RIG_EMISSIVE_DEPTH };
 /** A sibling of a base above the rig band sits this far above its base. */
 export const EMISSIVE_OFFSET = 0.05;
-/** The rig's first layer (thrust); every base below it is scenery. */
-const RIG_BAND = 18;
+/** The rig's first layer (thrust, 18); every base below it is scenery. */
+const RIG_BAND = Math.min(...RIG_LAYERS.map(({ depth }) => depth));
 
 /** The depth of a sibling whose base is drawn at `depth`. */
 export function emissiveDepth(depth: number) {
   if (depth < RIG_BAND) return SCENERY_EMISSIVE_DEPTH;
   if (depth < RIG_EMISSIVE_DEPTH) return RIG_EMISSIVE_DEPTH;
+  // No shipped base is drawn at or above the rig's emissive depth (the
+  // effects at 24 have no siblings); a future one gets item 2's rule, just
+  // above its base.
   return depth + EMISSIVE_OFFSET;
 }
 

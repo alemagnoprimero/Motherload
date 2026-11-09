@@ -43,7 +43,9 @@ Measures:
 - tiers per frame, honestly (art_tiers.visible_svg_tiers): each variant
   frame's structural tiers per zone against the tiers whose fills reach
   the screen, as at least 8 flat pixels of their colour at @4 in the frame
-  rendered alone, inside the zone's mask; and, on the composites at @2,
+  rendered alone, inside the zone's mask; the same at the other page
+  densities with the pixel minimum scaled by area (4.5 at @3, 2 at @2: a
+  fill must cover the same share of the frame); and, on the composites at @2,
   the tiers by fill colour (pixels within 2.5 ΔE of a zone's fill, flat or
   not: anti-aliasing blends match no fill, determinism.md §3) beside the
   flat-pixel reading, which needs bands of 4 px or more;
@@ -55,9 +57,12 @@ Measures:
 - the tread row: the lowest row with any alpha in rig-body-0, exclusive,
   must be 100 * scale / 2 (check-campaign-assets.mjs);
 - the lamp: the lens and indicator discs visible in every pose (share of the
-  disc's pixels in the composite that equal rig-cabin's own), the emissive
-  extents, the ADD result's radial profile from the lens (L*, b*) and the
-  halo's lift outside the rig's silhouette.
+  disc's pixels in the composite that equal rig-cabin's own), the halo's
+  footprint over layers drawn in front of the cabin in each pose (pixels
+  where the sibling has alpha, rig-cabin is opaque and the composite differs
+  from it: the glow adds over that layer), the emissive extents, the ADD
+  result's radial profile from the lens (L*, b*) and the halo's lift
+  outside the rig's silhouette.
 
 The ADD composite follows the runtime: the rig is drawn at depth 18-23,
 above the darkness, so it is never darkened; rig-cabin-emissive is drawn
@@ -228,18 +233,23 @@ def by_fill(render, zone_img, ids, texts, min_share=tiers.MIN_SHARE):
 MATERIAL = {'hull', 'paint', 'copper', 'silver', 'steel', 'tracks', 'glass', 'rank1', 'pads', 'flame'}
 
 
-def honesty(base, review, s, ids):
-    """Per frame of variant s: structural vs visible tiers per zone (@4,
-    the frame alone, its zone twin as the masks)."""
+# The per-frame honest reading's pixel minimum: 8 flat px at @4, scaled by
+# area at the other densities (the same share of the frame).
+HONEST_MIN_PX = {'x4': 8, 'x3': 8 * (1.5 / 2) ** 2, 'x2': 8 * (1 / 2) ** 2}
+
+
+def honesty(base, review, s, ids, scale='x4'):
+    """Per frame of variant s: structural vs visible tiers per zone (the
+    frame alone at `scale`, its zone twin as the masks)."""
     out = {}
     for name, rel in review['frames'][s].items():
         src = os.path.join(base, 'x2', f'{s}-src-{name}.svg')
-        img = os.path.join(base, 'x4', f'{rel}.png')
-        twin = os.path.join(base, 'x4', f'{s}-allz-{name}.png')
+        img = os.path.join(base, scale, f'{rel}.png')
+        twin = os.path.join(base, scale, f'{s}-allz-{name}.png')
         if not (os.path.exists(src) and os.path.exists(img)):
             continue
         masks = zone_masks(rgba(twin), ids)
-        result = tiers.visible_svg_tiers(src, img, masks)
+        result = tiers.visible_svg_tiers(src, img, masks, min_px=HONEST_MIN_PX[scale])
         out[name] = {z: {'structural': len(r['tiers']), 'visible': len(r['visible_tiers']), 'hidden': r['hidden']}
                      for z, r in result.items()}
     return out
@@ -376,13 +386,15 @@ def main(review_path, out_dir):
             row['pass'] = row.get('rig-body-0', {}).get('bottom') == want
             rec['tread'][scale] = row
 
-    # ---- tiers per frame, honestly
+    # ---- tiers per frame, honestly (@4; and @3, @2 with the minimum scaled)
     for s in review['variants']:
         rec = metrics['sets'][s]
-        rec['frames_visible'] = honesty(base, review, s, ids)
-        short = {n: {z: v for z, v in zs.items() if z in MATERIAL and (v['visible'] < 3 or v['hidden'])}
-                 for n, zs in rec['frames_visible'].items()}
-        rec['frames_short'] = {n: zs for n, zs in short.items() if zs}
+        for scale, key in (('x4', ''), ('x3', '_x3'), ('x2', '_x2')):
+            rec['frames_visible' + key] = honesty(base, review, s, ids, scale)
+            short = {n: {z: v for z, v in zs.items() if z in MATERIAL and (v['visible'] < 3 or v['hidden'])}
+                     for n, zs in rec['frames_visible' + key].items()}
+            rec['frames_short' + key] = {n: zs for n, zs in short.items() if zs}
+        rec['honest_min_px'] = HONEST_MIN_PX
 
     # ---- the drill's animation
     for s in sets:
@@ -427,6 +439,18 @@ def main(review_path, out_dir):
                 same = np.all(img[d] == ref[d], axis=1)
                 vis[name][pose] = round(float(same.mean()), 3)
         rec['lamp_visible_share'] = vis
+        # The halo's footprint over layers in front of the cabin, per pose.
+        a_em = emissive[..., 3]
+        cover = {}
+        for pose, comp in review['sets'][s]['composites'].items():
+            img = rgba(path('x4', comp))
+            flipped = pose in review['emissiveFlip']
+            ref = cabin_flipped if flipped else cabin
+            em_a = a_em[:, ::-1] if flipped else a_em
+            over_front = (em_a > 0) & (ref[..., 3] == 255) & np.any(img != ref, axis=-1)
+            cover[pose] = {'px': int(over_front.sum()), 'px_alpha_gt_32': int((over_front & (em_a > 32)).sum()),
+                           'max_alpha': int(em_a[over_front].max()) if over_front.any() else 0}
+        rec['halo_over_front_layers_x4'] = cover
         a = emissive[..., 3]
         ex = bbox(a > 0)
         rec['emissive'] = {
@@ -732,8 +756,9 @@ def sheets(review, metrics, base, out_dir, masks, path):
         if s != 'before':
             short = metrics['sets'][s]['frames_short']
             by2 = t.get('by_fill_x2', {})
-            label(d, (10, y + 280 - 4), f'frames with a material zone under 3 visible tiers or a hidden fill (@4, alone): '
-                  f'{len(short)}    @2 flat / by fill: ' + '  '.join(
+            label(d, (10, y + 280 - 4), f'frames with a material zone under 3 visible tiers or a hidden fill (alone): '
+                  f'@4 {len(short)}, @3 {len(metrics["sets"][s]["frames_short_x3"])}, '
+                  f'@2 {len(metrics["sets"][s]["frames_short_x2"])}    idle @2 flat / by fill: ' + '  '.join(
                       f'{z} {t["screen_x2"].get(z, {}).get("tiers", 0)}/{by2.get(z, {}).get("tiers", 0)}'
                       for z in MATERIAL_ZONES if z in by2 or z in t['screen_x2']), 11,
                   PASS if not short else FAIL)
@@ -788,6 +813,11 @@ if __name__ == '__main__':
         if 'frames_short' in rec:
             print(f'         frames short of 3 visible tiers or with hidden fills: {len(rec["frames_short"])} '
                   + json.dumps(dict(list(rec['frames_short'].items())[:6])))
+            for key in ('_x3', '_x2'):
+                short = rec['frames_short' + key]
+                print(f'         ... at {key[1:]}: {len(short)} frames, {sum(len(v) for v in short.values())} zone-frames')
+        if 'halo_over_front_layers_x4' in rec:
+            print('         halo over front layers @4 ' + json.dumps(rec['halo_over_front_layers_x4']))
         if 'lamp_visible_share' in rec:
             print('         lens visible ' + json.dumps(rec['lamp_visible_share']['lens']))
             print('         indicator visible ' + json.dumps(rec['lamp_visible_share']['indicator']))

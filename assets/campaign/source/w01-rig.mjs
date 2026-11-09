@@ -197,8 +197,6 @@ export const RIG_LIGHTS = {
   indicator: "#3fe08f",
   indicatorCore: "#c8ffe2",
 };
-/** The halo's radius in units (it ends at alpha 0). */
-const HALO_R = 8;
 
 // ---------------------------------------------------------------- drawing
 const attrs = (extra) =>
@@ -507,7 +505,13 @@ const BEZEL_R = 6,
  * bezel, in the outline colour, so the halo of rig-cabin-emissive (HALO_R)
  * stays on the rig's silhouette (no lift on the rock or sky beside it).
  */
-const MOUNT_R = 7.8;
+export const MOUNT_R = 7.8;
+/**
+ * The halo's radius in units (it ends at alpha 0): half a unit inside the
+ * mount, so even its faint outer ring, filtered on screen, lies on the
+ * silhouette (§9.2).
+ */
+export const HALO_R = MOUNT_R - 0.5;
 
 /** The cabin's lit parts, unlit for the base and lit for the -emissive sibling. */
 function cabinLights(ctx) {
@@ -946,12 +950,18 @@ export function rigHull(rank, variant = RIG_VARIANT) {
 
 // ---------------------------------------------------------------- drill
 const MOUNT = rrect(91, 58, 15.5, 20, 3);
-/** The bit: a large cone, about the pre-A13 size (base 24 units, reach 22). */
+/**
+ * The bit: a large cone, about the pre-A13 size (base 24 units, reach 20.7).
+ * Its tip stops at 125.1, so the outline's round join (half of 4.22) ends
+ * 0.8 units inside the 128-unit frame instead of being cut flat by it.
+ */
 const CONE = [
   [104.4, 56],
-  [126.6, 68],
+  [125.1, 68],
   [104.4, 80],
 ];
+/** How far the glint's tip end stays from the bit's tip, in units. */
+const GLINT_GAP = 7.8;
 /** The right bit's tiers: lit above the axis, body to BIT_SHADOW, shadow under (its bottom quarter). */
 const BIT_SHADOW = 74;
 /**
@@ -972,7 +982,7 @@ const GROOVE_W = 2.8,
   FACE_W = 2.4,
   SLANT = 4.4;
 /** The down bit's grooves: wider, as they are its only shadow tier. */
-const DOWN_GROOVE_W = 3;
+const DOWN_GROOVE_W = 3.4;
 /** A flute band between x offsets [a, b] from its groove's top x, cut to y0..y1. */
 function fluteBand(gx, a, b, y0, y1) {
   const xAt = (y, o) => gx + o + (SLANT * (y - 57)) / 22;
@@ -1089,21 +1099,23 @@ function drillRight(ctx, frame, down) {
       ]);
   }
   // A white glint toward the tip along the lit upper face (on the axis, the
-  // lit middle, in the down pose), over the flutes, as on the board.
+  // lit middle, in the down pose), over the flutes, as on the board; it
+  // ends GLINT_GAP short of the tip, clear of the outline.
+  const g = CONE[1][0] - GLINT_GAP;
   facets.push([
     "glint",
     down
       ? pathData([
-          [111.8, AXIS - 1.3],
-          [118.8, AXIS - 1.1],
-          [118.8, AXIS + 1.1],
-          [111.8, AXIS + 1.3],
+          [g - 7, AXIS - 1.3],
+          [g, AXIS - 1.1],
+          [g, AXIS + 1.1],
+          [g - 7, AXIS + 1.3],
         ])
       : pathData([
-          [112.2, 63.2],
-          [118.8, 66.6],
-          [118.8, 68.4],
-          [112.2, 65.8],
+          [g - 6.6, 63.2],
+          [g, 66.6],
+          [g, 68.4],
+          [g - 6.6, 65.8],
         ]),
   ]);
   const bit = part(ctx, "bit", {

@@ -1,5 +1,5 @@
 {
-  "base": "http://127.0.0.1:5321/",
+  "base": "http://127.0.0.1:5362/",
   "mode": "resident",
   "samples": [
     {
@@ -32,7 +32,17 @@
       "misses": {},
       "textures": [
         {
-          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "key": "3f64c1c9-559b-484e-9f9b-22924c325661",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88aa0bc0-d0ef-45df-a6de-9a1468fbfd20",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -82,16 +92,6 @@
           "world": null
         },
         {
-          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
           "key": "band-W01-a-rock",
           "bytes": 2359296,
           "width": 768,
@@ -117,6 +117,16 @@
           "width": 384,
           "height": 384,
           "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "c9676cc5-9e5f-4029-9668-68b01cb43449",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -272,17 +282,7 @@
           "world": "W01"
         },
         {
-          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "key": "f221e560-4988-4d3e-84e9-db75c8c00f74",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -335,7 +335,17 @@
       "misses": {},
       "textures": [
         {
-          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "key": "3f64c1c9-559b-484e-9f9b-22924c325661",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88aa0bc0-d0ef-45df-a6de-9a1468fbfd20",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -379,16 +389,6 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -480,6 +480,16 @@
           "width": 384,
           "height": 384,
           "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "c9676cc5-9e5f-4029-9668-68b01cb43449",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -645,17 +655,7 @@
           "world": "W01"
         },
         {
-          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "key": "f221e560-4988-4d3e-84e9-db75c8c00f74",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -701,11 +701,21 @@
       "dpr": 2,
       "tile": 65.4545,
       "drawCalls": 4,
-      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 38.9 MiB · W01 cave (atlas 3.8 · bands 15.2 · bg 0.0 · layers 19.9 · other 0.0) · pages @3x\nat ceiling",
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 38.9 MiB · W01 cave (atlas 3.8 · bands 15.2 · bg 0.0 · layers 19.9 · other 0.0) · pages @3x\nheld 0.3 s",
       "misses": {},
       "textures": [
         {
-          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "key": "3f64c1c9-559b-484e-9f9b-22924c325661",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88aa0bc0-d0ef-45df-a6de-9a1468fbfd20",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -749,16 +759,6 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -855,6 +855,16 @@
           "world": null
         },
         {
+          "key": "c9676cc5-9e5f-4029-9668-68b01cb43449",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "campaign-fx-glint-gold",
           "bytes": 4096,
           "width": 32,
@@ -955,17 +965,7 @@
           "world": "W01"
         },
         {
-          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "key": "f221e560-4988-4d3e-84e9-db75c8c00f74",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1020,7 +1020,17 @@
       "misses": {},
       "textures": [
         {
-          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "key": "3f64c1c9-559b-484e-9f9b-22924c325661",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88aa0bc0-d0ef-45df-a6de-9a1468fbfd20",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1064,16 +1074,6 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -1165,6 +1165,16 @@
           "width": 384,
           "height": 384,
           "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "c9676cc5-9e5f-4029-9668-68b01cb43449",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -1320,17 +1330,7 @@
           "world": "W02"
         },
         {
-          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "key": "f221e560-4988-4d3e-84e9-db75c8c00f74",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1412,7 +1412,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "key": "17695955-0583-4ca0-82ac-0eaf09999d54",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1422,7 +1422,7 @@
           "world": null
         },
         {
-          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "key": "68917b92-adb1-4d3c-80b8-5c2b9d5ac728",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1432,17 +1432,7 @@
           "world": null
         },
         {
-          "key": "22082202-715c-4dd2-846b-0cfe70769925",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "key": "9f1adcc8-365f-4852-b38c-6b38e87a1ed2",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1672,6 +1662,16 @@
           "world": "W01"
         },
         {
+          "key": "cbcc0dc3-e805-4b8d-a549-2c2e875cb086",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-sky-gradient",
           "bytes": 8192,
           "width": 4,
@@ -1715,7 +1715,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "key": "17695955-0583-4ca0-82ac-0eaf09999d54",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1725,7 +1725,7 @@
           "world": null
         },
         {
-          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "key": "68917b92-adb1-4d3c-80b8-5c2b9d5ac728",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -1735,17 +1735,7 @@
           "world": null
         },
         {
-          "key": "22082202-715c-4dd2-846b-0cfe70769925",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "key": "9f1adcc8-365f-4852-b38c-6b38e87a1ed2",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2045,6 +2035,16 @@
           "world": "W01"
         },
         {
+          "key": "cbcc0dc3-e805-4b8d-a549-2c2e875cb086",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-sky-gradient",
           "bytes": 8192,
           "width": 4,
@@ -2085,7 +2085,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "key": "17695955-0583-4ca0-82ac-0eaf09999d54",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2095,7 +2095,7 @@
           "world": null
         },
         {
-          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "key": "68917b92-adb1-4d3c-80b8-5c2b9d5ac728",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2105,17 +2105,7 @@
           "world": null
         },
         {
-          "key": "22082202-715c-4dd2-846b-0cfe70769925",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "key": "9f1adcc8-365f-4852-b38c-6b38e87a1ed2",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2355,6 +2345,16 @@
           "world": "W01"
         },
         {
+          "key": "cbcc0dc3-e805-4b8d-a549-2c2e875cb086",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-sky-gradient",
           "bytes": 8192,
           "width": 4,
@@ -2400,7 +2400,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "key": "17695955-0583-4ca0-82ac-0eaf09999d54",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2410,7 +2410,7 @@
           "world": null
         },
         {
-          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "key": "68917b92-adb1-4d3c-80b8-5c2b9d5ac728",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2420,17 +2420,7 @@
           "world": null
         },
         {
-          "key": "22082202-715c-4dd2-846b-0cfe70769925",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "key": "9f1adcc8-365f-4852-b38c-6b38e87a1ed2",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2720,6 +2710,16 @@
           "world": "W02"
         },
         {
+          "key": "cbcc0dc3-e805-4b8d-a549-2c2e875cb086",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-ridge-far",
           "bytes": 1572864,
           "width": 1024,
@@ -2792,7 +2792,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "key": "2311f617-8bea-4f74-b8ad-0e52223d845c",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2802,7 +2802,7 @@
           "world": null
         },
         {
-          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "key": "863297b4-493f-42ae-ad5e-f0559a1279f5",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -2852,16 +2852,6 @@
           "world": null
         },
         {
-          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
           "key": "band-W01-a-rock",
           "bytes": 2359296,
           "width": 768,
@@ -2887,16 +2877,6 @@
           "width": 384,
           "height": 384,
           "group": "bands",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -3052,6 +3032,26 @@
           "world": "W01"
         },
         {
+          "key": "d29eb388-a1d4-4a49-8ddd-0d136f7911cf",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f87e3946-0cec-4d76-8fcc-76f9d0246b95",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-sky-gradient",
           "bytes": 8192,
           "width": 4,
@@ -3095,7 +3095,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "key": "2311f617-8bea-4f74-b8ad-0e52223d845c",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -3105,7 +3105,7 @@
           "world": null
         },
         {
-          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "key": "863297b4-493f-42ae-ad5e-f0559a1279f5",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -3149,16 +3149,6 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -3250,16 +3240,6 @@
           "width": 384,
           "height": 384,
           "group": "bands",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -3425,6 +3405,26 @@
           "world": "W01"
         },
         {
+          "key": "d29eb388-a1d4-4a49-8ddd-0d136f7911cf",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f87e3946-0cec-4d76-8fcc-76f9d0246b95",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-sky-gradient",
           "bytes": 8192,
           "width": 4,
@@ -3461,11 +3461,11 @@
       "dpr": 2,
       "tile": 78.5455,
       "drawCalls": 4,
-      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 50.6 MiB · W01 cave (atlas 5.1 · bands 15.2 · bg 0.0 · layers 30.3 · other 0.0) · pages @3x/@4x\nat ceiling",
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 50.6 MiB · W01 cave (atlas 5.1 · bands 15.2 · bg 0.0 · layers 30.3 · other 0.0) · pages @3x/@4x\nheld 0.3 s",
       "misses": {},
       "textures": [
         {
-          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "key": "2311f617-8bea-4f74-b8ad-0e52223d845c",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -3475,7 +3475,7 @@
           "world": null
         },
         {
-          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "key": "863297b4-493f-42ae-ad5e-f0559a1279f5",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -3519,16 +3519,6 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -3625,16 +3615,6 @@
           "world": null
         },
         {
-          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
           "key": "campaign-fx-glint-gold",
           "bytes": 4096,
           "width": 32,
@@ -3735,6 +3715,26 @@
           "world": "W01"
         },
         {
+          "key": "d29eb388-a1d4-4a49-8ddd-0d136f7911cf",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f87e3946-0cec-4d76-8fcc-76f9d0246b95",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-sky-gradient",
           "bytes": 8192,
           "width": 4,
@@ -3780,7 +3780,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "key": "2311f617-8bea-4f74-b8ad-0e52223d845c",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -3790,7 +3790,7 @@
           "world": null
         },
         {
-          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "key": "863297b4-493f-42ae-ad5e-f0559a1279f5",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -3834,16 +3834,6 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -3935,16 +3925,6 @@
           "width": 384,
           "height": 384,
           "group": "bands",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -4100,6 +4080,26 @@
           "world": "W02"
         },
         {
+          "key": "d29eb388-a1d4-4a49-8ddd-0d136f7911cf",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f87e3946-0cec-4d76-8fcc-76f9d0246b95",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "frontier-ridge-far",
           "bytes": 1572864,
           "width": 1024,
@@ -4172,7 +4172,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "key": "10c2e9e1-dd7a-4cab-ab7c-5ef48ff3bee9",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4182,7 +4182,7 @@
           "world": null
         },
         {
-          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "key": "2002e92e-abe7-45d0-96e5-512558447647",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4192,7 +4192,17 @@
           "world": null
         },
         {
-          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "key": "44296cc3-cf73-47b5-a2ee-b09ab56f4f11",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "5ad4698e-155d-4be0-b8b8-639d18343fa0",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4267,16 +4277,6 @@
           "width": 384,
           "height": 384,
           "group": "bands",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -4475,7 +4475,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "key": "10c2e9e1-dd7a-4cab-ab7c-5ef48ff3bee9",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4485,7 +4485,7 @@
           "world": null
         },
         {
-          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "key": "2002e92e-abe7-45d0-96e5-512558447647",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4495,7 +4495,17 @@
           "world": null
         },
         {
-          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "key": "44296cc3-cf73-47b5-a2ee-b09ab56f4f11",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "5ad4698e-155d-4be0-b8b8-639d18343fa0",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4630,16 +4640,6 @@
           "width": 384,
           "height": 384,
           "group": "bands",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -4841,11 +4841,11 @@
       "dpr": 2,
       "tile": 82,
       "drawCalls": 4,
-      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 41.9 MiB · W01 cave (atlas 5.1 · bands 15.2 · bg 0.0 · layers 21.6 · other 0.0) · pages @3x/@4x\nheld 0.3 s",
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 41.9 MiB · W01 cave (atlas 5.1 · bands 15.2 · bg 0.0 · layers 21.6 · other 0.0) · pages @3x/@4x\nat ceiling",
       "misses": {},
       "textures": [
         {
-          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "key": "10c2e9e1-dd7a-4cab-ab7c-5ef48ff3bee9",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4855,7 +4855,7 @@
           "world": null
         },
         {
-          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "key": "2002e92e-abe7-45d0-96e5-512558447647",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -4865,7 +4865,17 @@
           "world": null
         },
         {
-          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "key": "44296cc3-cf73-47b5-a2ee-b09ab56f4f11",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "5ad4698e-155d-4be0-b8b8-639d18343fa0",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -5000,16 +5010,6 @@
           "width": 384,
           "height": 384,
           "group": "bands",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -5160,7 +5160,7 @@
       "misses": {},
       "textures": [
         {
-          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "key": "10c2e9e1-dd7a-4cab-ab7c-5ef48ff3bee9",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -5170,7 +5170,7 @@
           "world": null
         },
         {
-          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "key": "2002e92e-abe7-45d0-96e5-512558447647",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -5180,7 +5180,17 @@
           "world": null
         },
         {
-          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "key": "44296cc3-cf73-47b5-a2ee-b09ab56f4f11",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "5ad4698e-155d-4be0-b8b8-639d18343fa0",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -5315,16 +5325,6 @@
           "width": 384,
           "height": 384,
           "group": "bands",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
           "zone": null,
           "density": null,
           "world": null
@@ -5592,6 +5592,16 @@
           "world": null
         },
         {
+          "key": "afaa67a2-c48c-4668-92d6-6fea17dc179e",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
           "key": "band-W01-a-rock",
           "bytes": 2359296,
           "width": 768,
@@ -5622,7 +5632,7 @@
           "world": null
         },
         {
-          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "key": "bc348045-e368-4c19-97a5-c153e35fede6",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -5782,7 +5792,7 @@
           "world": "W01"
         },
         {
-          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "key": "d402280d-07bd-4080-9e23-6d5d478e23a1",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -5792,17 +5802,7 @@
           "world": null
         },
         {
-          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "key": "d937558e-7b14-42f9-8241-0a7ed8f22b06",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -5889,6 +5889,16 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "afaa67a2-c48c-4668-92d6-6fea17dc179e",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -5985,7 +5995,7 @@
           "world": null
         },
         {
-          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "key": "bc348045-e368-4c19-97a5-c153e35fede6",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6155,7 +6165,7 @@
           "world": "W01"
         },
         {
-          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "key": "d402280d-07bd-4080-9e23-6d5d478e23a1",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6165,17 +6175,7 @@
           "world": null
         },
         {
-          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "key": "d937558e-7b14-42f9-8241-0a7ed8f22b06",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6221,7 +6221,7 @@
       "dpr": 2,
       "tile": 56,
       "drawCalls": 4,
-      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 24.0 MiB · W01 cave (atlas 3.2 · bands 15.2 · bg 0.0 · layers 5.7 · other 0.0) · pages @3x · guard surface,core @2x\nheld 0.3 s",
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 24.0 MiB · W01 cave (atlas 3.2 · bands 15.2 · bg 0.0 · layers 5.7 · other 0.0) · pages @3x · guard surface,core @2x\nat ceiling",
       "misses": {},
       "textures": [
         {
@@ -6259,6 +6259,16 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "afaa67a2-c48c-4668-92d6-6fea17dc179e",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -6355,7 +6365,7 @@
           "world": null
         },
         {
-          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "key": "bc348045-e368-4c19-97a5-c153e35fede6",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6465,7 +6475,7 @@
           "world": "W01"
         },
         {
-          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "key": "d402280d-07bd-4080-9e23-6d5d478e23a1",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6475,17 +6485,7 @@
           "world": null
         },
         {
-          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "key": "d937558e-7b14-42f9-8241-0a7ed8f22b06",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6574,6 +6574,16 @@
           "bytes": 64,
           "width": 4,
           "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "afaa67a2-c48c-4668-92d6-6fea17dc179e",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
           "group": "other",
           "zone": null,
           "density": null,
@@ -6670,7 +6680,7 @@
           "world": null
         },
         {
-          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "key": "bc348045-e368-4c19-97a5-c153e35fede6",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6830,7 +6840,7 @@
           "world": "W02"
         },
         {
-          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "key": "d402280d-07bd-4080-9e23-6d5d478e23a1",
           "bytes": 4,
           "width": 1,
           "height": 1,
@@ -6840,17 +6850,7 @@
           "world": null
         },
         {
-          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
-          "bytes": 4,
-          "width": 1,
-          "height": 1,
-          "group": "other",
-          "zone": null,
-          "density": null,
-          "world": null
-        },
-        {
-          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "key": "d937558e-7b14-42f9-8241-0a7ed8f22b06",
           "bytes": 4,
           "width": 1,
           "height": 1,

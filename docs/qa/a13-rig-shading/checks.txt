@@ -1,8 +1,10 @@
-A13 checks on 9369ec2 plus the evidence commit (no runtime change), 2026-11-09.
-Browser checks from a private copy served by Vite, Chrome 156 (chromium-1248).
+A13 checks on 9369ec2, e97e1d7 and the review fixes (drill tip inside the frame, halo inside its mount,
+icon-energy frozen, tests and tooling), 2026-11-09.
+Browser checks from private copies served by Vite, Chrome 156 (chromium-1248).
 
-== PYTHON=python3 npm run assets:rebuild, twice ==
-686 files under assets/campaign: identical SHA-256 before, after rebuild 1 and after rebuild 2 (19.3 s, 18.6 s)
+== PYTHON=python3 npm run assets:rebuild, twice; once more under CI's toolchain ==
+686 files under assets/campaign: identical SHA-256 after rebuild 1 and rebuild 2 (Python 3.13, Pillow 12.3.0,
+Node 22); the rebuild under Pillow 12.0.0, numpy 2.5.3 and Node 24.22.2 gives the same SHA-256 for every generated file
 
 == npm run assets:check (exit 0) ==
 W01 artwork verified: 182 frames, 29 design IDs, 114 sized icons, 2048×960, 225 KiB PNG.
@@ -17,18 +19,21 @@ Tier marks (r 8 of 96, drawn span ≤ 0.177 of the frame, ≤ 0.18; no ring insi
 
 == npm test -- --maxWorkers=2 (exit 0) ==
 Test Files  38 passed | 5 skipped (43)
-Tests  392 passed | 5 skipped (397)
+Tests  394 passed | 5 skipped (399)
 
 == npm run format:check (exit 0) ==
 All matched files use Prettier code style!
 
+== npm run build (exit 0) ==
+✓ built in 1.32s
+
 == npm run test:render (exit 0) ==
 PASS hidden geology canvas/W01: air/solid identical; draws=null; textures=30.93 MiB; stationary dirty cells=0; probe={"geometryFrames":0,"clippedOverdrawScreens":null,"triangles":null,"unsupportedDraws":null,"textureUploads":null,"textureSubUploads":null,"fogBlurMaximumAlphaStep":1,"lightMapMaximumAlphaStep":4}
 PASS hidden geology canvas/W02: air/solid identical; draws=null; textures=30.74 MiB; stationary dirty cells=0; probe={"geometryFrames":0,"clippedOverdrawScreens":null,"triangles":null,"unsupportedDraws":null,"textureUploads":null,"textureSubUploads":null,"fogBlurMaximumAlphaStep":2,"lightMapMaximumAlphaStep":6}
-PASS hidden geology webgl/W01: air/solid identical; draws=5; textures=30.93 MiB; stationary dirty cells=0; probe={"geometryFrames":5,"clippedOverdrawScreens":2.059033583759695,"triangles":72,"unsupportedDraws":0,"textureUploads":0,"textureSubUploads":0,"fogBlurMaximumAlphaStep":1,"lightMapMaximumAlphaStep":4}
-PASS hidden geology webgl/W02: air/solid identical; draws=4; textures=30.74 MiB; stationary dirty cells=0; probe={"geometryFrames":5,"clippedOverdrawScreens":2.0484514574074173,"triangles":54,"unsupportedDraws":0,"textureUploads":0,"textureSubUploads":0,"fogBlurMaximumAlphaStep":2,"lightMapMaximumAlphaStep":6}
-W01 {'meanChannelDifference': 0.43038168724279835, 'p95MaximumChannelDifference': 2, 'maximumChannelDifference': 60, 'sharePixelsWithin3Levels': 0.9982862654320988, 'canvasDarkShareBelow40': 0.037216820987654324, 'gates': {'literalParityWithin3': 'unmet', 'darkShareBelow45Percent': 'pass'}}
-W02 {'meanChannelDifference': 0.3750120884773662, 'p95MaximumChannelDifference': 1, 'maximumChannelDifference': 60, 'sharePixelsWithin3Levels': 0.9984359567901234, 'canvasDarkShareBelow40': 0.010839506172839505, 'gates': {'literalParityWithin3': 'unmet', 'darkShareBelow45Percent': 'pass'}}
+PASS hidden geology webgl/W01: air/solid identical; draws=5; textures=30.93 MiB; stationary dirty cells=0; probe={"geometryFrames":5,"clippedOverdrawScreens":2.0590260980520942,"triangles":72,"unsupportedDraws":0,"textureUploads":0,"textureSubUploads":0,"fogBlurMaximumAlphaStep":1,"lightMapMaximumAlphaStep":4}
+PASS hidden geology webgl/W02: air/solid identical; draws=4; textures=30.74 MiB; stationary dirty cells=0; probe={"geometryFrames":5,"clippedOverdrawScreens":2.0484439716998164,"triangles":54,"unsupportedDraws":0,"textureUploads":0,"textureSubUploads":0,"fogBlurMaximumAlphaStep":2,"lightMapMaximumAlphaStep":6}
+W01 {'meanChannelDifference': 0.43039609053497946, 'p95MaximumChannelDifference': 2, 'maximumChannelDifference': 60, 'sharePixelsWithin3Levels': 0.9982885802469136, 'canvasDarkShareBelow40': 0.03721527777777778, 'gates': {'literalParityWithin3': 'unmet', 'darkShareBelow45Percent': 'pass'}}
+W02 {'meanChannelDifference': 0.37501594650205766, 'p95MaximumChannelDifference': 1, 'maximumChannelDifference': 60, 'sharePixelsWithin3Levels': 0.9984413580246914, 'canvasDarkShareBelow40': 0.010838734567901234, 'gates': {'literalParityWithin3': 'unmet', 'darkShareBelow45Percent': 'pass'}}
 
 == IMPROVEMENT_CHECKS=visual,fog,harness npm run test:improvements (exit 0) ==
 PASS Both worlds hide caves identically to solid rock; high contrast changes actual canvas edges
@@ -46,3 +51,50 @@ phone boot: 16.77 MiB · W01 surface · atlas 3.03 · bands 5.06 · bg 3.50 · l
 phone W01: 27.13 MiB · W01 shaft · atlas 3.27 · bands 15.19 · bg 3.50 · layers 5.15 · other 0.03 · pages @2x
 phone cave: 22.04 MiB · W01 cave · atlas 1.67 · bands 15.19 · bg 0.00 · layers 5.15 · other 0.03 · pages @2x
 phone W02: 26.94 MiB · W02 shaft · atlas 3.08 · bands 15.19 · bg 3.50 · layers 5.15 · other 0.03 · pages @2x
+
+== npm run test:feel (exit 0) ==
+PASS webgl/desktop: DPR, HUD,200mbeacon, reduced motion, native audio
+PASS webgl/portrait: DPR, HUD,200mbeacon, reduced motion, native audio
+PASS webgl/landscape: DPR, HUD,200mbeacon, reduced motion, native audio
+PASS webgl/small: DPR, HUD,200mbeacon, reduced motion, native audio
+PASS canvas/desktop: DPR, HUD,200mbeacon, reduced motion, native audio
+PASS canvas/portrait: DPR, HUD,200mbeacon, reduced motion, native audio
+PASS canvas/landscape: DPR, HUD,200mbeacon, reduced motion, native audio
+PASS canvas/small: DPR, HUD,200mbeacon, reduced motion, native audio
+
+== npm run test:hud:surface (exit 0) ==
+Surface HUD checks completed: 4
+
+== docs/qa/t13b-asset-pipeline/emissive-runtime.mjs (exit 0; every assertion passes) ==
+lit-webgl-desktop-lit: draws 8 · 40.05 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-webgl-desktop-lit: draws 10 · 40.05 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-webgl-desktop-base: draws 6 · 40.05 MiB · emissives [] · misses {}
+masked-webgl-desktop-base: draws 6 · 40.05 MiB · emissives [] · misses {}
+lit-webgl-desktop-hc-lit: draws 8 · 40.05 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-webgl-desktop-hc-lit: draws 10 · 40.05 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-webgl-desktop-hc-base: draws 6 · 40.05 MiB · emissives [] · misses {}
+masked-webgl-desktop-hc-base: draws 6 · 40.05 MiB · emissives [] · misses {}
+lit-webgl-phone-lit: draws 8 · 21.84 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-webgl-phone-lit: draws 10 · 21.84 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-webgl-phone-base: draws 6 · 21.84 MiB · emissives [] · misses {}
+masked-webgl-phone-base: draws 6 · 21.84 MiB · emissives [] · misses {}
+lit-webgl-phone-hc-lit: draws 8 · 21.84 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-webgl-phone-hc-lit: draws 10 · 21.84 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-webgl-phone-hc-base: draws 6 · 21.84 MiB · emissives [] · misses {}
+masked-webgl-phone-hc-base: draws 6 · 21.84 MiB · emissives [] · misses {}
+lit-canvas-desktop-lit: draws — · 38.44 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-canvas-desktop-lit: draws — · 38.44 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-canvas-desktop-base: draws — · 38.44 MiB · emissives [] · misses {}
+masked-canvas-desktop-base: draws — · 38.44 MiB · emissives [] · misses {}
+lit-canvas-desktop-hc-lit: draws — · 38.44 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-canvas-desktop-hc-lit: draws — · 38.44 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-canvas-desktop-hc-base: draws — · 38.44 MiB · emissives [] · misses {}
+masked-canvas-desktop-hc-base: draws — · 38.44 MiB · emissives [] · misses {}
+lit-canvas-phone-lit: draws — · 21.84 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-canvas-phone-lit: draws — · 21.84 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-canvas-phone-base: draws — · 21.84 MiB · emissives [] · misses {}
+masked-canvas-phone-base: draws — · 21.84 MiB · emissives [] · misses {}
+lit-canvas-phone-hc-lit: draws — · 21.84 MiB · emissives [mission-beacon-emissive@17.6, rig-cabin-emissive@23.9] · misses {}
+masked-canvas-phone-hc-lit: draws — · 21.84 MiB · emissives [mission-beacon-emissive@17.6 masked, rig-cabin-emissive@23.9] · misses {}
+lit-canvas-phone-hc-base: draws — · 21.84 MiB · emissives [] · misses {}
+masked-canvas-phone-hc-base: draws — · 21.84 MiB · emissives [] · misses {}

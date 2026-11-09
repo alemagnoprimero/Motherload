@@ -1,5 +1,5 @@
 {
- "base": "http://127.0.0.1:5321/?backing=2",
+ "base": "http://127.0.0.1:5361/?backing=2",
  "backingPin": 2,
  "frames": {
   "a02-spawn-1440x900@2": {
@@ -65,8 +65,8 @@
    },
    "tiles_across": 25.0,
    "overlay": {
-    "edges_full": 29858,
-    "edges_hudfree": 22503,
+    "edges_full": 29851,
+    "edges_hudfree": 22496,
     "playfield_px": 1177994,
     "overlay_share": 0.246,
     "art_edge_density": 0.0191
@@ -104,7 +104,7 @@
    ],
    "frame": {
     "L_mean": 26.8,
-    "L_sd": 7.3,
+    "L_sd": 7.4,
     "L_p2": 15.3,
     "L_p98": 52.7,
     "L_range_p2_p98": 37.4,
@@ -150,8 +150,8 @@
    },
    "tiles_across": 22.0,
    "overlay": {
-    "edges_full": 24737,
-    "edges_hudfree": 14464,
+    "edges_full": 24736,
+    "edges_hudfree": 14463,
     "playfield_px": 1177994,
     "overlay_share": 0.415,
     "art_edge_density": 0.0123
@@ -286,8 +286,8 @@
    },
    "tiles_across": 8.9,
    "overlay": {
-    "edges_full": 17637,
-    "edges_hudfree": 9272,
+    "edges_full": 17638,
+    "edges_hudfree": 9273,
     "playfield_px": 276625,
     "overlay_share": 0.474,
     "art_edge_density": 0.0335

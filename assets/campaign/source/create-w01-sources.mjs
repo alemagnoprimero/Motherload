@@ -20,7 +20,6 @@ import {
 } from "./w01-ore.mjs";
 import {
   RIG_VARIANT,
-  rigEnergy,
   rigFeet,
   rigFrames,
   rigLateFrames,
@@ -559,12 +558,22 @@ for (let i = 0; i < 3; i++) {
     pivot: { x: 0.5, y: 1 },
   });
 }
-// Art item A13: the HUD icons for the drill, cargo, hull, engine and rack
-// keep their pre-A13 drawings (these functions, as they were): at the HUD's
-// 22-31 CSS px the reworked modules read worse (a silver box and a cone for
-// the drill, a thin grey bar for the hull, grey cabinets for the engine and
-// rack). icon-energy and icon-feet follow the reworked generators.
+// Art item A13: the HUD icons for the drill, energy, cargo, hull, engine and
+// rack keep their pre-A13 drawings (these functions, as they were): at the
+// HUD's 22-31 CSS px the reworked modules read worse (a silver box and a
+// cone for the drill, a thin grey bar for the hull, grey cabinets for the
+// engine and rack), and the brief keeps every HUD icon but the feet. Only
+// icon-feet follows the reworked generator.
 const INK = "#111e26";
+function frozenEnergy(rank) {
+  return layer(
+    "energy-canister",
+    rect(rank ? 13 : 17, 40, 14, 31, rank ? "#e8b660" : "#d27637", 5, INK, 4) +
+      rect(rank ? 13 : 17, 50, 14, 5, "#b9c2b7", 0, INK, 2) +
+      rect(rank ? 17 : 21, 35, 6, 6, "#a7b7b2", 2, INK, 2) +
+      (rank ? path("M15 60 H26 M15 64 H26", "none", "#fcdf9e", 2) : ""),
+  );
+}
 function frozenEngine(rank) {
   return layer(
     "rear-engine",
@@ -645,7 +654,7 @@ const iconZoom = (drawing, x, y, scale) =>
   `<g transform="translate(64 64) scale(${scale}) translate(${-x} ${-y})">${drawing}</g>`;
 const icons = {
   drill: iconZoom(frozenDrill(1, "right"), 107, 68, 2.6),
-  energy: iconZoom(rigEnergy(1), 21, 54, 2.2),
+  energy: iconZoom(frozenEnergy(1), 21, 54, 2.2),
   cargo: iconZoom(frozenBay(1), 32, 64, 2.9),
   hull: iconZoom(frozenHull(1), 75, 68, 1.5),
   engine: iconZoom(frozenEngine(1), 30, 57, 2.15),

@@ -15,7 +15,7 @@
 | Warm-accent share, % (concept) | 1.5–4 % surface; 2–5 % cavern (G1) | 0.10 (0.66) | 0.39 (2.16) |
 | Natural-cave boundary, axis-aligned share | ≤30 % (G1), cavern; hard rock excluded | — | — |
 | Wall profile (rock → lip → undercut → air) | lip ≥ rock +55; undercut ≤ air −8 (G1) | 109→139→36→37 ✗ | 109→153→36→37 ✗ |
-| Tile-normalised mean gradient | ≥2.5 (G1) | 1.03 ✗ | — |
+| Tile-normalised mean gradient | ≥2.5 (G1) | 1.02 ✗ | — |
 | Playfield within 10 luma of one value | ≤25 % (G2) | 87.5 % ✗ | — |
 | Headlamp core L\* / b\* (0.35 tile) | ≥70 / +15 to +30 (G1); shaft and cavern | 86.3 / +18.3 ✓ | 87.2 / +18.2 ✓ |
 | Overlay edge share | ≤20 % (G1) | 42 % ✗ | 47 % ✗ |

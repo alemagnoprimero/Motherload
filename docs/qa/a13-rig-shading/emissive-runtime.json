@@ -1,0 +1,262 @@
+{
+ "script": "docs/qa/t13b-asset-pipeline/emissive-runtime.mjs (all assertions pass: each sibling copies its base; beacon ADD at 17.6 over its base at 15, masked only in the masked scene; rig-cabin-emissive ADD at 23.9 over rig-cabin at 22, never masked; nothing with ?debug=no-emissive)",
+ "tree": "A13 with the review fixes, private copy, Chrome 156, frozen clock, reduced motion, Render quality 2",
+ "samples": [
+  {
+   "renderer": "canvas",
+   "form": "desktop",
+   "highContrast": false,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 305,
+   "resident MiB": 38.44
+  },
+  {
+   "renderer": "canvas",
+   "form": "desktop",
+   "highContrast": false,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 38.44
+  },
+  {
+   "renderer": "canvas",
+   "form": "desktop",
+   "highContrast": true,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 305,
+   "resident MiB": 38.44
+  },
+  {
+   "renderer": "canvas",
+   "form": "desktop",
+   "highContrast": true,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 38.44
+  },
+  {
+   "renderer": "canvas",
+   "form": "phone",
+   "highContrast": false,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 342,
+   "resident MiB": 21.84
+  },
+  {
+   "renderer": "canvas",
+   "form": "phone",
+   "highContrast": false,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 21.84
+  },
+  {
+   "renderer": "canvas",
+   "form": "phone",
+   "highContrast": true,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 342,
+   "resident MiB": 21.84
+  },
+  {
+   "renderer": "canvas",
+   "form": "phone",
+   "highContrast": true,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    null,
+    null
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 21.84
+  },
+  {
+   "renderer": "webgl",
+   "form": "desktop",
+   "highContrast": false,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    8
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 319,
+   "resident MiB": 40.05
+  },
+  {
+   "renderer": "webgl",
+   "form": "desktop",
+   "highContrast": false,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    10
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 40.05
+  },
+  {
+   "renderer": "webgl",
+   "form": "desktop",
+   "highContrast": true,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    8
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 319,
+   "resident MiB": 40.05
+  },
+  {
+   "renderer": "webgl",
+   "form": "desktop",
+   "highContrast": true,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    10
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 40.05
+  },
+  {
+   "renderer": "webgl",
+   "form": "phone",
+   "highContrast": false,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    8
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 352,
+   "resident MiB": 21.84
+  },
+  {
+   "renderer": "webgl",
+   "form": "phone",
+   "highContrast": false,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    10
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 21.84
+  },
+  {
+   "renderer": "webgl",
+   "form": "phone",
+   "highContrast": true,
+   "scene": "lit",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    8
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 351,
+   "resident MiB": 21.84
+  },
+  {
+   "renderer": "webgl",
+   "form": "phone",
+   "highContrast": true,
+   "scene": "masked",
+   "webgl draws, bases alone -> with siblings": [
+    6,
+    10
+   ],
+   "siblings": [
+    "mission-beacon-emissive@17.6 masked",
+    "rig-cabin-emissive@23.9"
+   ],
+   "beacon cell px changed by the pass (masked scene: the unknown cell)": 0,
+   "resident MiB": 21.84
+  }
+ ]
+}

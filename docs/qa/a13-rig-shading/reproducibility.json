@@ -1,30 +1,30 @@
 {
   "review driver (scripts/art-review-a13.mjs OUT --before 2a6185a), two runs into fresh folders": {
-    "files run 1": 2822,
-    "files run 2": 2822,
-    "identical sha256": 2822
+    "files run 1": 3866,
+    "files run 2": 3866,
+    "identical sha256": 3866
   },
   "sheet builder (scripts/art-review-a13.py), run 1 into a scratch folder, run 2 into this folder": {
     "files": 9,
     "identical sha256": 9,
     "sha256": {
-      "contact-facets.png": "b752867bfbf37efcf673f0a26570957f2e2a649fb19c3f9ef7b4a9e2726b5c39",
-      "sheet-board.png": "08a0110a37b16ccf7d752c0821ff6619ae89a5d546949d9b3d88a6fa32d5c514",
-      "sheet-drill.png": "405dbb643a884cf57d0db9c9e66b17e535526414977700aa18459f3ed1b6c563",
-      "sheet-emissive.png": "36969b3cc63fe908a73625d8c595738f42540cacb4acab047f6185a8d31fa9e6",
-      "sheet-icons.png": "5473c6929d0de280ec1ebd9efc0b44e4e450684663cc53fc213b72f1e6d55daa",
-      "sheet-poses.png": "780a8210235e39fd736cfd4f6f4c401f51ac8ba0d527fe7c1c152f0869033cc5",
-      "sheet-scales.png": "2601707bc760c4aac3db26f8b53254f548993c328c5c1ac4a31b71a66db57eb4",
-      "sheet-tiers.png": "1960bca3618118b38ca4ec0e2f3a7d5db350fdac1e6b88640baa2e9a893bf2db",
-      "sheet.json": "aee681c1c4f6513472d3a26428ae577f04af0e00b7ca16915bc3a090909d8d23"
+      "contact-facets.png": "6a61bba2bf3fd55fc7a46d42871155eb8ea123cdf02193f4ca6f6eaa73f3f5fb",
+      "sheet-board.png": "f093185670170222ee415ea451af12a217fc54c3a5f32754e6bb88cb96570cde",
+      "sheet-drill.png": "7b00fcb027310e04236c7e14057d92b6fcd4593bc52a28a68a79556d752fb6df",
+      "sheet-emissive.png": "e08b68b1b7bd2d48677a50dd796230a0724fb2286a523cfbcf2baa111c0a2014",
+      "sheet-icons.png": "ffa484bae3e2ebe7a29baaee657f5a197ab455774b2b257378ff0afdb6b9bdbf",
+      "sheet-poses.png": "7fa72d4cc19e597c80203b69287c9c240844c3136389a82cfecdc17ce69e777e",
+      "sheet-scales.png": "ebc65c62ad40ce4a6ca4aba8668079c9f66bb32746e3628e6f724ea51ced4641",
+      "sheet-tiers.png": "0b50df123d8ed2b273df09d76a90c81ee2f37195e126f7cdc92683c4d298e973",
+      "sheet.json": "4d395df2ac9ce902ac68bf516cd6f1e4372d9b6467b457a43031d1a8146427f3"
     }
   },
   "PYTHON=python3 npm run assets:rebuild, twice (this tree)": {
     "files under assets/campaign": 686,
-    "identical sha256 before, after rebuild 1 and after rebuild 2": true,
-    "seconds per rebuild": [
-      19.3,
-      18.6
-    ]
+    "identical sha256 after rebuild 1 and rebuild 2": true
+  },
+  "the same rebuild under CI's toolchain (Pillow 12.0.0, numpy 2.5.3, Node 24.22.2)": {
+    "identical sha256 for every generated file": true,
+    "note": "assets/campaign/kit/README.md, a hand-written doc, was edited between the runs"
   }
 }

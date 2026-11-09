@@ -8,6 +8,11 @@ Per W01 core hero page: size, decoded bytes (RGBA, 4 bytes a pixel), PNG
 bytes, frame count; for rig-cabin and rig-cabin-emissive at every density:
 the page, the trimmed size and the source size; and every W01 page's total
 decoded bytes.
+
+BEFORE defaults to 2a6185a, item 2's tip (T13b, PR #18), which A13 is built
+on. After a squash merge a fresh clone may not have it: fetch it (git fetch
+origin pull/18/head) or pass the commit A13 is built on; the script stops
+with that hint when a revision does not resolve.
 """
 import json
 import subprocess
@@ -44,9 +49,16 @@ def pages(rev):
     return record
 
 
+def resolve(rev):
+    if subprocess.run(['git', 'rev-parse', '--verify', f'{rev}^{{commit}}'], capture_output=True).returncode:
+        sys.exit(f'pages.py: {rev} is not a commit here. The default BEFORE is item 2\'s tip (T13b, PR #18): '
+                 'fetch it (git fetch origin pull/18/head) or pass the commit A13 is built on.')
+    return rev
+
+
 def main():
-    before = sys.argv[1] if len(sys.argv) > 1 else '2a6185a'
-    after = sys.argv[2] if len(sys.argv) > 2 else 'HEAD'
+    before = resolve(sys.argv[1] if len(sys.argv) > 1 else '2a6185a')
+    after = resolve(sys.argv[2] if len(sys.argv) > 2 else 'HEAD')
     report = {'before': before, 'after': after, before: pages(before), after: pages(after)}
     json.dump(report, sys.stdout, indent=2)
     sys.stdout.write('\n')

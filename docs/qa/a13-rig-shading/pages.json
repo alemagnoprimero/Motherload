@@ -1,6 +1,6 @@
 {
   "before": "2a6185a",
-  "after": "9369ec2",
+  "after": "HEAD",
   "2a6185a": {
     "pages": {
       "campaign-w01-core-hero-2x-0": {
@@ -89,7 +89,7 @@
       "frames on pages": 100
     }
   },
-  "9369ec2": {
+  "HEAD": {
     "pages": {
       "campaign-w01-core-hero-2x-0": {
         "size": [
@@ -98,7 +98,7 @@
         ],
         "decoded bytes": 917504,
         "decoded MiB": 0.875,
-        "png bytes": 53434,
+        "png bytes": 53296,
         "frames": 75
       },
       "campaign-w01-core-hero-3x-0": {
@@ -108,7 +108,7 @@
         ],
         "decoded bytes": 2064384,
         "decoded MiB": 1.969,
-        "png bytes": 84859,
+        "png bytes": 84354,
         "frames": 75
       },
       "campaign-w01-core-hero-4x-0": {
@@ -118,7 +118,7 @@
         ],
         "decoded bytes": 3407872,
         "decoded MiB": 3.25,
-        "png bytes": 111467,
+        "png bytes": 111671,
         "frames": 75
       }
     },
@@ -174,7 +174,7 @@
         "@2x": {
           "page": "campaign-w01-core-hero-2x-0",
           "trimmed": [
-            24,
+            23,
             21
           ],
           "source": [
@@ -189,8 +189,8 @@
         "@3x": {
           "page": "campaign-w01-core-hero-3x-0",
           "trimmed": [
-            36,
-            33
+            35,
+            32
           ],
           "source": [
             192,
@@ -204,8 +204,8 @@
         "@4x": {
           "page": "campaign-w01-core-hero-4x-0",
           "trimmed": [
-            48,
-            44
+            47,
+            43
           ],
           "source": [
             256,

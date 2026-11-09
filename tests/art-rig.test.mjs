@@ -4,7 +4,9 @@ import { OUTLINE, board, lightness } from "../assets/campaign/kit/palette.mjs";
 import { outlineWidth } from "../assets/campaign/kit/svg.mjs";
 import {
   CABIN_INDICATOR,
+  HALO_R,
   HEADLAMP_LENS,
+  MOUNT_R,
   RIG_LIGHTS,
   RIG_TONES,
   RIG_VARIANT,
@@ -12,6 +14,7 @@ import {
   rigFrames,
   rigLateFrames,
 } from "../assets/campaign/source/w01-rig.mjs";
+import { T1_LITE_HEADLAMP_LENS } from "../src/campaign/render/t1-lite-headlamp.ts";
 
 // Art item A13 (asset 40): the rig's shading, checked structurally from the
 // shipped sources (style guide §6.1 "Shading model": generator art is
@@ -188,7 +191,12 @@ describe("A13: rig shading, structurally", () => {
     for (const [name, body] of FRAMES) {
       const text = await source(name);
       expect(text, name).toBe(svg(name, body));
-      expect(text, name).not.toContain("<linearGradient");
+      // Only literal fills, which the tier count reads: no gradient or
+      // pattern fill escapes it (the sibling's halo is light, not shading).
+      if (!name.endsWith("-emissive"))
+        expect(text, name).not.toMatch(
+          /<(linear|radial)Gradient|<pattern|fill="url\(/,
+        );
     }
   });
 
@@ -378,5 +386,43 @@ describe("A13: rig shading, structurally", () => {
     // The sibling holds only light: nothing but the light zone.
     expect(zones(lit).map(([zone]) => zone)).toEqual(["light", "light"]);
     expect(lit).not.toContain(RIG_TONES.hull.lit);
+    // The halo ends inside the dark mount disc, so it stays on the rig's
+    // silhouette (§9.2), with half a unit to spare for texture filtering.
+    expect(lit).toContain(`r="${HALO_R}"`);
+    expect(base).toContain(`fill="${OUTLINE}"`);
+    expect(MOUNT_R - HALO_R).toBeGreaterThanOrEqual(0.5);
+  });
+
+  it("puts T1-lite's core on the lens the art draws", () => {
+    // render/t1-lite-headlamp.ts places the core at the lens, as a fraction
+    // of the 128-unit frame from its centre; it must follow HEADLAMP_LENS.
+    expect(T1_LITE_HEADLAMP_LENS.x).toBeCloseTo(
+      (HEADLAMP_LENS.x - 64) / 128,
+      9,
+    );
+    expect(T1_LITE_HEADLAMP_LENS.y).toBeCloseTo(
+      (HEADLAMP_LENS.y - 64) / 128,
+      9,
+    );
+  });
+
+  it("keeps the drill bit's tip inside the 128-unit frame (no outline cut flat)", async () => {
+    // The bit's tip is the rig's farthest point (the review driver found no
+    // other frame reaching the canvas edge): its round outline join (half
+    // the §6.1 width) must end inside the frame, right-facing and, turned a
+    // quarter, facing down.
+    const half = outlineWidth(96) / 2;
+    const tip = await source("rig-drill-idle");
+    const cone = tip.match(
+      /<clipPath id="rig-drill-idle-bit-clip"><path d="M([\d.]+) ([\d.]+) L([\d.]+) ([\d.]+)/,
+    );
+    expect(cone, "the bit's clip path").not.toBeNull();
+    const tipX = Number(cone[3]);
+    expect(tipX + half).toBeLessThanOrEqual(128 - 0.5);
+    // The down drill maps x to y (translate(132 0) rotate(90)), so the same
+    // tip lies at y = tipX.
+    expect(await source("rig-drill-down-0")).toContain(
+      '<g transform="translate(132 0) rotate(90 0 0)">',
+    );
   });
 });
