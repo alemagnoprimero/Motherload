@@ -6,6 +6,35 @@ export function campaignTileSize(width: number, height: number) {
   return Math.max(48, width / 22);
 }
 
+/**
+ * The retained terrain buffer (render/terrain.ts) for a view: its raster
+ * tile, its grid and its size in device px. Pure, so the T13b budget guard
+ * (render/zones.ts) can project the buffer before it exists.
+ */
+export function retainedTerrainGrid(
+  width: number,
+  height: number,
+  baseTile: number,
+  viewDpr: number,
+  coarse: boolean,
+) {
+  const dpr = Math.min(viewDpr, 1.5),
+    // Camera zoom scales the retained image; it never resizes or rerasterizes
+    // the material canvas. Whole raster pixels also make scrolling copies exact.
+    tile = Math.round(baseTile * (coarse ? 0.88 : 1) * dpr) / dpr,
+    padding = coarse ? 4 : 3,
+    columns = Math.ceil(width / (baseTile * 0.88)) + padding,
+    rows = Math.ceil(height / (baseTile * 0.88)) + padding;
+  return {
+    dpr,
+    tile,
+    columns,
+    rows,
+    pixelWidth: Math.ceil(columns * tile * dpr),
+    pixelHeight: Math.ceil(rows * tile * dpr),
+  };
+}
+
 export function campaignSafeArea(
   width: number,
   height: number,

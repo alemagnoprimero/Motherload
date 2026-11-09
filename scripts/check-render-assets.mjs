@@ -20,7 +20,7 @@ const lab = (rgb) => {
   ].map((v) => (v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116));
   return [116 * xyz[1] - 16, 500 * (xyz[0] - xyz[1]), 200 * (xyz[1] - xyz[2])];
 };
-// Audit T13a: raster-source frames reach the runtime pages at every scale.
+// Audit T13a: raster-source frames reach the zone pages at @2x and @3x.
 const rasterFrames = JSON.parse(
   await readFile(
     new URL("../assets/campaign/source/frames.json", import.meta.url),
@@ -71,39 +71,6 @@ for (const world of ["w01", "w02"]) {
     }
   }
 }
-// The legacy runtime pages, which the game loads until it switches to the
-// zone pages (they go with that switch).
-for (const world of ["w01", "w02"])
-  for (const scale of [2, 3]) {
-    const index = await json(`${world}-pages-runtime-${scale}x.json`);
-    assert.equal(index.scale, scale);
-    const names = new Set(),
-      raster = new Set();
-    for (const page of index.pages) {
-      const png = await readFile(new URL(page.image, directory));
-      const atlas = await json(page.data);
-      checkCampaignAtlas(png, atlas, []);
-      assert.equal(Number(atlas.meta.scale), scale);
-      assert.deepEqual(atlas.meta.rigPivot, [32 * scale, 32 * scale]);
-      assert.equal(atlas.meta.rigTreadBaseline, 50 * scale);
-      for (const [name, frame] of Object.entries(atlas.frames)) {
-        assert.ok(!names.has(name), "Duplicate frame across pages");
-        names.add(name);
-        assert.equal(frame.sourceSize.w / frame.logicalSize.w, scale);
-        assert.equal(frame.sourceSize.h / frame.logicalSize.h, scale);
-        if (frame.source === "raster") raster.add(name);
-        frames++;
-      }
-    }
-    if (world === "w01")
-      for (const name of rasterFrames)
-        assert.ok(
-          raster.has(name),
-          `Raster frame ${name} is missing from the @${scale}x runtime pages`,
-        );
-    assert.ok(names.has("sky-body"));
-    assert.ok(names.has(world === "w01" ? "rig-cabin" : "mission-sample"));
-  }
 const manifest = await json("bands/manifest.json");
 assert.equal(manifest.pages.length, 48);
 const means = {};
@@ -159,7 +126,7 @@ for (const world of ["W01", "W02"])
     }
   }
 console.log(
-  `Render kit verified: ${frames} native scaled sprite frames (${zonePages} zone pages @2x/@3x/@4x and the legacy runtime pages);48seamlessmacro pages;maximumseam${maximumSeam};material ΔL≥${minimumMaterial.toFixed(1)},band ΔE≥${minimumBand.toFixed(1)}.`,
+  `Render kit verified: ${frames} native scaled sprite frames (${zonePages} zone pages @2x/@3x/@4x);48seamlessmacro pages;maximumseam${maximumSeam};material ΔL≥${minimumMaterial.toFixed(1)},band ΔE≥${minimumBand.toFixed(1)}.`,
 );
 
 // Art item A12 with T9: the tier mark. Its place and size come from one

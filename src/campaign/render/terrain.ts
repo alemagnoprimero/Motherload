@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import type { Campaign } from "../model";
 import type { CampaignView } from "../view";
 import { renderBand } from "./bands";
-import { campaignTileSize } from "../layout";
+import { campaignTileSize, retainedTerrainGrid } from "../layout";
 
 /** Retains one buffered visible grid; untouched cells are never redrawn or re-uploaded. */
 export class RetainedTerrain {
@@ -34,17 +34,22 @@ export class RetainedTerrain {
     this.signature = "";
     this.patternRevision = "";
   }
-  render(campaign: Campaign, view: CampaignView, highContrast: boolean) {
+  /** `baseTile`: campaignTileSize, unless the `?tile=` debug override is set. */
+  render(
+    campaign: Campaign,
+    view: CampaignView,
+    highContrast: boolean,
+    baseTile = campaignTileSize(view.width, view.height),
+  ) {
     const world = campaign.world,
-      baseTile = campaignTileSize(view.width, view.height),
-      coarse = matchMedia("(pointer: coarse)").matches,
-      dpr = Math.min(view.dpr, 1.5),
-      // Camera zoom scales the retained image; it never resizes or rerasterizes
-      // the material canvas. Whole raster pixels also make scrolling copies exact.
-      tile = Math.round(baseTile * (coarse ? 0.88 : 1) * dpr) / dpr;
-    const padding = coarse ? 4 : 3;
-    const columns = Math.ceil(view.width / (baseTile * 0.88)) + padding,
-      rows = Math.ceil(view.height / (baseTile * 0.88)) + padding;
+      coarse = matchMedia("(pointer: coarse)").matches;
+    const { dpr, tile, columns, rows } = retainedTerrainGrid(
+      view.width,
+      view.height,
+      baseTile,
+      view.dpr,
+      coarse,
+    );
     const firstX = Math.floor(view.scrollX / view.tile),
       firstY = Math.floor(view.scrollY / view.tile),
       lastX = Math.ceil((view.scrollX + view.width) / view.tile),

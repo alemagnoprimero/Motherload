@@ -108,9 +108,6 @@ const pack = (...args) => {
 };
 // The full @2x atlas: every frame, for the asset checks.
 pack("2");
-// Legacy runtime pages, loaded by the game until it reads the zone pages.
-pack("2", "runtime");
-pack("3", "runtime");
 // Audit T13b: zone pages at @2x, @3x and (hero set) @4x, and their manifest.
 await buildZonePages({
   root,

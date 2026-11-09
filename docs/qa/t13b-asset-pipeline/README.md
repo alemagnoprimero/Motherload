@@ -1,6 +1,6 @@
 # T13b: asset pipeline
 
-Evidence for audit item T13b (`docs/ART_QUALITY_AUDIT.md` §5.3 row T13b, acceptance "Byte-identical rebuilds"; `docs/art-direction/decisions.md` D1 and D5). The item lands in stages; this folder grows with each. The first stage, part (d) of the item, makes the asset build reproducible; it changes no source and no art ("Reproducible rasterizer"). The second builds the zone pages of parts (b) and (c) at @2x, @3x and @4x with their manifests and checks ("Zone pages and densities"); the game switches to them in a later stage.
+Evidence for audit item T13b (`docs/ART_QUALITY_AUDIT.md` §5.3 row T13b, acceptance "Byte-identical rebuilds"; `docs/art-direction/decisions.md` D1 and D5). The item lands in stages; this folder grows with each. The first stage, part (d) of the item, makes the asset build reproducible; it changes no source and no art ("Reproducible rasterizer"). The second builds the zone pages of parts (b) and (c) at @2x, @3x and @4x with their manifests and checks ("Zone pages and densities"). The third switches the game to them: zone streaming, D1's density rule, the budget guard, the F1 readout and the memory report ("Runtime: zone streaming and resident bytes").
 
 ## Reproducible rasterizer
 
@@ -156,7 +156,7 @@ python3 scripts/art-unchanged-pngs.py
 
 ## Zone pages and densities
 
-The build side of parts (b) and (c). Both world builds now write zone pages at @2x, @3x and, for the hero set, @4x, plus one manifest per world. The game still loads the legacy runtime pages (`w01-runtime*`, `w02-runtime*`) until the runtime stage switches it to the manifests and deletes them.
+The build side of parts (b) and (c). Both world builds now write zone pages at @2x, @3x and, for the hero set, @4x, plus one manifest per world. At this stage the game still loaded the legacy runtime pages (`w01-runtime*`, `w02-runtime*`); the runtime stage below switched it to the manifests and deleted them.
 
 ### What changed
 
@@ -316,4 +316,128 @@ PYTHON=python3 npm run assets:rebuild            # writes the zone pages and w0X
 npm run assets:check                             # zone page gates, then every page's pixels
 npx vitest run tests/campaign-zones.test.mjs     # classification against the generated worlds
 python3 docs/qa/t13a-raster-source/compare-frames.py 84e4005   # only rig-body-0..7 change
+```
+
+## Runtime: zone streaming and resident bytes
+
+The runtime half of parts (b) and (c). The game loads only zone pages now; the legacy runtime pages (`w0X-runtime.png/json`, `w0X-runtime-3x-0.png/json`, `w0X-pages-runtime-{2,3}x.json`) are deleted, with the build steps, the packer branch and the check loop that wrote and read them.
+
+### What changed
+
+- **`src/campaign/render/zones.ts`** (new, pure, no Phaser) holds every decision; `render/art.ts` only loads and unloads what it decides. It imports both manifests statically (`generated/w0X-zones.json`).
+- **D1's density rule.** Device px per tile = the base tile (`campaignTileSize()`, or the `?tile=` debug override) × F1's backing ceiling, min(devicePixelRatio, Render quality, 2) (the `?backing=` pin when set). It is the ceiling, not the adaptive level, so an F1 step never reloads pages. The 0.88–1.08 context zoom is ignored: it moves with depth, and a swap mid-descent would buy at most 8 % of sharpness. Density = clamp(ceil(px / 48), 2, 4) for hero pages and clamp(…, 2, 3) for the rest. The pointer tests are gone: `scene.ts`'s coarse-pointer `artQuality` and `art.ts`'s `(pointer: coarse)` gate on the @3x pages. `scene.artQuality` stays numeric (the hero density, 2, 3 or 4). A unit test stubs `matchMedia` to throw and greps both files.
+- **The resident set** (`planPages`). W01's core always; W02's core while W02 is current or owned (`state.worlds.W02`, which is also what unlocks level-2 hardware), because W01 draws `rig-*-2`, `rig-drill-collar-*-2` and `tool-*` from it. Then the zone pages of the rig's band ±1 (±0 at the surface, as the band pages) that the current world draws, by each zone's `bands` and `worlds` in the manifest: W02's cave bands draw W01's cave frames, W01 draws no W02 zone page. Surface pages hold the current lander stage and the next one. The sky and ridges belong with band A, as the surface pages do, so they unload in bands C and D. Per band (W01; W02 alike with its own rows):
+
+  | rig in | bands resident | zones resident | the scene waits for |
+  |---|---|---|---|
+  | A at the surface (row ≤ 1) | A | core, surface (stage s, s+1), shaft; sky and ridges | core, surface (stage s), shaft, sky and ridges |
+  | A below row 1 | A, B | the same | the same |
+  | B | A, B, C | core, surface, shaft, cave; sky and ridges | core, shaft |
+  | C | B, C, D | core, shaft, cave | core, cave |
+  | D | C, D | core, cave | core, cave |
+
+- **Streaming** (`art.update`, before anything is drawn). A page that becomes required is queued first. A page leaves only when nothing needs it, and a page that another density of the same pages replaces leaves only once that density is resident. Nothing leaves while the scene is waiting (`ready()` false), because the scene then keeps last frame's sprites on screen. The tile sprites of the sky and ridges keep their own copy of their texture (Phaser 3.90 `TileSprite.fillCanvas`), so while their texture is out they point at Phaser's 32 px default, which frees that copy too, and back once it is resident.
+- **`art.ready()`** is now "the cores and the zones of the rig's own band resident (at any density while a swap loads), with the sky and ridges in band A". Neighbour bands and the next lander stage stream ahead without gating. The lead asked for "every required page"; the scene's wait calls `onUpdate(0)`, so gating on neighbours would pause the simulation for the frames a neighbour page takes to load each time the rig crosses into a new band. With this split, only a jump (travel, an import, a long fall) waits, as before.
+- **`create()`** checks the manifests (the frames the game needs are listed in W01's, and in W02's when W02 is current) and that the core pages are resident. It no longer looks for `sky-body` or `dock-stage-*` in a texture.
+- **Frame lookup** (`scene.image()`). The owner atlas comes from the manifests exactly as before: W02's only for W02 frames in W02, `tool-*` and the shared upgrades, and only when W02's manifest has the frame (`frameOwner`). Residency never decides it, so W01's lander cannot flash in W02 while W02's surface page loads. The page is the resident one at the planned density, else another resident density of the same pages. `art.textureFor(frame, worldId, quality?)` returns that key (the surface smoke uses it). A frame no resident page holds is counted (`__campaignDebug.frameMisses()`).
+- **The budget guard** (decisions.md D1, "Budget guard"). When the planned pages would take the projected resident bytes over the form's §7 budget, non-hero zones step down to @2x, the largest saving first, until they fit or none is left. Hero pages keep their D1 density. The form comes from F1's render tier: High has the desktop 64 MiB, Medium and Low the phone's 20 MiB in band A and 40 MiB below. The projection: the retained terrain sized exactly as `render/terrain.ts` sizes it (now one pure function, `layout.ts retainedTerrainGrid`), the light map, 0.25 MiB of small canvases, the band pages (5.06 MiB per band) and the sky and ridges (3.5 MiB) for the rig's position, plus the planned pages. It decides the same way in `preload()` and in play, so boot does not load one density and then swap.
+- **`?tile=N`** (debug only, `renderDebugOptions`, next to `?backing=`): the base tile in CSS px (32–160) in place of `campaignTileSize()`, for the scene, the retained terrain and page choice. It previews D1's option B before T11. Without it nothing changes.
+- **F1 readout** (`?debug=frametime`) gains a line: `tex 34.9 MiB · W01 surface (atlas 6.4 · bands 5.1 · bg 3.5 · layers 19.9 · other 0.0) · pages @3x`, with `pages @2x/@3x · guard surface @2x` when hero and other pages differ and the guard stepped. Groups (`zones.ts textureGroup`): atlas = zone pages, bands = band material pages, bg = the streamed sky and ridges, layers = retained terrain, light map and T1-lite, other = gradients, glints and Phaser's defaults. The zone is where the rig is: surface (band A, row ≤ 1), shaft (bands A–B) or cave (C–D).
+- **Dataset**, next to `data-resident-texture-bytes`: `data-resident-texture-zone`, `data-resident-texture-groups` (JSON bytes per group), `data-atlas-density` (`3` or `3/4`: the rig zone's other pages / hero pages), `data-atlas-guard` (zones the guard stepped) and `data-atlas-pages` (the resident zone pages). `data-world-texture` keeps its `campaign-w01` / `campaign-w02` world label for `frontier-smoke.mjs`.
+- **`window.__campaignDebug`** gains `textures()` (`[{key, bytes, width, height, group, zone, density, world}]`), `frameMisses(reset?)` and `drawnFrames()` (`[{frame, texture}]` this frame).
+- **`scripts/render-memory.mjs`** gains a cave stage (W01 row 43, band C) and prints the bytes per group, the zone, the densities and the guard per stage; the gates are unchanged (64 MiB desktop; touch 20 boot / 40 active).
+- **Readers of the old names**: `campaign-smoke.mjs` `ready()` collects W01's delivered zone pages and finds its six frames in them; `surface-render-smoke.mjs` holds the pages of its board frames (`art.hold()`, a harness hook: only the current lander stage and the next are resident, and W01's surface page only in W01) and resolves each frame's owner with `art.owner()`; `check-render-assets.mjs` drops the legacy loop; `pack-campaign-atlas.py` keeps the full @2x atlas and the zone mode only.
+- **Band-page revision**: `art.ts` bumps `band-assets-revision` (which makes the retained terrain rebuild its patterns) only when band pages loaded, not after every load, so streaming a zone page does not redraw the terrain.
+
+### Resident texture bytes, before and after
+
+Read as `scripts/render-memory.mjs` reads them: WebGL, frozen clock, reduced motion, Render quality 2, `data-resident-texture-bytes` once five samples agree. "Before" is item 1's tip `1a0b5db`, which loads the legacy pages (desktop: `w01-runtime` 5.50 MiB + `w01-runtime-3x-0` 11.50, and W02's 2.25 + 5.50 once in W02; phones only the @2x pages); its readout has no `tex` line. "After" is this stage, with the F1 readout (`?debug=frametime`) and `data-resident-texture-groups`. Stages: boot (the surface zone at the dock), W01 row 18 (band B), W01 row 43 (band C, the cave zone), W02 row 26 (band B). MiB = decoded RGBA, 4 bytes per pixel. `docs/qa/t13b-asset-pipeline/zone-runtime.mjs resident` reproduces every row; `resident-before.json` and `resident-after.json` hold the samples, and `f1/` the readouts.
+
+| form | device px per tile → pages | boot (surface) | W01 row 18 | W01 row 43 (cave) | W02 row 26 | §7 gate |
+|---|---|---|---|---|---|---|
+| desktop 1440 × 900 @2, before | quality 3 (pointer test) | 45.46 | 55.58 | 55.58 | 63.33 | 64 |
+| desktop 1440 × 900 @2, after | 130.9 → @3x | **34.89** | **45.57** | **38.77** | **45.03** | 64 |
+| phone 393 × 851 @3, before | @2x (coarse pointer) | 19.24 | 29.37 | 29.37 | 31.62 | 20 / 40 |
+| phone 393 × 851 @3, after | 88 → @2x | **16.84** | **27.19** | **22.10** | **27.01** | 20 / 40 |
+| desktop 1728 × 1117 @2, before | quality 3 | 55.87 | 66.00 ✗ | 66.00 ✗ | 73.75 ✗ | 64 |
+| desktop 1728 × 1117 @2, after | 157.1 → hero @4x, rest @3x | **47.76** | **58.43** | **50.56** | **58.42** | 64 |
+| desktop 1440 × 900 @2, `?tile=82`, after | 164 → hero @4x, rest @3x | **39.09** | **49.77** | **41.89** | **49.75** | 64 |
+| phone 393 × 851 @3, `?tile=56`, after | 112 → @3x; at boot the guard holds the surface's other page at @2x | **19.79** (20.69 without the guard) | **31.36** | **24.57** | **30.83** | 20 / 40 |
+
+After, by readout group (MiB; render-memory's print):
+
+| form, stage | total | atlas | bands | bg | layers | other | pages |
+|---|---|---|---|---|---|---|---|
+| desktop, boot | 34.89 | 6.44 | 5.06 | 3.50 | 19.86 | 0.03 | @3x: core hero + rest, surface stage 0 + 1, surface rest, shaft |
+| desktop, W01 row 18 | 45.57 | 6.98 | 15.19 | 3.50 | 19.86 | 0.03 | + cave |
+| desktop, W01 row 43 | 38.77 | 3.69 | 15.19 | 0 | 19.86 | 0.03 | core, shaft, cave; no surface, sky or ridges |
+| desktop, W02 row 26 | 45.03 | 6.45 | 15.19 | 3.50 | 19.86 | 0.03 | W01 core and cave, W02 core, surface (stages 0, 1), cave |
+| phone, boot | 16.84 | 3.09 | 5.06 | 3.50 | 5.15 | 0.03 | @2x, as desktop |
+| phone, W01 row 18 | 27.19 | 3.33 | 15.19 | 3.50 | 5.15 | 0.03 | |
+| phone, W01 row 43 | 22.10 | 1.73 | 15.19 | 0 | 5.15 | 0.03 | |
+| phone, W02 row 26 | 27.01 | 3.14 | 15.19 | 3.50 | 5.15 | 0.03 | |
+
+Where the savings come from: the desktop atlases fall from 17.00 MiB (24.75 in W02) to 3.7–7.0, because the @2x page is no longer resident beside the @3x one, terrain and DOM frames are off the pages, the lander is resident one stage (and the next) at a time, and the cave zone drops the surface pages, the sky and the ridges (3.5 MiB). The 1728 × 1117 desktop, over 64 MiB before at three of four stages, now fits at all four with the @4x hero pages. The layers group (the retained terrain, 19.5 MiB on desktop at backing 2) is now the largest; T2's GPU terrain removes it (§7).
+
+What the metric still does not see (unchanged by this stage, audit §7 "The memory metric must change"): Phaser 3.90 tile sprites draw from their own power-of-two copy of their texture, so the sky and the two ridges hold about another 4.5 MiB outside the TextureManager while they show (512 × 256, and 1024 × 512 for each ridge). In bands C and D they now point at Phaser's 32 px default, so that copy is freed with the textures.
+
+The honest D1 consequence: at today's tile sizes a 1440 × 900 @2 desktop has 130.9 device px per tile and loads @3x, not @4x (D1's 160–170 px assumes T11's 80–85 CSS px tile), and a 393 × 851 @3 phone has a 44 CSS px tile × backing 2 = 88 px and loads @2x (the audit's T13b line concerns phones with tiles over 48 CSS px). Both D1 paths are proved in the browser above: the @4x hero pages at 1728 × 1117 @2 (a real viewport, tile 78.5 CSS px) and with the debug tile `?tile=82` at 1440 × 900 @2 (D1 option B), and the phone's @3x zone pages with `?tile=56` at 393 × 851 @3 (D1 option B). There the budget guard steps the surface's non-hero page (sky body, refuge and relay) to @2x at boot, because the @3x pages would take boot to 20.69 MiB; the rig, ore and lander stay @3x, and from band B on everything is @3x (31.36 MiB, budget 40).
+
+### Cross-world frames
+
+`zone-runtime.mjs crossworld` (desktop 1440 × 900 @2, so @3x pages) imports 57 positions with every cell known and records which page drew each sprite and every `image()` miss: W01 at row 18 with W02 hardware (every upgrade at level 2, the thermal auger equipped), both surfaces, the site rows of a new generator-v2 W01 campaign (rows 8 to 59, three columns each), and the site and hazard rows of both improvement fixtures (W01 8–59, W02 12–99, two columns each). **No frame missed a page at any position.** What drew from where:
+
+| drawn in | frames | page |
+|---|---|---|
+| W02 | the rig: `rig-body-*`, `rig-cabin`, `rig-drill-*`, `rig-*-0`, `rig-damage-*`; `site-wreck` | `campaign-w01-core-hero-3x-0` |
+| W02 | `cold-pocket`, `surface-salvage`, `warning-shelf`, `site-survey`, `site-mission`, mission markers | `campaign-w01-core-3x-0` |
+| W02 (cave bands) | `site-core`, `site-geode`, `site-cache`, `pressure-seam` | `campaign-w01-cave-3x-0` |
+| W02 | `ice-vent` (never drawn before T13b: the old prefix filter dropped it) | `campaign-w02-cave-3x-0` |
+| W02 | `dock-stage-0`, `sky-body` | `campaign-w02-surface-stage0-3x-0`, `campaign-w02-surface-3x-0` |
+| W01 with W02 hardware | `rig-engine-2`, `rig-energy-2`, `rig-bay-2`, `rig-hull-2`, `rig-drill-collar-right-2`, `tool-thermal` | `campaign-w02-core-hero-3x-0` |
+| both | `ore-*`, `package-*`, `relic` | each world's own core hero page |
+| both | `deposit-socket` (W02 has none of its own) | `campaign-w01-core-hero-3x-0` |
+
+One finding fixed on the way: `scene.ts` drew every known pressure seam each frame, on screen or not. With the old single page that cost only pooled sprites; with zone pages an off-screen seam in band D asked for the cave page while the rig was in band A. Seams now draw only within a tile of the view, like vents and sites; their warning ring and label are unchanged.
+
+### F1 readouts
+
+`f1/` holds the readout at boot and in the cave for the two CI forms, and at boot for each proof configuration (`desktop-boot.png`, `desktop-cave.png`, `phone-boot.png`, `phone-cave.png`, `desktop-1728-boot.png`, `desktop-tile82-boot.png`, `phone-tile56-boot.png`, `phone-tile56-W01.png`). For example, the phone with `?tile=56` at boot:
+
+```
+p95 0.0 ms
+backing 2× · medium
+tex 19.8 MiB · W01 surface (atlas 5.5 · bands 5.1 · bg 3.5 · layers 5.7 · other 0.0) · pages @2x/@3x · guard surface @2x
+at ceiling
+```
+
+### Verification (runtime stage)
+
+Browser checks ran in a private copy of the tree (Chrome 156, `vite` on port 5221); "before" runs used `git archive 1a0b5db` on port 5222.
+
+| Check | Result |
+|---|---|
+| `npm test -- --maxWorkers=2` | 364 passed, 5 skipped (313 + 51 in the new `tests/campaign-zones-runtime.test.ts`: D1's cases 1440 × 900 @2 → @3x, 1728 × 1117 @2 → @4x hero / @3x rest, 393 × 851 @3 → @2x, tile 56 at backing 2 → @3x, a coarse 1366 × 1024 @2 tablet → @3x, the pointer never read; the resident set per band in both worlds; owner atlases; the guard; the projection constants against the band manifest and the PNG headers; the readout groups) |
+| `npm run format:check`, `npm run build` (asset checks, `tsc`, `vite build`) | pass |
+| `npm run assets:check` | pass, numbers unchanged |
+| `PYTHON=python3 npm run assets:rebuild` (caches deleted) | the tree is unchanged but for the twelve deleted legacy files, which no build writes any more |
+| `npm run test:render` | pass: hidden geology identical to solid on canvas and WebGL in W01 and W02; 3 WebGL draws; 0 texture uploads per stationary frame; textures 30.99 / 30.81 MiB (33.16 / 35.41 before). The camera round trip (W01 row 18 → ±6 columns, row 50, row 0, back) restores the same pixels byte for byte while the zone pages stream on the way. Against stage 2's captures (legacy pages, same renders) the world frames differ only at sprite edges from the new page geometry: at most 1 level on 19 px (WebGL) and 5 levels on 43 px (canvas) |
+| `IMPROVEMENT_CHECKS=behavior,visual,fog,harness npm run test:improvements` (CI's set) | pass: the fog check (both worlds hide caves identically to solid rock), 12 visual captures, the 8 §9 harness fixtures |
+| `npm run test:render:memory` | pass, with the new cave stage (table above) |
+| `npm run test:feel` | pass, both renderers: touch boot 16.84 (portrait), 16.83 (landscape), 14.96 MiB (small), limit 20; at 200 m 27.19, 27.19, 25.32 MiB, limit 40. Desktop canvas (Low tier, so the phone's budget) 33.28 / 43.64 MiB against WebGL's 34.89 / 45.57: the guard holds its core and surface non-hero pages at @2x in band A |
+| `npm run test:camera`, `test:hud:surface`, `test:opening:browser` (desktop and portrait), `test:plan-ui`, `test:audio`, `test:campaign:storage` | pass |
+| `npm run test:surface:render` (dev server) and `node scripts/surface-render-smoke.mjs` against the compiled preview (`vite build` + `vite preview`, as the Firefox workflow) | pass, 8 cases each, no failed assets: zone pages load from hashed files and from inlined data URLs (pages under 4 KiB) |
+| `zone-runtime.mjs crossworld` | pass: 57 positions, no misses (above) |
+| `npm run test:campaign:browser` (not in CI) | fails only at the known stale expectation, `campaign-smoke.mjs` "/300/" against "Construction · 200/600 CR", after the same three passes; the identical failure on `1a0b5db`. Its `ready()` now reads W01's delivered zone pages and passes |
+| `npm run test:frontier` (not in CI) | fails at "Schema1 import preserves original packages" ('Slag iron' vs 'Ironium'), its first assertion; the identical failure on `1a0b5db` (PR #16 rewrites this script) |
+| `npm run test:poi` (not in CI) | fails at "Mission guidance fits campaign-mission-signal" (a zero box); the identical failure on `1a0b5db` (PR #16 rewrites this script) |
+
+### Reproduce (runtime)
+
+```bash
+npx vitest run tests/campaign-zones-runtime.test.ts
+PREVIEW_URL=http://127.0.0.1:5173/ npm run test:render:memory     # per-group bytes per stage
+PREVIEW_URL=http://127.0.0.1:5173/ node docs/qa/t13b-asset-pipeline/zone-runtime.mjs resident artifacts/t13b-resident
+PREVIEW_URL=http://127.0.0.1:5173/ node docs/qa/t13b-asset-pipeline/zone-runtime.mjs crossworld artifacts/t13b-crossworld
+# in a checkout of 1a0b5db, the same script with FORMS=desktop,phone,desktop-1728 gives the "before" rows
 ```

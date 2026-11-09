@@ -19,6 +19,7 @@ const browser = await launchBrowser(),
     notes: [
       "Deterministic clock installed before boot to measure maximum requested DPR2 without adaptive fallback. Native adaptive behavior is checked separately.",
       "Waits for texture residency to settle after loading each world's middle band and neighbours; W01 shared pages stay resident after travel.",
+      "Stages (audit T13b): boot = the surface zone at the dock; W01 = row 18 (band B, shaft zone); cave = W01 row 43 (band C, cave zone); W02 = row 26 (band B). Each sample lists the resident bytes per F1 readout group (atlas, bands, bg, layers, other), the rig's zone, the zone page densities (plain/hero) and the resident zone pages.",
     ],
     samples: [],
   };
@@ -79,21 +80,28 @@ try {
         bytes: Number(element.dataset.residentTextureBytes),
         dpr: Number(element.dataset.viewDpr),
         world: element.dataset.campaignWorld,
+        zone: element.dataset.residentTextureZone,
+        groups: JSON.parse(element.dataset.residentTextureGroups || "{}"),
+        density: element.dataset.atlasDensity,
+        guard: element.dataset.atlasGuard,
+        pages: (element.dataset.atlasPages || "").split(",").filter(Boolean),
       }));
     };
-    for (const stage of ["boot", "W01", "W02"]) {
+    // W01 row 18 is band B (the shaft zone), row 43 band C (the cave zone).
+    const stages = { W01: ["W01", 18], cave: ["W01", 43], W02: ["W02", 26] };
+    for (const stage of ["boot", "W01", "cave", "W02"]) {
       if (stage !== "boot") {
+        const [worldId, row] = stages[stage];
         const checkpoint = JSON.parse(
           await readFile(
             new URL(
-              `../tests/fixtures/improvement-${stage.toLowerCase()}.json`,
+              `../tests/fixtures/improvement-${worldId.toLowerCase()}.json`,
               import.meta.url,
             ),
             "utf8",
           ),
         );
-        const world = checkpoint.state.worlds[stage],
-          row = stage === "W01" ? 18 : 26,
+        const world = checkpoint.state.worlds[worldId],
           x = checkpoint.state.vehicle.x;
         checkpoint.state.vehicle = { x, y: row - 0.36, energy: 9, hull: 10 };
         for (let y = 0; y < row; y++) {
@@ -111,6 +119,14 @@ try {
       }
       const sample = { form, stage, ...(await settle()) };
       results.samples.push(sample);
+      const mib = (bytes) => (bytes / 2 ** 20).toFixed(2);
+      console.log(
+        `${form} ${stage}: ${mib(sample.bytes)} MiB · ${sample.world} ${sample.zone} · ` +
+          Object.entries(sample.groups)
+            .map(([group, bytes]) => `${group} ${mib(bytes)}`)
+            .join(" · ") +
+          ` · pages @${sample.density}${sample.guard ? ` (guard ${sample.guard})` : ""}`,
+      );
       console.log(JSON.stringify(sample));
       assert.equal(
         sample.dpr,

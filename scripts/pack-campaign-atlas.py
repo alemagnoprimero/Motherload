@@ -3,10 +3,9 @@ Frames with "source": "raster" (audit T13a) are packed like the others and keep
 that mark in their atlas entry. PNGs are saved with fast compression: the build
 re-encodes them with scripts/png-canonical.mjs (audit T13b).
 
-  pack-campaign-atlas.py ROOT WORLD 2              full @2x atlas (the checks read it)
-  pack-campaign-atlas.py ROOT WORLD SCALE runtime  legacy runtime pages (until the
-                                                   game reads the zone pages)
-  pack-campaign-atlas.py ROOT WORLD zones PLAN     zone pages (audit T13b): PLAN is
+  pack-campaign-atlas.py ROOT WORLD 2           full @2x atlas (the checks read it)
+  pack-campaign-atlas.py ROOT WORLD zones PLAN  zone pages (audit T13b), the only
+      pages the game loads: PLAN is
       a JSON file {"groups": [{stem, zone, hero, stage?, density, frames}], "result": path}
       written by the world build from scripts/campaign-zones.mjs. Each group is
       packed into pages of at most 2048 x 1024 at the width (a multiple of 64)
@@ -90,14 +89,14 @@ if sys.argv[3] == 'zones':
     print(f'{world} zones: {len(result)} page(s), ' + ', '.join(f"@{d}x {sum(p['bytes'] for p in result if p['density'] == d) / 2**20:.2f} MiB" for d in (2, 3, 4)) + ' decoded')
     sys.exit(0)
 
-scale = int(sys.argv[3]); runtime = len(sys.argv) > 4 and sys.argv[4] == 'runtime'
-width = 2048 if world == 'w01' or scale == 3 else 1024
-names = [record['name'] for record in manifest['frames'] if not (runtime and record['name'].split('-')[0] in ('soil', 'stone', 'ice', 'frozen', 'bedrock'))]
+scale = int(sys.argv[3])
+if scale != 2: raise SystemExit('the full atlas is packed @2x only; zone pages carry @3x and @4x')
+width = 2048 if world == 'w01' else 1024
+names = [record['name'] for record in manifest['frames']]
 pages = shelf_pack(load(names, scale), width, 2048)
 pageinfo = []
 for n, (placed, height) in enumerate(pages):
-    family = 'runtime' if runtime else 'atlas'
-    name = f'{world}-{family}' if scale == 2 and n == 0 else f'{world}-{family}-{scale}x-{n}'
+    name = f'{world}-atlas' if n == 0 else f'{world}-atlas-{scale}x-{n}'
     pageinfo.append(write_page(name, placed, width, height, scale))
-(out / f'{world}-pages-{"runtime-" if runtime else ""}{scale}x.json').write_text(json.dumps({'scale': scale, 'pages': pageinfo}, indent=2) + '\n')
-print(f'{world} {"runtime" if runtime else "full"} @{scale}x: {len(pages)} trimmed page(s), {sum(p["bytes"] for p in pageinfo) / 2**20:.2f} MiB decoded')
+(out / f'{world}-pages-{scale}x.json').write_text(json.dumps({'scale': scale, 'pages': pageinfo}, indent=2) + '\n')
+print(f'{world} full @{scale}x: {len(pages)} trimmed page(s), {sum(p["bytes"] for p in pageinfo) / 2**20:.2f} MiB decoded')

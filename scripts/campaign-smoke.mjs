@@ -332,10 +332,17 @@ async function ready(browser, base, options = {}, harness = {}) {
     assets = new Map();
   errors.set(page, faults);
   page.on("pageerror", (error) => faults.push(error.message));
+  // Audit T13b: W01's zone pages (generated/w01-zones.json) as the loader
+  // fetched them (Vite's dev server also serves each as a `?url` module).
   page.on("response", (response) => {
     const path = new URL(response.url()).pathname;
-    if (/w01-(?:atlas|runtime).*\.(png|json)$/.test(path))
-      assets.set(path.endsWith(".png") ? "png" : "json", response);
+    if (
+      /\/w01-(?:core|surface|shaft|cave)[\w-]*-\dx-\d+\.(png|json)$/.test(
+        path,
+      ) &&
+      ["xhr", "fetch", "image"].includes(response.request().resourceType())
+    )
+      assets.set(path, response);
   });
   await page.goto(destination(base));
   await page.waitForFunction(
@@ -359,10 +366,16 @@ async function ready(browser, base, options = {}, harness = {}) {
   );
   for (const ext of ["png", "json"])
     assert.ok(
-      assets.get(ext)?.ok(),
-      "Actual campaign " + ext + " atlas response must load",
+      [...assets].some(([path]) => path.endsWith(ext)) &&
+        [...assets].every(
+          ([path, response]) => !path.endsWith(ext) || response.ok(),
+        ),
+      "Actual campaign " + ext + " zone page responses must load",
     );
-  const atlas = await assets.get("json").json();
+  const frames = {};
+  for (const [path, response] of assets)
+    if (path.endsWith(".json"))
+      Object.assign(frames, (await response.json()).frames);
   for (const frame of [
     "rig-cabin",
     "rig-body-0",
@@ -371,7 +384,7 @@ async function ready(browser, base, options = {}, harness = {}) {
     "crack-1",
     "mission-core",
   ])
-    assert.ok(atlas.frames[frame], frame + " exists in delivered atlas");
+    assert.ok(frames[frame], frame + " exists in a delivered zone page");
   await page.waitForFunction(() =>
     Array.from(
       document.querySelectorAll(".campaign-hud img, .campaign-toolbar img"),
