@@ -234,8 +234,10 @@ export const DEBUG_TILE = { min: 32, max: 160 } as const;
 
 /**
  * `?backing=1|1.5|2` pins the backing scale. `?debug=` takes a comma list:
- * `frametime` shows the readout, and `test-raster` draws T13a's placeholder
- * raster frame in the 60 m scene. `?tile=N` (T13b, debug only) sets the base
+ * `frametime` shows the readout, `test-raster` draws T13a's placeholder
+ * raster frame in the 60 m scene, and `no-emissive` (T13b) draws no
+ * `-emissive` sibling, so a capture can compare the bases alone with the lit
+ * frame. `?tile=N` (T13b, debug only) sets the base
  * tile to N CSS px in place of campaignTileSize(), to preview D1's larger
  * tiles (option B) before T11: the zone pages follow it, as they follow
  * device px per tile. Without these parameters nothing changes.
@@ -251,6 +253,7 @@ export function renderDebugOptions(search: string) {
       : undefined,
     frameTime: debug.includes("frametime"),
     testRaster: debug.includes("test-raster"),
+    emissive: !debug.includes("no-emissive"),
     tile:
       Number.isFinite(tile) && tile >= DEBUG_TILE.min && tile <= DEBUG_TILE.max
         ? tile

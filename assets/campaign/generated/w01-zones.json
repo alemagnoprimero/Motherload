@@ -32,7 +32,7 @@
         "W02"
       ],
       "note": "always resident",
-      "frames": 85
+      "frames": 86
     },
     "surface": {
       "bands": [
@@ -150,6 +150,7 @@
     "thrust-4": "core",
     "thrust-5": "core",
     "mission-beacon": "core",
+    "mission-beacon-emissive": "core",
     "mission-valve": "core",
     "mission-antenna": "core",
     "mission-core": "core",
@@ -247,6 +248,7 @@
     "thrust-4",
     "thrust-5",
     "mission-beacon",
+    "mission-beacon-emissive",
     "relic",
     "dock-stage-0",
     "dock-stage-1",
@@ -433,6 +435,7 @@
         "tier-mark-hc-1",
         "tier-mark-hc-2",
         "tier-mark-hc-4",
+        "mission-beacon-emissive",
         "rig-hull-0"
       ]
     },
@@ -519,6 +522,7 @@
         "tier-mark-hc-3",
         "tier-mark-hc-4",
         "tier-mark-hc-2",
+        "mission-beacon-emissive",
         "rig-hull-0"
       ]
     },
@@ -605,6 +609,7 @@
         "tier-mark-hc-2",
         "tier-mark-hc-3",
         "tier-mark-hc-4",
+        "mission-beacon-emissive",
         "rig-hull-0"
       ]
     },

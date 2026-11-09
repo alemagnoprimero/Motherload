@@ -2016,9 +2016,37 @@
         "h": 48
       }
     },
-    "rig-hull-0": {
+    "mission-beacon-emissive": {
       "frame": {
         "x": 74,
+        "y": 986,
+        "w": 26,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 83,
+        "y": 17,
+        "w": 26,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "rig-hull-0": {
+      "frame": {
+        "x": 104,
         "y": 986,
         "w": 116,
         "h": 18

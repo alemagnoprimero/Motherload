@@ -1,6 +1,6 @@
 # T13b: asset pipeline
 
-Evidence for audit item T13b (`docs/ART_QUALITY_AUDIT.md` §5.3 row T13b, acceptance "Byte-identical rebuilds"; `docs/art-direction/decisions.md` D1 and D5). The item lands in stages; this folder grows with each. The first stage, part (d) of the item, makes the asset build reproducible; it changes no source and no art ("Reproducible rasterizer"). The second builds the zone pages of parts (b) and (c) at @2x, @3x and @4x with their manifests and checks ("Zone pages and densities"). The third switches the game to them: zone streaming, D1's density rule, the budget guard, the F1 readout and the memory report ("Runtime: zone streaming and resident bytes").
+Evidence for audit item T13b (`docs/ART_QUALITY_AUDIT.md` §5.3 row T13b, acceptance "Byte-identical rebuilds"; `docs/art-direction/decisions.md` D1 and D5). The item lands in stages; this folder grows with each. The first stage, part (d) of the item, makes the asset build reproducible; it changes no source and no art ("Reproducible rasterizer"). The second builds the zone pages of parts (b) and (c) at @2x, @3x and @4x with their manifests and checks ("Zone pages and densities"). The third switches the game to them: zone streaming, D1's density rule, the budget guard, the F1 readout and the memory report ("Runtime: zone streaming and resident bytes"). The fourth is part (a): `-emissive` siblings, packed beside their base and drawn by the game with ADD above the darkness, with the survey beacon's lamp as the first ("Emissive siblings").
 
 ## Reproducible rasterizer
 
@@ -441,3 +441,93 @@ PREVIEW_URL=http://127.0.0.1:5173/ node docs/qa/t13b-asset-pipeline/zone-runtime
 PREVIEW_URL=http://127.0.0.1:5173/ node docs/qa/t13b-asset-pipeline/zone-runtime.mjs crossworld artifacts/t13b-crossworld
 # in a checkout of 1a0b5db, the same script with FORMS=desktop,phone,desktop-1728 gives the "before" rows
 ```
+
+## Emissive siblings
+
+Part (a) of the item: a frame `<base>-emissive` holds only its base's lit parts, lit; the base draws them unlit; the game draws the sibling with ADD above the darkness at the base's place. The convention (authoring, packing, depth, blend, budget, hidden information) is written up for item 3 and every later lit prop in `assets/campaign/kit/README.md`, "Emissive siblings at runtime". T1-lite's radial headlamp core (`render/t1-lite-headlamp.ts`) stays separate until T1.
+
+### What changed
+
+- **The first sibling: the survey beacon's lamp** (`mission-beacon`, W01 row 9, drawn at depth 15 under the light map). `create-w01-sources.mjs` now describes the beacon with the kit's `emissivePair`: the mast and pennant, the lamp head, the signal arcs. The base draws the lamp's glass with the power off (`#4b4336`); `mission-beacon-emissive` holds only the glass inside the outline (r 6.5 of the r 8 circle with its 3-unit stroke), lit with `#f6e1af − #4b4336 = #ab9e79`. Off + lit is the old fill, so where nothing darkens it the beacon looks as before (below). Only the lamp is lit: the orange pennant is a painted flag, not a light, and the arcs are a radio symbol. The beacon was the suggested candidate and is the right one: it already draws a light source, and it is underground, where the darkness is. W02 has no beacon, so W02's pages are unchanged.
+- **Pages.** The zone function already gives a sibling its base's zone, page set and page (stage 2), so the sibling sits on `campaign-w01-core-hero-{2,3,4}x-0` beside the beacon at all three densities. It fit in the pages' free space: **no page changed size**, so resident bytes are unchanged to the byte (render-memory below). The world build skips the sibling's DOM icon and draws `icons/mission-beacon-{64,128}.png` lit (nothing reads them today).
+- **Runtime** (`src/campaign/render/emissive.ts`, new; `scene.ts`). `image()`, after the device-pixel snap, queues the base sprite when its manifest has `<frame>-emissive` and the resolved page holds it. After the rig (the frame's last sprites) and T1-lite, `EmissivePass.draw()` copies each queued base's final state onto a sprite from its own pool: page, position, origin, scale, flip, rotation, alpha and mask, read after the callers' `setMask(wreckMask)`. Blend ADD (WebGL `ONE, DST_ALPHA`; Canvas `lighter`). Depth 17.6 for every base below 18 (above the light map at 17 and T1-lite at 17.5, so the sibling joins T1-lite's ADD run), the base's depth + 0.05 for rig layers (18–23). The pool is hidden at the start of every frame, so a sibling exists only while its base is drawn. Nothing varies with time.
+- **Masks without the stencil cost where they change nothing.** A base under the wreck mask (known cells: wrecks and POI markers) passes the mask on, unless every cell under the sibling's drawn (trimmed) box is known: there the mask would pass every pixel anyway, so the sibling draws unmasked in the ADD run. The box mirrors Phaser's batcher (`spriteBounds`: trimmed rect about the display origin, flip, scale, rotation); the cells are those the mask fills (`row < world.rows`, `isKnown`).
+- **Debug.** `?debug=no-emissive` (`renderDebugOptions`, beside `?backing=`, `?tile=`) draws the bases alone, for the comparisons below; without it nothing changes. `__campaignDebug.emissives()` lists the siblings drawn this frame with the base each copied; `data-emissive-sprites` counts them.
+- **Checks.** `check-campaign-assets.mjs` already failed a sibling without a same-size base in the same world on the same page at every density (stage 2, D-g); it now also fails one whose page JSON gives it another source size or pivot than its base (the runtime copies the base's scale and origin). Both breakages (source size +1, pivot changed) were made in a scratch copy and failed with the right message.
+- **Tests.** New `tests/campaign-emissive.test.mjs` (12 tests): every sibling in both manifests pairs with a same-size base on the same page, with the same source size and pivot in each page JSON and lit pixels on the page; depths (17.6 above 17 and 17.5, below 18; rig + 0.05, below 24); the pass draws a sibling only for a base drawn (queued) this frame, hides it the next frame, skips a base hidden before the pass and everything when disabled; it copies the base's final state (after a later `setMask` and move) and leaves the base's blend mode and depth alone; the mask is dropped only where `maskNeeded` says so; over four frames of growing counts no pooled sprite is ever a base sprite; the scene queues after the snap (never on a miss), begins with the frame reset, draws after the rig, builds the pool from `this.add.image` and never sets a blend mode on a base. `tests/campaign-zones.test.mjs`: two stage-2 tests assumed no real sibling existed (a stand-in beacon sibling; `HERO.test(name)` on @4x pages) and now use the real one and `isHero()`. `tests/campaign-view.test.ts` gains the `emissive` debug key.
+
+### The beacon, frame by frame
+
+`emissive-frames.py` composites the new base and sibling as the ADD pass does in full light and compares them with the single frame of `3929c6e` (the tree before the split), premultiplied:
+
+| density | page | differing px (of opaque) | max | mean over the frame | outside the lamp |
+|---|---|---|---|---|---|
+| @2x | campaign-w01-core-hero-2x-0 | 36 (1550) | 33 | 0.050 | 0 px |
+| @3x | campaign-w01-core-hero-3x-0 | 58 (3455) | 43 | 0.041 | 0 px |
+| @4x | campaign-w01-core-hero-4x-0 | 66 (6009) | 10 | 0.010 | 0 px |
+
+The differing pixels are the glass's antialiased rim, where the lit disc's coverage and the outline's do not quite add up to one.
+
+### In the game: draws, bytes and hidden information
+
+`emissive-runtime.mjs` (frozen clock, reduced motion, Render quality 2) imports two W01 scenes with the rig two cells right of the beacon and captures each with the ADD pass and with `?debug=no-emissive`, on WebGL and Canvas, desktop 1440 × 900 @2 and phone 393 × 851 @3, high contrast off and on:
+
+- **lit**: the beacon in an open cell, every cell under the lamp known: the sibling draws unmasked;
+- **masked**: the beacon buried and the cell above it unknown: the lamp straddles that cell, so the sibling keeps the wreck mask.
+
+It asserts in every run that the sibling copies its base's page, position, origin, size, flip, rotation and alpha, draws ADD (blend 1) at 17.6 while the base stays NORMAL (0) at 15, is masked only in the masked scene, and is absent with `?debug=no-emissive`. The same script on `3929c6e` gives the "before" column (one frame, no pass). `emissive-pairs.py` reads both runs:
+
+| renderer | form | HC | WebGL draws, lit scene: bases alone → ADD | masked scene: bases alone → ADD | before | lamp px the pass adds (max / mean level) | vs before: lamp mean / rim px / elsewhere px | unknown cell changed by the pass |
+|---|---|---|---|---|---|---|---|---|
+| WebGL | desktop | off | 6 → 6 | 6 → 8 | 6 | 575 (171 / 121.6) | +3.5 / 3 / **0** | **0 px** |
+| WebGL | desktop | on | 6 → 6 | 6 → 8 | | 575 (171 / 121.6) | | **0 px** |
+| WebGL | phone | off | 6 → 6 | 6 → 8 | 6 | 713 (171 / 100.9) | +3.5 / 0 / **0** | **0 px** |
+| WebGL | phone | on | 6 → 6 | 6 → 8 | | 712 (171 / 101.0) | | **0 px** |
+| Canvas | desktop | off | | | | 553 (171 / 126.5) | +4.4 / 25 / **0** | **0 px** |
+| Canvas | desktop | on | | | | 553 (171 / 126.5) | | **0 px** |
+| Canvas | phone | off | | | | 691 (171 / 104.1) | +3.6 / 19 / **0** | **0 px** |
+| Canvas | phone | on | | | | 691 (171 / 104.1) | | **0 px** |
+
+- **Draw calls.** With the lamp in T1-lite's ADD run the pass costs **+0** WebGL draws (6 → 6); when it must keep the wreck mask, **+2** (the stencil pass and the masked run: 6 → 8). Limits: 12 desktop, 10 phone. The 6 itself is not new: the masked beacon marker already costs 3 draws over the 3 of an open shaft (`render-acceptance.mjs`'s fixtures, still 3: they have no sibling on screen). High contrast changes no count.
+- **Look.** Outside the lamp's rim the frame is the old one, pixel for pixel, on both renderers. In the lamp the frame is now 3.5 to 4.4 levels brighter on average than before: the light map no longer darkens the lit glass (band A darkens visible cells by 0.04, so the gain is small here; it grows in deeper bands and with T1's darkness). The bases alone show the dark glass: 553 to 713 pixels, up to 171 levels, are the pass's.
+- **Hidden information.** In the masked scene the unknown cell above the beacon (inset 2 CSS px) is identical with and without the pass on every renderer, form and contrast. The fog check and `render-acceptance.mjs`'s hidden-geology crops pass (Verification).
+- **Bytes.** Resident texture bytes at the beacon are the same before and after (desktop WebGL 41,896,756; phone 22,961,456), and render-memory gives stage 3's numbers: the sibling fits in the core hero pages as they were.
+
+Each sheet: before (one frame) | bases alone (`?debug=no-emissive`) | lit (ADD) | masked scene, bases alone | masked scene, lit, with the unknown cell outlined in red.
+
+![WebGL, desktop](emissive/beacon-webgl-desktop.png)
+
+![Canvas, desktop](emissive/beacon-canvas-desktop.png)
+
+![WebGL, phone](emissive/beacon-webgl-phone.png)
+
+![Canvas, phone](emissive/beacon-canvas-phone.png)
+
+`emissive/emissive.json` holds the measures, `emissive/samples-after.json` and `samples-before.json` the runs (draws, bytes, pages, the siblings with their bases).
+
+### Verification (emissive stage)
+
+Browser checks ran in a private copy of the tree (Chrome 156, `vite` on port 5231); the "before" runs used `git archive 3929c6e` on port 5232.
+
+| Check | Result |
+|---|---|
+| `npm test -- --maxWorkers=2` | 376 passed, 5 skipped (364 + 12 in `tests/campaign-emissive.test.mjs`) |
+| `npm run format:check`, `npm run build` | pass |
+| `npm run assets:check` | pass; numbers unchanged (W01 181 frames, 100 runtime frames on 23 zone pages, the same decoded bytes) |
+| `PYTHON=python3 npm run assets:rebuild`, twice, caches deleted | the 683 files under `assets/campaign` are identical by SHA-256 between the runs (16.0 s each) |
+| `npm run test:render` | pass: hidden geology identical on Canvas and WebGL in W01 and W02; 3 WebGL draws; textures 30.99 / 30.81 MiB (unchanged) |
+| `IMPROVEMENT_CHECKS=behavior,visual,fog,harness npm run test:improvements` | pass: the fog check, 12 visual captures, the 8 harness fixtures |
+| `npm run test:render:memory` | pass, every stage byte for byte as stage 3: desktop 34.89 / 45.57 / 38.77 / 45.03 MiB, phone 16.84 / 27.19 / 22.10 / 27.01 |
+| `npm run test:feel`, `test:camera`, `test:hud:surface`, `test:opening:browser` (desktop and portrait; the opening reaches and surveys the beacon), `test:plan-ui`, `test:audio`, `test:campaign:storage`, `test:surface:render` | pass |
+| `emissive-runtime.mjs` (32 captures) and its assertions | pass (tables above) |
+
+### Reproduce (emissive)
+
+```bash
+npx vitest run tests/campaign-emissive.test.mjs
+python3 docs/qa/t13b-asset-pipeline/emissive-frames.py            # the beacon against 3929c6e
+PREVIEW_URL=http://127.0.0.1:5173/ node docs/qa/t13b-asset-pipeline/emissive-runtime.mjs artifacts/t13b-emissive
+# in a checkout of 3929c6e, the same script with CONTRAST=off gives the "before" captures; then
+python3 docs/qa/t13b-asset-pipeline/emissive-pairs.py BEFORE/ artifacts/t13b-emissive docs/qa/t13b-asset-pipeline/emissive
+```
+

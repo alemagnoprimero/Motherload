@@ -8,7 +8,8 @@
  *
  *   <name>            every layer, the lit parts drawn unlit
  *   <name>-emissive   only the lit parts, lit, on transparent, for the game to
- *                     draw ADD above the darkness (T13b sets how it loads them)
+ *                     draw ADD above the darkness (kit README, "Emissive
+ *                     siblings at runtime")
  *
  * Authoring only.
  */

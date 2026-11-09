@@ -7,7 +7,7 @@ Shared helpers for the art programme's generators (built in art item A4). Every 
 | `random.mjs` | `random(seed)` and `fork(name)`: seeded streams that give the same numbers on every machine |
 | `palette.mjs` | `band(id)` (the A1 swatch cards), `board(key)` (the board samples for sky, props and emitters), Lab and LCh moves (`withL`, `shiftL`, `mixLab`, `tiers`), `bevelColours` |
 | `svg.mjs` | `num`, `polygon`, `layer`, gradients, `svgDocument`, the outline rule (`outlineWidth`, `outlineStroke`), `periodic` for tiling pages, `bevelEdges` |
-| `emissive.mjs` | `emissivePair`: the base frame and its `-emissive` sibling from one description |
+| `emissive.mjs` | `emissivePair`: the base frame and its `-emissive` sibling from one description (the game draws the sibling ADD above the darkness: "Emissive siblings at runtime" below) |
 | `records.mjs` | `upsertFrames` into a `frames.json`; `writeProvenance` for `assets/campaign/source/provenance/<asset>.json` |
 | `review.mjs` | Panels at the board's tile scale and their rasterizing (resvg, as the game's assets), for `scripts/art-review.py` |
 
@@ -20,3 +20,28 @@ A session's round, in order:
 5. Write the provenance record with `records.mjs` and update the asset tracker's rows.
 
 Palette rule: the swatch cards and board samples are on-screen targets within 3 L\*, not shader inputs (style guide §1).
+
+## Emissive siblings at runtime
+
+Audit T13b (a). The convention every lit prop follows; the survey beacon's lamp (`mission-beacon-emissive`) is the first, and A13's rig headlamp and cabin glow will be the next.
+
+**Authoring.** Describe the frame once with `emissivePair({ name, width, height, layers })`. A layer that lights up is `{ name, unlit, lit }`: `unlit` is how it looks with the power off (it goes in the base frame), `lit` only the light (it goes in `<name>-emissive`, on transparent). Save both frames with the same size; frames.json lists both. Draw the lit part without the outline, just inside the base's outline (the beacon's glass: the base circle is r 8 with a 3-unit stroke, the lit circle r 6.5 with none), so the light never paints over the ink. Choose the colours so that off + lit = the colour the lit part should read where nothing darkens it: the game adds the sibling's RGB to the frame, so the beacon's lit glass is `#f6e1af` − off glass `#4b4336` = `#ab9e79`, and in full light the beacon looks exactly as the old single frame did. A halo may reach outside the base's silhouette, but keep it inside the frame and small: on a base without the wreck mask (the rig) it lights whatever is beside the prop, unknown rock included (§9.2 allows unknown rock to lift by at most 2 L\*). No glow is baked into the base, and nothing time-varying belongs in either frame. Flicker, if a prop ever needs it, goes on the scene clock and stays static under reduced motion (§9.3).
+
+**Packing.** Nothing to do. `scripts/campaign-zones.mjs` gives the sibling its base's zone, page set and hero status (`zone(emissiveOf(name) ?? name)`), so the packer puts it on its base's page at every density, @4x included for the hero set. `check-campaign-assets.mjs` fails the build unless the sibling has a base of the same size in the same world, on the same page at every density, with the same source size and pivot in the page JSON (the runtime registers the trimmed sibling by copying its base's scale and origin). The world build skips the sibling's DOM icon and draws the base's icon lit (no darkness in the DOM). The sibling usually fits in the page's free space: the beacon's lamp changed no page size, so it costs 0 resident bytes.
+
+**Drawing** (`src/campaign/render/emissive.ts`, called from `scene.ts`). After `image()` draws a base frame and snaps it to device pixels, it queues the base; once the frame's last sprite is drawn (after the rig), the pass draws every queued base's sibling from the base's final state: the same texture page, position, origin, scale (and so display size), flip, rotation, alpha, and the base's mask. The siblings come from their own pool, never from the scene's base sprites (which never reset their blend mode), and draw with the ADD blend: WebGL `ONE, DST_ALPHA` on premultiplied textures over the opaque frame, Canvas `lighter`. Transparent texels add nothing; alpha scales what is added; tint is not used (Canvas ignores it).
+
+**Depth.** Above the darkness (the light map is at 17):
+
+| base depth | sibling depth | why |
+|---|---|---|
+| below 18 (terrain 10, ore 13, scenery 14, markers 15, hazards 16, shelves 17) | 17.6 | one band for every scenery and prop sibling, just above T1-lite's ADD core (17.5), so they share its ADD run |
+| 18 to 23 (thrust 18, rig layers 20–23) | the base's depth + 0.05 | just above its own rig layer, so later rig layers (the drill and collars at 23) still cover it |
+
+A scenery sibling sits above every scenery sprite, so a hazard (16) or shelf (17) drawn over its base does not cover its light: keep lit parts where no other scenery overlaps them.
+
+**Hidden information.** A sibling is drawn only when its base was drawn this frame, so it never shows anything its base would not. A base under the wreck mask (known cells only: wrecks, POI markers) passes the mask on, except when every cell under the sibling's drawn box is known: there the mask would pass every pixel anyway, so the sibling skips the stencil pass and joins the ADD run. `docs/qa/t13b-asset-pipeline/emissive-runtime.mjs` checks that an unknown cell under the beacon's lamp is pixel-identical with and without the pass on both renderers; the fog check and `render-acceptance.mjs`'s hidden-geology crops run as before.
+
+**Budget.** WebGL draws with the beacon on screen (desktop and phone): 6 with the bases alone, 6 with the lamp lit (+0, it joins T1-lite's ADD run), 8 when the lamp must keep the wreck mask (+2: the stencil pass and the masked run). The limits are 12 desktop and 10 phone. Every separate ADD run costs about 2 draws (into ADD and back), so for the rig: keep all rig siblings on one layer depth (for A13, the cabin's 22), or their runs interleave with the NORMAL rig layers and each costs 2 more. Measure with `emissive-runtime.mjs` (which also gives the `?debug=no-emissive` comparison) and `npm run test:render`.
+
+**Debug.** `?debug=no-emissive` draws the bases alone (`renderDebugOptions`), for before/after captures; nothing changes without it. `window.__campaignDebug.emissives()` lists the siblings drawn this frame with the base each copied (frame, page, position, size, flip, rotation, alpha, depth, blend mode, mask), and `data-emissive-sprites` counts them.

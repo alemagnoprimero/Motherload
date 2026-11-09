@@ -342,7 +342,8 @@ export async function checkRasterSources(sourceDirectory, manifest, atlas) {
  * page per density it needs, in its own zone and page set; every page fits
  * 2048 × 1024 and its PNG and JSON agree with the manifest; @4x pages hold
  * only the hero set; an `-emissive` frame has a base of the same size in the
- * same world, on the same page at every density. Reads PNG headers and JSON
+ * same world, on the same page at every density, with the same source size
+ * and pivot there. Reads PNG headers and JSON
  * only; check-render-assets.mjs decodes and checks each page's pixels.
  */
 export async function checkZonePages(directory, world, frames) {
@@ -431,6 +432,19 @@ export async function checkZonePages(directory, world, frames) {
     );
     assert.ok(page.frames.length, `${page.key} is empty`);
     for (const name of page.frames) {
+      // An -emissive sibling registers on its base by copying the base's
+      // scale and origin, so both keep one source size and pivot.
+      const base = emissiveOf(name);
+      if (base !== null) {
+        const glow = atlas.frames[name],
+          lit = atlas.frames[base];
+        assert.ok(lit, `${page.key}: ${name} without its base ${base}`);
+        assert.deepEqual(
+          [glow.sourceSize, glow.pivot ?? null],
+          [lit.sourceSize, lit.pivot ?? null],
+          `${page.key}: ${name} differs from ${base} in source size or pivot`,
+        );
+      }
       const frame = byName.get(name);
       assert.ok(frame, `${page.key}: ${name} is not a ${world} frame`);
       assert.equal(

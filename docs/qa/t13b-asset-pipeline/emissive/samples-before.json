@@ -1,0 +1,632 @@
+{
+  "beacon": {
+    "x": 20,
+    "row": 9
+  },
+  "samples": [
+    {
+      "renderer": "webgl",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "lit",
+      "drawCalls": 6,
+      "bytes": 41896756,
+      "atlasPages": "campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "webgl",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "masked",
+      "drawCalls": 6,
+      "bytes": 41896756,
+      "atlasPages": "campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "webgl",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "lit",
+      "drawCalls": 6,
+      "bytes": 41896756,
+      "atlasPages": "campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "webgl",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "masked",
+      "drawCalls": 6,
+      "bytes": 41896756,
+      "atlasPages": "campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "webgl",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "lit",
+      "drawCalls": 6,
+      "bytes": 22961456,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    },
+    {
+      "renderer": "webgl",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "masked",
+      "drawCalls": 6,
+      "bytes": 22961456,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    },
+    {
+      "renderer": "webgl",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "lit",
+      "drawCalls": 6,
+      "bytes": 22961456,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    },
+    {
+      "renderer": "webgl",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "masked",
+      "drawCalls": 6,
+      "bytes": 22961456,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "lit",
+      "drawCalls": null,
+      "bytes": 40209200,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "masked",
+      "drawCalls": null,
+      "bytes": 40209200,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "lit",
+      "drawCalls": null,
+      "bytes": 40209200,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "desktop",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "masked",
+      "drawCalls": null,
+      "bytes": 40209200,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 589,
+        "y": 451,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 65.4545,
+      "cameraX": 752.5,
+      "cameraY": 170.5,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 491,
+          "y": 353,
+          "width": 196,
+          "height": 196
+        },
+        "cell": {
+          "x": 556.5899999999999,
+          "y": 353.13599999999997,
+          "width": 65.4545,
+          "height": 65.4545
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "lit",
+      "drawCalls": null,
+      "bytes": 22961452,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": true,
+      "kind": "masked",
+      "drawCalls": null,
+      "bytes": 22961452,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "lit",
+      "drawCalls": null,
+      "bytes": 22961452,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    },
+    {
+      "renderer": "canvas",
+      "form": "phone",
+      "highContrast": false,
+      "emissive": false,
+      "kind": "masked",
+      "drawCalls": null,
+      "bytes": 22961452,
+      "atlasPages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+      "emissiveSprites": null,
+      "beacon": {
+        "id": "W01-BEACON",
+        "x": 109,
+        "y": 415,
+        "known": true,
+        "status": "source",
+        "lit": true
+      },
+      "tile": 44,
+      "cameraX": 793.5,
+      "cameraY": 3,
+      "contrastShown": "false",
+      "emissives": null,
+      "misses": {},
+      "crop": {
+        "clip": {
+          "x": 43,
+          "y": 349,
+          "width": 132,
+          "height": 132
+        },
+        "cell": {
+          "x": 86.5,
+          "y": 349,
+          "width": 44,
+          "height": 44
+        }
+      }
+    }
+  ]
+}

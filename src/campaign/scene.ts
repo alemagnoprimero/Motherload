@@ -27,6 +27,7 @@ import { mergePilotControls } from "./input";
 import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
 import { W02_HAZARDS } from "./frontier";
 import { RetainedTerrain } from "./render/terrain";
+import { EmissivePass, cellsUnder, spriteBounds } from "./render/emissive";
 import { CampaignLighting } from "./render/lighting";
 import { CampaignArt } from "./render/art";
 import { renderRig } from "./render/rig";
@@ -160,6 +161,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private wreckMaskShape!: Phaser.GameObjects.Graphics;
     private wreckMask!: Phaser.Display.Masks.GeometryMask;
     private images: Phaser.GameObjects.Image[] = [];
+    /** T13b: `-emissive` siblings, ADD above the darkness, own pool. */
+    private emissive!: EmissivePass;
     private labels: Phaser.GameObjects.Text[] = [];
     private skyGradient!: Phaser.GameObjects.Image;
     private sky!: Phaser.GameObjects.TileSprite;
@@ -393,6 +396,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.installDebugHooks();
       this.wreckMaskShape = this.add.graphics().setVisible(false);
       this.wreckMask = this.wreckMaskShape.createGeometryMask();
+      // T13b: the ADD pool for -emissive siblings (render/emissive.ts).
+      this.emissive = new EmissivePass(
+        () => this.add.image(0, 0, "__DEFAULT").setVisible(false),
+        this.renderDebug.emissive,
+      );
       // Stretch a gradient once; only the transparent stars may tile. The
       // former combined sky repeated its planet and horizon on tall displays.
       // W01 (art item A4): the board's sky, palette.json sky_top at the
@@ -659,6 +667,27 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               frame: image.frame.name,
               texture: image.texture.key,
             })),
+        emissives: () =>
+          this.emissive.drawn().map(({ sprite, base }) => {
+            const state = (image: Phaser.GameObjects.Image) => ({
+              frame: image.frame.name,
+              texture: image.texture.key,
+              x: image.x,
+              y: image.y,
+              originX: image.originX,
+              originY: image.originY,
+              width: image.displayWidth,
+              height: image.displayHeight,
+              rotation: image.rotation,
+              flipX: image.flipX,
+              alpha: image.alpha,
+              depth: image.depth,
+              blendMode: Number(image.blendMode),
+              masked: Boolean(image.mask),
+              visible: image.visible,
+            });
+            return { ...state(sprite), base: state(base) };
+          }),
       };
       this.debugHooks = hooks;
       window.__campaignDebug = hooks;
@@ -931,6 +960,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.view.dpr;
       // T1-lite: remember the cabin, whose lens the headlamp core sits on.
       if (frame === "rig-cabin") this.rigCabin = image;
+      // T13b: its -emissive sibling, if the page has one, is drawn from this
+      // sprite's final state once the frame's last sprite is (emissive.draw).
+      this.emissive.queue(image, owner, actualFrame, depth);
       return true;
     }
 
@@ -1505,6 +1537,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.imageIndex = 0;
       this.labelIndex = 0;
       this.rigCabin = undefined; // T1-lite
+      this.emissive.begin(); // T13b
 
       // The opaque retained terrain and sky cover the view. Older parallax
       // polygons behind them were fully occluded but still consumed fill rate.
@@ -2369,6 +2402,18 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         damageLife: this.damageLife,
         overlays: this.overlaysVisible,
       });
+      // T13b: every sprite of the frame is drawn; their -emissive siblings
+      // follow. A sibling keeps its base's wreck mask (known cells) only when
+      // its drawn box reaches a cell the mask leaves out; elsewhere the mask
+      // passes every pixel, and the sibling joins the ADD run unmasked.
+      this.emissive.draw((sprite) =>
+        cellsUnder(spriteBounds(sprite), cx, cy, tile).some(
+          ([column, row]) =>
+            row < 0 ||
+            row >= world.rows ||
+            !campaign.isKnown(wrap(column, world.width), row),
+        ),
+      );
       // T1-lite: the headlamp core follows the cabin sprite just drawn.
       this.headlamp.render(this.rigCabin, tile);
       for (const chip of this.chips) {
@@ -2490,6 +2535,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           backingPinned: String(this.resolutionBudget.pin !== undefined),
           frameP95: this.frameP95?.toFixed(1) ?? "",
           residentTextureBytes: String(resident.total),
+          // T13b: -emissive siblings drawn this frame (ADD).
+          emissiveSprites: String(this.emissive.count),
           // T13b: the rig's zone, bytes per readout group, page densities.
           residentTextureZone: resident.zone,
           residentTextureGroups: JSON.stringify(resident.groups),

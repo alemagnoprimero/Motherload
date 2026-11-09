@@ -942,6 +942,13 @@
       "logicalHeight": 48
     },
     {
+      "name": "mission-beacon-emissive",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48
+    },
+    {
       "name": "mission-valve",
       "width": 96,
       "height": 96,

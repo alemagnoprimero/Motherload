@@ -6,7 +6,6 @@ import { poiArtwork } from "../src/campaign/render/poi-art";
 import {
   BAND_ROWS,
   DENSITIES,
-  HERO,
   PAGE_LIMIT,
   PLACEMENT,
   TERRAIN,
@@ -138,6 +137,7 @@ describe("zone pages (audit T13b)", () => {
   it("puts an -emissive sibling in its base's zone and on its base's page", () => {
     for (const frames of Object.values(worlds))
       for (const { name } of frames) {
+        if (name.endsWith("-emissive")) continue;
         const sibling = `${name}-emissive`;
         expect(excludedReason(sibling)).toBe(excludedReason(name));
         if (excludedReason(name)) continue;
@@ -145,11 +145,11 @@ describe("zone pages (audit T13b)", () => {
         expect(isHero(sibling)).toBe(isHero(name));
         expect(pageSet(sibling)).toBe(pageSet(name));
       }
-    const beacon = worlds.W01.find((frame) => frame.name === "mission-beacon");
-    const groups = pageGroups("W01", [
-      ...worlds.W01,
-      { ...beacon, name: "mission-beacon-emissive" },
-    ]);
+    // The beacon's lamp is the first real sibling (W01 frames.json).
+    expect(worlds.W01.map((frame) => frame.name)).toContain(
+      "mission-beacon-emissive",
+    );
+    const groups = pageGroups("W01", worlds.W01);
     for (const density of DENSITIES) {
       const owners = groups.filter(
         (group) =>
@@ -202,8 +202,7 @@ describe("zone pages (audit T13b)", () => {
       const fourX = manifest.pages.filter((page) => page.density === 4);
       expect(fourX.length, world).toBeGreaterThan(0);
       for (const page of fourX)
-        for (const name of page.frames)
-          expect(HERO.test(name), name).toBe(true);
+        for (const name of page.frames) expect(isHero(name), name).toBe(true);
     }
     // A raster-source frame has no @4x master (D5).
     const raster = worlds.W01.find((frame) => frame.source === "raster");

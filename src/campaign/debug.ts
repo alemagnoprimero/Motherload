@@ -70,6 +70,30 @@ export interface CampaignDebug {
   frameMisses(reset?: boolean): Record<string, number>;
   /** The sprites drawn this frame: frame name and texture (page) key. */
   drawnFrames(): { frame: string; texture: string }[];
+  /**
+   * The `-emissive` siblings drawn this frame (audit T13b), each with the
+   * base sprite it copied: blend mode 1 is ADD.
+   */
+  emissives(): (EmissiveSnapshot & { base: EmissiveSnapshot })[];
+}
+
+/** A sprite's state as `emissives()` reports it, in CSS px. */
+export interface EmissiveSnapshot {
+  frame: string;
+  texture: string;
+  x: number;
+  y: number;
+  originX: number;
+  originY: number;
+  width: number;
+  height: number;
+  rotation: number;
+  flipX: boolean;
+  alpha: number;
+  depth: number;
+  blendMode: number;
+  masked: boolean;
+  visible: boolean;
 }
 
 /** A resident texture, as `textures()` lists it. */

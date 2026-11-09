@@ -28,17 +28,29 @@ await rasterizeCampaignSources(source, temporary, manifest);
 const packing = String.raw`
 import json
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageChops
 root=Path(__import__('sys').argv[1]);source=root/'assets/campaign/source';out=root/'assets/campaign/generated';renders=root/'.cache/campaign-renders'
 m=json.loads((source/'frames.json').read_text())
 # Intermediates: png-canonical.mjs re-encodes every PNG at the end of the build.
 for f in m['backgrounds']:
  Image.open(renders/(f['name']+'.png')).convert('RGBA').save(out/(f['name']+'.png'),compress_level=1)
 icons=out/'icons';icons.mkdir(exist_ok=True)
+names={f['name'] for f in m['frames']}
+# Audit T13b: a DOM icon has no darkness, so a frame with an -emissive sibling
+# shows it lit (the sibling's premultiplied RGB added, as the game's ADD pass
+# does); the sibling gets no icon of its own.
+def lit(name):
+ im=Image.open(renders/(name+'.png')).convert('RGBA')
+ if name+'-emissive' not in names:return im
+ glow=Image.open(renders/(name+'-emissive.png')).convert('RGBA')
+ r,g,b,a=glow.split();alpha=Image.merge('RGB',(a,a,a))
+ rgb=ImageChops.add(im.convert('RGB'),ImageChops.multiply(Image.merge('RGB',(r,g,b)),alpha))
+ return Image.merge('RGBA',(*rgb.split(),ImageChops.lighter(im.getchannel('A'),a)))
 for f in m['frames']:
  name=f['name']
+ if name.endswith('-emissive'):continue
  if f.get('category')=='icon' or name.startswith(('ore-','mission-','package-')) or name=='relic':
-  im=Image.open(renders/(name+'.png')).convert('RGBA')
+  im=lit(name)
   for size in (64,128):im.resize((size,size),Image.Resampling.LANCZOS).save(icons/(name+f'-{size}.png'),compress_level=1)
  if f.get('category')=='glyph':
   im=Image.open(renders/(name+'.png')).convert('RGBA')

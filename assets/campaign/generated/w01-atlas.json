@@ -5013,9 +5013,37 @@
         "h": 48
       }
     },
-    "rig-hull-0": {
+    "mission-beacon-emissive": {
       "frame": {
         "x": 427,
+        "y": 911,
+        "w": 14,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 41,
+        "y": 8,
+        "w": 14,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "rig-hull-0": {
+      "frame": {
+        "x": 445,
         "y": 911,
         "w": 59,
         "h": 10
