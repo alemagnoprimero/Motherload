@@ -320,10 +320,17 @@ export async function checkRasterSources(sourceDirectory, manifest, atlas) {
   return raster.map((frame) => frame.name);
 }
 
+// W01 has three ridge layers (art item A4); W02 keeps two until X2.
+const RIDGE_LAYERS = {
+  w01: ["ridge-far", "ridge-mid", "ridge-near"],
+  w02: ["ridge-far", "ridge-near"],
+};
+
 /** Pixel checks stay in the normal Node-only production asset audit. */
 export async function checkCampaignReadability(directory, world, png, atlas) {
   const backgrounds = {};
-  for (const suffix of ["sky", "ridge-far", "ridge-near"]) {
+  const ridges = RIDGE_LAYERS[world] ?? ["ridge-far", "ridge-near"];
+  for (const suffix of ["sky", ...ridges]) {
     const bytes = await readFile(new URL(`${world}-${suffix}.png`, directory));
     const width = bytes.readUInt32BE(16),
       height = bytes.readUInt32BE(20);
@@ -368,18 +375,25 @@ export async function checkCampaignReadability(directory, world, png, atlas) {
       if (pixels[(y * width + x) * 4 + 3] > 127) return y;
     return height;
   };
-  let matchingSkyline = 0;
-  for (let x = 0; x < backgrounds["ridge-far"].width; x++)
-    matchingSkyline +=
-      Math.abs(
-        skyline(backgrounds["ridge-far"], x) -
-          skyline(backgrounds["ridge-near"], x),
-      ) <= 8;
-  const silhouetteAgreement = matchingSkyline / backgrounds["ridge-far"].width;
-  assert.ok(
-    silhouetteAgreement < 0.4,
-    `${world} parallax ridge silhouettes are too similar`,
-  );
+  // Every pair of parallax layers; the most similar pair is reported.
+  let silhouetteAgreement = 0;
+  for (let a = 0; a < ridges.length; a++)
+    for (let b = a + 1; b < ridges.length; b++) {
+      const first = backgrounds[ridges[a]],
+        second = backgrounds[ridges[b]];
+      let matchingSkyline = 0;
+      for (let x = 0; x < first.width; x++)
+        matchingSkyline +=
+          Math.abs(skyline(first, x) - skyline(second, x)) <= 8;
+      silhouetteAgreement = Math.max(
+        silhouetteAgreement,
+        matchingSkyline / first.width,
+      );
+      assert.ok(
+        matchingSkyline / first.width < 0.4,
+        `${world} parallax ridge silhouettes are too similar: ${ridges[a]}, ${ridges[b]}`,
+      );
+    }
 
   const pixels = decodeCampaignPixels(png);
   const stride = png.readUInt32BE(16);
@@ -510,6 +524,7 @@ if (
   for (const [name, expectedWidth, expectedHeight] of [
     ["w01-sky.png", 1024, 512],
     ["w01-ridge-far.png", 1024, 384],
+    ["w01-ridge-mid.png", 1024, 384],
     ["w01-ridge-near.png", 1024, 384],
   ]) {
     const background = await readFile(new URL(name, directory));
@@ -606,7 +621,12 @@ if (
       );
     for (const background of record.backgrounds ?? []) {
       assert.ok(
-        ["w01-sky", "w01-ridge-far", "w01-ridge-near"].includes(background),
+        [
+          "w01-sky",
+          "w01-ridge-far",
+          "w01-ridge-mid",
+          "w01-ridge-near",
+        ].includes(background),
         `Unknown mapped background: ${id}`,
       );
       await readFile(new URL(`${background}.png`, directory));

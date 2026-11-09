@@ -1,0 +1,39 @@
+{
+  "asset": 12,
+  "item": "A4",
+  "method": "seeded generator writing layered SVG (decision D5)",
+  "source": {
+    "generator": "assets/campaign/phase0-sources.mjs: ridges(), w01RidgeLayout(), style \"pyramids\"",
+    "seeds": [
+      "w01-ridges/pyramids/far",
+      "w01-ridges/pyramids/mid",
+      "w01-ridges/pyramids/near"
+    ],
+    "kit": "assets/campaign/kit/ (random, palette, svg)",
+    "palette": "docs/art-audit/data/palette.json: ridge_far_lit, ridge_near_shadow, sky_horizon",
+    "frames": [
+      "w01-ridge-far",
+      "w01-ridge-mid",
+      "w01-ridge-near"
+    ]
+  },
+  "reference": {
+    "file": "docs/art-direction/d0-target-surface-wide.png",
+    "sha256": "a70a671d59daa5c676746b288dd53b9a3a5e4eb150f5af2d2760470a83eaada6",
+    "use": "silhouette heights and values judged beside the board at its tile scale; no pixels read into the drawing",
+    "audit": "docs/ART_QUALITY_AUDIT.md §2 (surface), §5.6 row 12, §6.1"
+  },
+  "reviewer": {
+    "name": "Alejandro (art director)",
+    "signed": "2026-11-08",
+    "fixtures": [
+      "a02-spawn-1440x900@2",
+      "p-portrait-02-spawn@3"
+    ],
+    "rounds": "variants A pyramids, B range, C spires at the board scale (A picked); round 1 and round 2 in the spawn capture; signed at round 2"
+  },
+  "redrawnShare": 0,
+  "underlays": [],
+  "boardPixelsCopied": false,
+  "notes": "The far layer (parallax 0.2) waits for T7; until then the game’s 0.35 slot shows the mid layer (src/campaign/render/art.ts)."
+}

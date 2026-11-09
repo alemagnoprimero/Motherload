@@ -312,8 +312,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.wreckMask = this.wreckMaskShape.createGeometryMask();
       // Stretch a gradient once; only the transparent stars may tile. The
       // former combined sky repeated its planet and horizon on tall displays.
+      // W01 (art item A4): the board's sky, palette.json sky_top at the
+      // board's L* 13.8 down to sky_horizon's hue at L* 31, so the sky just
+      // above the ridges reads about L* 28 at spawn. T7 owns the gradient's
+      // anchoring (it stretches from the screen top to the surface line).
       for (const [key, top, bottom] of [
-        ["campaign-sky-gradient", "#14232b", "#48616b"],
+        ["campaign-sky-gradient", "#112631", "#354c59"],
         ["frontier-sky-gradient", "#142b45", "#5d91a0"],
       ] as const) {
         if (this.textures.exists(key)) continue;

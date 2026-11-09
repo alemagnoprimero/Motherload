@@ -86,6 +86,7 @@
       "backgrounds": [
         "w01-sky",
         "w01-ridge-far",
+        "w01-ridge-mid",
         "w01-ridge-near"
       ],
       "icon": "world-w01"

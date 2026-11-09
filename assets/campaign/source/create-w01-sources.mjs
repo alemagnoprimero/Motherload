@@ -8,6 +8,7 @@ import {
   ridges,
   bedrock,
   materialRim,
+  W01_RIDGE_LAYERS,
 } from "../phase0-sources.mjs";
 
 const source = new URL("./", import.meta.url);
@@ -874,10 +875,23 @@ for (const frame of [
     category: frame.category,
     source: "raster",
   });
+// Art item A4: three ridge layers (asset 12). groundY is the page row the
+// game stands on the surface line; parallax is the rate T7 gives each layer.
+// Until T7 adds the far slot, the game's 0.35 slot shows the mid layer
+// (src/campaign/render/art.ts).
+const ridgeLayer = (which) => ({
+  name: `w01-ridge-${which}`,
+  width: 1024,
+  height: 384,
+  groundY: W01_RIDGE_LAYERS[which].ground,
+  parallax: W01_RIDGE_LAYERS[which].parallax,
+  body: ridges(which),
+});
 const backgrounds = [
   { name: "w01-sky", width: 1024, height: 512, body: stars() },
-  { name: "w01-ridge-far", width: 1024, height: 384, body: ridges(false) },
-  { name: "w01-ridge-near", width: 1024, height: 384, body: ridges(true) },
+  ridgeLayer("far"),
+  ridgeLayer("mid"),
+  ridgeLayer("near"),
 ];
 for (const b of backgrounds)
   await writeFile(
