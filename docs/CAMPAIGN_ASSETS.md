@@ -4,7 +4,7 @@ The game uses original, editable 2D artwork derived from the design pack's shape
 
 ## Build and validation
 
-Normal builds use the committed PNG/JSON output under `assets/campaign/generated/`. They do not need Blender, Chromium, Python or Pillow to validate the artwork:
+Normal builds use the committed PNG/JSON output under `assets/campaign/generated/`. They do not need Blender, resvg, Python or Pillow to validate the artwork:
 
 ```sh
 node scripts/check-campaign-assets.mjs
@@ -29,7 +29,7 @@ node scripts/check-campaign-assets.mjs
 
 The source-generation command rewrites the individual SVG drawings and `frames.json`; the authoring build does not run it automatically. This allows an edited SVG to be rendered without replacing it from the generator.
 
-The authoring build uses Node, Chromium through Playwright, and Python with Pillow to render and pack editable SVG artwork. Set `CHROMIUM_PATH` or `PYTHON` when those executables are elsewhere. The sources retain named `data-layer` groups so shapes, mechanical components and shading can be revised independently. Regeneration tools are authoring requirements; ordinary browser deployment serves only generated images and their frame metadata.
+The authoring build uses Node with resvg (`@resvg/resvg-js`, pinned) to render editable SVG artwork and Python with Pillow to pack it; no browser is involved. Set `PYTHON` when Python is not `python` (CI uses `python3` with Pillow 12.0.0). Every PNG the build writes is re-encoded by `scripts/png-canonical.mjs` (pako, pinned: RGBA8, filter 0, deflate level 9, no ancillary chunks), so a rebuild is byte-identical on every machine (audit T13b). `PYTHON=python3 npm run assets:rebuild` regenerates both worlds' sources, both worlds' assets and the band pages; CI's `verify` job runs it and fails when `assets/campaign` differs from the committed tree. The sources retain named `data-layer` groups so shapes, mechanical components and shading can be revised independently. Regeneration tools are authoring requirements; ordinary browser deployment serves only generated images and their frame metadata.
 
 ## Coordinate and loading contract
 

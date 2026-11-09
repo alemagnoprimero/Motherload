@@ -34,6 +34,32 @@ jobs:
         run: |
           npx playwright-core install --with-deps chromium
           python3 -m pip install Pillow==12.0.0 numpy==2.5.3
+      - name: Rebuild the campaign assets from their sources, byte for byte
+        # Audit T13b: resvg (@resvg/resvg-js, pinned) rasterizes the SVG
+        # sources without a browser, Pillow 12.0.0 packs them, and
+        # scripts/png-canonical.mjs (pako, pinned) encodes every PNG, so the
+        # committed bytes depend on neither a browser nor a machine's zlib.
+        env:
+          PYTHON: python3
+        run: |
+          npm run assets:rebuild
+          changes="$(git status --porcelain --untracked-files=all -- assets/campaign)"
+          if [ -n "$changes" ]; then
+            echo "$changes"
+            git diff --stat -- assets/campaign
+            mkdir -p artifacts/asset-rebuild
+            git ls-files -z --modified --others --exclude-standard -- assets/campaign \
+              | xargs -0 -r cp --parents -t artifacts/asset-rebuild
+            echo "::error::assets/campaign differs from a rebuild of its sources. Run PYTHON=python3 npm run assets:rebuild and commit the result; CI's rebuilt files are in the rebuilt-campaign-assets artifact."
+            exit 1
+          fi
+      - name: Retain the rebuilt assets
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: rebuilt-campaign-assets
+          path: artifacts/asset-rebuild/
+          if-no-files-found: ignore
       - name: Start isolated source preview
         run: |
           npm run dev -- --port 5173 --strictPort > /tmp/motherload-vite.log 2>&1 &

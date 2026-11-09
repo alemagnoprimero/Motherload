@@ -73,8 +73,10 @@ node assets/campaign/source/create-w01-sources.mjs
 ```
 
 ```bash
-CHROMIUM_PATH=/opt/pw-browsers/chromium npm run campaign:assets
+PYTHON=python3 npm run campaign:assets
 ```
+
+Since T13b the build renders with resvg and needs no browser (`docs/qa/t13b-asset-pipeline/`); this item's PNGs were first rendered by Chromium with `CHROMIUM_PATH` set.
 
 ```bash
 ART_BACKING=2 ART_CAPTURES=t13a ART_CAPTURES_DIR=artifacts/t13a node scripts/art-captures.mjs

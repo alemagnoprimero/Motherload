@@ -5,7 +5,7 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 ## How to read it
 
 - **Pipeline** (D5 in `decisions.md`; pipeline C, painted raster, is gone):
-  - **SVG**: hand-written layered SVG in `assets/campaign/source/` with `data-layer` groups, rasterized by the existing Chromium path (pipeline B).
+  - **SVG**: hand-written layered SVG in `assets/campaign/source/` with `data-layer` groups, rasterized by the asset pipeline's resvg path (pipeline B; a Chromium screenshot until T13b).
   - **Generator**: a seeded script that writes SVG frames or pages, so every variant and every density rebuilds byte-identically. New scripts are pipeline P; extensions of today's generators (`phase0-sources.mjs`, `render-sources.mjs`, `source/create-w01-sources.mjs`) are named in the row.
   - **Shader**: parameters of the T2 field shader or the T1 light stack. Canvas and Medium-tier pages are baked from the same shader code.
   - **Underlay allowed**: a generated image may guide the silhouette (hero props only), with a provenance record; see D5.

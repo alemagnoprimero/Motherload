@@ -4,7 +4,8 @@
  * An art round is judged beside the board at matched scale before it goes
  * into a game fixture (style guide §8, audit §6.4). This module composes such
  * a panel from layered pages and props as the game layers them, writes it as
- * SVG, and rasterizes it with the same Chromium path as the game's assets.
+ * SVG, and rasterizes it with the same resvg path as the game's assets
+ * (scripts/rasterize-campaign-svgs.mjs).
  * scripts/art-review.py lays the panels out beside the board's crop, measures
  * them and runs the IoU duplicate check.
  *
@@ -70,7 +71,7 @@ export function panelDocument(
 
 /**
  * Write each `{ name, width, height, svg }` to `directory` and rasterize it
- * there at `scale` with the asset pipeline's Chromium path (CHROMIUM_PATH).
+ * there at `scale` with the asset pipeline's rasterizer (resvg; no browser).
  * Returns the PNG paths.
  */
 export async function rasterize(items, directory, scale = 1) {

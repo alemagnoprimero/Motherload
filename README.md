@@ -101,6 +101,6 @@ Browser checks use `/usr/bin/chromium`; override with `CHROMIUM_PATH`. `PREVIEW_
 
 The pacing command retains strict income, duration and purchase-gap targets, including unmet targets. Read its per-policy report before treating an exit failure as an unreachable world; the planner and native return checks cover different evidence. Current outcomes are recorded in [implementation progress](docs/IMPROVEMENT_PROGRESS.md).
 
-Normal builds validate committed campaign artwork. `npm run campaign:assets` regenerates it from editable SVGs and needs the tools in [CAMPAIGN_ASSETS.md](docs/CAMPAIGN_ASSETS.md).
+Normal builds validate committed campaign artwork. `PYTHON=python3 npm run assets:rebuild` regenerates all of it from editable SVGs, byte for byte, and needs the tools in [CAMPAIGN_ASSETS.md](docs/CAMPAIGN_ASSETS.md) (Node with resvg, Python with Pillow; no browser). CI rebuilds it and fails on any difference.
 
 See [current rules and limits](docs/CAMPAIGN_W01.md), [project status](docs/PROJECT.md), the [improvement plan](docs/IMPROVEMENT_PLAN.md) and [implementation progress](docs/IMPROVEMENT_PROGRESS.md). The [campaign roadmap](docs/DESIGN_PACK_IMPLEMENTATION.md) still records the later destinations. Original Flash research remains separate under `reference/`; see [RESEARCH.md](docs/RESEARCH.md).

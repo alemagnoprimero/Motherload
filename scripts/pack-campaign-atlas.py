@@ -1,6 +1,7 @@
 """Lossless trimmed multi-page packing. Source rectangles preserve all rig anchors.
 Frames with "source": "raster" (audit T13a) are packed like the others and keep
-that mark in their atlas entry."""
+that mark in their atlas entry. PNGs are saved with fast compression: the build
+re-encodes them with scripts/png-canonical.mjs (audit T13b)."""
 import json, math, sys
 from pathlib import Path
 from PIL import Image
@@ -31,7 +32,7 @@ for n,(entries,height) in enumerate(pages):
  for record,image,box,x,y in entries:
   w,h=box[2]-box[0],box[3]-box[1];atlas.paste(image.crop(box),(x,y));sw,sh=image.size
   frames[record['name']]={'frame':{'x':x,'y':y,'w':w,'h':h},'rotated':False,'trimmed':box!=(0,0,sw,sh),'spriteSourceSize':{'x':box[0],'y':box[1],'w':w,'h':h},'sourceSize':{'w':sw,'h':sh},'pivot':record.get('pivot',{'x':.5,'y':.5}),'logicalSize':{'w':record['logicalWidth'],'h':record['logicalHeight']},**({'source':'raster'} if record.get('source')=='raster' else {})}
- atlas.save(out/(name+'.png'),optimize=True)
+ atlas.save(out/(name+'.png'),compress_level=1)
  data={'frames':frames,'meta':{'app':'Deep Frontier original layered SVG artwork','version':'0.2','image':name+'.png','format':'RGBA8888','size':{'w':width,'h':height},'scale':str(scale),'logicalTile':48,'rigPivot':[v*scale/2 for v in manifest['rigPivot']],'rigTreadBaseline':manifest['rigTreadBaseline']*scale/2,'framePadding':padding}}
  (out/(name+'.json')).write_text(json.dumps(data,indent=2)+'\n')
  pageinfo.append({'image':name+'.png','data':name+'.json','frames':list(frames),'width':width,'height':height,'bytes':width*height*4})
@@ -39,4 +40,4 @@ for n,(entries,height) in enumerate(pages):
 print(f'{world} {"runtime" if runtime else "full"} @{scale}x: {len(pages)} trimmed page(s), {sum(p["bytes"] for p in pageinfo)/2**20:.2f} MiB decoded')
 if runtime and scale==2:
  sky=Image.open(root/('.cache/campaign-renders' if world=='w01' else '.cache/frontier-renders')/(world+'-sky.png')).convert('RGBA')
- sky.resize((512,256),Image.Resampling.LANCZOS).save(out/(world+'-sky-runtime.png'),optimize=True)
+ sky.resize((512,256),Image.Resampling.LANCZOS).save(out/(world+'-sky-runtime.png'),compress_level=1)
