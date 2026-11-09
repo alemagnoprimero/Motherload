@@ -1,4 +1,5 @@
 import type Phaser from "phaser";
+import { RIG_EMISSIVE_DEPTH } from "./rig-layers";
 import { ZONE_MANIFESTS, type WorldId } from "./zones";
 
 /*
@@ -18,23 +19,28 @@ import { ZONE_MANIFESTS, type WorldId } from "./zones";
  *   image(), then the callers' masks);
  * - above the darkness (the light map, depth 17): scenery and props in one
  *   band at 17.6, just above T1-lite's ADD core (17.5) so both share one ADD
- *   run; rig layers (18–23) just above their own layer;
+ *   run; every rig layer's sibling (18–23.6) in one band at 23.9, above every
+ *   rig layer and below the effects (24), so the rig's lit parts make one ADD
+ *   run and add over whatever rig layer lies under them (art item A13,
+ *   render/rig-layers.ts);
  * - only when its base was drawn this frame, so a cell the base may not show
  *   shows no light either. Static: nothing here varies with time.
  */
 
 /** Scenery and prop emissives: above the light map (17) and T1-lite (17.5). */
 export const SCENERY_EMISSIVE_DEPTH = 17.6;
-/** Rig emissives sit this far above their own rig layer. */
-export const RIG_EMISSIVE_OFFSET = 0.05;
+/** Every rig emissive: above every rig layer, below the effects (24). */
+export { RIG_EMISSIVE_DEPTH };
+/** A sibling of a base above the rig band sits this far above its base. */
+export const EMISSIVE_OFFSET = 0.05;
 /** The rig's first layer (thrust); every base below it is scenery. */
-const RIG_DEPTH = 18;
+const RIG_BAND = 18;
 
 /** The depth of a sibling whose base is drawn at `depth`. */
 export function emissiveDepth(depth: number) {
-  return depth < RIG_DEPTH
-    ? SCENERY_EMISSIVE_DEPTH
-    : depth + RIG_EMISSIVE_OFFSET;
+  if (depth < RIG_BAND) return SCENERY_EMISSIVE_DEPTH;
+  if (depth < RIG_EMISSIVE_DEPTH) return RIG_EMISSIVE_DEPTH;
+  return depth + EMISSIVE_OFFSET;
 }
 
 const siblings = (world: WorldId): ReadonlyMap<string, string> =>

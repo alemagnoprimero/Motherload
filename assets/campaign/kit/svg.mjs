@@ -54,18 +54,27 @@ export function layer(name, body, extra = {}) {
   return `<g id="${name}" data-layer="${name}"${attributes(extra)}>${body}</g>`;
 }
 
-/** A linear gradient definition; `stops` is [[offset, colour], ...]. */
+/**
+ * Gradient stops. Each stop is [offset, colour] or [offset, colour, opacity];
+ * the opacity (stop-opacity) lets a glow fade to transparent, as the
+ * `-emissive` siblings need (premultiplied transparent texels add nothing).
+ */
+function stopsText(stops) {
+  return stops
+    .map(
+      ([offset, colour, opacity]) =>
+        `<stop offset="${num(offset)}" stop-color="${colour}"${opacity === undefined ? "" : ` stop-opacity="${num(opacity)}"`}/>`,
+    )
+    .join("");
+}
+
+/** A linear gradient definition; `stops` is [[offset, colour, opacity?], ...]. */
 export function linearGradient(
   id,
   stops,
   { x1 = 0, y1 = 0, x2 = 0, y2 = 1, units } = {},
 ) {
-  const stopText = stops
-    .map(
-      ([offset, colour]) =>
-        `<stop offset="${num(offset)}" stop-color="${colour}"/>`,
-    )
-    .join("");
+  const stopText = stopsText(stops);
   return `<linearGradient id="${id}" x1="${num(x1)}" y1="${num(y1)}" x2="${num(x2)}" y2="${num(y2)}"${units ? ` gradientUnits="${units}"` : ""}>${stopText}</linearGradient>`;
 }
 
@@ -74,12 +83,7 @@ export function radialGradient(
   stops,
   { cx = 0.5, cy = 0.5, r = 0.5, fx, fy, units } = {},
 ) {
-  const stopText = stops
-    .map(
-      ([offset, colour]) =>
-        `<stop offset="${num(offset)}" stop-color="${colour}"/>`,
-    )
-    .join("");
+  const stopText = stopsText(stops);
   return `<radialGradient id="${id}" cx="${num(cx)}" cy="${num(cy)}" r="${num(r)}"${fx === undefined ? "" : ` fx="${num(fx)}"`}${fy === undefined ? "" : ` fy="${num(fy)}"`}${units ? ` gradientUnits="${units}"` : ""}>${stopText}</radialGradient>`;
 }
 

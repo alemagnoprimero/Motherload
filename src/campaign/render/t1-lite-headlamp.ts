@@ -24,20 +24,21 @@ import type Phaser from "phaser";
 /** Phaser texture key of the core. */
 export const T1_LITE_HEADLAMP_TEXTURE = "campaign-t1-lite-headlamp";
 /**
- * The lens in rig-cabin.svg is at (100, 58) of the 128-unit frame: 36 units
- * ahead of the centre and 6 above it, as fractions of the frame's size. The
- * rig draws that frame 64/48 tile square around its centre, so this is
- * (0.375, −0.0625) tile on a right-facing rig, mirrored when it faces left.
+ * The lens in rig-cabin.svg is at (100.2, 44.5) of the 128-unit frame
+ * (HEADLAMP_LENS in assets/campaign/source/w01-rig.mjs, art item A13): 36.2
+ * units ahead of the centre and 19.5 above it, as fractions of the frame's
+ * size. The rig draws that frame 64/48 tile square around its centre, so this
+ * is (0.377, −0.203) tile on a right-facing rig, mirrored when it faces left.
  */
-export const T1_LITE_HEADLAMP_LENS = { x: 36 / 128, y: -6 / 128 } as const;
+export const T1_LITE_HEADLAMP_LENS = { x: 36.2 / 128, y: -19.5 / 128 } as const;
 /**
  * The core's additive light: peak × colour × exp(−(r/σ)²), in sRGB levels
  * added to the frame, faded to 0 at `radius` by (1 − (r/radius)²)². Distances
- * are in tiles. At the harness probe (r ≈ 0.37) it adds about (174, 153, 101);
- * by 1 tile it is down to a fifteenth of that, and it ends at 1.8 tiles. The
- * colour is near the board's lamp patch (#e2ca98). A tight core keeps the
- * lift off the cave air that the F4 checks average: T1's cone and pool light
- * the rest.
+ * are in tiles. At the harness probe (r ≈ 0.40 from the A13 lens) it adds
+ * about (160, 141, 93); by 1 tile it is down to a fourteenth of that, and it
+ * ends at 1.8 tiles. The colour is near the board's lamp patch (#e2ca98). A
+ * tight core keeps the lift off the cave air that the F4 checks average: T1's
+ * cone and pool light the rest.
  */
 export const T1_LITE_HEADLAMP_CORE = {
   peak: 260,

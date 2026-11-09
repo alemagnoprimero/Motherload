@@ -462,10 +462,13 @@ describe("CampaignArt: the guard's budget and ratchet, the jump gate", () => {
 
   it("keeps the phone's 20 MiB boot budget at the dock only, until the rig leaves it", () => {
     const fake = start("W01", 0);
+    // At the dock the boot projection needs two steps: the surface's other
+    // page, then core (A13's rig made the @3x core hero page 576 × 896, up
+    // from 512 × 960, which took the last 58 KiB of headroom).
     expect(fake.art.state()).toMatchObject({
       boot: true,
       budget: 20 * MiB,
-      stepped: ["surface"],
+      stepped: ["surface", "core"],
       fits: true,
     });
     expect(frame(fake, "W01", 0)).toBe(true);
@@ -483,7 +486,8 @@ describe("CampaignArt: the guard's budget and ratchet, the jump gate", () => {
     for (const row of [1, 2, 6, 10, 11, 18, 10, 2, 0]) {
       expect(frame(fake, "W01", row)).toBe(true);
       expect(fake.art.state()?.densities.plain.surface).toBe(2);
-      expect(fake.art.state()?.stepped).toEqual(["surface"]);
+      expect(fake.art.state()?.densities.plain.core).toBe(2);
+      expect(fake.art.state()?.stepped).toEqual(["surface", "core"]);
     }
     expect(fake.resident.has("campaign-w01-surface-3x-0")).toBe(false);
   });

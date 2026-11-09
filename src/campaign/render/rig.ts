@@ -1,5 +1,6 @@
 import type Phaser from "phaser";
 import type { Campaign } from "../model";
+import { RIG_DEPTH } from "./rig-layers";
 export type RenderImage = (
   frame: string,
   x: number,
@@ -30,7 +31,11 @@ export interface RigFrame {
   /** False with ?overlays=0: the hit outline is feedback, not art (F3). */
   overlays: boolean;
 }
-/** All modular rig layers share their source pivot, squash and load offset. */
+/**
+ * All modular rig layers share their source pivot, squash and load offset.
+ * Each layer has its own depth (render/rig-layers.ts, RIG_DEPTH), so the
+ * stack is the same on every frame whatever was drawn before it.
+ */
 export function renderRig(frame: RigFrame) {
   const {
     campaign,
@@ -67,18 +72,27 @@ export function renderRig(frame: RigFrame) {
       rigY,
       rigSize,
       rigSize,
-      18,
+      RIG_DEPTH.thrust,
       1,
       flip,
     );
-  image(`rig-body-${bodyFrame}`, px, rigY, rigSize, rigSize, 20, 1, flip);
+  image(
+    `rig-body-${bodyFrame}`,
+    px,
+    rigY,
+    rigSize,
+    rigSize,
+    RIG_DEPTH.body,
+    1,
+    flip,
+  );
   image(
     `rig-engine-${Math.min(2, campaign.state.hardware.engine)}`,
     px,
     rigY,
     rigSize,
     rigSize,
-    21,
+    RIG_DEPTH.engine,
     1,
     flip,
   );
@@ -88,7 +102,7 @@ export function renderRig(frame: RigFrame) {
     rigY,
     rigSize,
     rigSize,
-    21,
+    RIG_DEPTH.energy,
     1,
     flip,
   );
@@ -98,18 +112,18 @@ export function renderRig(frame: RigFrame) {
     rigY,
     rigSize,
     rigSize,
-    21,
+    RIG_DEPTH.bay,
     1,
     flip,
   );
-  image("rig-cabin", px, rigY, rigSize, rigSize, 22, 1, flip);
+  image("rig-cabin", px, rigY, rigSize, rigSize, RIG_DEPTH.cabin, 1, flip);
   image(
     `rig-hull-${Math.min(2, campaign.state.hardware.hull)}`,
     px,
     rigY,
     rigSize,
     rigSize,
-    22,
+    RIG_DEPTH.hull,
     1,
     flip,
   );
@@ -120,18 +134,45 @@ export function renderRig(frame: RigFrame) {
       rigY,
       rigSize,
       rigSize,
-      23,
+      RIG_DEPTH.feet,
       1,
       flip,
     );
   if (campaign.state.equipped.processor === "W01-R3")
-    image("rig-rack", px, rigY, rigSize, rigSize, 23, 1, flip);
+    image("rig-rack", px, rigY, rigSize, rigSize, RIG_DEPTH.rack, 1, flip);
   if (campaign.state.equipped.drill === "W02-R1")
-    image("tool-thermal", px, rigY, rigSize, rigSize, 23, 1, flip);
+    image(
+      "tool-thermal",
+      px,
+      rigY,
+      rigSize,
+      rigSize,
+      RIG_DEPTH.thermal,
+      1,
+      flip,
+    );
   if (campaign.state.equipped.utilities.includes("W02-R2"))
-    image("tool-condenser", px, rigY, rigSize, rigSize, 23, 1, flip);
+    image(
+      "tool-condenser",
+      px,
+      rigY,
+      rigSize,
+      rigSize,
+      RIG_DEPTH.condenser,
+      1,
+      flip,
+    );
   if (campaign.state.equipped.processor === "W02-R3")
-    image("tool-preservation", px, rigY, rigSize, rigSize, 23, 1, flip);
+    image(
+      "tool-preservation",
+      px,
+      rigY,
+      rigSize,
+      rigSize,
+      RIG_DEPTH.preservation,
+      1,
+      flip,
+    );
   const drillFrame = campaign.drillDirection
     ? `rig-drill-${campaign.drillDirection}-${Math.floor(elapsed * 16) % 8}`
     : "rig-drill-idle";
@@ -141,7 +182,7 @@ export function renderRig(frame: RigFrame) {
     rigY,
     rigSize,
     rigSize,
-    23,
+    RIG_DEPTH.drill,
     1,
     campaign.drillDirection ? false : flip,
   );
@@ -152,7 +193,7 @@ export function renderRig(frame: RigFrame) {
       rigY,
       rigSize,
       rigSize,
-      23,
+      RIG_DEPTH.collar,
       1,
       campaign.drillDirection ? false : flip,
     );
@@ -225,7 +266,7 @@ export function renderRig(frame: RigFrame) {
       rigY,
       rigSize,
       rigSize,
-      22.5,
+      RIG_DEPTH.damage,
       1,
       flip,
     );

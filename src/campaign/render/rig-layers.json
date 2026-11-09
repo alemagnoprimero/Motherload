@@ -1,0 +1,37 @@
+{
+  "about": "Art item A13: the rig's layer order, one depth per layer, back to front. render/rig-layers.ts reads it for render/rig.ts and render/emissive.ts; scripts/art-review-a13.mjs composites the review poses in the same order. Layers that can overlap never share a depth: Phaser sorts the display list with a stable sort, so equal depths keep the previous frame's order instead of the call order. Every rig -emissive sibling draws ADD at emissive, above every rig layer and below the effects (24).",
+  "layers": [
+    { "layer": "thrust", "frames": "^thrust-\\d+$", "depth": 18 },
+    { "layer": "body", "frames": "^rig-body-\\d+$", "depth": 20 },
+    { "layer": "engine", "frames": "^rig-engine-\\d+$", "depth": 21 },
+    { "layer": "energy", "frames": "^rig-energy-\\d+$", "depth": 21.1 },
+    { "layer": "bay", "frames": "^rig-bay-\\d+$", "depth": 21.2 },
+    { "layer": "cabin", "frames": "^rig-cabin$", "depth": 22 },
+    { "layer": "hull", "frames": "^rig-hull-\\d+$", "depth": 22.1 },
+    { "layer": "damage", "frames": "^rig-damage-\\d+$", "depth": 22.5 },
+    {
+      "layer": "feet",
+      "frames": "^rig-feet-(stowed|deployed)$",
+      "depth": 23
+    },
+    { "layer": "rack", "frames": "^rig-rack$", "depth": 23.1 },
+    { "layer": "thermal", "frames": "^tool-thermal$", "depth": 23.2 },
+    { "layer": "condenser", "frames": "^tool-condenser$", "depth": 23.3 },
+    {
+      "layer": "preservation",
+      "frames": "^tool-preservation$",
+      "depth": 23.4
+    },
+    {
+      "layer": "drill",
+      "frames": "^rig-drill-(idle|(right|down|left)-\\d+)$",
+      "depth": 23.5
+    },
+    {
+      "layer": "collar",
+      "frames": "^rig-drill-collar-(right|down|left)-\\d+$",
+      "depth": 23.6
+    }
+  ],
+  "emissive": 23.9
+}
