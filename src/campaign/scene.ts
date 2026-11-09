@@ -27,6 +27,7 @@ import { CampaignLighting } from "./render/lighting";
 import { CampaignArt } from "./render/art";
 import { renderRig } from "./render/rig";
 import { T1LiteHeadlamp } from "./render/t1-lite-headlamp";
+import { T1LiteGroundLight } from "./render/t1-lite-ground-light";
 import { RenderDiagnostics } from "./render/diagnostics";
 import {
   FIELD_LOG_FRAME,
@@ -130,6 +131,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private headlamp!: T1LiteHeadlamp;
     /** T1-lite: the rig's cabin sprite as drawn this frame, for the lamp. */
     private rigCabin: Phaser.GameObjects.Image | undefined;
+    /** T1-lite: the interim surface ground light, until T1's light stack. */
+    private groundLight!: T1LiteGroundLight;
     private background!: Phaser.GameObjects.Graphics;
     private edges!: Phaser.GameObjects.Graphics;
     private contrastEdges!: Phaser.GameObjects.Graphics;
@@ -302,6 +305,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.lightingLayer = new CampaignLighting(this);
       // T1-lite: additive headlamp core above the darkness, below the rig.
       this.headlamp = new T1LiteHeadlamp(this);
+      // T1-lite: additive soft ground light on the surface, below the lamp.
+      this.groundLight = new T1LiteGroundLight(this);
       this.background = this.add.graphics().setDepth(0);
       this.edges = this.add.graphics().setDepth(11);
       this.contrastEdges = this.add.graphics().setDepth(12);
@@ -482,6 +487,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.terrainLayer.destroy();
         this.lightingLayer.destroy();
         this.headlamp.destroy(); // T1-lite
+        this.groundLight.destroy(); // T1-lite
         this.frameReadout?.remove();
         if (window.__campaignDebug === this.debugHooks)
           delete window.__campaignDebug;
@@ -2173,6 +2179,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       });
       // T1-lite: the headlamp core follows the cabin sprite just drawn.
       this.headlamp.render(this.rigCabin, tile);
+      // T1-lite: the surface ground light follows the rig and the ground line.
+      this.groundLight.render(px, surfaceY, campaign.renderY, tile);
       for (const chip of this.chips) {
         fx.fillStyle(chip.color, Math.min(1, chip.life / chip.total));
         fx.fillRect(
