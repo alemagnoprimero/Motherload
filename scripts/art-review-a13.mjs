@@ -71,7 +71,8 @@ const out = resolve(
   args.find((a) => !a.startsWith("--")) || "artifacts/art-review-a13",
 );
 const beforeAt = args.indexOf("--before");
-const BEFORE_REV = beforeAt >= 0 ? args[beforeAt + 1] : "HEAD";
+// The rig before A13: item 2's tip (T13b), the commit A13 is built on.
+const BEFORE_REV = beforeAt >= 0 ? args[beforeAt + 1] : "2a6185a";
 const root = new URL("../", import.meta.url);
 
 const bodyOf = (text) =>

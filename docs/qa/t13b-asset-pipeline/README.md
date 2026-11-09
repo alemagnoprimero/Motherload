@@ -511,7 +511,7 @@ One finding fixed on the way: `scene.ts` drew every known pressure seam each fra
 - It lives in `render/rig.ts`, which item 3 reworks.
 - Fixing it also means choosing an art order: call order puts the bay over the engine and the hull over the cabin.
 
-**What item 3 should do.** Give overlapping rig layers distinct depths (kit README, "Adding a rig frame at @4x, with its sibling").
+**What item 3 should do.** Give overlapping rig layers distinct depths (kit README, "Adding a rig frame at @4x, with its sibling"). Done in A13: every rig layer has its own depth (`src/campaign/render/rig-layers.json`), and `docs/qa/a13-rig-shading/determinism.json` shows the stack unchanged after six warm-ups on both renderers ("Layer depths" in that README).
 
 ![The rig's rear module in four runs](captures/rig-layer-order.png)
 

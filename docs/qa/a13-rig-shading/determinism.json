@@ -1,0 +1,432 @@
+{
+  "before (2a6185a)": {
+    "webgl a04": {
+      "silhouette px (shrunk 2 px)": 10472,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-0",
+        "rig-energy-0",
+        "rig-bay-0",
+        "rig-cabin",
+        "rig-hull-0",
+        "rig-drill-idle"
+      ],
+      "B": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 209,
+        "outside max": 1
+      },
+      "D": {
+        "inside px": 976,
+        "inside max": 193,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 976,
+        "inside max": 193,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 209,
+        "outside max": 1
+      },
+      "G": {
+        "inside px": 237,
+        "inside max": 193,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "N (no-emissive)": {
+        "px": 0,
+        "outside the silhouette grown 1 px": 0,
+        "never brighter without the emissive": true,
+        "max lift": 0
+      },
+      "comparisons with silhouette pixels changed": 3
+    },
+    "canvas a04": {
+      "silhouette px (shrunk 2 px)": 10472,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-0",
+        "rig-energy-0",
+        "rig-bay-0",
+        "rig-cabin",
+        "rig-hull-0",
+        "rig-drill-idle"
+      ],
+      "B": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "D": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 1004,
+        "inside max": 193,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "G": {
+        "inside px": 254,
+        "inside max": 193,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "N (no-emissive)": {
+        "px": 0,
+        "outside the silhouette grown 1 px": 0,
+        "never brighter without the emissive": true,
+        "max lift": 0
+      },
+      "comparisons with silhouette pixels changed": 2
+    },
+    "webgl r1": {
+      "silhouette px (shrunk 2 px)": 12200,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-1",
+        "rig-energy-1",
+        "rig-bay-1",
+        "rig-cabin",
+        "rig-hull-1",
+        "rig-feet-stowed",
+        "rig-rack",
+        "rig-drill-idle",
+        "rig-drill-collar-right-1",
+        "rig-damage-1"
+      ],
+      "B": {
+        "inside px": 1022,
+        "inside max": 222,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "D": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 1022,
+        "inside max": 222,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "G": {
+        "inside px": 1022,
+        "inside max": 222,
+        "outside px": 215,
+        "outside max": 2
+      },
+      "N (no-emissive)": {
+        "px": 0,
+        "outside the silhouette grown 1 px": 0,
+        "never brighter without the emissive": true,
+        "max lift": 0
+      },
+      "comparisons with silhouette pixels changed": 3
+    },
+    "canvas r1": {
+      "silhouette px (shrunk 2 px)": 12200,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-1",
+        "rig-energy-1",
+        "rig-bay-1",
+        "rig-cabin",
+        "rig-hull-1",
+        "rig-feet-stowed",
+        "rig-rack",
+        "rig-drill-idle",
+        "rig-drill-collar-right-1",
+        "rig-damage-1"
+      ],
+      "B": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "D": {
+        "inside px": 1032,
+        "inside max": 222,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 1032,
+        "inside max": 222,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "G": {
+        "inside px": 1032,
+        "inside max": 222,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "N (no-emissive)": {
+        "px": 0,
+        "outside the silhouette grown 1 px": 0,
+        "never brighter without the emissive": true,
+        "max lift": 0
+      },
+      "comparisons with silhouette pixels changed": 3
+    },
+    "summary": {
+      "comparisons": 20,
+      "with silhouette pixels changed": 11,
+      "largest (px, levels)": [
+        1032,
+        222
+      ],
+      "outside max levels": 2
+    }
+  },
+  "after (A13)": {
+    "webgl a04": {
+      "silhouette px (shrunk 2 px)": 11413,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-0",
+        "rig-energy-0",
+        "rig-bay-0",
+        "rig-cabin",
+        "rig-hull-0",
+        "rig-drill-idle"
+      ],
+      "B": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 203,
+        "outside max": 1
+      },
+      "D": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 203,
+        "outside max": 1
+      },
+      "G": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "N (no-emissive)": {
+        "px": 473,
+        "outside the silhouette grown 1 px": 3,
+        "never brighter without the emissive": true,
+        "max lift": 200
+      },
+      "comparisons with silhouette pixels changed": 0
+    },
+    "canvas a04": {
+      "silhouette px (shrunk 2 px)": 11413,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-0",
+        "rig-energy-0",
+        "rig-bay-0",
+        "rig-cabin",
+        "rig-hull-0",
+        "rig-drill-idle"
+      ],
+      "B": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "D": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "G": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "N (no-emissive)": {
+        "px": 473,
+        "outside the silhouette grown 1 px": 3,
+        "never brighter without the emissive": true,
+        "max lift": 200
+      },
+      "comparisons with silhouette pixels changed": 0
+    },
+    "webgl r1": {
+      "silhouette px (shrunk 2 px)": 13238,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-1",
+        "rig-energy-1",
+        "rig-bay-1",
+        "rig-cabin",
+        "rig-hull-1",
+        "rig-feet-stowed",
+        "rig-rack",
+        "rig-drill-idle",
+        "rig-drill-collar-right-1",
+        "rig-damage-1"
+      ],
+      "B": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "D": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "G": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 215,
+        "outside max": 2
+      },
+      "N (no-emissive)": {
+        "px": 531,
+        "outside the silhouette grown 1 px": 0,
+        "never brighter without the emissive": true,
+        "max lift": 200
+      },
+      "comparisons with silhouette pixels changed": 0
+    },
+    "canvas r1": {
+      "silhouette px (shrunk 2 px)": 13238,
+      "drawn": [
+        "rig-body-0",
+        "rig-engine-1",
+        "rig-energy-1",
+        "rig-bay-1",
+        "rig-cabin",
+        "rig-hull-1",
+        "rig-feet-stowed",
+        "rig-rack",
+        "rig-drill-idle",
+        "rig-drill-collar-right-1",
+        "rig-damage-1"
+      ],
+      "B": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "D": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "E": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "F": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "G": {
+        "inside px": 0,
+        "inside max": 0,
+        "outside px": 0,
+        "outside max": 0
+      },
+      "N (no-emissive)": {
+        "px": 525,
+        "outside the silhouette grown 1 px": 0,
+        "never brighter without the emissive": true,
+        "max lift": 200
+      },
+      "comparisons with silhouette pixels changed": 0
+    },
+    "summary": {
+      "comparisons": 20,
+      "with silhouette pixels changed": 0,
+      "largest (px, levels)": [
+        0,
+        0
+      ],
+      "outside max levels": 2
+    }
+  }
+}

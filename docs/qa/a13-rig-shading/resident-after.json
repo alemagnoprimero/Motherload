@@ -1,0 +1,6906 @@
+{
+  "base": "http://127.0.0.1:5321/",
+  "mode": "resident",
+  "samples": [
+    {
+      "form": "desktop",
+      "stage": "boot",
+      "bytes": 36686644,
+      "world": "W01",
+      "zone": "surface",
+      "groups": {
+        "atlas": 6848512,
+        "bands": 5308416,
+        "bg": 3670016,
+        "layers": 20826848,
+        "other": 32852
+      },
+      "density": "3",
+      "guard": "",
+      "pages": [
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-3x-0",
+        "campaign-w01-surface-stage0-3x-0",
+        "campaign-w01-surface-stage1-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 65.4545,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 35.0 MiB · W01 surface (atlas 6.5 · bands 5.1 · bg 3.5 · layers 19.9 · other 0.0) · pages @3x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 20437312,
+          "width": 2744,
+          "height": 1862,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-3x-0",
+          "bytes": 1835008,
+          "width": 896,
+          "height": 512,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-3x-0",
+          "bytes": 884736,
+          "width": 576,
+          "height": 384,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop",
+      "stage": "W01",
+      "bytes": 47876916,
+      "world": "W01",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 7421952,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 20826848,
+        "other": 32852
+      },
+      "density": "3",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-3x-0",
+        "campaign-w01-surface-stage0-3x-0",
+        "campaign-w01-surface-stage1-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 65.4545,
+      "drawCalls": 5,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 45.7 MiB · W01 shaft (atlas 7.1 · bands 15.2 · bg 3.5 · layers 19.9 · other 0.0) · pages @3x\nheld 0.1 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 20437312,
+          "width": 2744,
+          "height": 1862,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-3x-0",
+          "bytes": 1835008,
+          "width": 896,
+          "height": 512,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-3x-0",
+          "bytes": 884736,
+          "width": 576,
+          "height": 384,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop",
+      "stage": "cave",
+      "bytes": 40749876,
+      "world": "W01",
+      "zone": "cave",
+      "groups": {
+        "atlas": 3964928,
+        "bands": 15925248,
+        "bg": 0,
+        "layers": 20826848,
+        "other": 32852
+      },
+      "density": "3",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w01-shaft-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 65.4545,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 38.9 MiB · W01 cave (atlas 3.8 · bands 15.2 · bg 0.0 · layers 19.9 · other 0.0) · pages @3x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 20437312,
+          "width": 2744,
+          "height": 1862,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop",
+      "stage": "W02",
+      "bytes": 47319860,
+      "world": "W02",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 6864896,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 20826848,
+        "other": 32852
+      },
+      "density": "3",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w02-cave-3x-0",
+        "campaign-w02-core-3x-0",
+        "campaign-w02-core-hero-3x-0",
+        "campaign-w02-surface-3x-0",
+        "campaign-w02-surface-stage0-3x-0",
+        "campaign-w02-surface-stage1-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 65.4545,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 45.1 MiB · W02 shaft (atlas 6.5 · bands 15.2 · bg 3.5 · layers 19.9 · other 0.0) · pages @3x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "2f0991b3-5f5f-4b2d-a140-c1c1928f1093",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a497aa49-9564-4189-9541-d995b5749bb6",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 20437312,
+          "width": 2744,
+          "height": 1862,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w02-cave-3x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-3x-0",
+          "bytes": 229376,
+          "width": 448,
+          "height": 128,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-hero-3x-0",
+          "bytes": 786432,
+          "width": 384,
+          "height": 512,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-3x-0",
+          "bytes": 491520,
+          "width": 384,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage0-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage1-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "ece04bb6-d1a7-4591-9fa7-fffa7973640c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f327ec60-6684-445d-a093-b95e21205f3c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone",
+      "stage": "boot",
+      "bytes": 17587504,
+      "world": "W01",
+      "zone": "surface",
+      "groups": {
+        "atlas": 3178496,
+        "bands": 5308416,
+        "bg": 3670016,
+        "layers": 5397724,
+        "other": 32852
+      },
+      "density": "2",
+      "guard": "",
+      "pages": [
+        "campaign-w01-core-2x-0",
+        "campaign-w01-core-hero-2x-0",
+        "campaign-w01-shaft-2x-0",
+        "campaign-w01-surface-2x-0",
+        "campaign-w01-surface-stage0-2x-0",
+        "campaign-w01-surface-stage1-2x-0"
+      ],
+      "dpr": 2,
+      "tile": 44,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 16.8 MiB · W01 surface (atlas 3.0 · bands 5.1 · bg 3.5 · layers 5.1 · other 0.0) · pages @2x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "22082202-715c-4dd2-846b-0cfe70769925",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5247840,
+          "width": 870,
+          "height": 1508,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-core-2x-0",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-2x-0",
+          "bytes": 917504,
+          "width": 512,
+          "height": 448,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-2x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-2x-0",
+          "bytes": 884736,
+          "width": 1152,
+          "height": 192,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-2x-0",
+          "bytes": 393216,
+          "width": 384,
+          "height": 256,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-2x-0",
+          "bytes": 393216,
+          "width": 384,
+          "height": 256,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone",
+      "stage": "W01",
+      "bytes": 28450096,
+      "world": "W01",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 3424256,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 5397724,
+        "other": 32852
+      },
+      "density": "2",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-2x-0",
+        "campaign-w01-core-2x-0",
+        "campaign-w01-core-hero-2x-0",
+        "campaign-w01-shaft-2x-0",
+        "campaign-w01-surface-2x-0",
+        "campaign-w01-surface-stage0-2x-0",
+        "campaign-w01-surface-stage1-2x-0"
+      ],
+      "dpr": 2,
+      "tile": 44,
+      "drawCalls": 5,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 27.1 MiB · W01 shaft (atlas 3.3 · bands 15.2 · bg 3.5 · layers 5.1 · other 0.0) · pages @2x\nheld 0.1 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "22082202-715c-4dd2-846b-0cfe70769925",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5247840,
+          "width": 870,
+          "height": 1508,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-2x-0",
+          "bytes": 245760,
+          "width": 192,
+          "height": 320,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-2x-0",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-2x-0",
+          "bytes": 917504,
+          "width": 512,
+          "height": 448,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-2x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-2x-0",
+          "bytes": 884736,
+          "width": 1152,
+          "height": 192,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-2x-0",
+          "bytes": 393216,
+          "width": 384,
+          "height": 256,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-2x-0",
+          "bytes": 393216,
+          "width": 384,
+          "height": 256,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone",
+      "stage": "cave",
+      "bytes": 23108912,
+      "world": "W01",
+      "zone": "cave",
+      "groups": {
+        "atlas": 1753088,
+        "bands": 15925248,
+        "bg": 0,
+        "layers": 5397724,
+        "other": 32852
+      },
+      "density": "2",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-2x-0",
+        "campaign-w01-core-2x-0",
+        "campaign-w01-core-hero-2x-0",
+        "campaign-w01-shaft-2x-0"
+      ],
+      "dpr": 2,
+      "tile": 44,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 22.0 MiB · W01 cave (atlas 1.7 · bands 15.2 · bg 0.0 · layers 5.1 · other 0.0) · pages @2x\nheld 0.3 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "22082202-715c-4dd2-846b-0cfe70769925",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5247840,
+          "width": 870,
+          "height": 1508,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-2x-0",
+          "bytes": 245760,
+          "width": 192,
+          "height": 320,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-2x-0",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-2x-0",
+          "bytes": 917504,
+          "width": 512,
+          "height": 448,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-2x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone",
+      "stage": "W02",
+      "bytes": 28253488,
+      "world": "W02",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 3227648,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 5397724,
+        "other": 32852
+      },
+      "density": "2",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-2x-0",
+        "campaign-w01-core-2x-0",
+        "campaign-w01-core-hero-2x-0",
+        "campaign-w02-cave-2x-0",
+        "campaign-w02-core-2x-0",
+        "campaign-w02-core-hero-2x-0",
+        "campaign-w02-surface-2x-0",
+        "campaign-w02-surface-stage0-2x-0",
+        "campaign-w02-surface-stage1-2x-0"
+      ],
+      "dpr": 2,
+      "tile": 44,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 26.9 MiB · W02 shaft (atlas 3.1 · bands 15.2 · bg 3.5 · layers 5.1 · other 0.0) · pages @2x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "15544c2e-207a-42f4-a693-5f9c90162625",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "1b664c72-2e36-4783-be58-282565a6b5d4",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "22082202-715c-4dd2-846b-0cfe70769925",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "88cf1c37-e042-4b24-964e-43fd74156e98",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5247840,
+          "width": 870,
+          "height": 1508,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-2x-0",
+          "bytes": 245760,
+          "width": 192,
+          "height": 320,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-2x-0",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-2x-0",
+          "bytes": 917504,
+          "width": 512,
+          "height": 448,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w02-cave-2x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 2,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-2x-0",
+          "bytes": 131072,
+          "width": 128,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-hero-2x-0",
+          "bytes": 393216,
+          "width": 192,
+          "height": 512,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-2x-0",
+          "bytes": 262144,
+          "width": 256,
+          "height": 256,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage0-2x-0",
+          "bytes": 294912,
+          "width": 384,
+          "height": 192,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage1-2x-0",
+          "bytes": 393216,
+          "width": 384,
+          "height": 256,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W02"
+        },
+        {
+          "key": "frontier-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-1728",
+      "stage": "boot",
+      "bytes": 50082356,
+      "world": "W01",
+      "zone": "surface",
+      "groups": {
+        "atlas": 9322496,
+        "bands": 5308416,
+        "bg": 3670016,
+        "layers": 31748576,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-3x-0",
+        "campaign-w01-surface-stage0-4x-0",
+        "campaign-w01-surface-stage1-4x-0"
+      ],
+      "dpr": 2,
+      "tile": 78.5455,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 47.8 MiB · W01 surface (atlas 8.9 · bands 5.1 · bg 3.5 · layers 30.3 · other 0.0) · pages @3x/@4x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 483840,
+          "width": 432,
+          "height": 280,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 31199200,
+          "width": 3305,
+          "height": 2360,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-3x-0",
+          "bytes": 1835008,
+          "width": 896,
+          "height": 512,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-1728",
+      "stage": "W01",
+      "bytes": 61272628,
+      "world": "W01",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 9895936,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 31748576,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-3x-0",
+        "campaign-w01-surface-stage0-4x-0",
+        "campaign-w01-surface-stage1-4x-0"
+      ],
+      "dpr": 2,
+      "tile": 78.5455,
+      "drawCalls": 5,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 58.4 MiB · W01 shaft (atlas 9.4 · bands 15.2 · bg 3.5 · layers 30.3 · other 0.0) · pages @3x/@4x\nheld 0.1 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 483840,
+          "width": 432,
+          "height": 280,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 31199200,
+          "width": 3305,
+          "height": 2360,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-3x-0",
+          "bytes": 1835008,
+          "width": 896,
+          "height": 512,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-1728",
+      "stage": "cave",
+      "bytes": 53015092,
+      "world": "W01",
+      "zone": "cave",
+      "groups": {
+        "atlas": 5308416,
+        "bands": 15925248,
+        "bg": 0,
+        "layers": 31748576,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w01-shaft-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 78.5455,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 50.6 MiB · W01 cave (atlas 5.1 · bands 15.2 · bg 0.0 · layers 30.3 · other 0.0) · pages @3x/@4x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 483840,
+          "width": 432,
+          "height": 280,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 31199200,
+          "width": 3305,
+          "height": 2360,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-1728",
+      "stage": "W02",
+      "bytes": 61256244,
+      "world": "W02",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 9879552,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 31748576,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w02-cave-3x-0",
+        "campaign-w02-core-3x-0",
+        "campaign-w02-core-hero-4x-0",
+        "campaign-w02-surface-3x-0",
+        "campaign-w02-surface-stage0-4x-0",
+        "campaign-w02-surface-stage1-4x-0"
+      ],
+      "dpr": 2,
+      "tile": 78.5455,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 58.4 MiB · W02 shaft (atlas 9.4 · bands 15.2 · bg 3.5 · layers 30.3 · other 0.0) · pages @3x/@4x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "12541467-d3db-442f-86d9-21ba6176bb48",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "9d58c503-2bf7-4144-891e-cfc3f86c2a49",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "a4cd5447-452f-48e8-84df-b7a9d059a4a1",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "cae4f8e7-8362-4ea1-be38-65f15c307535",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 483840,
+          "width": 432,
+          "height": 280,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 31199200,
+          "width": 3305,
+          "height": 2360,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w02-cave-3x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-3x-0",
+          "bytes": 229376,
+          "width": 448,
+          "height": 128,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-hero-4x-0",
+          "bytes": 1376256,
+          "width": 384,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-3x-0",
+          "bytes": 491520,
+          "width": 384,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage0-4x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage1-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W02"
+        },
+        {
+          "key": "frontier-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-tile82",
+      "stage": "boot",
+      "bytes": 40993204,
+      "world": "W01",
+      "zone": "surface",
+      "groups": {
+        "atlas": 9322496,
+        "bands": 5308416,
+        "bg": 3670016,
+        "layers": 22659424,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-3x-0",
+        "campaign-w01-surface-stage0-4x-0",
+        "campaign-w01-surface-stage1-4x-0"
+      ],
+      "dpr": 2,
+      "tile": 82,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 39.1 MiB · W01 surface (atlas 8.9 · bands 5.1 · bg 3.5 · layers 21.6 · other 0.0) · pages @3x/@4x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 22269888,
+          "width": 2829,
+          "height": 1968,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-3x-0",
+          "bytes": 1835008,
+          "width": 896,
+          "height": 512,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-tile82",
+      "stage": "W01",
+      "bytes": 52183476,
+      "world": "W01",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 9895936,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 22659424,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-3x-0",
+        "campaign-w01-surface-stage0-4x-0",
+        "campaign-w01-surface-stage1-4x-0"
+      ],
+      "dpr": 2,
+      "tile": 82,
+      "drawCalls": 5,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 49.8 MiB · W01 shaft (atlas 9.4 · bands 15.2 · bg 3.5 · layers 21.6 · other 0.0) · pages @3x/@4x\nheld 0.1 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 22269888,
+          "width": 2829,
+          "height": 1968,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-3x-0",
+          "bytes": 1835008,
+          "width": 896,
+          "height": 512,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-tile82",
+      "stage": "cave",
+      "bytes": 43925940,
+      "world": "W01",
+      "zone": "cave",
+      "groups": {
+        "atlas": 5308416,
+        "bands": 15925248,
+        "bg": 0,
+        "layers": 22659424,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w01-shaft-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 82,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 41.9 MiB · W01 cave (atlas 5.1 · bands 15.2 · bg 0.0 · layers 21.6 · other 0.0) · pages @3x/@4x\nheld 0.3 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 22269888,
+          "width": 2829,
+          "height": 1968,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "desktop-tile82",
+      "stage": "W02",
+      "bytes": 52167092,
+      "world": "W02",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 9879552,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 22659424,
+        "other": 32852
+      },
+      "density": "3/4",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-4x-0",
+        "campaign-w02-cave-3x-0",
+        "campaign-w02-core-3x-0",
+        "campaign-w02-core-hero-4x-0",
+        "campaign-w02-surface-3x-0",
+        "campaign-w02-surface-stage0-4x-0",
+        "campaign-w02-surface-stage1-4x-0"
+      ],
+      "dpr": 2,
+      "tile": 82,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · high\ntex 49.8 MiB · W02 shaft (atlas 9.4 · bands 15.2 · bg 3.5 · layers 21.6 · other 0.0) · pages @3x/@4x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "19605979-8d83-4e04-b0ab-46668e900c4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "41650422-f303-416e-a0ae-48be6171b992",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "805a718b-592a-4b2b-8671-a8f467b2e45c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "c2db0e54-7fa8-4022-bd91-ec88a10a8597",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 324000,
+          "width": 360,
+          "height": 225,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 22269888,
+          "width": 2829,
+          "height": 1968,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-4x-0",
+          "bytes": 3407872,
+          "width": 832,
+          "height": 1024,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w02-cave-3x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-3x-0",
+          "bytes": 229376,
+          "width": 448,
+          "height": 128,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-hero-4x-0",
+          "bytes": 1376256,
+          "width": 384,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 4,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-3x-0",
+          "bytes": 491520,
+          "width": 384,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage0-4x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage1-4x-0",
+          "bytes": 1376256,
+          "width": 768,
+          "height": 448,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 4,
+          "world": "W02"
+        },
+        {
+          "key": "frontier-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone-tile56",
+      "stage": "boot",
+      "bytes": 20190256,
+      "world": "W01",
+      "zone": "surface",
+      "groups": {
+        "atlas": 5242880,
+        "bands": 5308416,
+        "bg": 3670016,
+        "layers": 5936092,
+        "other": 32852
+      },
+      "density": "2/3",
+      "guard": "surface,core",
+      "pages": [
+        "campaign-w01-core-2x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-2x-0",
+        "campaign-w01-surface-stage0-3x-0",
+        "campaign-w01-surface-stage1-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 56,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 19.3 MiB · W01 surface (atlas 5.0 · bands 5.1 · bg 3.5 · layers 5.7 · other 0.0) · pages @2x/@3x · guard surface,core @2x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5786208,
+          "width": 888,
+          "height": 1629,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-core-2x-0",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-2x-0",
+          "bytes": 884736,
+          "width": 1152,
+          "height": 192,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-3x-0",
+          "bytes": 884736,
+          "width": 576,
+          "height": 384,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone-tile56",
+      "stage": "W01",
+      "bytes": 31380528,
+      "world": "W01",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 5816320,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 5936092,
+        "other": 32852
+      },
+      "density": "3",
+      "guard": "surface,core",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-2x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w01-shaft-3x-0",
+        "campaign-w01-surface-2x-0",
+        "campaign-w01-surface-stage0-3x-0",
+        "campaign-w01-surface-stage1-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 56,
+      "drawCalls": 5,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 29.9 MiB · W01 shaft (atlas 5.5 · bands 15.2 · bg 3.5 · layers 5.7 · other 0.0) · pages @3x · guard surface,core @2x\nheld 0.1 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5786208,
+          "width": 888,
+          "height": 1629,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-2x-0",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-2x-0",
+          "bytes": 884736,
+          "width": 1152,
+          "height": 192,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage0-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-surface-stage1-3x-0",
+          "bytes": 884736,
+          "width": 576,
+          "height": 384,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone-tile56",
+      "stage": "cave",
+      "bytes": 25203760,
+      "world": "W01",
+      "zone": "cave",
+      "groups": {
+        "atlas": 3309568,
+        "bands": 15925248,
+        "bg": 0,
+        "layers": 5936092,
+        "other": 32852
+      },
+      "density": "3",
+      "guard": "surface,core",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-2x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w01-shaft-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 56,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 24.0 MiB · W01 cave (atlas 3.2 · bands 15.2 · bg 0.0 · layers 5.7 · other 0.0) · pages @3x · guard surface,core @2x\nheld 0.3 s",
+      "misses": {},
+      "textures": [
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W01-d-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5786208,
+          "width": 888,
+          "height": 1629,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-2x-0",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "atlas",
+          "zone": "core",
+          "density": 2,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-shaft-3x-0",
+          "bytes": 147456,
+          "width": 192,
+          "height": 192,
+          "group": "atlas",
+          "zone": "shaft",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    },
+    {
+      "form": "phone-tile56",
+      "stage": "W02",
+      "bytes": 32429104,
+      "world": "W02",
+      "zone": "shaft",
+      "groups": {
+        "atlas": 6864896,
+        "bands": 15925248,
+        "bg": 3670016,
+        "layers": 5936092,
+        "other": 32852
+      },
+      "density": "3",
+      "guard": "",
+      "pages": [
+        "campaign-w01-cave-3x-0",
+        "campaign-w01-core-3x-0",
+        "campaign-w01-core-hero-3x-0",
+        "campaign-w02-cave-3x-0",
+        "campaign-w02-core-3x-0",
+        "campaign-w02-core-hero-3x-0",
+        "campaign-w02-surface-3x-0",
+        "campaign-w02-surface-stage0-3x-0",
+        "campaign-w02-surface-stage1-3x-0"
+      ],
+      "dpr": 2,
+      "tile": 56,
+      "drawCalls": 4,
+      "readout": "p95 0.0 ms\nbacking 2× · medium\ntex 30.9 MiB · W02 shaft (atlas 6.5 · bands 15.2 · bg 3.5 · layers 5.7 · other 0.0) · pages @3x\nat ceiling",
+      "misses": {},
+      "textures": [
+        {
+          "key": "__DEFAULT",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__MISSING",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__NORMAL",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "__WHITE",
+          "bytes": 64,
+          "width": 4,
+          "height": 4,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-a-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-b-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-rock",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-soil",
+          "bytes": 2359296,
+          "width": 768,
+          "height": 768,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "band-W02-c-wall",
+          "bytes": 589824,
+          "width": 384,
+          "height": 384,
+          "group": "bands",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "bc720a47-262f-41a0-815b-82b701008404",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-gold",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-fx-glint-silver",
+          "bytes": 4096,
+          "width": 32,
+          "height": 32,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-light-map",
+          "bytes": 84348,
+          "width": 99,
+          "height": 213,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-retained-terrain",
+          "bytes": 5786208,
+          "width": 888,
+          "height": 1629,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-t1-lite-headlamp",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "layers",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "campaign-w01-cave-3x-0",
+          "bytes": 573440,
+          "width": 320,
+          "height": 448,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-3x-0",
+          "bytes": 1179648,
+          "width": 768,
+          "height": 384,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w01-core-hero-3x-0",
+          "bytes": 2064384,
+          "width": 576,
+          "height": 896,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W01"
+        },
+        {
+          "key": "campaign-w02-cave-3x-0",
+          "bytes": 65536,
+          "width": 128,
+          "height": 128,
+          "group": "atlas",
+          "zone": "cave",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-3x-0",
+          "bytes": 229376,
+          "width": 448,
+          "height": 128,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-core-hero-3x-0",
+          "bytes": 786432,
+          "width": 384,
+          "height": 512,
+          "group": "atlas",
+          "zone": "core",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-3x-0",
+          "bytes": 491520,
+          "width": 384,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage0-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "campaign-w02-surface-stage1-3x-0",
+          "bytes": 737280,
+          "width": 576,
+          "height": 320,
+          "group": "atlas",
+          "zone": "surface",
+          "density": 3,
+          "world": "W02"
+        },
+        {
+          "key": "dfd80253-b2e6-4cd7-8d4b-3d49b03d3a4c",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "ef85275f-d66d-4619-9fdc-fa6f82c0d8e0",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "f29dc197-f90e-4e69-9553-4b3a31776a2b",
+          "bytes": 4,
+          "width": 1,
+          "height": 1,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-ridge-far",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-ridge-near",
+          "bytes": 1572864,
+          "width": 1024,
+          "height": 384,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky",
+          "bytes": 524288,
+          "width": 512,
+          "height": 256,
+          "group": "bg",
+          "zone": "surface",
+          "density": null,
+          "world": null
+        },
+        {
+          "key": "frontier-sky-gradient",
+          "bytes": 8192,
+          "width": 4,
+          "height": 512,
+          "group": "other",
+          "zone": null,
+          "density": null,
+          "world": null
+        }
+      ],
+      "faults": []
+    }
+  ]
+}

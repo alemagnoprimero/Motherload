@@ -1,0 +1,30 @@
+{
+  "review driver (scripts/art-review-a13.mjs OUT --before 2a6185a), two runs into fresh folders": {
+    "files run 1": 2822,
+    "files run 2": 2822,
+    "identical sha256": 2822
+  },
+  "sheet builder (scripts/art-review-a13.py), run 1 into a scratch folder, run 2 into this folder": {
+    "files": 9,
+    "identical sha256": 9,
+    "sha256": {
+      "contact-facets.png": "b752867bfbf37efcf673f0a26570957f2e2a649fb19c3f9ef7b4a9e2726b5c39",
+      "sheet-board.png": "08a0110a37b16ccf7d752c0821ff6619ae89a5d546949d9b3d88a6fa32d5c514",
+      "sheet-drill.png": "405dbb643a884cf57d0db9c9e66b17e535526414977700aa18459f3ed1b6c563",
+      "sheet-emissive.png": "36969b3cc63fe908a73625d8c595738f42540cacb4acab047f6185a8d31fa9e6",
+      "sheet-icons.png": "5473c6929d0de280ec1ebd9efc0b44e4e450684663cc53fc213b72f1e6d55daa",
+      "sheet-poses.png": "780a8210235e39fd736cfd4f6f4c401f51ac8ba0d527fe7c1c152f0869033cc5",
+      "sheet-scales.png": "2601707bc760c4aac3db26f8b53254f548993c328c5c1ac4a31b71a66db57eb4",
+      "sheet-tiers.png": "1960bca3618118b38ca4ec0e2f3a7d5db350fdac1e6b88640baa2e9a893bf2db",
+      "sheet.json": "aee681c1c4f6513472d3a26428ae577f04af0e00b7ca16915bc3a090909d8d23"
+    }
+  },
+  "PYTHON=python3 npm run assets:rebuild, twice (this tree)": {
+    "files under assets/campaign": 686,
+    "identical sha256 before, after rebuild 1 and after rebuild 2": true,
+    "seconds per rebuild": [
+      19.3,
+      18.6
+    ]
+  }
+}

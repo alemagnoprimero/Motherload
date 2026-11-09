@@ -1,0 +1,1542 @@
+[
+  {
+    "target": "a04",
+    "seq": "A",
+    "name": "webgl-a04-A",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "B",
+    "name": "webgl-a04-B",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "D",
+    "name": "webgl-a04-D",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "E",
+    "name": "webgl-a04-E",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "F",
+    "name": "webgl-a04-F",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "G",
+    "name": "webgl-a04-G",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "N",
+    "name": "webgl-a04-N",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "A",
+    "name": "webgl-r1-A",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "B",
+    "name": "webgl-r1-B",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "D",
+    "name": "webgl-r1-D",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "E",
+    "name": "webgl-r1-E",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "F",
+    "name": "webgl-r1-F",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "G",
+    "name": "webgl-r1-G",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "N",
+    "name": "webgl-r1-N",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "webgl",
+    "drawCalls": 3,
+    "emissiveSprites": 0,
+    "atlasDensity": "3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "A",
+    "name": "canvas-a04-A",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "B",
+    "name": "canvas-a04-B",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "D",
+    "name": "canvas-a04-D",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "E",
+    "name": "canvas-a04-E",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "F",
+    "name": "canvas-a04-F",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "G",
+    "name": "canvas-a04-G",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "a04",
+    "seq": "N",
+    "name": "canvas-a04-N",
+    "box": {
+      "x": 676.1836666666667,
+      "y": 399.54184916666674,
+      "width": 87.27266666666667,
+      "height": 87.27266666666667,
+      "tile": 65.4545
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "A",
+    "name": "canvas-r1-A",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "B",
+    "name": "canvas-r1-B",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "D",
+    "name": "canvas-r1-D",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "E",
+    "name": "canvas-r1-E",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "F",
+    "name": "canvas-r1-F",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "G",
+    "name": "canvas-r1-G",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  },
+  {
+    "target": "r1",
+    "seq": "N",
+    "name": "canvas-r1-N",
+    "box": {
+      "x": 674.0917999999999,
+      "y": 397.0008905,
+      "width": 91.6364,
+      "height": 91.6364,
+      "tile": 68.7273
+    },
+    "renderer": "canvas",
+    "drawCalls": null,
+    "emissiveSprites": 0,
+    "atlasDensity": "2/3",
+    "drawn": [
+      {
+        "frame": "rig-body-0",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-engine-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-energy-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-bay-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-cabin",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-hull-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-feet-stowed",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-rack",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-idle",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-drill-collar-right-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      },
+      {
+        "frame": "rig-damage-1",
+        "texture": "campaign-w01-core-hero-3x-0"
+      }
+    ],
+    "emissives": []
+  }
+]

@@ -1,0 +1,227 @@
+{
+  "before": "2a6185a",
+  "after": "9369ec2",
+  "2a6185a": {
+    "pages": {
+      "campaign-w01-core-hero-2x-0": {
+        "size": [
+          256,
+          960
+        ],
+        "decoded bytes": 983040,
+        "decoded MiB": 0.938,
+        "png bytes": 56491,
+        "frames": 74
+      },
+      "campaign-w01-core-hero-3x-0": {
+        "size": [
+          512,
+          960
+        ],
+        "decoded bytes": 1966080,
+        "decoded MiB": 1.875,
+        "png bytes": 84564,
+        "frames": 74
+      },
+      "campaign-w01-core-hero-4x-0": {
+        "size": [
+          832,
+          1024
+        ],
+        "decoded bytes": 3407872,
+        "decoded MiB": 3.25,
+        "png bytes": 109535,
+        "frames": 74
+      }
+    },
+    "rig frames": {
+      "rig-cabin": {
+        "@2x": {
+          "page": "campaign-w01-core-hero-2x-0",
+          "trimmed": [
+            63,
+            50
+          ],
+          "source": [
+            128,
+            128
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        "@3x": {
+          "page": "campaign-w01-core-hero-3x-0",
+          "trimmed": [
+            94,
+            75
+          ],
+          "source": [
+            192,
+            192
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        "@4x": {
+          "page": "campaign-w01-core-hero-4x-0",
+          "trimmed": [
+            124,
+            98
+          ],
+          "source": [
+            256,
+            256
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      }
+    },
+    "all W01 pages": {
+      "pages": 23,
+      "decoded MiB": 21.44,
+      "frames on pages": 100
+    }
+  },
+  "9369ec2": {
+    "pages": {
+      "campaign-w01-core-hero-2x-0": {
+        "size": [
+          512,
+          448
+        ],
+        "decoded bytes": 917504,
+        "decoded MiB": 0.875,
+        "png bytes": 53434,
+        "frames": 75
+      },
+      "campaign-w01-core-hero-3x-0": {
+        "size": [
+          576,
+          896
+        ],
+        "decoded bytes": 2064384,
+        "decoded MiB": 1.969,
+        "png bytes": 84859,
+        "frames": 75
+      },
+      "campaign-w01-core-hero-4x-0": {
+        "size": [
+          832,
+          1024
+        ],
+        "decoded bytes": 3407872,
+        "decoded MiB": 3.25,
+        "png bytes": 111467,
+        "frames": 75
+      }
+    },
+    "rig frames": {
+      "rig-cabin": {
+        "@2x": {
+          "page": "campaign-w01-core-hero-2x-0",
+          "trimmed": [
+            64,
+            58
+          ],
+          "source": [
+            128,
+            128
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        "@3x": {
+          "page": "campaign-w01-core-hero-3x-0",
+          "trimmed": [
+            97,
+            86
+          ],
+          "source": [
+            192,
+            192
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        "@4x": {
+          "page": "campaign-w01-core-hero-4x-0",
+          "trimmed": [
+            129,
+            114
+          ],
+          "source": [
+            256,
+            256
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      },
+      "rig-cabin-emissive": {
+        "@2x": {
+          "page": "campaign-w01-core-hero-2x-0",
+          "trimmed": [
+            24,
+            21
+          ],
+          "source": [
+            128,
+            128
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        "@3x": {
+          "page": "campaign-w01-core-hero-3x-0",
+          "trimmed": [
+            36,
+            33
+          ],
+          "source": [
+            192,
+            192
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        "@4x": {
+          "page": "campaign-w01-core-hero-4x-0",
+          "trimmed": [
+            48,
+            44
+          ],
+          "source": [
+            256,
+            256
+          ],
+          "pivot": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        }
+      }
+    },
+    "all W01 pages": {
+      "pages": 23,
+      "decoded MiB": 21.47,
+      "frames on pages": 101
+    }
+  }
+}
