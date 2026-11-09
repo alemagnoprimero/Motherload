@@ -91,7 +91,12 @@ def measure(name, c):
     if walls:
         out['wall'] = m.wall_profile(free, view, dpr, walls)
     if c['scene'] == 'SITE-4':
-        air, hard = m.cave_air_mask(state, view, dpr, free.shape[:2])
+        # T2 spike: the field renderer's own air mask, when it drew.
+        visual = m.visual_air(c['fieldAir']) if c.get('fieldAir') else None
+        air, hard = m.cave_air_mask(state, view, dpr, free.shape[:2], visual=visual)
+        if visual is not None:
+            out['boundary_source'] = 'field air mask'
+            out['visual_vs_collision'] = round(m.visual_vs_collision(visual, state, view, dpr), 4)
         out['boundary_axis_share'] = round(m.axis_share_excluding(air, hard), 3)
         out['boundary_axis_share_all'] = round(m.axis_share(air), 3)
     # §9.2 sets the headlamp core for every underground frame. The F3 port

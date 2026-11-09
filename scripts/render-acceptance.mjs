@@ -140,6 +140,7 @@ try {
           drawCalls: Number(el.dataset.drawCalls) || null,
           textureBytes: Number(el.dataset.residentTextureBytes),
           dirtyCells: Number(el.dataset.terrainDirtyCells),
+          terrainRenderer: el.dataset.terrainRenderer,
           particles: Number(el.dataset.activeParticles),
         }));
         const probe = await page.evaluate(readRenderProbe);
@@ -152,6 +153,13 @@ try {
           `__campaignDebug.lightTexture() matches the drawn light map: ${JSON.stringify(info.lightTexture)}`,
         );
         assert.equal(info.renderer, renderer);
+        // T2 spike: with T2_FIELD=1 (dev server started with VITE_T2_FIELD=1)
+        // WebGL runs on the field renderer; Canvas keeps RetainedTerrain.
+        if (process.env.T2_FIELD === "1")
+          assert.equal(
+            info.terrainRenderer,
+            renderer === "webgl" ? "field" : "retained (Canvas renderer)",
+          );
         if (renderer === "webgl") {
           assert.ok(
             info.drawCalls > 0 && info.drawCalls <= results.limits.drawCalls,

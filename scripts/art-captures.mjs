@@ -47,7 +47,12 @@
  *
  * Environment: PREVIEW_URL; ART_CAPTURES_DIR (artifacts/art-captures);
  * ART_CAPTURES, a comma list of names or name prefixes; ART_PLAY_SECONDS (0);
- * ART_BACKING, a backing-scale pin of 1, 1.5 or 2.
+ * ART_BACKING, a backing-scale pin of 1, 1.5 or 2; ART_SEARCH, extra URL
+ * parameters for every page (the T2 spike passes field=1).
+ *
+ * T2 spike: when the field renderer draws (window.__campaignField), each
+ * capture also gets <name>-fieldair.png, the shader's visual air mask, which
+ * art-sheets.py uses for the natural-cave boundary instead of the cell grid.
  *
  * manifest.json records, per capture, the scene and panel, the backing scale
  * and quality tier the game reported, the camera (tile, scroll, rig position in
@@ -323,10 +328,12 @@ async function rigBox(page, dpr) {
 }
 
 export async function runArtCaptures(browser, base, path, options = {}) {
-  const { only, playSeconds = 0, backing } = options;
+  const { only, playSeconds = 0, backing, search: extra } = options;
   await mkdir(path, { recursive: true });
   const url = new URL(base);
   if (backing !== undefined) url.searchParams.set("backing", String(backing));
+  for (const [key, value] of new URLSearchParams(extra ?? ""))
+    url.searchParams.set(key, value);
   const selected = CAPTURES.filter(
     (capture) =>
       !only?.length || only.some((name) => capture.name.startsWith(name)),
@@ -400,6 +407,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             backingPinned: element.dataset.backingPinned ?? null,
             frameP95: Number(element.dataset.frameP95) || null,
             renderer: element.dataset.renderer,
+            terrainRenderer: element.dataset.terrainRenderer ?? null,
             // T13a's placeholder: "true" when drawn, absent without its flag.
             testRaster: element.dataset.testRaster ?? null,
             devicePixelRatio: window.devicePixelRatio,
@@ -484,6 +492,23 @@ export async function runArtCaptures(browser, base, path, options = {}) {
         const hudFree = `${path}/${capture.name}-hudfree.png`;
         await page.screenshot({ path: hudFree });
         await page.evaluate(() => window.__campaignDebug.overlays(true));
+        // T2 spike: the field shader's visual air mask, when it draws.
+        let fieldAir = null;
+        const field = await page.evaluate(() =>
+          window.__campaignField?.info().active
+            ? {
+                info: window.__campaignField.info(),
+                mask: window.__campaignField.airMask(),
+              }
+            : null,
+        );
+        if (field?.mask) {
+          fieldAir = `${path}/${capture.name}-fieldair.png`;
+          await writeFile(
+            fieldAir,
+            Buffer.from(field.mask.split(",")[1], "base64"),
+          );
+        }
         // The known-cell grid for the region, boundary and wall measures.
         const exported = await exportCheckpoint(page);
         const stateFile = `${path}/${capture.name}-state.json`;
@@ -504,6 +529,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           rigBox: box,
           rigKeep2: keep2 === null ? null : Number(keep2.toFixed(3)),
           light: { file: lightFile, ...light },
+          ...(fieldAir ? { fieldAir, field: field.info } : {}),
           sceneClock: before.sceneClock,
           backing: before.backing,
         };
@@ -539,6 +565,7 @@ if (
         backing: process.env.ART_BACKING
           ? Number(process.env.ART_BACKING)
           : undefined,
+        search: process.env.ART_SEARCH,
       },
     );
   } finally {

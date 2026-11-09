@@ -338,15 +338,31 @@ def region_stats(rgb, state, view, dpr, rig, keep=None):
     return out
 
 
-def cave_air_mask(state, view, dpr, shape, scale_to=42.0):
+def cave_air_mask(state, view, dpr, shape, scale_to=42.0, visual=None):
     """The known-air mask and a hard-rock mask, resampled as metrics.py
     resamples the prototype's air mask (42 px per tile, bilinear, > 127).
-    Every known air cell counts as natural: the SITE-4 fixture digs nothing."""
+    Every known air cell counts as natural: the SITE-4 fixture digs nothing.
+    With `visual` (a device-pixel bool mask, the T2 field's own air mask) the
+    air is what the renderer drew rather than the cell grid; hard rock still
+    comes from the cells."""
     r = cell_regions(state, view, dpr, shape)
     s = scale_to / (view['tile'] * dpr)
-    air = rescale((r['known_air'] * 255).astype(np.uint8), s, Image.BILINEAR) > 127
+    source = r['known_air'] if visual is None else visual
+    air = rescale((source * 255).astype(np.uint8), s, Image.BILINEAR) > 127
     hard = rescale(((r['known_solid'] & (r['kind'] == 2)) * 255).astype(np.uint8), s, Image.BILINEAR) > 127
     return air, hard
+
+
+def visual_air(path):
+    """A T2 field air mask (white = air) as a device-pixel bool mask."""
+    return luma(load_rgb(path)) > 127
+
+
+def visual_vs_collision(visual, state, view, dpr):
+    """§9.2 walls and ceilings: the share of frame pixels where the drawn air
+    and the known air cells disagree (unknown cells draw as rock by design)."""
+    r = cell_regions(state, view, dpr, visual.shape)
+    return float((visual ^ r['known_air']).mean())
 
 
 def axis_share_excluding(air, exclude, tol=5):

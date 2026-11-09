@@ -892,6 +892,16 @@ export async function runImprovementSmoke(browser, base, path) {
           }
         await restore(page, solid);
         const view = await settledView(page, solid);
+        // T2 spike: with T2_FIELD=1 (dev server started with VITE_T2_FIELD=1)
+        // the check must have run on the field renderer.
+        if (process.env.T2_FIELD === "1")
+          assert.equal(
+            await page
+              .locator("#campaign-game")
+              .getAttribute("data-terrain-renderer"),
+            "field",
+            "T2 spike: the field renderer drew the fog fixture",
+          );
         const clip = {
           x: column * view.tile - view.cx + 3,
           y: 17 * view.tile - view.cy + 3,
