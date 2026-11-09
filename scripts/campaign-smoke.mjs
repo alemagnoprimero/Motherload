@@ -140,6 +140,24 @@ async function advance(page, ms) {
   for (let elapsed = 0; elapsed < ms; elapsed += 50)
     await page.clock.fastForward(Math.min(50, ms - elapsed));
 }
+/**
+ * Construction, sale and install receipts are short paused beats shown just
+ * after the terminal closes, and the first input during one only skips it.
+ * Let a beat appear and finish before the next native action.
+ */
+async function finishPresentation(page, appear = 2500) {
+  let seen = false;
+  for (let elapsed = 0; elapsed < 6000; elapsed += 50) {
+    const visible = await page.locator("#campaign-reward").isVisible();
+    if (seen && !visible) break;
+    if (!seen && !visible && elapsed >= appear) break;
+    seen ||= visible;
+    if (clocked.has(page)) {
+      await advance(page, 50);
+      await delay(25);
+    } else await delay(50);
+  }
+}
 async function freeze(page) {
   // Installing Playwright's clock resets performance.now(). Keep it beyond
   // timestamps already sampled by the running UI (labels, cooldowns, holds).
@@ -274,6 +292,9 @@ async function command(page, name) {
       .count())
   )
     selector = '#campaign-dock-content [data-command="' + name + '"]';
+  // The pause menu repeats some actions (a header "Request recovery" for a
+  // disabled rig beside the Recovery section's); use the one on screen.
+  if ((await page.locator(selector).count()) > 1) selector += ":visible";
   assert.equal(
     await page.locator(selector).isEnabled(),
     true,
@@ -385,6 +406,21 @@ async function ready(browser, base, options = {}, harness = {}) {
     "The active drill has a loaded game-art icon",
   );
   return { context, page, assets };
+}
+/** A returning pilot boots on the front door's Continue, not in the mine. */
+async function continueFromFrontDoor(page) {
+  await page.waitForFunction(
+    () =>
+      document.querySelector("#campaign-game")?.dataset.campaignArt === "ready",
+  );
+  if (await page.locator("#campaign-start").isVisible()) {
+    assert.match(
+      await page.locator("#campaign-start").textContent(),
+      /Continue/i,
+    );
+    await click(page, "#campaign-start");
+  }
+  await idle(page);
 }
 function noErrors(page) {
   assert.deepEqual(errors.get(page), [], "No uncaught browser errors");
@@ -1198,20 +1234,27 @@ export async function runCampaignSmoke(
     const { context, page } = await ready(browser, base);
     try {
       await freeze(page);
-      await missionStatus(page, "beacon", "pending");
+      // D14: M1 (Prove the claim) is three banked ordinary packages; its guide
+      // follows marked seam A. There is no 100 m beacon task any more.
+      assert.equal(
+        await page
+          .locator('#campaign-objective-progress [data-task="beacon"]')
+          .count(),
+        0,
+      );
       await missionStatus(page, "ore", "pending");
       assert.match(
         await page.locator("#campaign-objective-next").innerText(),
-        /100\s*m|beacon/i,
+        /seam A|70\s*m/i,
       );
       const fixture = await exportCheckpoint(page);
       fixture.state.vehicle = { ...fixture.state.vehicle, x: 5.5, y: -0.36 };
-      fixture.state.progress.beacon = true;
       fixture.state.credits = 4000;
-      const ore = fixture.state.worlds.W01.packages
-        .filter((item) => item.tags.includes("ordinary"))
-        .slice(0, 3);
-      assert.equal(ore.length, 3);
+      // The full seam-A haul, as the first trip brings it home.
+      const ore = fixture.state.worlds.W01.packages.filter((item) =>
+        /^W01:deposit:[0-6]:20$/.test(item.id),
+      );
+      assert.equal(ore.length, 7);
       for (const item of ore) {
         item.status = "carried";
         fixture.state.worlds.W01.tiles[
@@ -1221,7 +1264,6 @@ export async function runCampaignSmoke(
       await importCheckpoint(page, fixture);
       await closeOverlay(page);
       await advance(page, 150);
-      await missionStatus(page, "beacon", "complete");
       await missionStatus(page, "ore", "carried");
       assert.match(
         await page.locator("#campaign-objective-next").innerText(),
@@ -1241,22 +1283,30 @@ export async function runCampaignSmoke(
       await tab(page, "lander");
       await command(page, "milestone");
       await closeOverlay(page);
+      await finishPresentation(page);
       await advance(page, 150);
       await missionStatus(page, "W01-VALVE", "pending");
       await missionStatus(page, "W01-ANTENNA", "pending");
+      // D14: the wreck survey joined M2.
+      assert.match(
+        await missionStatus(page, "W01-BEACON", "pending"),
+        /wreck beacon.*460\s*m/i,
+      );
       assert.match(
         await page.locator("#campaign-objective-step").innerText(),
         /02/,
       );
+      // Balance 0.2 raised the M2 fee from 300 to 600 CR.
       assert.match(
         await page
           .locator('#campaign-objective-progress [data-task="construction"]')
           .innerText(),
-        /300/,
+        /600/,
       );
 
       const stageTwo = await exportCheckpoint(page);
-      stageTwo.state.credits = 5000;
+      stageTwo.state.credits = 7000;
+      stageTwo.state.progress.beacon = true;
       for (const mission of stageTwo.state.worlds.W01.missions)
         if (["W01-VALVE", "W01-ANTENNA"].includes(mission.id))
           mission.status = "carried";
@@ -1265,6 +1315,7 @@ export async function runCampaignSmoke(
       await advance(page, 150);
       await missionStatus(page, "W01-VALVE", "carried");
       await missionStatus(page, "W01-ANTENNA", "carried");
+      await missionStatus(page, "W01-BEACON", "complete");
       assert.match(
         await page.locator("#campaign-objective-next").innerText(),
         /bank|lander/i,
@@ -1281,6 +1332,7 @@ export async function runCampaignSmoke(
       await tab(page, "lander");
       await command(page, "milestone");
       await closeOverlay(page);
+      await finishPresentation(page);
       await advance(page, 150);
       await missionStatus(page, "W01-Q", "pending");
       assert.match(
@@ -1293,14 +1345,15 @@ export async function runCampaignSmoke(
           .innerText(),
         /600/,
       );
+      // Balance 0.2 raised the M3 fee from 500 to 1,000 CR.
       assert.match(
         await page
           .locator('#campaign-objective-progress [data-task="construction"]')
           .innerText(),
-        /500/,
+        /1,000/,
       );
       const stageThree = await exportCheckpoint(page);
-      stageThree.state.credits = 6000;
+      stageThree.state.credits = 12000;
       stageThree.state.worlds.W01.missions.find(
         (mission) => mission.id === "W01-Q",
       ).status = "carried";
@@ -1319,6 +1372,7 @@ export async function runCampaignSmoke(
       await tab(page, "lander");
       await command(page, "milestone");
       await closeOverlay(page);
+      await finishPresentation(page);
       await advance(page, 150);
       await missionStatus(page, "launch", "ready");
       assert.match(
@@ -1337,11 +1391,7 @@ export async function runCampaignSmoke(
       await page.clock.resume();
       clocked.delete(page);
       await page.reload();
-      await page.waitForFunction(
-        () =>
-          document.querySelector("#campaign-game")?.dataset.campaignArt ===
-          "ready",
-      );
+      await continueFromFrontDoor(page);
       await menu(page);
       await command(page, "load");
       assert.deepEqual((await exportCheckpoint(page)).state, saved.state);
@@ -1466,12 +1516,19 @@ export async function runCampaignSmoke(
         false,
         "Remote E cannot enter a dock",
       );
-      const first = await until(page, ["ArrowDown"], (s) => s.progress.beacon, {
-        step: 1000,
-        max: 25000,
-        label: "Opening beacon was not reached",
-      });
-      assert.equal(carried(first).length, 7);
+      // D14: the first trip ends when marked seam A fills the hold; the 95 m
+      // cell no longer holds a beacon to survey.
+      const first = await until(
+        page,
+        ["ArrowDown"],
+        (s) => carried(s).length === 7,
+        {
+          step: 1000,
+          max: 25000,
+          label: "Opening seam A did not fill the hold",
+        },
+      );
+      assert.equal(first.progress.beacon, false);
       assert.equal(
         carried(first).reduce((v, p) => v + p.value, 0),
         3800,
@@ -1483,6 +1540,7 @@ export async function runCampaignSmoke(
       await tab(page, "service");
       await command(page, "refuel");
       await closeOverlay(page);
+      await finishPresentation(page);
       await toColumn(page, 21);
       const second = await until(
         page,
@@ -1524,7 +1582,7 @@ export async function runCampaignSmoke(
         legacySentinel,
       );
       check(
-        "two native starter trips survey, physically return, trade, build M1 and purchase an upgrade with reserve",
+        "two native starter trips fill the hold, physically return, trade, build M1 and purchase an upgrade with reserve",
       );
 
       noErrors(page);
@@ -1543,6 +1601,8 @@ export async function runCampaignSmoke(
       s.credits = 80000;
       s.vehicle = { x: 5.5, y: -0.36, energy: 10, hull: 10 };
       s.hardware.hull = 0;
+      // D14 made the wreck survey M2 proof. This opened-shaft fixture provides
+      // it with the funds; poi-smoke surveys the wreck beacon natively.
       s.progress.beacon = true;
       s.progress.bankedOre = Math.max(3, s.progress.bankedOre);
       s.progress.completed = [1];
@@ -1565,6 +1625,7 @@ export async function runCampaignSmoke(
       await command(page, "gear-buy-W01-R2");
       await closeOverlay(page);
       await freeze(page);
+      await finishPresentation(page);
       await toColumn(page, 20);
       await until(
         page,
@@ -1584,6 +1645,7 @@ export async function runCampaignSmoke(
       await tab(page, "service");
       await command(page, "refuel");
       await closeOverlay(page);
+      await finishPresentation(page);
       await toColumn(page, 21);
       await until(
         page,
@@ -1603,6 +1665,7 @@ export async function runCampaignSmoke(
       await tab(page, "service");
       await command(page, "refuel");
       await closeOverlay(page);
+      await finishPresentation(page);
       await toColumn(page, 20);
       await until(
         page,
@@ -1640,11 +1703,7 @@ export async function runCampaignSmoke(
       await page.clock.resume();
       clocked.delete(page);
       await page.reload();
-      await page.waitForFunction(
-        () =>
-          document.querySelector("#campaign-game")?.dataset.campaignArt ===
-          "ready",
-      );
+      await continueFromFrontDoor(page);
       await menu(page);
       await command(page, "load");
       const reloaded = await exportCheckpoint(page);
@@ -1753,11 +1812,7 @@ export async function runCampaignSmoke(
       await page.clock.resume();
       clocked.delete(page);
       await page.reload();
-      await page.waitForFunction(
-        () =>
-          document.querySelector("#campaign-game")?.dataset.campaignArt ===
-          "ready",
-      );
+      await continueFromFrontDoor(page);
       await menu(page);
       await command(page, "load");
       assert.deepEqual((await exportCheckpoint(page)).state, saved.state);
@@ -1783,28 +1838,28 @@ export async function runCampaignSmoke(
       await closeOverlay(page);
       await page.keyboard.press("e");
       await tab(page, "hardware");
-      const cards = page.locator(
-        "#campaign-dock-content .equipment-cards article",
-      );
-      assert.match(
-        await cards.nth(1).innerText(),
-        /305 CR/,
-        "Energy purchase still reserves repair cost",
-      );
-      assert.match(
-        await cards.nth(3).innerText(),
-        /546 CR/,
-        "Hull purchase still reserves refuel cost",
-      );
+      // The workshop redesign dropped the "keeps N CR after service" line;
+      // each card now previews the next rank and its price (balance 0.2:
+      // tank 600 CR, armour 450 CR), keyed by system rather than position.
+      const card = (key) =>
+        page.locator(
+          `#campaign-dock-content .equipment-cards article[data-key="${key}"]`,
+        );
+      assert.match(await card("energy").innerText(), /10 → 16 L/);
+      assert.match(await card("energy").innerText(), /600 CR/);
+      assert.match(await card("hull").innerText(), /10 → 18 HP/);
+      assert.match(await card("hull").innerText(), /450 CR/);
       await command(page, "hardware-energy");
+      await closeOverlay(page);
+      await finishPresentation(page);
       const bought = (await exportCheckpoint(page)).state;
       assert.equal(bought.hardware.energy, 1);
       assert.equal(bought.vehicle.energy, 16);
       assert.equal(bought.vehicle.hull, 7);
-      assert.equal(bought.credits, 3500);
+      assert.equal(bought.credits, 4000);
       noErrors(page);
       check(
-        "hardware preview reserves the unfilled condition and capacity purchase fills only its own condition",
+        "hardware cards preview the next rank and price, and a capacity purchase fills only its own condition",
       );
     } finally {
       await context.close();
@@ -1889,11 +1944,7 @@ export async function runCampaignSmoke(
       errors.set(second, faults);
       second.on("pageerror", (e) => faults.push(e.message));
       await second.goto(destination(base));
-      await second.waitForFunction(
-        () =>
-          document.querySelector("#campaign-game")?.dataset.campaignArt ===
-          "ready",
-      );
+      await continueFromFrontDoor(second);
       await second.bringToFront();
       const newer = await exportCheckpoint(second);
       newer.state.credits += 3210;
@@ -1904,7 +1955,12 @@ export async function runCampaignSmoke(
           document.body.dataset.campaignPaused === "true",
       );
       await page.bringToFront();
-      await click(page, '#campaign-menu [data-close="menu"]');
+      // Resume is now disabled outright while the conflict is unresolved.
+      assert.equal(
+        await page.locator('#campaign-menu [data-close="menu"]').isDisabled(),
+        true,
+        "Return cannot bypass an unresolved cross-tab conflict",
+      );
       assert.equal(
         await page.locator("#campaign-menu").evaluate((d) => d.open),
         true,
@@ -2071,7 +2127,11 @@ export async function runCampaignSmoke(
         await importCheckpoint(page, docked);
         await closeOverlay(page);
         await advance(page, 100);
-        await page.locator("#campaign-dock-toggle").tap({ force: true });
+        // With the fallback direction buttons on, the bottom-left Dock prompt
+        // sits under the left arrow in portrait, so a forced tap on it lands
+        // on the arrow. Tap the lander in the world instead (native input).
+        const bay = await rigPoint(page);
+        await page.touchscreen.tap(bay.x, bay.y - 20);
         assert.equal(
           await page.locator("#campaign-dock").evaluate((d) => d.open),
           true,
@@ -2125,6 +2185,7 @@ export {
   closeOverlay,
   command,
   exportCheckpoint,
+  finishPresentation,
   freeze,
   idle,
   importCheckpoint,

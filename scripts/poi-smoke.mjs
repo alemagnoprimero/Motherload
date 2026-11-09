@@ -1,18 +1,22 @@
 import assert from "node:assert/strict";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
+import { HARDWARE_PRICES, W01 } from "../src/campaign/config.ts";
 import { campaignTileSize } from "../src/campaign/layout.ts";
 import { launchBrowser } from "./browser-launch.mjs";
 import {
   advance,
+  click,
   closeOverlay,
   command,
   exportCheckpoint,
+  finishPresentation,
   freeze,
   importCheckpoint,
   keys,
   menu,
   noErrors,
+  pauseSection,
   ready,
   tab,
 } from "./campaign-smoke.mjs";
@@ -33,15 +37,31 @@ function clearCell(state, x, y) {
     if (item.status === "deposit" && tileIndex(item.x, item.y) === index)
       item.status = "exposed";
 }
+/** Rank-1 drill and tank, as the M2 leg needs them to cross the 310 m plate. */
+function fitStageTwoHardware(state) {
+  for (const key of ["drill", "energy"]) {
+    if (state.hardware[key] >= 1) continue;
+    state.hardware[key] = 1;
+    state.purchases.push({
+      id: `CORE-1-${key.toUpperCase()}`,
+      paid: HARDWARE_PRICES[key][1],
+      balanceVersion: "0.3",
+    });
+  }
+}
 function abovePart(checkpoint, id, completed = [1]) {
   // Imported fixtures shorten deep travel; recovery still uses native drilling.
+  // They start past the D14 wreck survey so the parts stay the M2 targets.
   const fixture = structuredClone(checkpoint);
   const state = fixture.state;
   state.progress.beacon = true;
   state.progress.bankedOre = 3;
   state.progress.completed = completed;
   state.credits = 20000;
-  state.vehicle.energy = 10;
+  // The rank-0 10 L tank now reads "Turn back" at the 250 m valve (the return
+  // reserve counts the whole climb), so deep fixtures carry the M2 loadout.
+  fitStageTwoHardware(state);
+  state.vehicle.energy = 16;
   state.vehicle.hull = 10;
   const part = state.worlds.W01.missions.find((item) => item.id === id);
   assert.ok(part, "Fixture uses an actual mission source");
@@ -118,27 +138,38 @@ async function bankAtLander(page, checkpoint) {
   await advance(page, 100);
 }
 async function payStage(page) {
-  await page.keyboard.press("e");
+  // E (interact) is debounced for 300 ms of game time, and the frozen clock
+  // barely moves between banking and paying; use the visible Dock button.
+  await click(page, "#campaign-dock-toggle");
   await tab(page, "lander");
   await command(page, "milestone");
   await closeOverlay(page);
+  await finishPresentation(page);
   await advance(page, 100);
 }
 async function geometry(page, viewport) {
+  // The locator row (#campaign-mission-signal) is display:none by design since
+  // the HUD rework: the world target/HOME label carries the bearing and the
+  // objective chip keeps one live goal. Check what is actually shown.
   const boxes = await page
-    .locator(".campaign-objective, #campaign-mission-signal")
+    .locator(
+      ".campaign-objective, #campaign-target-beacon:not([hidden]), #campaign-home-beacon:not([hidden])",
+    )
     .evaluateAll((elements) =>
-      elements.map((element) => {
-        const box = element.getBoundingClientRect();
-        return {
-          name: element.id || element.className,
-          x: box.x,
-          y: box.y,
-          width: box.width,
-          height: box.height,
-        };
-      }),
+      elements
+        .filter((element) => element.getClientRects().length)
+        .map((element) => {
+          const box = element.getBoundingClientRect();
+          return {
+            name: element.id || element.className,
+            x: box.x,
+            y: box.y,
+            width: box.width,
+            height: box.height,
+          };
+        }),
     );
+  assert.ok(boxes.length >= 2, "Objective and a world guidance label show");
   for (const box of boxes)
     assert.ok(
       box.width > 0 &&
@@ -151,7 +182,7 @@ async function geometry(page, viewport) {
     );
   const sizes = await page
     .locator(
-      "#campaign-signal-target, #campaign-signal-distance, #campaign-signal-proximity, #campaign-objective-next",
+      "#campaign-objective-title, #campaign-objective-progress, .world-beacon:not([hidden])",
     )
     .evaluateAll((elements) =>
       elements.map((element) => ({
@@ -183,6 +214,113 @@ async function geometry(page, viewport) {
 }
 async function screenshot(page, path) {
   await page.screenshot({ path });
+}
+const rig = (page) =>
+  page.locator("#campaign-game").evaluate((element) => ({
+    x: Number(element.dataset.rigWorldX),
+    y: Number(element.dataset.rigWorldY),
+  }));
+const wrapDelta = (from, to) => ((to - from + 60) % 40) - 20;
+/**
+ * Native proportional steering toward a world column, reading the scene's
+ * rig position; `done` may end the approach early (e.g. a survey).
+ */
+async function steerTo(page, column, done = async () => false, limit = 15000) {
+  let previous;
+  for (let elapsed = 0; elapsed < limit;) {
+    if (await done()) {
+      await keys(page, []);
+      return;
+    }
+    const point = await rig(page),
+      d = wrapDelta(point.x, column);
+    const velocity = previous
+      ? wrapDelta(previous.x, point.x) / previous.seconds
+      : 0;
+    if (Math.abs(d) < 0.15 && Math.abs(velocity) < 0.5) {
+      await keys(page, []);
+      return;
+    }
+    const correction = Math.max(-3, Math.min(3, d * 2.5)) - velocity;
+    await keys(
+      page,
+      correction < -0.2
+        ? ["ArrowLeft"]
+        : correction > 0.2
+          ? ["ArrowRight"]
+          : [],
+    );
+    const ms = Math.abs(d) > 4 ? 200 : Math.abs(d) > 1.5 ? 100 : 25;
+    previous = { x: point.x, seconds: ms / 1000 };
+    await advance(page, ms);
+    elapsed += ms;
+  }
+  await keys(page, []);
+  throw new Error(
+    "Native steering did not reach column " +
+      column +
+      ": " +
+      JSON.stringify(await rig(page)),
+  );
+}
+/** Holds Down until the rig's world row reaches `row`, then lets the cut end. */
+async function drillToRow(page, row, limit = 60000) {
+  await keys(page, ["ArrowDown"]);
+  for (let elapsed = 0; elapsed < limit; elapsed += 100) {
+    await advance(page, 100);
+    if ((await rig(page)).y >= row + 0.5) {
+      await keys(page, []);
+      await advance(page, 900);
+      return;
+    }
+  }
+  await keys(page, []);
+  throw new Error(
+    "Native drilling did not reach row " +
+      row +
+      ": " +
+      JSON.stringify(await rig(page)),
+  );
+}
+/**
+ * The start of the M2 leg (D14): M1 built after the seam-A haul, wreck not
+ * yet surveyed, rank-1 drill and tank fitted, parked at the lander. Terrain
+ * and discovery are the claim's own; nothing is pre-dug or revealed.
+ */
+function stageTwoStart(checkpoint) {
+  const fixture = structuredClone(checkpoint);
+  const state = fixture.state;
+  state.progress.completed = [1];
+  state.progress.bankedOre = 7;
+  state.progress.beacon = false;
+  state.credits = Math.max(state.credits, 2000);
+  fitStageTwoHardware(state);
+  // The claim as the M1 haul left it: marked seam A dug out and sold.
+  for (const item of state.worlds.W01.packages)
+    if (/^W01:deposit:[0-6]:20$/.test(item.id)) {
+      item.status = "sold";
+      state.worlds.W01.tiles[tileIndex(item.x, item.y)] = 0;
+    }
+  state.vehicle = { x: 5.5, y: -0.36, energy: 16, hull: 10, reserve: 0 };
+  return fixture;
+}
+/** Records the survey notice even if a later notice replaces it at once. */
+async function watchSurvey(page) {
+  await page.evaluate(() => {
+    window.__beaconSurveyed = false;
+    window.__surveyObserver?.disconnect();
+    const message = document.querySelector("#campaign-message");
+    window.__surveyObserver = new MutationObserver(() => {
+      if (/wreck beacon surveyed/i.test(message.textContent))
+        window.__beaconSurveyed = true;
+    });
+    window.__surveyObserver.observe(message, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  });
+  return () => page.evaluate(() => window.__beaconSurveyed);
 }
 
 export async function runPoiSmoke(
@@ -216,38 +354,87 @@ export async function runPoiSmoke(
         await freeze(page);
         await advance(page, 100);
         const initial = await state(page);
-        assert.equal((await signal(page)).id, "W01-BEACON");
-        assert.match((await signal(page)).text, /wreck|survey|beacon/i);
+        // D14: M1 is the marked seam-A haul; the 95 m cell has no beacon.
+        assert.equal((await signal(page)).id, "W01-SEAM-A");
+        assert.match((await signal(page)).text, /seam/i);
         await geometry(page, viewport);
         await descendUntil(
           page,
           async () => (await signal(page)).band === "close",
         );
         const approaching = await signal(page);
-        assert.equal(approaching.id, "W01-BEACON");
+        assert.equal(approaching.id, "W01-SEAM-A");
         assert.equal(
           approaching.markerVisible,
           true,
           "Nearby mission radio pin is visible",
         );
-        assert.match(approaching.action, /survey|approach|wreck|beacon/i);
-        await screenshot(page, `${path}-${label}-beacon-approach.png`);
+        assert.match(approaching.action, /seam A|mine/i);
+        await screenshot(page, `${path}-${label}-seam-approach.png`);
         await descendUntil(
           page,
-          async () =>
-            Number.parseInt(
-              await page.locator("#campaign-depth").innerText(),
-            ) >= 80,
+          async () => (await signal(page)).id === "W01-LANDER",
         );
-        assert.equal((await signal(page)).id, "W01-BEACON");
-        assert.ok((await signal(page)).landmarks.includes("W01-BEACON"));
-        await screenshot(page, `${path}-${label}-beacon-visible-approach.png`);
-        await descendUntil(
+        const hauled = await state(page);
+        assert.equal(
+          hauled.state.worlds.W01.packages.filter(
+            (item) => item.status === "carried",
+          ).length,
+          7,
+          "A full seam-A hold turns the guide home",
+        );
+        assert.equal(hauled.state.progress.beacon, false);
+        assert.equal(
+          (await signal(page)).landmarks.includes("W01-BEACON"),
+          false,
+          "The 95 m route cell no longer draws a beacon",
+        );
+        await screenshot(page, `${path}-${label}-seam-haul.png`);
+        await geometry(page, viewport);
+
+        // The antenna dive: the part, then the wreck beacon 70 m away on the
+        // same dive (a survey carries nothing). Deep travel is shortened to
+        // the antenna level; drilling, discovery and the survey are native.
+        const dive = stageTwoStart(initial);
+        for (const mission of dive.state.worlds.W01.missions)
+          if (mission.id === "W01-VALVE") mission.status = "banked";
+        dive.state.vehicle.x = 20.5;
+        dive.state.vehicle.y = W01.antennaRow - 1 - 0.36;
+        for (let y = W01.antennaRow - 3; y < W01.antennaRow; y++)
+          clearCell(dive.state, 20.5, y);
+        await restore(page, dive);
+        assert.equal((await signal(page)).id, "W01-ANTENNA");
+        await drillToRow(page, W01.antennaRow);
+        await keys(page, ["ArrowRight"]);
+        for (
+          let elapsed = 0;
+          elapsed < 8000 && (await signal(page)).id === "W01-ANTENNA";
+          elapsed += 100
+        )
+          await advance(page, 100);
+        await keys(page, []);
+        const wreckSignal = await signal(page);
+        assert.equal(
+          wreckSignal.id,
+          "W01-BEACON",
+          "The recovered antenna points to the nearby wreck, not home",
+        );
+        assert.match(wreckSignal.action, /survey|wreck|beacon/i);
+        await steerTo(page, 20.5);
+        await drillToRow(page, 43);
+        await steerTo(
           page,
+          W01.beaconX,
           async () => (await signal(page)).id !== "W01-BEACON",
         );
         const surveyed = await state(page);
         assert.equal(surveyed.state.progress.beacon, true);
+        assert.equal(
+          surveyed.state.worlds.W01.missions.find(
+            (item) => item.id === "W01-ANTENNA",
+          ).status,
+          "carried",
+        );
         assert.equal((await signal(page)).id, "W01-LANDER");
         assert.equal(
           (await signal(page)).sourceMarkers.includes("W01-BEACON"),
@@ -256,9 +443,9 @@ export async function runPoiSmoke(
         assert.equal(
           (await signal(page)).landmarks.includes("W01-BEACON"),
           true,
-          "Survey completion leaves a recognizable physical wreck",
+          "Survey completion leaves the physical beacon in the gallery",
         );
-        await screenshot(page, `${path}-${label}-surveyed-wreck.png`);
+        await screenshot(page, `${path}-${label}-surveyed-wreck-beacon.png`);
         await geometry(page, viewport);
 
         const valve = abovePart(initial, "W01-VALVE");
@@ -328,7 +515,7 @@ export async function runPoiSmoke(
         );
         noErrors(page);
         pass(
-          `native ${label} beacon survey, physical wrecks, part recovery and banking guidance`,
+          `native ${label} seam-A haul, antenna-and-wreck-beacon dive, part recovery and banking guidance`,
         );
       } finally {
         await context.close();
@@ -385,6 +572,116 @@ export async function runPoiSmoke(
       await context.close();
     }
   }
+  if (chosen("leg")) {
+    // D14 acceptance and §9.4 "time to beacon": the M2 leg by native play,
+    // from the lander to the wreck beacon in one dive with the rank-1 drill
+    // and tank. Keyboard drilling and steering only; discovery comes from the
+    // game's own refreshVisibility as the rig moves (no discovered.fill, no
+    // radius reveal, no teleport). Worlds: the audit's fresh-w01 claim and
+    // this run's own newly generated claim.
+    const viewport = { width: 1440, height: 900 };
+    const { context, page } = await ready(browser, base, { viewport });
+    try {
+      await freeze(page);
+      const generated = await state(page);
+      const audit = JSON.parse(
+        await readFile(
+          new URL(
+            "../docs/art-audit/prototype/assets/fresh-w01.json",
+            import.meta.url,
+          ),
+          "utf8",
+        ),
+      );
+      const results = [];
+      for (const [name, source] of [
+        ["fresh-w01", audit],
+        ["generated", generated],
+      ]) {
+        const fixture = stageTwoStart(source);
+        const before = fixture.state.worlds.W01.discovered.reduce(
+          (sum, cell) => sum + cell,
+          0,
+        );
+        await restore(page, fixture);
+        const surveyed = await watchSurvey(page);
+        const start = await state(page);
+        const wall = Date.now();
+        await steerTo(page, 20.5);
+        await drillToRow(page, 43);
+        const atGallery = await state(page);
+        assert.equal(
+          atGallery.state.worlds.W01.missions.find(
+            (item) => item.id === "W01-VALVE",
+          ).status,
+          "carried",
+          "The route dive passes the valve room and recovers the valve",
+        );
+        assert.equal(atGallery.state.progress.beacon, false);
+        // Steer to the beacon's column; the approach ends once the rig is
+        // inside the survey radius, and the saved state must then agree.
+        const beaconY = W01.beaconRow + 0.5;
+        await steerTo(page, W01.beaconX, async () => {
+          const point = await rig(page);
+          return (
+            Math.hypot(wrapDelta(point.x, W01.beaconX), point.y - beaconY) < 1.1
+          );
+        });
+        const wallSeconds = (Date.now() - wall) / 1000;
+        const end = await state(page, false);
+        assert.equal(
+          end.state.progress.beacon,
+          true,
+          "The wreck beacon answers: " + JSON.stringify(end.state.vehicle),
+        );
+        const discovered = end.state.worlds.W01.discovered.reduce(
+          (sum, cell) => sum + cell,
+          0,
+        );
+        assert.ok(
+          discovered < 0.25 * 2400,
+          "Native discovery only: " + discovered + " cells known",
+        );
+        const result = {
+          world: name,
+          seed: end.state.seed,
+          gameSeconds: +(end.state.elapsed - start.state.elapsed).toFixed(2),
+          gallerySeconds: +(
+            atGallery.state.elapsed - start.state.elapsed
+          ).toFixed(2),
+          wallSeconds: +wallSeconds.toFixed(1),
+          energyLeft: +end.state.vehicle.energy.toFixed(2),
+          hull: end.state.vehicle.hull,
+          rig: end.state.vehicle,
+          discoveredBefore: before,
+          discoveredAfter: discovered,
+        };
+        results.push(result);
+        console.log("TIME_TO_BEACON " + JSON.stringify(result));
+        await closeOverlay(page);
+        await advance(page, 50);
+        await screenshot(page, `${path}-leg-${name}-beacon.png`);
+        // The survey notice may queue behind the gallery's discovery notice.
+        for (
+          let elapsed = 0;
+          elapsed < 6000 && !(await surveyed());
+          elapsed += 250
+        )
+          await advance(page, 250);
+        assert.equal(await surveyed(), true, "The survey is announced");
+      }
+      await writeFile(
+        `${path}-leg-time-to-beacon.json`,
+        JSON.stringify(results, null, 2),
+      );
+      noErrors(page);
+      pass(
+        "native M2 leg: lander to the SITE-4 wreck beacon by drilling and steering, survey recorded, time to beacon written",
+      );
+    } finally {
+      await context.close();
+    }
+  }
   if (chosen("fog")) {
     const viewport = { width: 1440, height: 900 };
     const { context, page } = await ready(browser, base, { viewport });
@@ -392,6 +689,8 @@ export async function runPoiSmoke(
       await freeze(page);
       const initial = await state(page);
       await menu(page);
+      // Accessibility settings moved to the pause menu's Settings section.
+      await pauseSection(page, "systems");
       await page
         .locator('[data-setting="reducedMotion"]')
         .check({ force: true });
@@ -433,7 +732,7 @@ export async function runPoiSmoke(
         processedBy: [],
       });
       await restore(page, different);
-      assert.equal((await signal(page)).id, "W01-BEACON");
+      assert.equal((await signal(page)).id, "W01-SEAM-A");
       assert.deepEqual(
         await page.screenshot({ clip }),
         baselinePixels,
@@ -484,9 +783,14 @@ export async function runPoiSmoke(
           JSON.stringify(crossed.state.vehicle),
       );
       await screenshot(page, `${path}-wrapped-pressure-assembly.png`);
+      // The wrapped approach queues its own "At target" announcement; let it
+      // play out so the danger window below only sees announcements it makes.
+      await advance(page, 4000);
 
       const critical = abovePart(initial, "W01-VALVE");
-      critical.state.vehicle.energy = 2;
+      // 20 % of the fixture's 16 L tank, the ratio 2 L of 10 L used to be:
+      // "Low energy" without the return reserve turning the locator home.
+      critical.state.vehicle.energy = 3.2;
       critical.state.vehicle.hull = 1.5;
       await restore(page, critical);
       const warning = await page.locator("#campaign-danger").innerText();
@@ -503,9 +807,13 @@ export async function runPoiSmoke(
       const stationaryMarker = await page.screenshot({ clip: markerClip });
       await page.evaluate(() => {
         window.__poiMutations = 0;
-        window.__poiObserver = new MutationObserver(
-          () => window.__poiMutations++,
-        );
+        window.__poiTexts = [];
+        window.__poiObserver = new MutationObserver(() => {
+          window.__poiMutations++;
+          window.__poiTexts.push(
+            document.querySelector("#campaign-message").textContent,
+          );
+        });
         window.__poiObserver.observe(
           document.querySelector("#campaign-message"),
           { childList: true, subtree: true, characterData: true },
@@ -520,7 +828,8 @@ export async function runPoiSmoke(
       assert.equal(
         await page.evaluate(() => window.__poiMutations),
         0,
-        "Danger states suppress new proximity announcements",
+        "Danger states suppress new proximity announcements: " +
+          (await page.evaluate(() => JSON.stringify(window.__poiTexts))),
       );
       await page.evaluate(() => window.__poiObserver.disconnect());
       assert.equal(await page.locator("#campaign-danger").innerText(), warning);
