@@ -15,6 +15,12 @@
  *
  *   PREVIEW_URL=http://127.0.0.1:5173/ CHROMIUM_PATH=… \
  *     node docs/qa/t13b-asset-pipeline/zone-runtime.mjs resident OUT_DIR
+ *
+ * On a tree without `__campaignDebug.textures()` (before T13b's runtime
+ * stage) the texture list comes from Phaser's TextureManager through a hook
+ * on the Phaser.Game constructor, and each key is grouped as the readout
+ * groups it (legacy atlases `campaign-w0X` and `campaign-w0X-3x-N` count as
+ * atlas pages at @2x and @3x). The hook only reads.
  */
 import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -85,6 +91,21 @@ const FORMS = {
     query: "tile=56",
   },
 };
+/** The readout's groups (`zones.ts textureGroup`), legacy atlas keys included. */
+function legacyGroup(key) {
+  if (/^campaign-w0[12](-|$)/.test(key)) return "atlas";
+  if (key.startsWith("band-")) return "bands";
+  if (/^(campaign|frontier)-(sky|ridge-far|ridge-near)$/.test(key)) return "bg";
+  if (/^campaign-(retained-terrain|light-map|t1-lite-.+)$/.test(key))
+    return "layers";
+  return "other";
+}
+/** Bytes per group, as `data-resident-texture-groups` gives them. */
+function groupBytes(textures) {
+  const groups = { atlas: 0, bands: 0, bg: 0, layers: 0, other: 0 };
+  for (const texture of textures) groups[texture.group] += texture.bytes;
+  return groups;
+}
 async function open(browser, form) {
   const { viewport, dpr, touch = false, query = "" } = FORMS[form];
   const context = await browser.newContext({
@@ -104,6 +125,25 @@ async function open(browser, form) {
       }),
     ),
   );
+  // Read-only hook for trees without textures(): keep the Phaser.Game.
+  await context.addInitScript(() => {
+    let phaser;
+    Object.defineProperty(window, "Phaser", {
+      configurable: true,
+      get: () => phaser,
+      set(value) {
+        const Game = value.Game;
+        value.Game = new Proxy(Game, {
+          construct(Target, args) {
+            const game = Reflect.construct(Target, args);
+            window.__t13bGame = game;
+            return game;
+          },
+        });
+        phaser = value;
+      },
+    });
+  });
   const page = await context.newPage();
   const faults = [];
   page.on("pageerror", (error) => faults.push(error.message));
@@ -147,27 +187,65 @@ async function settle(page) {
   await new Promise((resolve) => setTimeout(resolve, 100));
 }
 async function read(page) {
-  return page.evaluate(() => {
-    const host = document.querySelector("#campaign-game");
-    const data = host.dataset;
-    return {
-      bytes: Number(data.residentTextureBytes),
-      world: data.campaignWorld,
-      zone: data.residentTextureZone ?? null,
-      groups: data.residentTextureGroups
-        ? JSON.parse(data.residentTextureGroups)
-        : null,
-      density: data.atlasDensity ?? null,
-      guard: data.atlasGuard ?? null,
-      pages: data.atlasPages ? data.atlasPages.split(",") : null,
-      dpr: Number(data.viewDpr),
-      tile: Number(data.viewTile),
-      drawCalls: Number(data.drawCalls) || null,
-      readout: document.querySelector("#campaign-frametime")?.textContent,
-      misses: window.__campaignDebug?.frameMisses?.(true) ?? null,
-      textures: window.__campaignDebug?.textures?.() ?? null,
-    };
-  });
+  return page
+    .evaluate(() => {
+      const host = document.querySelector("#campaign-game");
+      const data = host.dataset;
+      return {
+        bytes: Number(data.residentTextureBytes),
+        world: data.campaignWorld,
+        zone: data.residentTextureZone ?? null,
+        groups: data.residentTextureGroups
+          ? JSON.parse(data.residentTextureGroups)
+          : null,
+        density: data.atlasDensity ?? null,
+        guard: data.atlasGuard ?? null,
+        pages: data.atlasPages ? data.atlasPages.split(",") : null,
+        dpr: Number(data.viewDpr),
+        tile: Number(data.viewTile),
+        drawCalls: Number(data.drawCalls) || null,
+        readout: document.querySelector("#campaign-frametime")?.textContent,
+        misses: window.__campaignDebug?.frameMisses?.(true) ?? null,
+        textures: window.__campaignDebug?.textures?.() ?? null,
+        // Before the runtime stage: the TextureManager list, ungrouped.
+        list: window.__campaignDebug?.textures
+          ? null
+          : Object.entries(
+              window.__t13bGame?.scene.scenes[0]?.textures.list ?? {},
+            ).map(([key, texture]) => ({
+              key,
+              bytes: texture.source.reduce(
+                (bytes, source) => bytes + source.width * source.height * 4,
+                0,
+              ),
+              width: texture.source[0]?.width ?? 0,
+              height: texture.source[0]?.height ?? 0,
+            })),
+      };
+    })
+    .then((sample) => {
+      if (sample.list) {
+        sample.textures = sample.list
+          .map((texture) => {
+            const group = legacyGroup(texture.key);
+            const legacy = /^campaign-w0[12](-3x-\d+)?$/.exec(texture.key);
+            return {
+              ...texture,
+              group,
+              zone: legacy ? "legacy" : group === "bg" ? "surface" : null,
+              density: legacy ? (legacy[1] ? 3 : 2) : null,
+              world: legacy ? texture.key.slice(9, 12).toUpperCase() : null,
+            };
+          })
+          .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+        sample.groups = groupBytes(sample.textures);
+        sample.groupsFrom = "TextureManager";
+        const sum = sample.textures.reduce((bytes, t) => bytes + t.bytes, 0);
+        assert.equal(sum, sample.bytes, "the list adds up to the dataset");
+      }
+      delete sample.list;
+      return sample;
+    });
 }
 
 const browser = await launchBrowser();

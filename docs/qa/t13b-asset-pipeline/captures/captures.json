@@ -1,0 +1,101 @@
+{
+  "a04-dive-60m@2": {
+    "pixels": 5184000,
+    "changed": 537390,
+    "changed share": 0.10366,
+    "over 8 levels": 1510,
+    "over 32 levels": 634,
+    "max": 138,
+    "mean": 0.0819,
+    "bbox": [
+      0,
+      0,
+      2880,
+      1800
+    ]
+  },
+  "a04p-dive-60m-phone@3": {
+    "pixels": 3009987,
+    "changed": 288410,
+    "changed share": 0.09582,
+    "over 8 levels": 1692,
+    "over 32 levels": 744,
+    "max": 192,
+    "mean": 0.0845,
+    "bbox": [
+      0,
+      36,
+      1179,
+      2553
+    ]
+  },
+  "a02-spawn-1440x900@2": {
+    "pixels": 5184000,
+    "changed": 241414,
+    "changed share": 0.04657,
+    "over 8 levels": 691,
+    "over 32 levels": 77,
+    "max": 90,
+    "mean": 0.0397,
+    "bbox": [
+      0,
+      0,
+      2880,
+      1800
+    ]
+  },
+  "w02-ice-vent@2": {
+    "pixels": 5184000,
+    "changed": 514571,
+    "changed share": 0.09926,
+    "over 8 levels": 5657,
+    "over 32 levels": 4004,
+    "max": 167,
+    "mean": 0.1197,
+    "bbox": [
+      0,
+      0,
+      2880,
+      1800
+    ],
+    "vent cell": {
+      "changed": 7486,
+      "over 32 levels": 3866,
+      "pixels": 18769
+    },
+    "drawn after": [
+      {
+        "frame": "ice-vent",
+        "texture": "campaign-w02-cave-3x-0"
+      }
+    ],
+    "pages after": "campaign-w01-cave-3x-0,campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w02-cave-3x-0,campaign-w02-core-3x-0,campaign-w02-core-hero-3x-0"
+  },
+  "w02-ice-vent-phone@3": {
+    "pixels": 3009987,
+    "changed": 308085,
+    "changed share": 0.10235,
+    "over 8 levels": 6028,
+    "over 32 levels": 4225,
+    "max": 147,
+    "mean": 0.1621,
+    "bbox": [
+      0,
+      0,
+      1179,
+      2553
+    ],
+    "vent cell": {
+      "changed": 8799,
+      "over 32 levels": 4043,
+      "pixels": 19321
+    },
+    "drawn after": [
+      {
+        "frame": "ice-vent",
+        "texture": "campaign-w02-cave-2x-0"
+      }
+    ],
+    "pages after": "campaign-w01-cave-2x-0,campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w02-cave-2x-0,campaign-w02-core-2x-0,campaign-w02-core-hero-2x-0"
+  }
+}
