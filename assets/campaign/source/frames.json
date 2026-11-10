@@ -1390,6 +1390,71 @@
       "logicalHeight": 48,
       "category": "debug",
       "source": "raster"
+    },
+    {
+      "name": "ui-chevron-home",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph",
+      "iconSizes": [
+        24,
+        48,
+        72
+      ]
+    },
+    {
+      "name": "ui-chevron-target",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph",
+      "iconSizes": [
+        24,
+        48,
+        72
+      ]
+    },
+    {
+      "name": "ui-pulse-ring",
+      "width": 192,
+      "height": 192,
+      "logicalWidth": 96,
+      "logicalHeight": 96,
+      "category": "glyph",
+      "iconSizes": [
+        64,
+        128,
+        192
+      ]
+    },
+    {
+      "name": "ui-scan",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph",
+      "iconSizes": [
+        24,
+        48,
+        72
+      ]
+    },
+    {
+      "name": "ui-leader-tick",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "glyph",
+      "iconSizes": [
+        24,
+        48,
+        72
+      ]
     }
   ],
   "backgrounds": [

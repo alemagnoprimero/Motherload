@@ -344,7 +344,12 @@
       "ui-map",
       "ui-shop",
       "ui-warning",
-      "ui-cooldown"
+      "ui-cooldown",
+      "ui-chevron-home",
+      "ui-chevron-target",
+      "ui-pulse-ring",
+      "ui-scan",
+      "ui-leader-tick"
     ],
     "unused": [
       "refuge-stage-0",
