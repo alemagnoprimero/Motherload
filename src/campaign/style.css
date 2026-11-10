@@ -4210,3 +4210,34 @@ body .campaign-mission-stack .campaign-objective {
     display: inline;
   }
 }
+
+/*
+ * H4 (D3): on phones the tray is translucent (its plate at 45 %, the board
+ * shows none) and rests 4 s after its last touch with no tool at work: the
+ * plate fades to 12 % and the icons to 75 %, still where they were and still
+ * 44 px targets. A touch, Scan, the brace or precision wakes it. Text keeps
+ * its full colour (the HUD contrast check reads it).
+ */
+@media (pointer: coarse), (max-width: 760px), (max-height: 500px) {
+  .campaign-toolbar {
+    --tray-plate: rgb(10 22 28 / 45%);
+    background: var(--tray-plate);
+    box-shadow: 0 0 0 5px var(--tray-plate);
+    transition:
+      background-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+  .campaign-toolbar .hud-icon {
+    transition: opacity 0.4s ease;
+  }
+  body[data-campaign-tray-rest="true"] .campaign-toolbar {
+    --tray-plate: rgb(10 22 28 / 12%);
+  }
+  body[data-campaign-tray-rest="true"] .campaign-toolbar .hud-icon {
+    opacity: 0.75;
+  }
+}
+.campaign-reduced-motion .campaign-toolbar,
+.campaign-reduced-motion .campaign-toolbar .hud-icon {
+  transition: none;
+}

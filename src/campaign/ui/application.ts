@@ -88,6 +88,9 @@ let hasCheckpoint = false;
 let rigCueUntil = 0;
 /** T8: whether the scene's last frame showed the Scan labels. */
 let scanning = false;
+/** H4: the phone tray rests after this long without a touch or a tool at work. */
+const TRAY_REST_MS = 4000;
+let trayUsedAt = 0;
 let mapTab = "stars";
 type Overlay = "welcome" | "menu" | "dock" | "map" | undefined;
 let overlay: Overlay = "welcome";
@@ -238,6 +241,14 @@ contractDrawer.className = "mission-detail contract-drawer";
 patchMarkup(
   contractDrawer,
   '<summary>Contracts</summary><div id="campaign-contracts"></div>',
+);
+// H4: any touch on the tray wakes it (capture: before the button's own handler).
+document.querySelector<HTMLElement>(".campaign-toolbar")!.addEventListener(
+  "pointerdown",
+  () => {
+    trayUsedAt = performance.now();
+  },
+  { capture: true },
 );
 // H1: the contracts sit with the details, shown on hover, focus or tap.
 $("campaign-objective-more").append(contractDrawer);
@@ -1087,6 +1098,19 @@ function syncHUD() {
   );
   $<HTMLButtonElement>("campaign-scan-button").disabled = Boolean(overlay);
   setBodyData("campaignScan", String(scanning));
+  // H4 (D3): the tray rests (its plate almost gone) once nothing has used it
+  // for TRAY_REST_MS; a working tool, Scan or an open menu keeps it awake.
+  if (
+    scanning ||
+    campaign.feetDeployed ||
+    campaign.precisionActive ||
+    Boolean(overlay)
+  )
+    trayUsedAt = performance.now();
+  setBodyData(
+    "campaignTrayRest",
+    String(performance.now() - trayUsedAt > TRAY_REST_MS),
+  );
   document.body.dataset.campaignPaused = String(paused());
   document.body.dataset.campaignBusy = String(busy);
   if (campaign.message !== previousMessage) {
