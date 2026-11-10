@@ -1463,7 +1463,28 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               !bindings.reducedMotion?.()
                 ? Math.sin(this.elapsed * 3 + row) * tile * 0.025
                 : 0;
+            // Art item A12: a deposit is set into its block. The socket decal
+            // (a translucent recess, lit lip and contact shadow) lies under
+            // the ore at 1 tile, inside this known cell; exposed packages lie
+            // over air and get none. W02 has no socket of its own and draws
+            // W01's (image() falls back to the W01 atlas).
+            if (item.status === "deposit")
+              this.image("deposit-socket", x, y, tile, tile, 12.5, alpha);
             this.image(frame, x, y + bob, tile * 0.9, tile * 0.9, 13, alpha);
+            // T9's high-contrast variant: the light tier mark drawn over the
+            // frame's own mark, same place and size; each world's atlas has
+            // its own, at its mark centres (one switch point; Scan, T8, can
+            // join it here).
+            if (number && highContrast)
+              this.image(
+                `tier-mark-hc-${number}`,
+                x,
+                y + bob,
+                tile * 0.9,
+                tile * 0.9,
+                13.05,
+                alpha,
+              );
             if (number >= 2 && lit) {
               const wave = bindings.reducedMotion?.()
                 ? 1
@@ -1480,8 +1501,19 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
                       ),
                       6,
                     );
-              const glintX = x + tile * 0.15,
-                glintY = y - tile * 0.18,
+              // On a lit facet of ore-o2..o4 (art item A12): frame point
+              // (65, 44) in W01 and (63, 40) in W02, at 0.9 tile; a package
+              // draws its ore at 0.74 from (13, 10), so its point moves in.
+              const [glintDX, glintDY] =
+                item.status === "deposit"
+                  ? icy
+                    ? [0.14, -0.075]
+                    : [0.16, -0.04]
+                  : icy
+                    ? [0.109, -0.088]
+                    : [0.124, -0.053];
+              const glintX = x + tile * glintDX,
+                glintY = y + tile * glintDY,
                 size = tile * (0.045 + number * 0.014) * wave;
               this.image(
                 number === 4 ? "fx-glint-gold" : "fx-glint-silver",

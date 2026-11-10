@@ -1,0 +1,44 @@
+{
+  "asset": 25,
+  "item": "A12 (with T9)",
+  "method": "generator writing layered SVG (decision D5)",
+  "source": {
+    "generator": "assets/campaign/source/w01-ore.mjs: oreFrame(), packageFrame(), tierMarkHighContrastFrame(); assets/campaign/render-sources.mjs: oreBadge(), oreMarkGeometry(), oreMarkHighContrast()",
+    "kit": "assets/campaign/kit/ (palette, svg)",
+    "palette": "docs/art-audit/data/palette.json: ore_copper (copper body), ore_silver_top (silver lit top); slag grey #657681 (O1, lifted to L* 74/60/34) and gold #edb44d / #a16b39 (O4) kept from the earlier frames, which the board has no sample for",
+    "frames": [
+      "ore-o1",
+      "package-o1",
+      "ore-o2",
+      "package-o2",
+      "ore-o3",
+      "package-o3",
+      "ore-o4",
+      "package-o4",
+      "tier-mark-hc-1",
+      "tier-mark-hc-2",
+      "tier-mark-hc-3",
+      "tier-mark-hc-4"
+    ]
+  },
+  "reference": {
+    "file": "docs/art-direction/d0-target-shaft-wide.png",
+    "sha256": "0d51fe65cb3ef434a34c279b9151c286a8516b60046f28e1237e4a3c54809f67",
+    "use": "facet tones, outline weight and the tier mark (dark disc, light glyph, no ring, lower right) judged beside the board's ores at its tile scale; no pixels read into the drawing",
+    "audit": "docs/ART_QUALITY_AUDIT.md §5.3 T9, §5.6 row 25, §6.1; high-contrast variant as overlay marks (docs/art-direction/decisions.md, accepted deviations)"
+  },
+  "reviewer": {
+    "name": "Alejandro (art director)",
+    "signed": null,
+    "state": "in review (A12 pull request)",
+    "fixtures": [
+      "a04-dive-60m@2",
+      "a04p-dive-60m-phone@3"
+    ]
+  },
+  "redrawnShare": 0,
+  "underlays": [],
+  "boardPixelsCopied": false,
+  "recorded": "2026-11-09",
+  "notes": "W02's ore and package frames take the same mark from oreBadge() at W02's own centres (fitted to its minerals) and lose their notches and tag squares; W02 writes its own tier-mark-hc-1..4 at those centres; its drawings are otherwise unchanged."
+}

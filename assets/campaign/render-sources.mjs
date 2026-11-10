@@ -1,13 +1,66 @@
 /** Editable procedural vector material kit. Eight-tile periods avoid tile-sized repetition. */
 import { mkdir,writeFile } from 'node:fs/promises';
 import { WORLD_BANDS } from '../../src/campaign/world-content.ts';
+import { num } from './kit/svg.mjs';
 const dir=new URL('./bands/',import.meta.url);
 const shade=(hex,amount)=>'#'+hex.slice(1).match(/../g).map(v=>Math.max(0,Math.min(255,parseInt(v,16)+amount)).toString(16).padStart(2,'0')).join('');
 const poly=(points,fill,stroke='none',width=0)=>`<path d="${points}" fill="${fill}" stroke="${stroke}" stroke-width="${width}" stroke-linejoin="round"/>`;
 const rect=(x,y,w,h,fill)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`;
-export function oreBadge(tier){
- const bars=Array.from({length:tier},(_,i)=>rect(70+i*4-(tier-1)*2,70,2.6,11,'#ffffff')).join('');
- return `<g id="tier-badge"><circle cx="76" cy="76" r="14" fill="#101820" stroke="#ffffff" stroke-width="2.5"/>${bars}</g>`;
+// Art item A12 with T9 (docs/ART_QUALITY_AUDIT.md §5.3 T9, §6.1 "Composition"):
+// the tier mark is a small dark disc with a light glyph and no ring, at the
+// ore's lower right, overlapping it by about 30 %. Its diameter is 16 of the
+// 96-unit frame (0.167 ≤ 0.18). The glyphs are the journal legend's
+// (src/mineral-legend.ts campaignOreMarker: dot, two vertical bars, three
+// horizontal bars, triangle), as on the board: a dot on the pebble ore, II on
+// copper. oreMarkGeometry() is the one source of the mark's place and size
+// for the frames, the high-contrast overlays and scripts/check-render-assets.mjs.
+export const ORE_MARK_GLYPHS=['dot','parallel','bars','triangle'];
+export const ORE_MARK_FILL='#0e151d';
+export const ORE_MARK_INK='#e8f0f5';
+export const ORE_MARK_HC_FILL='#f4f1e8';
+export const ORE_MARK_RADIUS=8;
+/** The high-contrast mark's dark outline (thin, so the light field dominates). */
+export const ORE_MARK_HC_OUTLINE=1.4;
+// Centre per world and tier, in the 96-unit ore frame: the lower-right corner
+// of each ore silhouette (W01: assets/campaign/source/w01-ore.mjs; W02:
+// assets/campaign/w02/create-sources.mjs mineral()), set so about 30 % of the
+// disc lies on the ore and on the package's ore (0.2 to 0.4, measured on the
+// frames drawn without the mark), with the right-and-below quarter round the
+// disc clear of the drawing. Package frames share the ore frame's centre, so
+// one high-contrast overlay per world fits both.
+export const ORE_MARK_CENTRES={
+ W01:[[79,85],[79,74],[78,81.5],[78,83]],
+ W02:[[78.5,80],[78,82.5],[78.5,79],[78,83]],
+};
+export function oreMarkGeometry(tier,world='W01'){
+ const centres=ORE_MARK_CENTRES[world];
+ if(!centres) throw new Error(`No tier-mark centres for world ${world}`);
+ const [cx,cy]=centres[tier-1];
+ return {cx,cy,r:ORE_MARK_RADIUS};
+}
+function markGlyph(tier,cx,cy,fill,k=1){
+ const glyph=ORE_MARK_GLYPHS[tier-1];
+ const box=(x,y,w,h)=>`<rect x="${num(cx+(x-w/2)*k)}" y="${num(cy+(y-h/2)*k)}" width="${num(w*k)}" height="${num(h*k)}" fill="${fill}"/>`;
+ if(glyph==='dot') return `<circle cx="${num(cx)}" cy="${num(cy)}" r="${num(2.6*k)}" fill="${fill}"/>`;
+ if(glyph==='parallel') return box(-2.1,0,2.3,8.4)+box(2.1,0,2.3,8.4);
+ if(glyph==='bars') return box(0,-3.3,8,1.8)+box(0,0,8,1.8)+box(0,3.3,8,1.8);
+ const p=[[0,-4.6],[-4.4,3.2],[4.4,3.2]].map(([x,y])=>`${num(cx+x*k)} ${num(cy+y*k)}`);
+ return `<path d="M${p.join(' L')} Z" fill="${fill}"/>`;
+}
+export function oreBadge(tier,world='W01'){
+ const {cx,cy,r}=oreMarkGeometry(tier,world);
+ return `<g id="tier-mark" data-glyph="${ORE_MARK_GLYPHS[tier-1]}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${ORE_MARK_FILL}"/>${markGlyph(tier,cx,cy,ORE_MARK_INK)}</g>`;
+}
+// The high-contrast mark (T9's HC variant, drawn over the ore by the game when
+// high contrast is on): the same footprint, a light disc (L* 95, more than
+// 20 L* from copper's body in greyscale) inside a thin dark outline, with the
+// glyph dark. A frame of its own per world, so the HC variant costs a small
+// mark, not a second set of ore frames (audit §7 budget;
+// docs/art-direction/decisions.md, accepted deviations).
+export function oreMarkHighContrast(tier,world='W01'){
+ const {cx,cy,r}=oreMarkGeometry(tier,world);
+ const w=ORE_MARK_HC_OUTLINE;
+ return `<g id="tier-mark-hc" data-glyph="${ORE_MARK_GLYPHS[tier-1]}"><circle cx="${num(cx)}" cy="${num(cy)}" r="${num(r-w/2)}" fill="${ORE_MARK_HC_FILL}" stroke="#14232b" stroke-width="${num(w)}"/>${markGlyph(tier,cx,cy,'#14232b',0.82)}</g>`;
 }
 export function sceneryFrames(){
  const frames=[];

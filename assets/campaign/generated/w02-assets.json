@@ -307,7 +307,7 @@
     "packing": "Node orchestrates Pillow lossless RGBA packing",
     "source": "assets/campaign/w02/*.svg",
     "authoring": "node assets/campaign/w02/create-sources.mjs; node scripts/build-frontier-assets.mjs",
-    "frameCount": 90,
+    "frameCount": 94,
     "backgroundCount": 3,
     "iconCount": 84
   }

@@ -1,6 +1,6 @@
 /** Original W02 drawings. Run explicitly to refresh editable SVG sources. */
 import { mkdir, writeFile } from "node:fs/promises";
-import { oreBadge } from "../render-sources.mjs";
+import { oreBadge, oreMarkHighContrast } from "../render-sources.mjs";
 import {
   stars,
   skyBody,
@@ -176,12 +176,12 @@ function mineral(index) {
   );
 }
 for (let i = 0; i < 4; i++) {
+  // Art item A12 with T9: the tier mark alone (no notches), drawn as in W01
+  // at W02's own mark centres (render-sources.mjs ORE_MARK_CENTRES.W02).
   const identification = layer(
     "grayscale-identification",
-    Array.from({ length: i + 1 }, (_, j) =>
-      rect(30 + j * 10, 89, 6, 3, PALE, 1, "none", 0),
-    ).join(""),
-  ) + oreBadge(i + 1);
+    oreBadge(i + 1, "W02"),
+  );
   await save(`ore-o${i + 1}`, 96, 96, mineral(i) + identification, {
     category: "mineral",
   });
@@ -192,14 +192,18 @@ for (let i = 0; i < 4; i++) {
     `<g transform="translate(13 9) scale(.74)">${mineral(i)}</g>` +
       layer(
         "sealed-cargo-harness",
-        path("M16 54 L25 77 H73 L82 54 M25 77 V88 H73 V77", "none", PALE, 5) +
-          rect(39, 73, 19, 13, GOLD, 3) +
-          path("M45 79 H52", "none", INK, 2),
+        path("M16 54 L25 77 H73 L82 54 M25 77 V88 H73 V77", "none", PALE, 5),
       ) +
       identification,
     { category: "package" },
   );
 }
+// T9's high-contrast marks at W02's centres: the game draws tier-mark-hc-N
+// over the ore or package when high contrast is on, from this atlas in W02.
+for (let tier = 1; tier <= 4; tier++)
+  await save(`tier-mark-hc-${tier}`, 96, 96, oreMarkHighContrast(tier, "W02"), {
+    category: "overlay",
+  });
 await save(
   "mission-sample",
   96,

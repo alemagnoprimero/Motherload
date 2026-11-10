@@ -14,7 +14,7 @@ Shared helpers for the art programme's generators (built in art item A4). Every 
 A session's round, in order:
 
 1. Draw with the kit; keep numbers through `num` so sources rebuild byte-identically.
-2. Write a small driver like `scripts/art-review-a4.mjs` that composes candidate panels at the board's tile scale, then run `python3 scripts/art-review.py <out>/review.json <out>/sheet.png` for the sheet, the measures and the IoU duplicate check.
+2. Write a small driver like `scripts/art-review-a4.mjs` that composes candidate panels at the board's tile scale, then run `python3 scripts/art-review.py <out>/review.json <out>/sheet.png` for the sheet, the measures and the IoU duplicate check (`scripts/art-review-a12.mjs` and `.py` are the prop version: frames in band blocks, cross-variant IoU). `scripts/art_tiers.py` counts shading tiers per material zone, from `data-zone` groups in the SVG or from zone masks on a render.
 3. After the director's pick, regenerate the sources, `npm run campaign:assets`, then `python3 scripts/art-unchanged-pngs.py --restore`, so only images whose pixels changed stay modified.
 4. Capture the fixture with `scripts/art-captures.mjs`; add the capture folder to `review.json` under `frames` to measure it beside the board.
 5. Write the provenance record with `records.mjs` and update the asset tracker's rows.

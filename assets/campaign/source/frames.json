@@ -506,6 +506,46 @@
       "logicalHeight": 48
     },
     {
+      "name": "deposit-socket",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "decal"
+    },
+    {
+      "name": "tier-mark-hc-1",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "overlay"
+    },
+    {
+      "name": "tier-mark-hc-2",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "overlay"
+    },
+    {
+      "name": "tier-mark-hc-3",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "overlay"
+    },
+    {
+      "name": "tier-mark-hc-4",
+      "width": 96,
+      "height": 96,
+      "logicalWidth": 48,
+      "logicalHeight": 48,
+      "category": "overlay"
+    },
+    {
       "name": "rig-body-0",
       "width": 128,
       "height": 128,

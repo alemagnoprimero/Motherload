@@ -1,0 +1,398 @@
+{
+ "base": "http://127.0.0.1:5188/?backing=2",
+ "backingPin": 2,
+ "frames": {
+  "a02-spawn-1440x900@2": {
+   "scene": "surface",
+   "panel": "surface-wide",
+   "backing": 2,
+   "form": "desktop",
+   "window": [
+    0,
+    39.3,
+    1440,
+    782.3
+   ],
+   "rig_anchor": [
+    0.74,
+    0.689
+   ],
+   "target_anchor": [
+    0.532,
+    0.689
+   ],
+   "frame": {
+    "L_mean": 25.2,
+    "L_sd": 7.9,
+    "L_p2": 15.4,
+    "L_p98": 52.1,
+    "L_range_p2_p98": 36.6,
+    "within3_of_mode": 0.477,
+    "warm_pct": 0.28,
+    "cyan_pct": 0.02,
+    "edge_density": 0.026,
+    "luma_mean": 59.5,
+    "luma_sd": 18.8
+   },
+   "regions": {
+    "unknown": {
+     "luma": 62.6,
+     "sd": 2.7,
+     "n": 406362
+    },
+    "known_lit": {
+     "luma": 128.8,
+     "sd": 3.5,
+     "n": 14157
+    },
+    "lit_cells": 3,
+    "cave_air": null,
+    "rock_near_light": {
+     "luma": 128.8,
+     "sd": 3.5,
+     "n": 14157
+    },
+    "known_solid": {
+     "luma": 120.9,
+     "sd": 8.1,
+     "n": 33201
+    },
+    "known_lit_minus_unknown": 66.2,
+    "known_solid_minus_unknown": 58.3,
+    "unknown_minus_cave_air": null,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": null
+   },
+   "tiles_across": 25.0,
+   "overlay": {
+    "edges_full": 29480,
+    "edges_hudfree": 22121,
+    "playfield_px": 1177994,
+    "overlay_share": 0.25,
+    "art_edge_density": 0.0188
+   },
+   "text_items": [
+    "Hold Down to drill.",
+    "Skip",
+    "Home 0.4L \u00b7 Safe",
+    "HOME \u00b7 150 m",
+    "\u2193 Wreck survey beacon \u00b7 99 m",
+    "A",
+    "B"
+   ],
+   "mean_gradient": 1.16,
+   "flat_share": 0.818
+  },
+  "a04-dive-60m@2": {
+   "scene": "60 m",
+   "panel": "shaft-wide",
+   "backing": 2,
+   "form": "desktop",
+   "window": [
+    0,
+    0,
+    1440,
+    743
+   ],
+   "rig_anchor": [
+    0.5,
+    0.598
+   ],
+   "target_anchor": [
+    0.536,
+    0.76
+   ],
+   "frame": {
+    "L_mean": 26.8,
+    "L_sd": 7.3,
+    "L_p2": 15.3,
+    "L_p98": 52.7,
+    "L_range_p2_p98": 37.4,
+    "within3_of_mode": 0.793,
+    "warm_pct": 0.09,
+    "cyan_pct": 0.0,
+    "edge_density": 0.02,
+    "luma_mean": 63.3,
+    "luma_sd": 17.7
+   },
+   "regions": {
+    "unknown": {
+     "luma": 61.7,
+     "sd": 3.4,
+     "n": 1222338
+    },
+    "known_lit": {
+     "luma": 122.0,
+     "sd": 9.9,
+     "n": 22674
+    },
+    "lit_cells": 4,
+    "cave_air": {
+     "luma": 38.6,
+     "sd": 3.2,
+     "n": 61222
+    },
+    "rock_near_light": {
+     "luma": 123.8,
+     "sd": 9.4,
+     "n": 28758
+    },
+    "known_solid": {
+     "luma": 123.6,
+     "sd": 8.2,
+     "n": 41240
+    },
+    "known_lit_minus_unknown": 60.3,
+    "known_solid_minus_unknown": 61.9,
+    "unknown_minus_cave_air": 23.1,
+    "lit_minus_cave_air": 83.4,
+    "solid_minus_cave_air": 85.0
+   },
+   "tiles_across": 22.0,
+   "overlay": {
+    "edges_full": 24408,
+    "edges_hudfree": 14143,
+    "playfield_px": 1177994,
+    "overlay_share": 0.421,
+    "art_edge_density": 0.012
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 0.6L \u00b7 Safe",
+    "\u2191 HOME \u00b7 155 m",
+    "Wreck survey beacon \u00b7 117 m"
+   ],
+   "mean_gradient": 1.02,
+   "flat_share": 0.875,
+   "wall": {
+    "row4.5": {
+     "rock_-0.4tile": 109.0,
+     "lip_peak": 139.0,
+     "undercut_min": 36.0,
+     "air_+0.2tile": 37.0,
+     "samples": [
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      139.0,
+      76.0,
+      37.0,
+      37.0,
+      36.0,
+      36.0,
+      36.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0
+     ]
+    }
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 88.3,
+     "b": 17.6
+    },
+    "0.8tile": {
+     "L": 43.7,
+     "b": 2.2
+    },
+    "1.5tile": {
+     "L": 31.6,
+     "b": -6.3
+    }
+   }
+  },
+  "a04p-dive-60m-phone@3": {
+   "scene": "60 m",
+   "panel": "shaft-tall",
+   "backing": 2,
+   "form": "phone",
+   "window": [
+    0,
+    0,
+    393,
+    572
+   ],
+   "rig_anchor": [
+    0.5,
+    0.736
+   ],
+   "target_anchor": [
+    0.575,
+    0.758
+   ],
+   "frame": {
+    "L_mean": 27.6,
+    "L_sd": 11.0,
+    "L_p2": 14.5,
+    "L_p98": 57.3,
+    "L_range_p2_p98": 42.8,
+    "within3_of_mode": 0.486,
+    "warm_pct": 0.35,
+    "cyan_pct": 0.02,
+    "edge_density": 0.021,
+    "luma_mean": 65.3,
+    "luma_sd": 26.5
+   },
+   "regions": {
+    "unknown": {
+     "luma": 62.9,
+     "sd": 3.8,
+     "n": 372730
+    },
+    "known_lit": {
+     "luma": 122.0,
+     "sd": 9.9,
+     "n": 23305
+    },
+    "lit_cells": 4,
+    "cave_air": {
+     "luma": 38.5,
+     "sd": 3.2,
+     "n": 62465
+    },
+    "rock_near_light": {
+     "luma": 123.8,
+     "sd": 9.5,
+     "n": 29625
+    },
+    "known_solid": {
+     "luma": 123.6,
+     "sd": 8.2,
+     "n": 42265
+    },
+    "known_lit_minus_unknown": 59.1,
+    "known_solid_minus_unknown": 60.7,
+    "unknown_minus_cave_air": 24.4,
+    "lit_minus_cave_air": 83.5,
+    "solid_minus_cave_air": 85.1
+   },
+   "tiles_across": 8.9,
+   "overlay": {
+    "edges_full": 17569,
+    "edges_hudfree": 9200,
+    "playfield_px": 276625,
+    "overlay_share": 0.476,
+    "art_edge_density": 0.0333
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 0.6L \u00b7 Safe",
+    "\u2191 HOME \u00b7 155 m",
+    "Wreck survey beacon \u00b7 117 m"
+   ],
+   "wall": {
+    "row4.5": {
+     "rock_-0.4tile": 109.0,
+     "lip_peak": 153.0,
+     "undercut_min": 36.0,
+     "air_+0.2tile": 37.0,
+     "samples": [
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      109.0,
+      128.0,
+      153.0,
+      95.0,
+      37.0,
+      37.0,
+      36.0,
+      36.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0,
+      37.0
+     ]
+    }
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 89.2,
+     "b": 17.6
+    },
+    "0.8tile": {
+     "L": 43.2,
+     "b": 2.3
+    },
+    "1.5tile": {
+     "L": 31.5,
+     "b": -5.9
+    }
+   }
+  }
+ },
+ "concept": {
+  "shaft-tall": {
+   "L_mean": 30.1,
+   "L_sd": 15.7,
+   "L_p2": 9.7,
+   "L_p98": 79.5,
+   "L_range_p2_p98": 69.8,
+   "within3_of_mode": 0.222,
+   "warm_pct": 2.16,
+   "cyan_pct": 0.06,
+   "edge_density": 0.153,
+   "luma_mean": 72.0,
+   "luma_sd": 37.9
+  },
+  "shaft-wide": {
+   "L_mean": 25.9,
+   "L_sd": 10.7,
+   "L_p2": 11.1,
+   "L_p98": 58.1,
+   "L_range_p2_p98": 47.0,
+   "within3_of_mode": 0.359,
+   "warm_pct": 0.66,
+   "cyan_pct": 0.02,
+   "edge_density": 0.074,
+   "luma_mean": 61.8,
+   "luma_sd": 25.5
+  },
+  "surface-wide": {
+   "L_mean": 26.3,
+   "L_sd": 10.9,
+   "L_p2": 13.7,
+   "L_p98": 65.4,
+   "L_range_p2_p98": 51.7,
+   "within3_of_mode": 0.358,
+   "warm_pct": 2.6,
+   "cyan_pct": 0.11,
+   "edge_density": 0.086,
+   "luma_mean": 62.3,
+   "luma_sd": 26.0
+  }
+ }
+}

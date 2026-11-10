@@ -17,6 +17,8 @@ export const FRONTIER_REQUIRED_FRAMES = [
   "bedrock-0",
   "sky-body",
   ...range(4).flatMap((i) => [`ore-o${i + 1}`, `package-o${i + 1}`]),
+  // Art item A12 with T9: the high-contrast tier marks at W02's centres.
+  ...range(4).map((i) => `tier-mark-hc-${i + 1}`),
   "mission-sample",
   "mission-cryovein",
   "mission-catalyst",

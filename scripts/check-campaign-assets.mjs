@@ -18,6 +18,9 @@ const REQUIRED_FRAMES = [
   "sky-body",
   ...range(3, 1).map((index) => `crack-${index}`),
   ...range(4, 1).flatMap((index) => [`ore-o${index}`, `package-o${index}`]),
+  // Art item A12 with T9: the deposit socket and the high-contrast marks.
+  "deposit-socket",
+  ...range(4, 1).map((index) => `tier-mark-hc-${index}`),
   "relic",
   ...["beacon", "valve", "antenna", "core"].map((id) => `mission-${id}`),
   "warning-shelf",

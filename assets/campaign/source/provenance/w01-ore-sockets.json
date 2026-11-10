@@ -1,0 +1,38 @@
+{
+  "asset": 24,
+  "item": "A12 (with T9)",
+  "method": "seeded generator writing layered SVG (decision D5)",
+  "source": {
+    "generator": "assets/campaign/source/w01-ore.mjs: depositSocket(), SOCKET_VARIANTS, SOCKET_VARIANT",
+    "variant": "shallow",
+    "seeds": [
+      "a12-socket/shallow"
+    ],
+    "kit": "assets/campaign/kit/ (palette, svg, random)",
+    "palette": "outline #14232b (style guide §2) as the translucent recess; band A lip #f0e6d2 (docs/art-direction/swatches/w01-swatches.json) as the lit lip",
+    "frames": [
+      "deposit-socket"
+    ]
+  },
+  "reference": {
+    "file": "docs/art-direction/d0-target-shaft-wide.png",
+    "sha256": "0d51fe65cb3ef434a34c279b9151c286a8516b60046f28e1237e4a3c54809f67",
+    "use": "ore set into the block (a lit rim above the ore, a contact shadow below) judged beside the board's shaft crop at its tile scale; no pixels read into the drawing",
+    "audit": "docs/ART_QUALITY_AUDIT.md §5.3 T9, §5.6 row 24, §6.1"
+  },
+  "reviewer": {
+    "name": "Alejandro (art director)",
+    "signed": null,
+    "state": "in review (A12 pull request)",
+    "fixtures": [
+      "a04-dive-60m@2",
+      "a04p-dive-60m-phone@3"
+    ],
+    "rounds": "variants shallow, deep and cracked at the board's scale (docs/qa/a12-ore-sockets); the default ships until the director's pick"
+  },
+  "redrawnShare": 0,
+  "underlays": [],
+  "boardPixelsCopied": false,
+  "recorded": "2026-11-09",
+  "notes": "One generic frame for every deposit in both worlds (W02 has none of its own and falls back to the W01 atlas); the game draws it at 1 tile under the ore, known cells only."
+}

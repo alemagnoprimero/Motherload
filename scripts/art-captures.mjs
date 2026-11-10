@@ -12,10 +12,17 @@
  *   p-portrait-03-dive-70m@3.png    70 m shaft             shaft-tall     393×851 @3
  *   p-portrait-cavern-site4@3.png   SITE-4 wreck cavern    cavern-tall    393×851 @3
  *
- * plus b-550m-band-D@2.png (550 m shaft, band D), which no §9 row uses, and
+ * plus b-550m-band-D@2.png (550 m shaft, band D), which no §9 row uses,
  * t13a-test-raster-60m@2.png: the 60 m fixture with ?debug=test-raster, where
  * the game draws T13a's placeholder raster frame (a capture's `search` adds
- * URL parameters; it throws unless the game reports the frame drawn).
+ * URL parameters; it throws unless the game reports the frame drawn), and
+ *
+ *   a04p-dive-60m-phone@3.png       60 m shaft (a04's twin) shaft-tall    393×851 @3
+ *
+ * the a04 frame on the phone (art item A12). A twin is left out of
+ * SHEET_CAPTURES, so the per-PR harness keeps its 8 §9 frames; a run with no
+ * ART_CAPTURES filter (the nightly visual-sheets job) takes it too, so the
+ * nightly table and sheets gain its column.
  *
  * Built on fixture(), restore() and settledView() from improvement-smoke.mjs
  * (settledView applies settle()'s rule from render-acceptance.mjs to a restored
@@ -129,6 +136,18 @@ export const CAPTURES = [
     form: "desktop",
     scene: "60 m",
     panel: "shaft-wide",
+    checkpoint: () => fixture("W01", 6),
+  },
+  {
+    // The a04 frame on the phone (393×851 @3), scored against shaft-tall:
+    // the 60 m twin art item A12 compares ore at both forms. A twin of a
+    // §9 frame, so it stays out of SHEET_CAPTURES (the per-PR harness);
+    // ART_CAPTURES=a04 takes both.
+    name: "a04p-dive-60m-phone@3",
+    form: "phone",
+    scene: "60 m",
+    panel: "shaft-tall",
+    twin: "a04-dive-60m@2",
     checkpoint: () => fixture("W01", 6),
   },
   {
@@ -281,10 +300,10 @@ export async function playfieldText(page) {
   }, HUD_SELECTORS);
 }
 
-/** The §9 frames: every capture scored against a concept panel. */
-export const SHEET_CAPTURES = CAPTURES.filter((capture) => capture.panel).map(
-  (capture) => capture.name,
-);
+/** The §9 frames: every capture scored against a concept panel (twins aside). */
+export const SHEET_CAPTURES = CAPTURES.filter(
+  (capture) => capture.panel && !capture.twin,
+).map((capture) => capture.name);
 
 /** The rig sprite's square in device pixels (scene.ts draws it centred). */
 async function rigBox(page, dpr) {

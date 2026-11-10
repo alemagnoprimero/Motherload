@@ -1712,7 +1712,7 @@
       "frame": {
         "x": 740,
         "y": 1028,
-        "w": 125,
+        "w": 120,
         "h": 127
       },
       "rotated": false,
@@ -1720,7 +1720,7 @@
       "spriteSourceSize": {
         "x": 12,
         "y": 11,
-        "w": 125,
+        "w": 120,
         "h": 127
       },
       "sourceSize": {
@@ -1738,7 +1738,7 @@
     },
     "mission-cryovein": {
       "frame": {
-        "x": 869,
+        "x": 864,
         "y": 1028,
         "w": 122,
         "h": 123
@@ -1766,18 +1766,18 @@
     },
     "ore-o4": {
       "frame": {
-        "x": 995,
+        "x": 990,
         "y": 1028,
-        "w": 122,
-        "h": 123
+        "w": 120,
+        "h": 122
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 15,
         "y": 15,
-        "w": 122,
-        "h": 123
+        "w": 120,
+        "h": 122
       },
       "sourceSize": {
         "w": 144,
@@ -1794,7 +1794,7 @@
     },
     "mission-catalyst": {
       "frame": {
-        "x": 1121,
+        "x": 1114,
         "y": 1028,
         "w": 88,
         "h": 120
@@ -1822,18 +1822,18 @@
     },
     "ore-o2": {
       "frame": {
-        "x": 1213,
+        "x": 1206,
         "y": 1028,
-        "w": 119,
-        "h": 118
+        "w": 111,
+        "h": 116
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 18,
         "y": 20,
-        "w": 119,
-        "h": 118
+        "w": 111,
+        "h": 116
       },
       "sourceSize": {
         "w": 144,
@@ -1850,46 +1850,18 @@
     },
     "package-o3": {
       "frame": {
-        "x": 1336,
+        "x": 1321,
         "y": 1028,
-        "w": 117,
-        "h": 117
+        "w": 110,
+        "h": 115
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 20,
         "y": 21,
-        "w": 117,
-        "h": 117
-      },
-      "sourceSize": {
-        "w": 144,
-        "h": 144
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      },
-      "logicalSize": {
-        "w": 48,
-        "h": 48
-      }
-    },
-    "package-o4": {
-      "frame": {
-        "x": 1457,
-        "y": 1028,
-        "w": 117,
-        "h": 113
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 20,
-        "y": 25,
-        "w": 117,
-        "h": 113
+        "w": 110,
+        "h": 115
       },
       "sourceSize": {
         "w": 144,
@@ -1906,7 +1878,7 @@
     },
     "mission-sample": {
       "frame": {
-        "x": 1578,
+        "x": 1435,
         "y": 1028,
         "w": 67,
         "h": 113
@@ -1934,7 +1906,7 @@
     },
     "ice-vent": {
       "frame": {
-        "x": 1649,
+        "x": 1506,
         "y": 1028,
         "w": 120,
         "h": 112
@@ -1960,9 +1932,37 @@
         "h": 48
       }
     },
+    "package-o4": {
+      "frame": {
+        "x": 1630,
+        "y": 1028,
+        "w": 109,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 20,
+        "y": 25,
+        "w": 109,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
     "cold-warning": {
       "frame": {
-        "x": 1773,
+        "x": 1743,
         "y": 1028,
         "w": 124,
         "h": 110
@@ -1990,46 +1990,18 @@
     },
     "package-o2": {
       "frame": {
-        "x": 1901,
+        "x": 1871,
         "y": 1028,
-        "w": 117,
-        "h": 110
+        "w": 109,
+        "h": 108
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 20,
         "y": 28,
-        "w": 117,
-        "h": 110
-      },
-      "sourceSize": {
-        "w": 144,
-        "h": 144
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      },
-      "logicalSize": {
-        "w": 48,
-        "h": 48
-      }
-    },
-    "ore-o1": {
-      "frame": {
-        "x": 2,
-        "y": 1176,
-        "w": 123,
-        "h": 85
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 14,
-        "y": 53,
-        "w": 123,
-        "h": 85
+        "w": 109,
+        "h": 108
       },
       "sourceSize": {
         "w": 144,
@@ -2046,18 +2018,18 @@
     },
     "package-o1": {
       "frame": {
-        "x": 129,
+        "x": 2,
         "y": 1176,
-        "w": 117,
-        "h": 85
+        "w": 110,
+        "h": 83
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 20,
         "y": 53,
-        "w": 117,
-        "h": 85
+        "w": 110,
+        "h": 83
       },
       "sourceSize": {
         "w": 144,
@@ -2074,7 +2046,7 @@
     },
     "tool-condenser": {
       "frame": {
-        "x": 250,
+        "x": 116,
         "y": 1176,
         "w": 56,
         "h": 80
@@ -2100,9 +2072,37 @@
         "h": 64
       }
     },
+    "ore-o1": {
+      "frame": {
+        "x": 176,
+        "y": 1176,
+        "w": 119,
+        "h": 79
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 53,
+        "w": 119,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
     "tool-thermal": {
       "frame": {
-        "x": 310,
+        "x": 299,
         "y": 1176,
         "w": 52,
         "h": 73
@@ -2130,7 +2130,7 @@
     },
     "rig-engine-2": {
       "frame": {
-        "x": 366,
+        "x": 355,
         "y": 1176,
         "w": 50,
         "h": 67
@@ -2158,7 +2158,7 @@
     },
     "rig-energy-2": {
       "frame": {
-        "x": 420,
+        "x": 409,
         "y": 1176,
         "w": 35,
         "h": 66
@@ -2186,7 +2186,7 @@
     },
     "tool-preservation": {
       "frame": {
-        "x": 459,
+        "x": 448,
         "y": 1176,
         "w": 60,
         "h": 64
@@ -2214,7 +2214,7 @@
     },
     "rig-drill-collar-left-2": {
       "frame": {
-        "x": 523,
+        "x": 512,
         "y": 1176,
         "w": 32,
         "h": 54
@@ -2242,7 +2242,7 @@
     },
     "rig-drill-collar-right-2": {
       "frame": {
-        "x": 559,
+        "x": 548,
         "y": 1176,
         "w": 32,
         "h": 54
@@ -2270,7 +2270,7 @@
     },
     "rig-bay-2": {
       "frame": {
-        "x": 595,
+        "x": 584,
         "y": 1176,
         "w": 50,
         "h": 48
@@ -2298,7 +2298,7 @@
     },
     "rig-drill-collar-down-2": {
       "frame": {
-        "x": 649,
+        "x": 638,
         "y": 1176,
         "w": 54,
         "h": 32
@@ -2326,7 +2326,7 @@
     },
     "rig-hull-2": {
       "frame": {
-        "x": 707,
+        "x": 696,
         "y": 1176,
         "w": 94,
         "h": 30
@@ -2352,9 +2352,93 @@
         "h": 64
       }
     },
+    "tier-mark-hc-3": {
+      "frame": {
+        "x": 794,
+        "y": 1176,
+        "w": 25,
+        "h": 25
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 105,
+        "y": 106,
+        "w": 25,
+        "h": 25
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "tier-mark-hc-2": {
+      "frame": {
+        "x": 823,
+        "y": 1176,
+        "w": 24,
+        "h": 25
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 105,
+        "y": 111,
+        "w": 24,
+        "h": 25
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "tier-mark-hc-4": {
+      "frame": {
+        "x": 851,
+        "y": 1176,
+        "w": 24,
+        "h": 25
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 105,
+        "y": 112,
+        "w": 24,
+        "h": 25
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
     "bedrock-edge-1": {
       "frame": {
-        "x": 805,
+        "x": 879,
         "y": 1176,
         "w": 144,
         "h": 24
@@ -2382,7 +2466,7 @@
     },
     "bedrock-edge-4": {
       "frame": {
-        "x": 953,
+        "x": 1027,
         "y": 1176,
         "w": 144,
         "h": 24
@@ -2410,7 +2494,7 @@
     },
     "frozen-rock-edge-1": {
       "frame": {
-        "x": 1101,
+        "x": 1175,
         "y": 1176,
         "w": 144,
         "h": 24
@@ -2438,7 +2522,7 @@
     },
     "frozen-rock-edge-4": {
       "frame": {
-        "x": 1249,
+        "x": 1323,
         "y": 1176,
         "w": 144,
         "h": 24
@@ -2466,7 +2550,7 @@
     },
     "ice-edge-1": {
       "frame": {
-        "x": 1397,
+        "x": 1471,
         "y": 1176,
         "w": 144,
         "h": 24
@@ -2494,7 +2578,7 @@
     },
     "ice-edge-4": {
       "frame": {
-        "x": 1545,
+        "x": 1619,
         "y": 1176,
         "w": 144,
         "h": 24
@@ -2505,6 +2589,34 @@
         "x": 0,
         "y": 120,
         "w": 144,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "tier-mark-hc-1": {
+      "frame": {
+        "x": 1767,
+        "y": 1176,
+        "w": 25,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 105,
+        "y": 108,
+        "w": 25,
         "h": 24
       },
       "sourceSize": {
