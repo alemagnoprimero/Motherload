@@ -426,9 +426,14 @@ export async function runWrappedLabelSmoke(browser, base, output) {
     await advance(page, 650);
     await keys(page, []);
     await advance(page, 600);
+    // T8 (D3): HOME is an annotation: a chevron over the lander while it is
+    // in view (an edge chevron otherwise) with the label beside it.
     const values = await page.evaluate(() => {
       const d = document.getElementById("campaign-game").dataset;
-      const home = document.getElementById("campaign-home-beacon");
+      const label = document.getElementById("campaign-home-beacon");
+      const home = window.__campaignDebug
+        .annotations()
+        .find((entry) => entry.id === "home");
       const canonical = Number(d.rigWorldX),
         tile = Number(d.viewTile),
         rig = Number(d.rigScreenX);
@@ -437,10 +442,10 @@ export async function runWrappedLabelSmoke(browser, base, output) {
         canonical,
         rig,
         expectedHomeX: rig + dx * tile,
-        actualHomeX: parseFloat(home.style.left),
-        hidden: home.hidden,
-        clamped: home.dataset.clamped,
-        text: home.textContent,
+        actualHomeX: home?.marker?.x ?? null,
+        edge: home?.marker?.edge ?? null,
+        hidden: label.hidden || !home,
+        text: label.textContent,
       };
     });
     await writeFile(
@@ -457,10 +462,12 @@ export async function runWrappedLabelSmoke(browser, base, output) {
       false,
       "HOME remains visible outside the docking radius",
     );
+    assert.equal(values.edge, false, "The lander is in view: HOME marks it");
     assert.ok(
       Math.abs(values.expectedHomeX - values.actualHomeX) < 2,
       "HOME is attached to the nearest wrapped world copy",
     );
+    assert.match(values.text, /^HOME · \d+ m$/, "HOME keeps its distance");
     noErrors(page);
     console.log(
       "PASS Native seam traversal keeps HOME label attached to its world position",

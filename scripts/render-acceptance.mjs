@@ -248,6 +248,25 @@ try {
           `${output}/${renderer}-${id}-solid.png`,
           `${output}/${renderer}-${id}-air.png`,
         ]);
+        // T8: Scan adds canvas marks (the light tier marks); the hidden cells
+        // stay identical with it on.
+        await page.evaluate(() => window.__campaignDebug.scan(true));
+        for (const [variant, checkpoint] of [
+          ["solid", value],
+          ["air", air],
+        ]) {
+          await importCheckpoint(page, checkpoint);
+          await closeOverlay(page);
+          await settle();
+          await capture(`${renderer}-${id}-${variant}-scan`, clip);
+        }
+        await page.evaluate(() => window.__campaignDebug.scan(null));
+        execFileSync("python3", [
+          "-c",
+          "from PIL import Image,ImageChops;import sys;assert ImageChops.difference(Image.open(sys.argv[1]).convert('RGB'),Image.open(sys.argv[2]).convert('RGB')).getbbox() is None,'Hidden-air/solid pixels differ with Scan on'",
+          `${output}/${renderer}-${id}-solid-scan.png`,
+          `${output}/${renderer}-${id}-air-scan.png`,
+        ]);
         results.worlds[renderer + "-" + id] = {
           ...info,
           hiddenGeologyIdentical: true,

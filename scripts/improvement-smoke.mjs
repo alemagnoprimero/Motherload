@@ -919,6 +919,26 @@ export async function runImprovementSmoke(browser, base, path) {
           solidFile,
           airFile,
         ]);
+        // T8: Scan's labels and marks must not tell them apart either.
+        if (!baseline) {
+          await page.evaluate(() => window.__campaignDebug.scan(true));
+          const scanFiles = [];
+          for (const [value, file] of [
+            [solid, `${path}/${worldId}-hidden-solid-scan.png`],
+            [air, `${path}/${worldId}-hidden-air-scan.png`],
+          ]) {
+            await restore(page, value);
+            await settledView(page, value);
+            await page.screenshot({ path: file, clip });
+            scanFiles.push(file);
+          }
+          execFileSync("python3", [
+            "-c",
+            "from PIL import Image,ImageChops;import sys;assert ImageChops.difference(Image.open(sys.argv[1]).convert('RGB'),Image.open(sys.argv[2]).convert('RGB')).getbbox() is None, 'With Scan on, unknown cave differs from unknown solid rock'",
+            ...scanFiles,
+          ]);
+          await page.evaluate(() => window.__campaignDebug.scan(null));
+        }
         await restore(page, solid);
         // One frame after an import is the first frame of its 180 ms fade:
         // compare settled views, not the fade colour with a part-faded frame.
@@ -1289,6 +1309,95 @@ export async function runImprovementSmoke(browser, base, path) {
     console.log(
       `Playfield text items (HUD left out): ${SHEET_CAPTURES.map((name) => `${name} ${manifest.captures[name].playfieldText.length}`).join(", ")}`,
     );
+    // T8 (D3): in every §9 frame no text item comes within 1.2 tiles of the
+    // rig and no two cross; the target and the reserve chip are Scan labels.
+    const crosses = (a, b) =>
+      a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+    for (const name of SHEET_CAPTURES) {
+      const { view, playfieldText: items } = manifest.captures[name];
+      const reach = 1.2 * view.tile;
+      const clearance = [
+        view.rigScreenX - reach,
+        view.rigScreenY - reach,
+        view.rigScreenX + reach,
+        view.rigScreenY + reach,
+      ];
+      for (const item of items)
+        assert.ok(
+          !crosses(item.box, clearance),
+          `${name}: "${item.text}" keeps 1.2 tiles from the rig (T8)`,
+        );
+      for (let i = 0; i < items.length; i++)
+        for (let j = i + 1; j < items.length; j++)
+          assert.ok(
+            !crosses(items[i].box, items[j].box),
+            `${name}: "${items[i].text}" and "${items[j].text}" do not cross (T8)`,
+          );
+      assert.ok(
+        !items.some((item) => /^Home \d/.test(item.text)),
+        `${name}: a safe reserve is a Scan label (T8)`,
+      );
+    }
+    // T8: steady play (coach skipped) at 60 m. With Scan off the playfield
+    // holds HOME's distance alone; Shift and the tray button show the Scan
+    // labels while held, and the reserve chip joins them.
+    {
+      const { context, page } = await ready(
+        browser,
+        base,
+        { viewport: { width: 1440, height: 900 } },
+        { freezeSceneClock: true },
+      );
+      try {
+        await freeze(page);
+        await click(page, '[data-command="skip-coach"]');
+        const { playfieldText } = await import("./art-captures.mjs");
+        const shaft = fixture("W01", 6);
+        await restore(page, shaft);
+        await settledView(page, shaft);
+        const off = (await playfieldText(page)).map((item) => item.text);
+        assert.equal(off.length, 1, `60 m, Scan off: ${JSON.stringify(off)}`);
+        assert.match(
+          off[0],
+          /^HOME · \d+ m$/,
+          "HOME stays on, with its distance",
+        );
+        const scanState = () =>
+          page.locator("#campaign-game").getAttribute("data-scan");
+        assert.equal(await scanState(), "false");
+        await page.keyboard.down("Shift");
+        await advance(page, 150);
+        assert.equal(await scanState(), "true", "Shift shows the Scan labels");
+        const on = (await playfieldText(page)).map((item) => item.text);
+        assert.ok(
+          on.some((text) => /^Home \d/.test(text)),
+          `Scan shows the reserve chip: ${JSON.stringify(on)}`,
+        );
+        assert.equal(
+          await page
+            .locator("#campaign-depth-rail")
+            .evaluate((element) => getComputedStyle(element).opacity),
+          "1",
+          "Scan shows the depth rail",
+        );
+        await page.keyboard.up("Shift");
+        await advance(page, 150);
+        assert.equal(await scanState(), "false", "Releasing Shift hides them");
+        const button = page.locator("#campaign-scan-button");
+        const box = await button.boundingBox();
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+        await page.mouse.down();
+        await advance(page, 150);
+        assert.equal(await scanState(), "true", "The tray button holds Scan");
+        assert.equal(await button.getAttribute("aria-pressed"), "true");
+        await page.mouse.up();
+        await advance(page, 150);
+        assert.equal(await scanState(), "false");
+        noErrors(page);
+      } finally {
+        await context.close();
+      }
+    }
     for (const [name, frame] of Object.entries(table.frames)) {
       assert.ok(
         frame.overlay.edges_full > frame.overlay.edges_hudfree,
