@@ -55,7 +55,7 @@ import {
 } from "../input";
 import { CampaignAudio } from "../audio";
 import { campaignMission } from "../missions";
-import { campaignSignal } from "../poi";
+import { campaignSignal, objectiveDistance } from "../poi";
 import { W02_ORES } from "../frontier";
 import {
   CAMPAIGN_ORE_LEGEND,
@@ -239,7 +239,16 @@ patchMarkup(
   contractDrawer,
   '<summary>Contracts</summary><div id="campaign-contracts"></div>',
 );
-document.querySelector(".objective-copy")!.append(contractDrawer);
+// H1: the contracts sit with the details, shown on hover, focus or tap.
+$("campaign-objective-more").append(contractDrawer);
+// H1: a tap on the pill (outside its details) opens or closes the details.
+document
+  .querySelector<HTMLElement>(".campaign-objective")!
+  .addEventListener("click", (event) => {
+    const pill = event.currentTarget as HTMLElement;
+    if ((event.target as Element).closest(".objective-more")) return;
+    pill.dataset.expanded = String(pill.dataset.expanded !== "true");
+  });
 const reserveButton = document.createElement("button");
 reserveButton.id = "campaign-use-reserve";
 reserveButton.dataset.command = "reserve";
@@ -525,6 +534,7 @@ function syncMissionSignal(objectiveNext: string) {
     "campaign-objective-next",
     signal && !signal.returning ? signal.action : objectiveNext,
   );
+  setHidden("campaign-objective-distance", !signal);
   if (!signal) return;
   const proximity = {
     distant: "Tracking",
@@ -541,6 +551,14 @@ function syncMissionSignal(objectiveNext: string) {
   );
   setText("campaign-signal-target", signal.name);
   setText("campaign-signal-distance", signal.distanceMeters + " m");
+  // H1 (D3): the target's distance and bearing in the objective pill.
+  const distance = objectiveDistance(signal);
+  setText("campaign-objective-distance", distance.text);
+  if (
+    $("campaign-objective-distance").getAttribute("aria-label") !==
+    distance.label
+  )
+    $("campaign-objective-distance").setAttribute("aria-label", distance.label);
   setText("campaign-signal-proximity", proximity);
 
   // Range ticks are readouts, not announcements. A closer signal band alerts

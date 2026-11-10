@@ -6,7 +6,11 @@ import {
 } from "../src/campaign/model";
 import { W01 } from "../src/campaign/config";
 import { createW01V1 } from "../src/campaign/world";
-import { campaignPois, campaignSignal } from "../src/campaign/poi";
+import {
+  campaignPois,
+  campaignSignal,
+  objectiveDistance,
+} from "../src/campaign/poi";
 
 /** The start of M2 under D14: the claim is proven, the wreck not yet surveyed. */
 function stageTwo() {
@@ -318,5 +322,23 @@ describe("mission landmarks and proximity guidance", () => {
     expect(campaignSignal(campaign)?.action).toBe("Dock and launch");
     expect(campaign.depart()).toBe(true);
     expect(campaignSignal(campaign)?.kind).toBe("relic");
+  });
+});
+
+describe("H1: the objective pill's distance", () => {
+  it("gives metres and the bearing's arrow, or here at the target", () => {
+    expect(
+      objectiveDistance({ direction: "down", distanceMeters: 39, arrow: "↓" }),
+    ).toEqual({ text: "39 m ↓", label: "39 metres, down" });
+    expect(
+      objectiveDistance({
+        direction: "up-right",
+        distanceMeters: 152,
+        arrow: "↗",
+      }),
+    ).toEqual({ text: "152 m ↗", label: "152 metres, up and right" });
+    expect(
+      objectiveDistance({ direction: "here", distanceMeters: 0, arrow: "◉" }),
+    ).toEqual({ text: "here", label: "At the target" });
   });
 });

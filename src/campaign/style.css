@@ -4002,3 +4002,157 @@ body[data-annotations="off"].campaign-hit::after {
 body[data-campaign-scan="true"] .depth-rail {
   opacity: 1;
 }
+
+/*
+ * H1 (D3): the objective is a pill, the board's "Survey the wreck": the
+ * current goal and the target's distance and bearing in one line (the
+ * distance moved here from the world label, T8). The milestone, the other
+ * goals, the reward and the contracts show on hover, keyboard focus or a tap.
+ */
+body .campaign-mission-stack {
+  width: min(320px, calc(100vw - 36px));
+}
+body .campaign-mission-stack .campaign-objective {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  height: 44px;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px 0 10px;
+  border-left: 0;
+  border-radius: 22px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.campaign-objective > .hud-icon {
+  display: block;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  opacity: 0.9;
+}
+.campaign-objective .objective-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.campaign-objective #campaign-objective-progress {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+.campaign-objective #campaign-objective-progress li {
+  display: none;
+}
+.campaign-objective #campaign-objective-progress li[data-primary="true"] {
+  display: flex;
+  min-width: 0;
+}
+.campaign-objective #campaign-objective-progress li > span:last-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.campaign-objective .objective-distance {
+  flex: none;
+  white-space: nowrap;
+  color: #f0c584;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.campaign-objective .objective-distance::before {
+  content: "· ";
+  color: #a6bcb1;
+}
+.campaign-objective .objective-distance[hidden] {
+  display: none;
+}
+/*
+ * The details, collapsed as .sr-only collapses (a clipped 1 px box), so they
+ * stay in the tab order (focus opens them) and read as hidden to the HUD
+ * checks; open, a panel under the pill.
+ */
+.campaign-objective .objective-more {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+  cursor: auto;
+}
+.campaign-objective:is(:focus-within, [data-expanded="true"]) .objective-more {
+  width: max(100%, 300px);
+  max-width: calc(100vw - 20px);
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-left: 2px solid #e7b46b;
+  border-radius: 3px;
+  background: #142730f2;
+  pointer-events: auto;
+}
+@media (hover: hover) {
+  .campaign-objective:hover .objective-more {
+    width: max(100%, 300px);
+    max-width: calc(100vw - 20px);
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border-left: 2px solid #e7b46b;
+    border-radius: 3px;
+    background: #142730f2;
+    pointer-events: auto;
+  }
+}
+.campaign-objective .objective-more .mission-detail,
+.campaign-objective .objective-more .mission-detail[open] {
+  position: static;
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+  width: auto;
+  max-height: 40vh;
+  margin: 6px 16px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.campaign-objective .objective-more .mission-detail[open] {
+  display: block;
+  margin-right: 0;
+}
+@media (pointer: coarse), (max-width: 760px) {
+  body .campaign-mission-stack {
+    width: calc(100vw - 20px);
+  }
+  body .campaign-mission-stack .campaign-objective {
+    height: 40px;
+    padding: 0 14px 0 10px;
+    border-radius: 20px;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  body .campaign-mission-stack {
+    width: calc(50vw - 20px);
+  }
+}
