@@ -1,0 +1,895 @@
+{
+  "before": {
+    "a04-dive-60m@2": {
+      "lifted px": 0,
+      "lifted px inside the rig box": 0,
+      "lifted px outside the rig box": 0,
+      "lifted px inside the silhouette": 0,
+      "lifted px outside the silhouette": 0,
+      "lifted px outside the silhouette grown 1 px": 0,
+      "lifted px outside the silhouette grown 2 px": 0,
+      "max lift outside the silhouette (levels)": 0,
+      "max |dL*| outside the silhouette": 0.0,
+      "darker px": 0,
+      "max lift (levels)": 0,
+      "lift bbox in rig units": null,
+      "unknown rock px in frame (outside the silhouette)": 4374982,
+      "unknown rock px within 1.5 tiles of the lens": 21693,
+      "unknown rock px lifted": 0,
+      "unknown rock max |dL*|": 0.0,
+      "lens core L* with / without": [
+        {
+          "mean": 98.4,
+          "max": 98.7,
+          "px": 14
+        },
+        {
+          "mean": 98.4,
+          "max": 98.7,
+          "px": 14
+        }
+      ]
+    },
+    "a04p-dive-60m-phone@3": {
+      "lifted px": 572,
+      "lifted px inside the rig box": 572,
+      "lifted px outside the rig box": 0,
+      "lifted px inside the silhouette": 572,
+      "lifted px outside the silhouette": 0,
+      "lifted px outside the silhouette grown 1 px": 0,
+      "lifted px outside the silhouette grown 2 px": 0,
+      "max lift outside the silhouette (levels)": 0,
+      "max |dL*| outside the silhouette": 0.0,
+      "darker px": 287,
+      "max lift (levels)": 116,
+      "lift bbox in rig units": [
+        24.4,
+        57.8,
+        46.9,
+        76.7
+      ],
+      "unknown rock px in frame (outside the silhouette)": 2014758,
+      "unknown rock px within 1.5 tiles of the lens": 22144,
+      "unknown rock px lifted": 0,
+      "unknown rock max |dL*|": 0.0,
+      "lens core L* with / without": [
+        {
+          "mean": 88.3,
+          "max": 98.7,
+          "px": 13
+        },
+        {
+          "mean": 88.3,
+          "max": 98.7,
+          "px": 13
+        }
+      ]
+    }
+  },
+  "after": {
+    "a04-dive-60m@2": {
+      "lifted px": 416,
+      "lifted px inside the rig box": 416,
+      "lifted px outside the rig box": 0,
+      "lifted px inside the silhouette": 415,
+      "lifted px outside the silhouette": 1,
+      "lifted px outside the silhouette grown 1 px": 0,
+      "lifted px outside the silhouette grown 2 px": 0,
+      "max lift outside the silhouette (levels)": 1,
+      "max |dL*| outside the silhouette": 0.39,
+      "darker px": 0,
+      "max lift (levels)": 200,
+      "lift bbox in rig units": [
+        83.3,
+        31.5,
+        107.5,
+        52.7
+      ],
+      "unknown rock px in frame (outside the silhouette)": 4374982,
+      "unknown rock px within 1.5 tiles of the lens": 21693,
+      "unknown rock px lifted": 0,
+      "unknown rock max |dL*|": 0.0,
+      "lens core L* with / without": [
+        {
+          "mean": 99.3,
+          "max": 100.0,
+          "px": 14
+        },
+        {
+          "mean": 43.1,
+          "max": 72.0,
+          "px": 14
+        }
+      ]
+    },
+    "a04p-dive-60m-phone@3": {
+      "lifted px": 509,
+      "lifted px inside the rig box": 509,
+      "lifted px outside the rig box": 0,
+      "lifted px inside the silhouette": 492,
+      "lifted px outside the silhouette": 17,
+      "lifted px outside the silhouette grown 1 px": 2,
+      "lifted px outside the silhouette grown 2 px": 0,
+      "max lift outside the silhouette (levels)": 7,
+      "max |dL*| outside the silhouette": 2.58,
+      "darker px": 0,
+      "max lift (levels)": 185,
+      "lift bbox in rig units": [
+        83.3,
+        31.6,
+        108.0,
+        54.2
+      ],
+      "unknown rock px in frame (outside the silhouette)": 2014758,
+      "unknown rock px within 1.5 tiles of the lens": 22144,
+      "unknown rock px lifted": 0,
+      "unknown rock max |dL*|": 0.0,
+      "lens core L* with / without": [
+        {
+          "mean": 99.2,
+          "max": 100.0,
+          "px": 13
+        },
+        {
+          "mean": 53.4,
+          "max": 65.2,
+          "px": 13
+        }
+      ]
+    }
+  },
+  "before -> after": {
+    "a04-dive-60m@2": {
+      "changed": 104677,
+      "over 8 levels": 43112,
+      "max": 238,
+      "inside rig box": 29635,
+      "outside rig box": 75042,
+      "outside rig box over 8 levels": 22068,
+      "max outside rig box": 49
+    },
+    "a04p-dive-60m-phone@3": {
+      "changed": 106921,
+      "over 8 levels": 44772,
+      "max": 238,
+      "inside rig box": 30222,
+      "outside rig box": 76699,
+      "outside rig box over 8 levels": 22468,
+      "max outside rig box": 49
+    },
+    "a02-spawn-1440x900@2": {
+      "changed": 81685,
+      "over 8 levels": 33999,
+      "max": 238,
+      "inside rig box": 23464,
+      "outside rig box": 58221,
+      "outside rig box over 8 levels": 17287,
+      "max outside rig box": 50
+    },
+    "p-portrait-02-spawn@3": {
+      "changed": 83211,
+      "over 8 levels": 35483,
+      "max": 237,
+      "inside rig box": 23913,
+      "outside rig box": 59298,
+      "outside rig box over 8 levels": 17440,
+      "max outside rig box": 50
+    }
+  },
+  "probes": {
+    "desktop": {
+      "before": {
+        "renderer": "webgl",
+        "density": "3",
+        "guard": "",
+        "pages": "campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+        "draw calls": 3,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 0,
+        "resident bytes": 41896764,
+        "resident MiB": 39.96,
+        "tile": 65.4545,
+        "rig px": 175,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-3x-0",
+          "rig-engine-0": "campaign-w01-core-hero-3x-0",
+          "rig-energy-0": "campaign-w01-core-hero-3x-0",
+          "rig-bay-0": "campaign-w01-core-hero-3x-0",
+          "rig-cabin": "campaign-w01-core-hero-3x-0",
+          "rig-hull-0": "campaign-w01-core-hero-3x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-3x-0"
+        },
+        "emissives": [],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-3x-0",
+            "width": 512,
+            "height": 960,
+            "density": 3,
+            "bytes": 1966080
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 11812,
+        "lifted px": 0,
+        "lifted px inside the rig box": 0,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 0,
+        "lifted px outside the silhouette": 0,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 0,
+        "max |dL*| outside the silhouette": 0.0,
+        "darker px": 0,
+        "max lift (levels)": 0,
+        "lift bbox in rig units": null,
+        "unknown rock px in frame (outside the silhouette)": 4374982,
+        "unknown rock px within 1.5 tiles of the lens": 21693,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 98.4,
+            "max": 98.7,
+            "px": 14
+          },
+          {
+            "mean": 98.4,
+            "max": 98.7,
+            "px": 14
+          }
+        ],
+        "px differing from the art capture a04-dive-60m@2": 0
+      },
+      "after": {
+        "renderer": "webgl",
+        "density": "3",
+        "guard": "",
+        "pages": "campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+        "draw calls": 5,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 1,
+        "resident bytes": 41995068,
+        "resident MiB": 40.05,
+        "tile": 65.4545,
+        "rig px": 175,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-3x-0",
+          "rig-engine-0": "campaign-w01-core-hero-3x-0",
+          "rig-energy-0": "campaign-w01-core-hero-3x-0",
+          "rig-bay-0": "campaign-w01-core-hero-3x-0",
+          "rig-cabin": "campaign-w01-core-hero-3x-0",
+          "rig-hull-0": "campaign-w01-core-hero-3x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-3x-0"
+        },
+        "emissives": [
+          {
+            "frame": "rig-cabin-emissive",
+            "texture": "campaign-w01-core-hero-3x-0",
+            "base": "rig-cabin",
+            "base texture": "campaign-w01-core-hero-3x-0",
+            "depth": 23.9,
+            "blend": 1,
+            "base depth": 22
+          }
+        ],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-3x-0",
+            "width": 576,
+            "height": 896,
+            "density": 3,
+            "bytes": 2064384
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 12693,
+        "lifted px": 416,
+        "lifted px inside the rig box": 416,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 415,
+        "lifted px outside the silhouette": 1,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 1,
+        "max |dL*| outside the silhouette": 0.39,
+        "darker px": 0,
+        "max lift (levels)": 200,
+        "lift bbox in rig units": [
+          83.3,
+          31.5,
+          107.5,
+          52.7
+        ],
+        "unknown rock px in frame (outside the silhouette)": 4374982,
+        "unknown rock px within 1.5 tiles of the lens": 21693,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 99.3,
+            "max": 100.0,
+            "px": 14
+          },
+          {
+            "mean": 43.1,
+            "max": 72.0,
+            "px": 14
+          }
+        ],
+        "px differing from the art capture a04-dive-60m@2": 0
+      }
+    },
+    "phone": {
+      "before": {
+        "renderer": "webgl",
+        "density": "2",
+        "guard": "",
+        "pages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+        "draw calls": 3,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 0,
+        "resident bytes": 22961464,
+        "resident MiB": 21.9,
+        "tile": 44,
+        "rig px": 176,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-2x-0",
+          "rig-engine-0": "campaign-w01-core-hero-2x-0",
+          "rig-energy-0": "campaign-w01-core-hero-2x-0",
+          "rig-bay-0": "campaign-w01-core-hero-2x-0",
+          "rig-cabin": "campaign-w01-core-hero-2x-0",
+          "rig-hull-0": "campaign-w01-core-hero-2x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-2x-0"
+        },
+        "emissives": [],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-2x-0",
+            "width": 256,
+            "height": 960,
+            "density": 2,
+            "bytes": 983040
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 11941,
+        "lifted px": 762,
+        "lifted px inside the rig box": 762,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 762,
+        "lifted px outside the silhouette": 0,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 0,
+        "max |dL*| outside the silhouette": 0.0,
+        "darker px": 347,
+        "max lift (levels)": 192,
+        "lift bbox in rig units": [
+          22.9,
+          46.9,
+          46.9,
+          76.7
+        ],
+        "unknown rock px in frame (outside the silhouette)": 2014758,
+        "unknown rock px within 1.5 tiles of the lens": 22144,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 88.3,
+            "max": 98.7,
+            "px": 13
+          },
+          {
+            "mean": 88.3,
+            "max": 98.7,
+            "px": 13
+          }
+        ],
+        "px differing from the art capture a04p-dive-60m-phone@3": 332
+      },
+      "after": {
+        "renderer": "webgl",
+        "density": "2",
+        "guard": "",
+        "pages": "campaign-w01-core-2x-0,campaign-w01-core-hero-2x-0,campaign-w01-shaft-2x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-2x-0,campaign-w01-surface-stage1-2x-0",
+        "draw calls": 5,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 1,
+        "resident bytes": 22895928,
+        "resident MiB": 21.84,
+        "tile": 44,
+        "rig px": 176,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-2x-0",
+          "rig-engine-0": "campaign-w01-core-hero-2x-0",
+          "rig-energy-0": "campaign-w01-core-hero-2x-0",
+          "rig-bay-0": "campaign-w01-core-hero-2x-0",
+          "rig-cabin": "campaign-w01-core-hero-2x-0",
+          "rig-hull-0": "campaign-w01-core-hero-2x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-2x-0"
+        },
+        "emissives": [
+          {
+            "frame": "rig-cabin-emissive",
+            "texture": "campaign-w01-core-hero-2x-0",
+            "base": "rig-cabin",
+            "base texture": "campaign-w01-core-hero-2x-0",
+            "depth": 23.9,
+            "blend": 1,
+            "base depth": 22
+          }
+        ],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-2x-0",
+            "width": 512,
+            "height": 448,
+            "density": 2,
+            "bytes": 917504
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 12865,
+        "lifted px": 509,
+        "lifted px inside the rig box": 509,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 492,
+        "lifted px outside the silhouette": 17,
+        "lifted px outside the silhouette grown 1 px": 2,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 7,
+        "max |dL*| outside the silhouette": 2.58,
+        "darker px": 0,
+        "max lift (levels)": 185,
+        "lift bbox in rig units": [
+          83.3,
+          31.6,
+          108.0,
+          54.2
+        ],
+        "unknown rock px in frame (outside the silhouette)": 2014758,
+        "unknown rock px within 1.5 tiles of the lens": 22144,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 99.2,
+            "max": 100.0,
+            "px": 13
+          },
+          {
+            "mean": 53.4,
+            "max": 65.2,
+            "px": 13
+          }
+        ],
+        "px differing from the art capture a04p-dive-60m-phone@3": 0
+      }
+    },
+    "desktop-1728": {
+      "before": {
+        "renderer": "webgl",
+        "density": "3/4",
+        "guard": "",
+        "pages": "campaign-w01-core-3x-0,campaign-w01-core-hero-4x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-4x-0,campaign-w01-surface-stage1-4x-0",
+        "draw calls": 3,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 0,
+        "resident bytes": 55390780,
+        "resident MiB": 52.82,
+        "tile": 78.5455,
+        "rig px": 209,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-4x-0",
+          "rig-engine-0": "campaign-w01-core-hero-4x-0",
+          "rig-energy-0": "campaign-w01-core-hero-4x-0",
+          "rig-bay-0": "campaign-w01-core-hero-4x-0",
+          "rig-cabin": "campaign-w01-core-hero-4x-0",
+          "rig-hull-0": "campaign-w01-core-hero-4x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-4x-0"
+        },
+        "emissives": [],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-4x-0",
+            "width": 832,
+            "height": 1024,
+            "density": 4,
+            "bytes": 3407872
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 16840,
+        "lifted px": 0,
+        "lifted px inside the rig box": 0,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 0,
+        "lifted px outside the silhouette": 0,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 0,
+        "max |dL*| outside the silhouette": 0.0,
+        "darker px": 0,
+        "max lift (levels)": 0,
+        "lift bbox in rig units": null,
+        "unknown rock px in frame (outside the silhouette)": 6528070,
+        "unknown rock px within 1.5 tiles of the lens": 31058,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 97.0,
+            "max": 98.7,
+            "px": 20
+          },
+          {
+            "mean": 97.0,
+            "max": 98.7,
+            "px": 20
+          }
+        ]
+      },
+      "after": {
+        "renderer": "webgl",
+        "density": "3/4",
+        "guard": "",
+        "pages": "campaign-w01-core-3x-0,campaign-w01-core-hero-4x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-4x-0,campaign-w01-surface-stage1-4x-0",
+        "draw calls": 5,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 1,
+        "resident bytes": 55390780,
+        "resident MiB": 52.82,
+        "tile": 78.5455,
+        "rig px": 209,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-4x-0",
+          "rig-engine-0": "campaign-w01-core-hero-4x-0",
+          "rig-energy-0": "campaign-w01-core-hero-4x-0",
+          "rig-bay-0": "campaign-w01-core-hero-4x-0",
+          "rig-cabin": "campaign-w01-core-hero-4x-0",
+          "rig-hull-0": "campaign-w01-core-hero-4x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-4x-0"
+        },
+        "emissives": [
+          {
+            "frame": "rig-cabin-emissive",
+            "texture": "campaign-w01-core-hero-4x-0",
+            "base": "rig-cabin",
+            "base texture": "campaign-w01-core-hero-4x-0",
+            "depth": 23.9,
+            "blend": 1,
+            "base depth": 22
+          }
+        ],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-4x-0",
+            "width": 832,
+            "height": 1024,
+            "density": 4,
+            "bytes": 3407872
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 18132,
+        "lifted px": 579,
+        "lifted px inside the rig box": 579,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 579,
+        "lifted px outside the silhouette": 0,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 0,
+        "max |dL*| outside the silhouette": 0.0,
+        "darker px": 0,
+        "max lift (levels)": 200,
+        "lift bbox in rig units": [
+          83.9,
+          30.6,
+          107.8,
+          52.6
+        ],
+        "unknown rock px in frame (outside the silhouette)": 6528070,
+        "unknown rock px within 1.5 tiles of the lens": 31058,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 99.2,
+            "max": 100.0,
+            "px": 20
+          },
+          {
+            "mean": 42.9,
+            "max": 71.6,
+            "px": 20
+          }
+        ]
+      }
+    },
+    "desktop-tile82": {
+      "before": {
+        "renderer": "webgl",
+        "density": "3/4",
+        "guard": "",
+        "pages": "campaign-w01-core-3x-0,campaign-w01-core-hero-4x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-4x-0,campaign-w01-surface-stage1-4x-0",
+        "draw calls": 3,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 0,
+        "resident bytes": 46301628,
+        "resident MiB": 44.16,
+        "tile": 82,
+        "rig px": 219,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-4x-0",
+          "rig-engine-0": "campaign-w01-core-hero-4x-0",
+          "rig-energy-0": "campaign-w01-core-hero-4x-0",
+          "rig-bay-0": "campaign-w01-core-hero-4x-0",
+          "rig-cabin": "campaign-w01-core-hero-4x-0",
+          "rig-hull-0": "campaign-w01-core-hero-4x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-4x-0"
+        },
+        "emissives": [],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-4x-0",
+            "width": 832,
+            "height": 1024,
+            "density": 4,
+            "bytes": 3407872
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 18391,
+        "lifted px": 0,
+        "lifted px inside the rig box": 0,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 0,
+        "lifted px outside the silhouette": 0,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 0,
+        "max |dL*| outside the silhouette": 0.0,
+        "darker px": 0,
+        "max lift (levels)": 0,
+        "lift bbox in rig units": null,
+        "unknown rock px in frame (outside the silhouette)": 4592288,
+        "unknown rock px within 1.5 tiles of the lens": 33940,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 92.5,
+            "max": 98.7,
+            "px": 20
+          },
+          {
+            "mean": 92.5,
+            "max": 98.7,
+            "px": 20
+          }
+        ]
+      },
+      "after": {
+        "renderer": "webgl",
+        "density": "3/4",
+        "guard": "",
+        "pages": "campaign-w01-core-3x-0,campaign-w01-core-hero-4x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-3x-0,campaign-w01-surface-stage0-4x-0,campaign-w01-surface-stage1-4x-0",
+        "draw calls": 5,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 1,
+        "resident bytes": 46301628,
+        "resident MiB": 44.16,
+        "tile": 82,
+        "rig px": 219,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-4x-0",
+          "rig-engine-0": "campaign-w01-core-hero-4x-0",
+          "rig-energy-0": "campaign-w01-core-hero-4x-0",
+          "rig-bay-0": "campaign-w01-core-hero-4x-0",
+          "rig-cabin": "campaign-w01-core-hero-4x-0",
+          "rig-hull-0": "campaign-w01-core-hero-4x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-4x-0"
+        },
+        "emissives": [
+          {
+            "frame": "rig-cabin-emissive",
+            "texture": "campaign-w01-core-hero-4x-0",
+            "base": "rig-cabin",
+            "base texture": "campaign-w01-core-hero-4x-0",
+            "depth": 23.9,
+            "blend": 1,
+            "base depth": 22
+          }
+        ],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-4x-0",
+            "width": 832,
+            "height": 1024,
+            "density": 4,
+            "bytes": 3407872
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 19805,
+        "lifted px": 640,
+        "lifted px inside the rig box": 640,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 640,
+        "lifted px outside the silhouette": 0,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 0,
+        "max |dL*| outside the silhouette": 0.0,
+        "darker px": 0,
+        "max lift (levels)": 200,
+        "lift bbox in rig units": [
+          83.9,
+          30.9,
+          107.9,
+          52.6
+        ],
+        "unknown rock px in frame (outside the silhouette)": 4592288,
+        "unknown rock px within 1.5 tiles of the lens": 33940,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 100.0,
+            "max": 100.0,
+            "px": 20
+          },
+          {
+            "mean": 45.2,
+            "max": 72.0,
+            "px": 20
+          }
+        ]
+      }
+    },
+    "phone-tile56": {
+      "before": {
+        "renderer": "webgl",
+        "density": "3",
+        "guard": "surface",
+        "pages": "campaign-w01-core-3x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+        "draw calls": 3,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 0,
+        "resident bytes": 26055736,
+        "resident MiB": 24.85,
+        "tile": 56,
+        "rig px": 224,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-3x-0",
+          "rig-engine-0": "campaign-w01-core-hero-3x-0",
+          "rig-energy-0": "campaign-w01-core-hero-3x-0",
+          "rig-bay-0": "campaign-w01-core-hero-3x-0",
+          "rig-cabin": "campaign-w01-core-hero-3x-0",
+          "rig-hull-0": "campaign-w01-core-hero-3x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-3x-0"
+        },
+        "emissives": [],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-3x-0",
+            "width": 512,
+            "height": 960,
+            "density": 3,
+            "bytes": 1966080
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 19215,
+        "lifted px": 0,
+        "lifted px inside the rig box": 0,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 0,
+        "lifted px outside the silhouette": 0,
+        "lifted px outside the silhouette grown 1 px": 0,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 0,
+        "max |dL*| outside the silhouette": 0.0,
+        "darker px": 0,
+        "max lift (levels)": 0,
+        "lift bbox in rig units": null,
+        "unknown rock px in frame (outside the silhouette)": 2016495,
+        "unknown rock px within 1.5 tiles of the lens": 35915,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 91.0,
+            "max": 98.7,
+            "px": 22
+          },
+          {
+            "mean": 91.0,
+            "max": 98.7,
+            "px": 22
+          }
+        ]
+      },
+      "after": {
+        "renderer": "webgl",
+        "density": "3",
+        "guard": "surface,core",
+        "pages": "campaign-w01-core-2x-0,campaign-w01-core-hero-3x-0,campaign-w01-shaft-3x-0,campaign-w01-surface-2x-0,campaign-w01-surface-stage0-3x-0,campaign-w01-surface-stage1-3x-0",
+        "draw calls": 5,
+        "draw calls no-emissive": 3,
+        "emissive sprites": 1,
+        "resident bytes": 25498680,
+        "resident MiB": 24.32,
+        "tile": 56,
+        "rig px": 224,
+        "rig layers": {
+          "rig-body-0": "campaign-w01-core-hero-3x-0",
+          "rig-engine-0": "campaign-w01-core-hero-3x-0",
+          "rig-energy-0": "campaign-w01-core-hero-3x-0",
+          "rig-bay-0": "campaign-w01-core-hero-3x-0",
+          "rig-cabin": "campaign-w01-core-hero-3x-0",
+          "rig-hull-0": "campaign-w01-core-hero-3x-0",
+          "rig-drill-idle": "campaign-w01-core-hero-3x-0"
+        },
+        "emissives": [
+          {
+            "frame": "rig-cabin-emissive",
+            "texture": "campaign-w01-core-hero-3x-0",
+            "base": "rig-cabin",
+            "base texture": "campaign-w01-core-hero-3x-0",
+            "depth": 23.9,
+            "blend": 1,
+            "base depth": 22
+          }
+        ],
+        "core hero pages": [
+          {
+            "key": "campaign-w01-core-hero-3x-0",
+            "width": 576,
+            "height": 896,
+            "density": 3,
+            "bytes": 2064384
+          }
+        ],
+        "frame misses": {},
+        "silhouette px": 20727,
+        "lifted px": 778,
+        "lifted px inside the rig box": 778,
+        "lifted px outside the rig box": 0,
+        "lifted px inside the silhouette": 761,
+        "lifted px outside the silhouette": 17,
+        "lifted px outside the silhouette grown 1 px": 2,
+        "lifted px outside the silhouette grown 2 px": 0,
+        "max lift outside the silhouette (levels)": 4,
+        "max |dL*| outside the silhouette": 1.35,
+        "darker px": 0,
+        "max lift (levels)": 193,
+        "lift bbox in rig units": [
+          83.1,
+          31.1,
+          108.3,
+          54.0
+        ],
+        "unknown rock px in frame (outside the silhouette)": 2016495,
+        "unknown rock px within 1.5 tiles of the lens": 35915,
+        "unknown rock px lifted": 0,
+        "unknown rock max |dL*|": 0.0,
+        "lens core L* with / without": [
+          {
+            "mean": 98.5,
+            "max": 100.0,
+            "px": 22
+          },
+          {
+            "mean": 48.9,
+            "max": 66.8,
+            "px": 22
+          }
+        ]
+      }
+    }
+  }
+}

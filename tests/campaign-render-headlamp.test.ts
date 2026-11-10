@@ -36,10 +36,13 @@ const caveAir = [30, 39, 45];
 
 describe("T1-lite headlamp core", () => {
   it("puts the lens where rig-cabin.svg draws it", () => {
-    expect(lens.x).toBeCloseTo(0.375, 6);
-    expect(lens.y).toBeCloseTo(-0.0775, 6);
-    expect(probe).toBeGreaterThan(0.35);
-    expect(probe).toBeLessThan(0.38);
+    // HEADLAMP_LENS (100.2, 44.5) of the 128-unit frame (A13), pinned here;
+    // tests/art-rig.test.mjs ties the constant to the generator's lens.
+    expect(T1_LITE_HEADLAMP_LENS.x).toBeCloseTo(0.2828125, 9);
+    expect(T1_LITE_HEADLAMP_LENS.y).toBeCloseTo(-0.15234375, 9);
+    // The lens on the cabin's shoulder is 0.40 tile from the probe.
+    expect(probe).toBeGreaterThan(0.39);
+    expect(probe).toBeLessThan(0.41);
   });
   it("lifts cave air at the probe to L* ≥ 70 with b* +15 to +30", () => {
     const add = t1LiteHeadlampAdd(probe);

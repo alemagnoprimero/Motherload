@@ -641,6 +641,13 @@
       "logicalHeight": 64
     },
     {
+      "name": "rig-cabin-emissive",
+      "width": 128,
+      "height": 128,
+      "logicalWidth": 64,
+      "logicalHeight": 64
+    },
+    {
       "name": "rig-engine-0",
       "width": 128,
       "height": 128,

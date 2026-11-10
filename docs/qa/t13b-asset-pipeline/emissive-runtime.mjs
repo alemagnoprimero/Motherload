@@ -16,6 +16,12 @@
  * and resident texture bytes, and saves HUD-free crops around the beacon.
  * Frozen clock, reduced motion, Render quality 2.
  *
+ * Since art item A13 the rig's headlamp sibling (rig-cabin-emissive, ADD at
+ * 23.9 over rig-cabin at 22) is drawn too, in its own ADD run after the rig:
+ * WebGL draws read 6 with the bases alone, 8 with the lit beacon and 10 with
+ * the masked beacon, desktop and phone (item 2 measured 6 / 6 / 8 before the
+ * rig had a sibling; docs/qa/a13-rig-shading/README.md).
+ *
  *   PREVIEW_URL=http://127.0.0.1:5173/ CHROMIUM_PATH=… \
  *     node docs/qa/t13b-asset-pipeline/emissive-runtime.mjs OUT_DIR
  *
@@ -211,34 +217,41 @@ async function crop(page, sample, path) {
   return { clip, cell, cellPath };
 }
 
+const FOLLOWS = [
+  "texture",
+  "x",
+  "y",
+  "originX",
+  "originY",
+  "width",
+  "height",
+  "rotation",
+  "flipX",
+  "alpha",
+  "visible",
+];
 /**
- * The sibling copies its base (texture page, position, origin, size, flip,
- * rotation, alpha), draws ADD (1) at 17.6 while the base stays NORMAL (0) at
- * 15, and keeps the wreck mask only in the masked scene. Nothing is drawn
- * with ?debug=no-emissive.
+ * The beacon's sibling copies its base (texture page, position, origin,
+ * size, flip, rotation, alpha), draws ADD (1) at 17.6 while the base stays
+ * NORMAL (0) at 15, and keeps the wreck mask only in the masked scene. The
+ * rig beside it draws its headlamp sibling (A13) the same way, ADD at 23.9
+ * over rig-cabin at 22, unmasked. Nothing is drawn with ?debug=no-emissive.
  */
 function check(sample) {
   if (!sample.emissive) {
     assert.deepEqual(sample.emissives, [], "no-emissive draws no sibling");
     return;
   }
-  assert.equal(sample.emissives.length, 1, "one sibling: the beacon's lamp");
-  const [glow] = sample.emissives;
-  assert.equal(glow.frame, "mission-beacon-emissive");
+  const byFrame = (frame) =>
+    sample.emissives.filter((glow) => glow.frame === frame);
+  assert.deepEqual(
+    sample.emissives.map((glow) => glow.frame).sort(),
+    ["mission-beacon-emissive", "rig-cabin-emissive"],
+    "two siblings: the beacon's lamp and the rig's headlamp",
+  );
+  const [glow] = byFrame("mission-beacon-emissive");
   assert.equal(glow.base.frame, "mission-beacon");
-  for (const key of [
-    "texture",
-    "x",
-    "y",
-    "originX",
-    "originY",
-    "width",
-    "height",
-    "rotation",
-    "flipX",
-    "alpha",
-    "visible",
-  ])
+  for (const key of FOLLOWS)
     assert.equal(glow[key], glow.base[key], `sibling ${key} follows its base`);
   assert.deepEqual(
     [glow.blendMode, glow.depth, glow.base.blendMode, glow.base.depth],
@@ -246,6 +259,15 @@ function check(sample) {
   );
   assert.equal(glow.base.masked, true, "the marker keeps the wreck mask");
   assert.equal(glow.masked, sample.kind === "masked");
+  const [lamp] = byFrame("rig-cabin-emissive");
+  assert.equal(lamp.base.frame, "rig-cabin");
+  for (const key of FOLLOWS)
+    assert.equal(lamp[key], lamp.base[key], `rig sibling ${key} follows`);
+  assert.deepEqual(
+    [lamp.blendMode, lamp.depth, lamp.base.blendMode, lamp.base.depth],
+    [1, 23.9, 0, 22],
+  );
+  assert.equal(lamp.masked, false, "the rig's headlamp is never masked");
 }
 
 const browser = await launchBrowser();

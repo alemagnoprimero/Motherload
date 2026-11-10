@@ -7,6 +7,9 @@ A. Structural, from an SVG source: every filled shape's fill, assigned to a
    merging fills within MERGE_L (the style guide holds targets within
    ±3 L*). A generator names zones with data-zone="..." on a group; without
    it, the LCh rule below assigns them. The outline inks are left out.
+   visible_svg_tiers() pairs it with a render: a fill counts only if at
+   least N flat pixels of its colour reach the screen (a facet under a
+   contour, a seam or a sub-pixel strip adds no tier).
 B. Pixels, from a rendered RGBA image: opaque, non-outline pixels in flat
    regions (every 3×3 neighbour within FLAT_DE), so anti-aliasing and
    gradients do not count; the zone's tiers are the clusters of its 1-L*
@@ -161,6 +164,50 @@ def pixel_tiers(image, zones=None, min_share=MIN_SHARE, alpha_min=250, keep_outl
     for name, levels in items:
         levels = np.round(np.asarray(levels, float), 0)
         out[name] = {'px': int(len(levels)), 'tiers': tiers_from_levels(levels, min_share=min_share)}
+    return out
+
+
+# ---------------------------------------------------------------- honesty
+def fill_pixels(image, fills, zones=None, tolerance=2.5, alpha_min=250, flat=True):
+    """{fill: px} for each fill colour: opaque pixels of the image within
+    `tolerance` ΔE of it (flat ones only unless `flat` is False, so
+    anti-aliasing never counts), inside zones[zone] when a mask is given.
+    `fills` is {zone: [fill, ...]}; the result is {zone: {fill: px}}."""
+    if isinstance(image, str):
+        image = Image.open(image)
+    px = np.asarray(image.convert('RGBA') if hasattr(image, 'convert') else image).astype(np.int32)
+    lab = lab_image(px[..., :3])
+    keep = px[..., 3] >= alpha_min
+    if flat:
+        keep &= flat_mask(lab)
+    out = {}
+    for zone, colours in fills.items():
+        mask = keep if zones is None or zone not in zones else keep & zones[zone]
+        out[zone] = {}
+        for colour in colours:
+            ref = lab_image(hex_rgb(colour)[None, None, :])[0, 0]
+            near = np.sqrt(((lab - ref) ** 2).sum(-1)) < tolerance
+            out[zone][colour] = int((near & mask).sum())
+    return out
+
+
+def visible_svg_tiers(source, image, zones=None, min_px=8, tolerance=2.5):
+    """The structural reading (A) made honest: a zone's fill counts only if
+    it reaches the screen, as at least `min_px` flat pixels of its colour in
+    `image` (the frame rendered alone, at @4 for the rig: 2 px a unit),
+    inside the zone's mask when `zones` gives one. Returns {zone: {tiers,
+    visible_tiers, fills: {fill: px}, hidden: [fill, ...]}}."""
+    structure = svg_tiers(source)
+    counts = fill_pixels(image, {z: r['fills'] for z, r in structure.items()}, zones, tolerance)
+    out = {}
+    for zone, record in structure.items():
+        seen = [f for f, n in counts[zone].items() if n >= min_px]
+        out[zone] = {
+            'tiers': record['tiers'],
+            'visible_tiers': tiers_from_levels([float(lch(hex_rgb(f))[0]) for f in seen]),
+            'fills': counts[zone],
+            'hidden': sorted(f for f, n in counts[zone].items() if n < min_px),
+        }
     return out
 
 

@@ -18,12 +18,17 @@ import {
   tierMarkHighContrastFrame,
   SOCKET_VARIANT,
 } from "./w01-ore.mjs";
+import {
+  RIG_VARIANT,
+  rigFeet,
+  rigFrames,
+  rigLateFrames,
+} from "./w01-rig.mjs";
 import { writeProvenance } from "../kit/records.mjs";
 import { emissivePair } from "../kit/emissive.mjs";
 
 const source = new URL("./", import.meta.url);
-const O = "#14232b",
-  INK = "#111e26";
+const O = "#14232b";
 const svg = (w, h, body, title) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><title>${title}</title><g stroke-linecap="round" stroke-linejoin="round">${body}</g></svg>`;
 const path = (d, fill, stroke = O, width = 4, rest = "") =>
@@ -151,207 +156,6 @@ function cracks(level) {
         2,
       ) + path("M49 4 L42 26 L54 42 L38 61 L44 91", "none", "#cfbd94", 1.7);
   return layer("fracture-overlay", s);
-}
-function body(frame) {
-  let s = layer(
-    "undercarriage",
-    path("M23 79 L32 70 H94 L107 80 L102 97 H29 Z", "#344853", INK, 5),
-  );
-  // The track's outer edge sits on rigTreadBaseline (100 after the -5 shift):
-  // 79 + 23.5 + 5/2 = 105. At 23 it stopped half a unit short, on a pixel
-  // boundary at @4x, where the tread-baseline check read 199 for 200 (T13b).
-  s += layer("track", rect(21, 79, 85, 23.5, "#1c2c34", 11, INK, 5));
-  for (const x of [34, 51, 68, 86, 96])
-    s +=
-      circle(x, 91, x === 34 || x === 96 ? 8 : 6, "#65767c", INK, 3) +
-      circle(x, 91, 2, "#a9b4af", "none", 0);
-  for (let j = 0; j < 11; j++) {
-    const x = 25 + ((j * 7 + frame * 2) % 76);
-    s += path(`M${x} 79 l3 4 M${x} 101 l3 -4`, "none", "#83908c", 2.5);
-  }
-  s += layer(
-    "chassis",
-    path("M25 75 L29 65 H96 L105 75 V82 H24 Z", "#d99538", INK, 5) +
-      path("M29 65 H96 L105 75 H30 Z", "#f6c869", O, 2) +
-      rect(31, 76, 17, 5, "#f7e0aa", 1, "none", 0),
-  );
-  return s;
-}
-function cabin() {
-  return (
-    layer(
-      "cabin-shell",
-      path(
-        "M47 65 L48 40 Q50 29 65 29 H81 Q95 32 97 49 L98 69 H48 Z",
-        "#e2b054",
-        INK,
-        5,
-      ) +
-        path(
-          "M49 41 Q53 32 65 32 H80 Q90 34 93 42 L89 45 H53 Z",
-          "#f5dc9e",
-          "none",
-          0,
-        ) +
-        path("M50 62 H97 V70 H48 Z", "#e68b35", O, 2),
-    ) +
-    layer(
-      "dark-teal-glass",
-      path(
-        "M56 43 Q57 37 67 37 H79 Q87 38 89 47 L90 56 H55 Z",
-        "#19404b",
-        INK,
-        4,
-      ) +
-        path("M59 42 H76 L64 52 H56 Z", "#79a5a8", "none", 0) +
-        path("M79 39 L87 46 L89 53 H79 Z", "#315e68", "none", 0),
-    ) +
-    layer("identity-stripe", path("M49 59 H96 V64 H49 Z", "#f2f0ce", O, 1.5)) +
-    layer(
-      "roof-and-lamp",
-      rect(58, 24, 22, 7, "#56656a", 2, INK, 3) +
-        rect(93, 54, 12, 9, "#f6e1af", 3, INK, 3) +
-        circle(100, 58, 2, "#fff6ca", "none", 0),
-    )
-  );
-}
-function engine(rank) {
-  return layer(
-    "rear-engine",
-    rect(rank ? 22 : 25, 48, 22, 25, rank ? "#74868b" : "#48606b", 5, INK, 4) +
-      rect(27, 51, 12, 5, "#a4bab7", 2, "none", 0) +
-      path("M29 62 H39 M29 67 H39", "none", "#1f333e", 3) +
-      (rank
-        ? path("M21 51 L17 56 V69 H23 M36 47 V39 H43 V47", "none", "#d9c496", 4)
-        : path("M36 47 V40 H42", "none", "#96a6a6", 3)),
-  );
-}
-function energy(rank) {
-  return layer(
-    "energy-canister",
-    rect(rank ? 13 : 17, 40, 14, 31, rank ? "#e8b660" : "#d27637", 5, INK, 4) +
-      rect(rank ? 13 : 17, 50, 14, 5, "#b9c2b7", 0, INK, 2) +
-      rect(rank ? 17 : 21, 35, 6, 6, "#a7b7b2", 2, INK, 2) +
-      (rank ? path("M15 60 H26 M15 64 H26", "none", "#fcdf9e", 2) : ""),
-  );
-}
-function bay(rank) {
-  return layer(
-    "rear-bay",
-    path(
-      rank ? "M22 52 H45 V75 H20 Z" : "M28 57 H46 V75 H26 Z",
-      rank ? "#8c9b97" : "#596d73",
-      O,
-      4,
-    ) +
-      path(
-        rank ? "M24 57 H42 M24 64 H42 M31 53 V75" : "M30 60 H42 M30 69 H42",
-        "none",
-        rank ? "#d5cba6" : "#afbcad",
-        3,
-      ),
-  );
-}
-function hull(rank) {
-  return layer(
-    "armour",
-    path(
-      rank ? "M46 65 L55 61 H92 L102 66 V75 H45 Z" : "M47 66 H95 L101 72 H46 Z",
-      rank ? "#d4d7bf" : "#b87b33",
-      O,
-      3,
-    ) +
-      (rank
-        ? path("M53 68 H90 M57 72 H96", "none", "#f5efcb", 2)
-        : path("M53 68 H88", "none", "#edbc65", 2)),
-  );
-}
-function drill(frame, direction) {
-  const p = frame % 8;
-  const twist = Math.sin(frame / 8 * Math.PI * 2);
-  let g = layer(
-    "drill-mount",
-    rect(91, 60, 11, 16, "#b8c4be", 3, INK, 3) +
-      rect(97, 62, 9, 12, "#d78735", 2, INK, 2),
-  );
-  g += layer(
-    "auger-flutes",
-    path(`M103 ${55+twist*3} L126 68 L103 ${81-twist*3} Z`, frame%2?"#738b95":"#b2bda6", INK, 3) +
-      path(
-        `M${104+p} ${59+twist*5} Q${118-p} 68 ${104+p} ${77-twist*5} M${112+p/2} 63 L${120-p/2} 72`,
-        "none",
-        "#e2e0ba",
-        3,
-      ) +
-      path("M122 67 L124 68 L120 70", "none", "#fff0c7", 2),
-  );
-  if (direction === "down")
-    return `<g transform="translate(132 0) rotate(90 0 0)">${g}</g>`;
-  if (direction === "left")
-    return `<g transform="translate(128 0) scale(-1 1)">${g}</g>`;
-  return g;
-}
-function feet(deployed) {
-  return layer(
-    "anchoring-feet",
-    deployed
-      ? path("M35 71 L22 94 V108 H9 M88 72 L105 95 V108 H118", "none", INK, 9) +
-          path(
-            "M35 71 L22 94 V108 H9 M88 72 L105 95 V108 H118",
-            "none",
-            "#b7c0b0",
-            5,
-          ) +
-          rect(7, 105, 22, 7, "#f0a43c", 2, INK, 3) +
-          rect(100, 105, 21, 7, "#f0a43c", 2, INK, 3) +
-          path(
-            "M11 106 l4 5 M19 106 l4 5 M103 106 l4 5 M111 106 l4 5",
-            "none",
-            O,
-            2,
-          )
-      : path("M34 70 L27 82 M89 70 L99 82", "none", INK, 9) +
-          path("M34 70 L27 82 M89 70 L99 82", "none", "#b7c0b0", 4),
-  );
-}
-function rack() {
-  return layer(
-    "cargo-rack",
-    path("M17 45 H40 V75 H12 V54 Z", "#293e46", O, 4) +
-      rect(15, 60, 9, 12, "#c1ba9c", 2, O, 2) +
-      rect(26, 57, 10, 15, "#a7b9af", 2, O, 2) +
-      path("M13 53 H39 M13 74 H40 M20 45 V75 M32 45 V75", "none", "#e0c78b", 3),
-  );
-}
-function thrust(i) {
-  const length = 5 + [0,8,3,12,5,15][i];
-  return layer(
-    "jet-flame",
-    path(
-      `M38 95 L30 ${99 + length} L40 ${106 + length} L50 ${99 + length} L45 95 Z`,
-      "#ce7b33",
-      "none",
-      0,
-    ) +
-      path(
-        `M39 96 L35 ${99 + length} L40 ${103 + length} L46 ${98 + length} L44 96 Z`,
-        "#f6e1af",
-        "none",
-        0,
-      ) +
-      path(
-        `M80 95 L72 ${99 + length} L82 ${106 + length} L91 ${99 + length} L87 95 Z`,
-        "#ce7b33",
-        "none",
-        0,
-      ) +
-      path(
-        `M81 96 L77 ${99 + length} L82 ${103 + length} L87 ${98 + length} L86 96 Z`,
-        "#f6e1af",
-        "none",
-        0,
-      ),
-  );
 }
 // Audit T13b, the first -emissive sibling (kit/emissive.mjs): the survey
 // beacon's lamp head. The base draws the glass with the power off; the
@@ -641,46 +445,6 @@ function relay(stage) {
     );
   return s;
 }
-function damage(level) {
-  let s = path(
-    "M54 69 l12 -3 l-4 7 M31 83 l6 3 M85 78 l10 -4",
-    "none",
-    "#384b51",
-    3,
-  );
-  if (level > 1)
-    s +=
-      path(
-        "M73 41 l-7 8 l5 5 M49 63 l6 9 l-8 4 M90 83 l8 4",
-        "none",
-        "#162932",
-        3,
-      ) + path("M27 58 l9 4 l-7 7", "none", "#e4d3aa", 2);
-  if (level > 2)
-    s +=
-      path(
-        "M44 75 l-5 7 H31 l-6 9 M92 67 l6 5 l-2 9 M56 43 l4 5 l-7 4",
-        "none",
-        "#111e26",
-        4,
-      ) + path("M87 68 l6 3 l-2 6", "none", "#e0b783", 2);
-  return layer(`wear-${level}`, s);
-}
-function drillCollar(direction) {
-  let s = layer(
-    "rank-one-collar",
-    rect(99, 55, 11, 25, "#e4ddbd", 3, INK, 3) +
-      rect(98, 62, 13, 7, "#db933c", 2, O, 2) +
-      path("M98 53 H111 M98 82 H111", "none", "#93b0af", 4) +
-      circle(104, 59, 1.5, "#233e48", "none", 0) +
-      circle(104, 76, 1.5, "#233e48", "none", 0),
-  );
-  if (direction === "down")
-    s = `<g transform="translate(132 0) rotate(90 0 0)">${s}</g>`;
-  if (direction === "left")
-    s = `<g transform="translate(128 0) scale(-1 1)">${s}</g>`;
-  return s;
-}
 function glyph(name) {
   const c =
     {
@@ -771,29 +535,11 @@ for (let tier = 1; tier <= 4; tier++)
   await save(`tier-mark-hc-${tier}`, 96, 96, tierMarkHighContrastFrame(tier), {
     category: "overlay",
   });
-for (let i = 0; i < 8; i++)
-  await save(
-    `rig-body-${i}`,
-    128,
-    128,
-    `<g transform="translate(0 -5)">${body(i)}</g>`,
-    { pivot: { x: 0.5, y: 0.5 } },
-  );
-await save("rig-cabin", 128, 128, cabin());
-for (let i = 0; i < 2; i++) {
-  await save(`rig-engine-${i}`, 128, 128, engine(i));
-  await save(`rig-energy-${i}`, 128, 128, energy(i));
-  await save(`rig-bay-${i}`, 128, 128, bay(i));
-  await save(`rig-hull-${i}`, 128, 128, hull(i));
-}
-await save("rig-drill-idle", 128, 128, drill(0, "right"));
-for (const d of ["right", "down", "left"])
-  for (let i = 0; i < 8; i++)
-    await save(`rig-drill-${d}-${i}`, 128, 128, drill(i, d));
-await save("rig-feet-stowed", 128, 128, feet(false));
-await save("rig-feet-deployed", 128, 128, feet(true));
-await save("rig-rack", 128, 128, rack());
-for (let i = 0; i < 6; i++) await save(`thrust-${i}`, 128, 128, thrust(i));
+// Art item A13 (./w01-rig.mjs): the rig frames, shaded per material zone,
+// with rig-cabin-emissive (the lit headlamp and cabin indicator) right after
+// rig-cabin.
+for (const [name, body, extra] of rigFrames())
+  await save(name, 128, 128, body, extra);
 for (const frame of beaconFrames())
   await save(frame.name, frame.width, frame.height, frame.body);
 for (const k of ["valve", "antenna", "core"])
@@ -812,28 +558,114 @@ for (let i = 0; i < 3; i++) {
     pivot: { x: 0.5, y: 1 },
   });
 }
+// Art item A13: the HUD icons for the drill, energy, cargo, hull, engine and
+// rack keep their pre-A13 drawings (these functions, as they were): at the
+// HUD's 22-31 CSS px the reworked modules read worse (a silver box and a
+// cone for the drill, a thin grey bar for the hull, grey cabinets for the
+// engine and rack), and the brief keeps every HUD icon but the feet. Only
+// icon-feet follows the reworked generator.
+const INK = "#111e26";
+function frozenEnergy(rank) {
+  return layer(
+    "energy-canister",
+    rect(rank ? 13 : 17, 40, 14, 31, rank ? "#e8b660" : "#d27637", 5, INK, 4) +
+      rect(rank ? 13 : 17, 50, 14, 5, "#b9c2b7", 0, INK, 2) +
+      rect(rank ? 17 : 21, 35, 6, 6, "#a7b7b2", 2, INK, 2) +
+      (rank ? path("M15 60 H26 M15 64 H26", "none", "#fcdf9e", 2) : ""),
+  );
+}
+function frozenEngine(rank) {
+  return layer(
+    "rear-engine",
+    rect(rank ? 22 : 25, 48, 22, 25, rank ? "#74868b" : "#48606b", 5, INK, 4) +
+      rect(27, 51, 12, 5, "#a4bab7", 2, "none", 0) +
+      path("M29 62 H39 M29 67 H39", "none", "#1f333e", 3) +
+      (rank
+        ? path("M21 51 L17 56 V69 H23 M36 47 V39 H43 V47", "none", "#d9c496", 4)
+        : path("M36 47 V40 H42", "none", "#96a6a6", 3)),
+  );
+}
+function frozenBay(rank) {
+  return layer(
+    "rear-bay",
+    path(
+      rank ? "M22 52 H45 V75 H20 Z" : "M28 57 H46 V75 H26 Z",
+      rank ? "#8c9b97" : "#596d73",
+      O,
+      4,
+    ) +
+      path(
+        rank ? "M24 57 H42 M24 64 H42 M31 53 V75" : "M30 60 H42 M30 69 H42",
+        "none",
+        rank ? "#d5cba6" : "#afbcad",
+        3,
+      ),
+  );
+}
+function frozenHull(rank) {
+  return layer(
+    "armour",
+    path(
+      rank ? "M46 65 L55 61 H92 L102 66 V75 H45 Z" : "M47 66 H95 L101 72 H46 Z",
+      rank ? "#d4d7bf" : "#b87b33",
+      O,
+      3,
+    ) +
+      (rank
+        ? path("M53 68 H90 M57 72 H96", "none", "#f5efcb", 2)
+        : path("M53 68 H88", "none", "#edbc65", 2)),
+  );
+}
+function frozenDrill(frame, direction) {
+  const p = frame % 8;
+  const twist = Math.sin(frame / 8 * Math.PI * 2);
+  let g = layer(
+    "drill-mount",
+    rect(91, 60, 11, 16, "#b8c4be", 3, INK, 3) +
+      rect(97, 62, 9, 12, "#d78735", 2, INK, 2),
+  );
+  g += layer(
+    "auger-flutes",
+    path(`M103 ${55+twist*3} L126 68 L103 ${81-twist*3} Z`, frame%2?"#738b95":"#b2bda6", INK, 3) +
+      path(
+        `M${104+p} ${59+twist*5} Q${118-p} 68 ${104+p} ${77-twist*5} M${112+p/2} 63 L${120-p/2} 72`,
+        "none",
+        "#e2e0ba",
+        3,
+      ) +
+      path("M122 67 L124 68 L120 70", "none", "#fff0c7", 2),
+  );
+  if (direction === "down")
+    return `<g transform="translate(132 0) rotate(90 0 0)">${g}</g>`;
+  if (direction === "left")
+    return `<g transform="translate(128 0) scale(-1 1)">${g}</g>`;
+  return g;
+}
+function frozenRack() {
+  return layer(
+    "cargo-rack",
+    path("M17 45 H40 V75 H12 V54 Z", "#293e46", O, 4) +
+      rect(15, 60, 9, 12, "#c1ba9c", 2, O, 2) +
+      rect(26, 57, 10, 15, "#a7b9af", 2, O, 2) +
+      path("M13 53 H39 M13 74 H40 M20 45 V75 M32 45 V75", "none", "#e0c78b", 3),
+  );
+}
 const iconZoom = (drawing, x, y, scale) =>
   `<g transform="translate(64 64) scale(${scale}) translate(${-x} ${-y})">${drawing}</g>`;
 const icons = {
-  drill: iconZoom(drill(1, "right"), 107, 68, 2.6),
-  energy: iconZoom(energy(1), 21, 54, 2.2),
-  cargo: iconZoom(bay(1), 32, 64, 2.9),
-  hull: iconZoom(hull(1), 75, 68, 1.5),
-  engine: iconZoom(engine(1), 30, 57, 2.15),
-  feet: iconZoom(feet(true), 64, 92, 0.87),
-  rack: iconZoom(rack(), 26, 60, 2.5),
+  drill: iconZoom(frozenDrill(1, "right"), 107, 68, 2.6),
+  energy: iconZoom(frozenEnergy(1), 21, 54, 2.2),
+  cargo: iconZoom(frozenBay(1), 32, 64, 2.9),
+  hull: iconZoom(frozenHull(1), 75, 68, 1.5),
+  engine: iconZoom(frozenEngine(1), 30, 57, 2.15),
+  feet: iconZoom(rigFeet(true), 64, 92, 0.87),
+  rack: iconZoom(frozenRack(), 26, 60, 2.5),
   core: iconZoom(mission("core"), 48, 48, 1.15),
 };
 for (const [name, drawing] of Object.entries(icons))
   await save(`icon-${name}`, 128, 128, drawing, { category: "icon" });
-for (let i = 1; i <= 3; i++) await save(`rig-damage-${i}`, 128, 128, damage(i));
-for (const direction of ["right", "down", "left"])
-  await save(
-    `rig-drill-collar-${direction}-1`,
-    128,
-    128,
-    drillCollar(direction),
-  );
+for (const [name, body, extra] of rigLateFrames())
+  await save(name, 128, 128, body, extra);
 await save(
   "world-w01",
   96,
@@ -996,6 +828,48 @@ await writeProvenance("w01-ore-frames", {
   recorded: A12_DATE,
   notes:
     "W02's ore and package frames take the same mark from oreBadge() at W02's own centres (fitted to its minerals) and lose their notches and tag squares; W02 writes its own tier-mark-hc-1..4 at those centres; its drawings are otherwise unchanged.",
+});
+// Art item A13: provenance for asset 40 (rig shading, emissive headlamp).
+const A13_DATE = "2026-11-09";
+const surfaceBoard = "docs/art-direction/d0-target-surface-wide.png";
+const surfaceBoardSha = createHash("sha256")
+  .update(await readFile(new URL(`../../../${surfaceBoard}`, import.meta.url)))
+  .digest("hex");
+await writeProvenance("w01-rig", {
+  asset: 40,
+  item: "A13",
+  method: "generator writing layered SVG (decision D5)",
+  source: {
+    generator:
+      "assets/campaign/source/w01-rig.mjs: rigBody(), rigCabinFrames() (kit emissivePair), rigEngine(), rigEnergy(), rigBay(), rigHull(), rigDrill(), rigDrillCollar(), rigFeet(), rigRack(), rigThrust(), rigDamage(); RIG_VARIANTS, RIG_VARIANT",
+    variant: RIG_VARIANT,
+    kit: "assets/campaign/kit/ (palette, svg, emissive)",
+    palette:
+      "docs/art-audit/data/palette.json: rig_yellow (hull lit tier, the arch's outer and top faces; body a Lab mix 0.85 toward the board's gold #c79135), ore_copper (body tier of the copper metal fittings: drill-mount ring, collar band), ore_silver_top (silver lit tier, the drill bit's upper half, with a white tip glint), lamp_halo and lamp_bulb (the -emissive headlamp); the energy canister is the board's orange paint (zone paint: #e56d24 body, #f39a52 lit, #84421f shadow, sampled on the board's canister); module greys and glass teal sampled from the board's rig at its tile scale",
+    frames: frameList
+      .map((frame) => frame.name)
+      .filter((name) => /^(rig-|thrust-)/.test(name)),
+  },
+  reference: {
+    file: surfaceBoard,
+    sha256: surfaceBoardSha,
+    use: "silhouette, material zones, tier values and the lamp's place judged beside the board's rig (rig_box in d0-target-panels.json) at its tile scale on all six panels; no pixels read into the drawing",
+    audit: "docs/ART_QUALITY_AUDIT.md §5.6 row 40, §6.1",
+  },
+  reviewer: {
+    name: "Alejandro (art director)",
+    signed: null,
+    state: "in review (A13 pull request)",
+    fixtures: ["a04-dive-60m@2", "a04p-dive-60m-phone@3", "a02"],
+    rounds:
+      "variants facets, bevel and rim at the board's scale (docs/qa/a13-rig-shading); the default ships until the director's pick",
+  },
+  redrawnShare: 0,
+  underlays: [],
+  boardPixelsCopied: false,
+  recorded: A13_DATE,
+  notes:
+    "The lamp moved to the cabin's front shoulder so no drill, collar, armour or tool frame covers it; rig-cabin draws it unlit and rig-cabin-emissive lit (ADD above the darkness; its lens ring is the lit colour minus the unlit lens, so only the bulb core reaches white). The rank-0 armour is the band's yellow skirt plate. The drill bit's flute grooves move three pitches over the 8 frames (DRILL_FLUTE_TURNS); the down drill and collar carry their own top-lit tiers. Every tier fill reaches the screen at @4 in its own frame (scripts/art_tiers.py visible_svg_tiers). icon-energy and icon-feet follow the reworked generators; icon-drill, icon-cargo, icon-hull, icon-engine and icon-rack keep their pre-A13 drawings.",
 });
 const rasterCount = frameList.filter((frame) => frame.source === "raster")
   .length;

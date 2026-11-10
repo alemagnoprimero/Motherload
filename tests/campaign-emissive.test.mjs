@@ -4,14 +4,16 @@ import sceneSource from "../src/campaign/scene.ts?raw";
 import { decodePng } from "../scripts/png-canonical.mjs";
 import { ZONE_MANIFESTS, WORLD_IDS } from "../src/campaign/render/zones";
 import {
+  EMISSIVE_OFFSET,
   EmissivePass,
-  RIG_EMISSIVE_OFFSET,
+  RIG_EMISSIVE_DEPTH,
   SCENERY_EMISSIVE_DEPTH,
   cellsUnder,
   emissiveDepth,
   emissiveSibling,
   spriteBounds,
 } from "../src/campaign/render/emissive";
+import { RIG_LAYERS } from "../src/campaign/render/rig-layers";
 
 // Audit T13b (a): `-emissive` siblings, packed beside their base and drawn
 // by the runtime with ADD above the darkness (src/campaign/render/emissive.ts,
@@ -104,12 +106,17 @@ describe("emissive siblings: depth", () => {
     expect(SCENERY_EMISSIVE_DEPTH).toBeGreaterThan(T1_LITE_DEPTH);
     expect(SCENERY_EMISSIVE_DEPTH).toBeLessThan(18);
   });
-  it("draws rig siblings just above their own layer, below the effects", () => {
-    for (const depth of [18, 20, 21, 22, 23]) {
-      expect(emissiveDepth(depth)).toBe(depth + RIG_EMISSIVE_OFFSET);
-      expect(emissiveDepth(depth)).toBeLessThan(Math.floor(depth) + 1);
-    }
-    expect(emissiveDepth(23)).toBeLessThan(24);
+  it("draws every rig sibling in one band above every rig layer, below the effects", () => {
+    // Art item A13: one depth for all rig siblings (one ADD run), above the
+    // last rig layer (the collar, 23.6), as the review composites show the
+    // lamp (render/rig-layers.json).
+    const layers = RIG_LAYERS.map(({ depth }) => depth);
+    for (const depth of layers)
+      expect(emissiveDepth(depth)).toBe(RIG_EMISSIVE_DEPTH);
+    expect(RIG_EMISSIVE_DEPTH).toBeGreaterThan(Math.max(...layers));
+    expect(RIG_EMISSIVE_DEPTH).toBeLessThan(24);
+    // A base above the rig band keeps its sibling just above itself.
+    expect(emissiveDepth(24)).toBe(24 + EMISSIVE_OFFSET);
   });
 });
 
