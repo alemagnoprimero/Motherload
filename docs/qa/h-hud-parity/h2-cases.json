@@ -1,0 +1,344 @@
+[
+  {
+    "name": "desktop-coach-active-spawn",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "spawn",
+    "objective": {
+      "x": 18,
+      "y": 84,
+      "width": 232,
+      "height": 44
+    },
+    "objectiveText": "○Bank ore · 0/3 69 m ↓",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 1222.71875,
+        "y": 21,
+        "width": 73.109375,
+        "height": 24
+      },
+      "cut": false
+    },
+    "pips": true,
+    "rowOverflow": 0,
+    "detailsOnHover": true
+  },
+  {
+    "name": "desktop-coach-active-60m",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "60m",
+    "objective": {
+      "x": 18,
+      "y": 84,
+      "width": 319.8,
+      "height": 44
+    },
+    "objectiveText": "↑Bank ore · 0/3 · 2 onboard 152 m ↗",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 60 CR",
+      "box": {
+        "x": 1213.359375,
+        "y": 21,
+        "width": 82.46875,
+        "height": 24
+      },
+      "cut": false
+    },
+    "pips": true,
+    "rowOverflow": 0,
+    "detailsOnHover": true
+  },
+  {
+    "name": "desktop-coach-active-site4",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "site4",
+    "objective": {
+      "x": 18,
+      "y": 84,
+      "width": 241,
+      "height": 44
+    },
+    "objectiveText": "○Bank ore · 0/3 398 m ↑",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 1222.71875,
+        "y": 21,
+        "width": 73.109375,
+        "height": 24
+      },
+      "cut": false
+    },
+    "pips": true,
+    "rowOverflow": 0,
+    "detailsOnHover": true
+  },
+  {
+    "name": "desktop-coach-skipped-spawn",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "spawn",
+    "objective": {
+      "x": 18,
+      "y": 84,
+      "width": 232,
+      "height": 44
+    },
+    "objectiveText": "○Bank ore · 0/3 69 m ↓",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 1222.71875,
+        "y": 21,
+        "width": 73.109375,
+        "height": 24
+      },
+      "cut": false
+    },
+    "pips": true,
+    "rowOverflow": 0,
+    "detailsOnHover": true
+  },
+  {
+    "name": "desktop-coach-skipped-60m",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "60m",
+    "objective": {
+      "x": 18,
+      "y": 84,
+      "width": 319.8,
+      "height": 44
+    },
+    "objectiveText": "↑Bank ore · 0/3 · 2 onboard 152 m ↗",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 60 CR",
+      "box": {
+        "x": 1213.359375,
+        "y": 21,
+        "width": 82.46875,
+        "height": 24
+      },
+      "cut": false
+    },
+    "pips": true,
+    "rowOverflow": 0,
+    "detailsOnHover": true
+  },
+  {
+    "name": "desktop-coach-skipped-site4",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "site4",
+    "objective": {
+      "x": 18,
+      "y": 84,
+      "width": 241,
+      "height": 44
+    },
+    "objectiveText": "○Bank ore · 0/3 398 m ↑",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 1222.71875,
+        "y": 21,
+        "width": 73.109375,
+        "height": 24
+      },
+      "cut": false
+    },
+    "pips": true,
+    "rowOverflow": 0,
+    "detailsOnHover": true
+  },
+  {
+    "name": "phone-coach-active-spawn",
+    "form": "phone",
+    "coach": "active",
+    "scene": "spawn",
+    "objective": {
+      "x": 10,
+      "y": 96,
+      "width": 232,
+      "height": 40
+    },
+    "objectiveText": "○Bank ore · 0/3 69 m ↓",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 182.53125,
+        "y": 57,
+        "width": 67.875,
+        "height": 22
+      },
+      "cut": false
+    },
+    "pips": false,
+    "rowOverflow": 0,
+    "detailsOnTap": true,
+    "detailsAfterSecondTap": false
+  },
+  {
+    "name": "phone-coach-active-60m",
+    "form": "phone",
+    "coach": "active",
+    "scene": "60m",
+    "objective": {
+      "x": 10,
+      "y": 96,
+      "width": 319.8,
+      "height": 40
+    },
+    "objectiveText": "↑Bank ore · 0/3 · 2 onboard 152 m ↗",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 60 CR",
+      "box": {
+        "x": 179.640625,
+        "y": 57,
+        "width": 76.28125,
+        "height": 22
+      },
+      "cut": false
+    },
+    "pips": false,
+    "rowOverflow": 0,
+    "detailsOnTap": true,
+    "detailsAfterSecondTap": false
+  },
+  {
+    "name": "phone-coach-active-site4",
+    "form": "phone",
+    "coach": "active",
+    "scene": "site4",
+    "objective": {
+      "x": 10,
+      "y": 96,
+      "width": 241,
+      "height": 40
+    },
+    "objectiveText": "○Bank ore · 0/3 398 m ↑",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 188.234375,
+        "y": 57,
+        "width": 67.875,
+        "height": 22
+      },
+      "cut": false
+    },
+    "pips": false,
+    "rowOverflow": 0,
+    "detailsOnTap": true,
+    "detailsAfterSecondTap": false
+  },
+  {
+    "name": "phone-coach-skipped-spawn",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "spawn",
+    "objective": {
+      "x": 10,
+      "y": 96,
+      "width": 232,
+      "height": 40
+    },
+    "objectiveText": "○Bank ore · 0/3 69 m ↓",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 182.53125,
+        "y": 57,
+        "width": 67.875,
+        "height": 22
+      },
+      "cut": false
+    },
+    "pips": false,
+    "rowOverflow": 0,
+    "detailsOnTap": true,
+    "detailsAfterSecondTap": false
+  },
+  {
+    "name": "phone-coach-skipped-60m",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "60m",
+    "objective": {
+      "x": 10,
+      "y": 96,
+      "width": 319.8,
+      "height": 40
+    },
+    "objectiveText": "↑Bank ore · 0/3 · 2 onboard 152 m ↗",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 60 CR",
+      "box": {
+        "x": 179.640625,
+        "y": 57,
+        "width": 76.28125,
+        "height": 22
+      },
+      "cut": false
+    },
+    "pips": false,
+    "rowOverflow": 0,
+    "detailsOnTap": true,
+    "detailsAfterSecondTap": false
+  },
+  {
+    "name": "phone-coach-skipped-site4",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "site4",
+    "objective": {
+      "x": 10,
+      "y": 96,
+      "width": 241,
+      "height": 40
+    },
+    "objectiveText": "○Bank ore · 0/3 398 m ↑",
+    "detailsShown": false,
+    "haul": {
+      "shown": true,
+      "text": "HAUL 0 CR",
+      "box": {
+        "x": 188.234375,
+        "y": 57,
+        "width": 67.875,
+        "height": 22
+      },
+      "cut": false
+    },
+    "pips": false,
+    "rowOverflow": 0,
+    "detailsOnTap": true,
+    "detailsAfterSecondTap": false
+  }
+]
