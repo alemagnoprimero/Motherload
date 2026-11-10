@@ -39,6 +39,11 @@ export const HUD_ART = {
     "../../../assets/campaign/generated/icons/ui-map-48.png",
     import.meta.url,
   ).href,
+  // T8: asset 28's Scan glyph, for the tool-tray button.
+  scan: new URL(
+    "../../../assets/campaign/generated/icons/ui-scan-72.png",
+    import.meta.url,
+  ).href,
   reservoir: new URL(
     "../../../assets/campaign/generated/icons/icon-energy-64.png",
     import.meta.url,

@@ -3913,3 +3913,92 @@ body[data-annotations="off"] #campaign-frametime,
 body[data-annotations="off"].campaign-hit::after {
   opacity: 0 !important;
 }
+
+/*
+ * Audit T8 (D3): one annotation system (render/annotations.ts). Labels are
+ * pills of one style; asset 28's chevron, pulse ring and leader tick are
+ * images the scene positions every frame with transforms. HOME's label is
+ * #campaign-home-beacon and the target's #campaign-target-beacon.
+ */
+.world-labels .annotation-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: none;
+  margin: 0;
+  padding: 2px 8px;
+  /* 04-overlays.md R1: a 60 % pill and a hairline, not a full box. */
+  border: 1px solid rgb(180 199 181 / 22%);
+  border-radius: 999px;
+  background: rgb(11 22 28 / 60%);
+  color: #dce8e3;
+  font:
+    600 calc(12px * var(--ui-scale)) / 1.3 Inter,
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px #071017;
+}
+.world-labels .annotation-label[data-tone="home"] {
+  color: #b9efe3;
+  border-color: rgb(128 183 174 / 42%);
+}
+.world-labels .annotation-label[data-tone="target"] {
+  color: #f6d39b;
+  border-color: rgb(240 187 105 / 40%);
+}
+.world-labels .annotation-label[data-tone="done"] {
+  color: #a7d8c5;
+}
+.world-labels .annotation-label[data-tone="warn"] {
+  color: #ffd08a;
+  border-color: rgb(255 202 106 / 60%);
+}
+.world-labels .annotation-label[data-tone="ice"] {
+  color: #bdeff0;
+  border-color: rgb(189 239 240 / 50%);
+}
+.world-labels .annotation-marker,
+.world-labels .annotation-leader {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+}
+.world-labels .annotation-marker[data-kind="chevron"] {
+  width: 24px;
+  height: 24px;
+}
+.world-labels .annotation-leader {
+  width: 10px;
+  height: 10px;
+  opacity: 0.9;
+}
+/* The interface's rig cue is the state; the annotation layer draws it. */
+.world-labels .rig-cue {
+  display: none !important;
+}
+.campaign-large-text .world-labels .annotation-label {
+  font-size: calc(14px * var(--ui-scale));
+}
+.campaign-high-contrast .world-labels .annotation-label {
+  background: #06151e;
+  border-width: 2px;
+  color: #ffffff;
+}
+.campaign-high-contrast .world-labels .annotation-marker,
+.campaign-high-contrast .world-labels .annotation-leader {
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 1px #000);
+}
+/* The Scan button in the tool tray (asset 28's glyph). */
+#campaign-scan-button[aria-pressed="true"] {
+  color: #f6d39b;
+  background: #f0bb6926;
+  box-shadow: inset 0 0 0 1px #f0bb6999;
+}
+/* F6 shows the depth rail on hover or pause; T8 adds Scan. */
+body[data-campaign-scan="true"] .depth-rail {
+  opacity: 1;
+}

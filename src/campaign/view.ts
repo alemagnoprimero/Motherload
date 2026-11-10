@@ -267,7 +267,13 @@ export function renderDebugOptions(search: string) {
  * HUD-free frames.
  */
 export function harnessOptions(search: string) {
-  return { overlays: new URLSearchParams(search).get("overlays") !== "0" };
+  const params = new URLSearchParams(search);
+  const scan = params.get("scan");
+  return {
+    overlays: params.get("overlays") !== "0",
+    /** T8: `?scan=1` holds Scan on and `?scan=0` off, for the smoke suites. */
+    scan: scan === "1" ? true : scan === "0" ? false : undefined,
+  };
 }
 
 /** RenderScaleBudget's adaptive state, as the debug readout shows it. */
