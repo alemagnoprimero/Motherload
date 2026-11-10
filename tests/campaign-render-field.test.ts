@@ -8,7 +8,21 @@ import {
   FieldData,
   type KnownWorldView,
 } from "../src/campaign/render/field/field-data";
-import { fieldRequested } from "../src/campaign/render/field/flag";
+import {
+  fieldRequest,
+  fieldTextureLimit,
+} from "../src/campaign/render/field/flag";
+import {
+  TerrainTierPolicy,
+  bootTier,
+  coordinateStepPixels,
+  softwareRasteriser,
+} from "../src/campaign/render/field/tier";
+import {
+  DIG_SECONDS,
+  FieldTransitions,
+  REVEAL_SECONDS,
+} from "../src/campaign/render/field/transitions";
 import { DiscoveredWorldView } from "../src/campaign/render/field/known-world";
 import { FIELD_PALETTE } from "../src/campaign/render/field/palette";
 import {
@@ -36,7 +50,7 @@ function sample(seed = 7) {
 const view = (world: CampaignWorld) =>
   new DiscoveredWorldView(world, createWorld("W01", world.seed, 2).tiles);
 
-describe("T2 spike field texture", () => {
+describe("T2 field texture", () => {
   it("never reads hidden geology: scrambled unknown cells give identical texels", () => {
     const world = sample();
     const scrambled = structuredClone(world);
@@ -98,7 +112,7 @@ describe("T2 spike field texture", () => {
     // Dig one cell beside the shaft: it was known soil.
     world.tiles[10 * world.width + 21] = 0;
     expect(data.sync(view(world))).toBe(1);
-    const patch = data.nextPatch({ x: 21 * FIELD_K, y: 12 * FIELD_K })!;
+    const patch = data.nextPatch({ x: 21, y: 10 })!;
     expect(patch.width).toBeLessThanOrEqual(FIELD_UPLOAD_MAX);
     expect(patch.height).toBeLessThanOrEqual(FIELD_UPLOAD_MAX);
     expect(data.pending).toBe(0);
@@ -139,7 +153,283 @@ describe("T2 spike field texture", () => {
   });
 });
 
-describe("T2 spike shader and flag", () => {
+describe("T2 field patches (D4 condition 2)", () => {
+  const texel = (data: FieldData, x: number, y: number) =>
+    ((y + FIELD_TOP) * FIELD_K + 8) * data.texWidth +
+    x * FIELD_K +
+    8 +
+    FIELD_PAD;
+
+  it("rewrites only the cell when a reveal leaves the blur alone", () => {
+    const world = sample();
+    const data = new FieldData(world.width, world.rows);
+    data.load(view(world));
+    // Unknown soil becomes known soil: solid before and after, soft both.
+    const pristine = createWorld("W01", world.seed, 2).tiles;
+    let cell = -1;
+    for (let x = 24; x < world.width && cell < 0; x++)
+      if (pristine[5 * world.width + x] === 1) cell = x;
+    expect(cell).toBeGreaterThan(0);
+    world.discovered[5 * world.width + cell] = 1;
+    expect(data.sync(view(world))).toBe(1);
+    expect(data.changedBlur).toBe(0);
+    const patch = data.nextPatch({ x: cell, y: 5 })!;
+    // One cell's texels, on the 16-texel group grid (the pad shifts cells
+    // by 4 texels, so a cell spans two groups).
+    expect(patch.width).toBeLessThanOrEqual(2 * FIELD_K);
+    expect(patch.height).toBe(FIELD_K);
+    expect(data.pixels[texel(data, cell, 5) * 4 + 3]).toBe(CODE.soil);
+    const fresh = new FieldData(world.width, world.rows);
+    fresh.load(view(world));
+    expect(same(data.pixels, fresh.pixels)).toBe(true);
+  });
+
+  it("recomputes the reach when a dig moves the blur", () => {
+    const world = sample();
+    const data = new FieldData(world.width, world.rows);
+    data.load(view(world));
+    world.tiles[10 * world.width + 21] = 0;
+    data.sync(view(world));
+    expect(data.changedBlur).toBe(1);
+    const patch = data.nextPatch({ x: 21, y: 10 })!;
+    expect(patch.height).toBe(5 * FIELD_K);
+  });
+
+  it("carries a transition slot in the A byte and settles it without a blur", () => {
+    const world = sample();
+    const data = new FieldData(world.width, world.rows);
+    data.load(view(world));
+    world.tiles[10 * world.width + 21] = 0;
+    const asked: string[] = [];
+    data.sync(view(world), (kind) => {
+      asked.push(kind);
+      return kind === "dig" ? 3 : 4;
+    });
+    expect(asked).toEqual(["dig"]);
+    while (data.nextPatch());
+    expect(data.pixels[texel(data, 21, 10) * 4 + 3]).toBe(CODE.air + 16 * 3);
+    expect(data.slotCount(3)).toBe(1);
+    data.settle(3);
+    expect(data.slotCount(3)).toBe(0);
+    const patch = data.nextPatch()!;
+    expect(patch.height).toBe(FIELD_K);
+    expect(data.pixels[texel(data, 21, 10) * 4 + 3]).toBe(CODE.air);
+    const fresh = new FieldData(world.width, world.rows);
+    fresh.load(view(world));
+    expect(same(data.pixels, fresh.pixels)).toBe(true);
+  });
+});
+
+describe("T2 field ring (worlds taller than one texture)", () => {
+  /** The texel of virtual texel row vy and texture column x, in either layout. */
+  const at = (data: FieldData, x: number, vy: number) =>
+    ((data.padY + (vy % (data.ringRows * FIELD_K))) * data.texWidth + x) * 4;
+
+  it("holds a window of rows that matches the whole texture, texel for texel", () => {
+    const world = sample();
+    world.discovered.fill(1);
+    const whole = new FieldData(world.width, world.rows);
+    whole.load(view(world));
+    expect(whole.ring).toBe(false);
+    // 400 texels: 24 cell rows of the 63 virtual rows.
+    const ring = new FieldData(world.width, world.rows, 400);
+    expect(ring.ring).toBe(true);
+    expect(ring.ringRows).toBe(24);
+    expect(ring.texHeight).toBe(24 * FIELD_K + 2);
+    ring.load(view(world), 30);
+    const compare = () => {
+      for (let v = ring.window; v < ring.window + ring.ringRows; v++)
+        for (let row = 0; row < FIELD_K; row++)
+          for (let x = 0; x < ring.texWidth; x += 3) {
+            const a = at(ring, x, v * FIELD_K + row),
+              b = at(whole, x, v * FIELD_K + row);
+            for (let c = 0; c < 4; c++)
+              if (ring.pixels[a + c] !== whole.pixels[b + c])
+                throw new Error(`row ${v} texel ${x},${row} channel ${c}`);
+          }
+    };
+    compare();
+    // The camera moves down: rows enter, patch by patch, within the limit.
+    ring.setWindow(40, 55, 8);
+    expect(ring.pending).toBeGreaterThan(0);
+    for (
+      let patch = ring.nextPatch({ x: 20, y: 45 });
+      patch;
+      patch = ring.nextPatch({ x: 20, y: 45 })
+    )
+      expect(patch.width * patch.height).toBeLessThanOrEqual(
+        FIELD_UPLOAD_MAX ** 2,
+      );
+    compare();
+    // A still camera inside the window marks nothing.
+    ring.setWindow(41, 56, 8);
+    expect(ring.pending).toBe(0);
+    // A dig inside the window patches the ring as it does the whole texture.
+    world.tiles[45 * world.width + 12] = 0;
+    world.tiles[46 * world.width + 12] = 0;
+    ring.sync(view(world));
+    whole.sync(view(world));
+    while (ring.nextPatch());
+    while (whole.nextPatch());
+    compare();
+  });
+
+  it("repeats the far texel row above and below the ring", () => {
+    const world = sample();
+    world.discovered.fill(1);
+    const ring = new FieldData(world.width, world.rows, 400);
+    ring.load(view(world), 30);
+    const row = (y: number) =>
+      ring.pixels.slice(y * ring.texWidth * 4, (y + 1) * ring.texWidth * 4);
+    expect(same(row(0), row(ring.texHeight - 2))).toBe(true);
+    expect(same(row(ring.texHeight - 1), row(1))).toBe(true);
+    ring.setWindow(40, 55, 8);
+    while (ring.nextPatch());
+    expect(same(row(0), row(ring.texHeight - 2))).toBe(true);
+    expect(same(row(ring.texHeight - 1), row(1))).toBe(true);
+  });
+});
+
+describe("T2 transitions (audit §9.3)", () => {
+  it("fades a reveal over 250 ms and eases a dig over 120 ms", () => {
+    const transitions = new FieldTransitions();
+    const reveal = transitions.open("reveal", 10),
+      dig = transitions.open("dig", 10);
+    expect(reveal).toBeGreaterThan(0);
+    expect(dig).not.toBe(reveal);
+    const values = new Float32Array(16);
+    transitions.values(10, values);
+    expect(values[0]).toBe(1);
+    expect(values[reveal]).toBe(0);
+    expect(values[dig]).toBe(2); // a dig slot: 2 + progress
+    transitions.values(10 + REVEAL_SECONDS / 2, values);
+    expect(values[reveal]).toBeCloseTo(0.5, 5);
+    transitions.values(10 + DIG_SECONDS / 2, values);
+    expect(values[dig]! - 2).toBeGreaterThan(0.5);
+    expect(values[dig]! - 2).toBeLessThan(1);
+    expect(transitions.finished(10 + DIG_SECONDS)).toEqual([dig]);
+    expect(transitions.finished(10 + REVEAL_SECONDS)).toEqual([reveal]);
+    transitions.values(11, values);
+    expect([...values].every((v) => v === 1)).toBe(true);
+  });
+
+  it("shares a slot within 1/30 s, frees it only after release, and never runs out", () => {
+    const transitions = new FieldTransitions();
+    const first = transitions.open("reveal", 1);
+    expect(transitions.open("reveal", 1.02)).toBe(first);
+    expect(transitions.open("reveal", 1.05)).not.toBe(first);
+    transitions.finished(2);
+    expect(transitions.running).toBe(0);
+    // Settling slots are not handed out again until their rewrite is uploaded.
+    const taken = new Set<number>();
+    for (let n = 0; n < 13; n++)
+      taken.add(transitions.open("dig", 3 + n * 0.05));
+    expect(taken.has(first)).toBe(false);
+    expect(taken.size).toBe(13);
+    // All 15 are busy: the newest running slot of the kind is shared.
+    const shared = transitions.open("dig", 3.9);
+    expect(taken.has(shared)).toBe(true);
+    expect(transitions.open("reveal", 3.9)).toBe(0);
+    transitions.release();
+    expect(transitions.open("reveal", 3.95)).toBeGreaterThan(0);
+  });
+});
+
+describe("T2 terrain tier (D4 condition 3)", () => {
+  it("starts on the field with fragment highp, whatever the pointer", () => {
+    expect(bootTier("webgl", true)).toEqual({ tier: "field" });
+    expect(bootTier("webgl", false).tier).toBe("retained");
+    expect(bootTier("canvas", true).tier).toBe("retained");
+  });
+
+  it("starts a software rasteriser on RetainedTerrain", () => {
+    for (const name of [
+      "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "llvmpipe (LLVM 15.0.7, 256 bits)",
+      "Microsoft Basic Render Driver",
+    ]) {
+      expect(softwareRasteriser(name)).toBe(true);
+      expect(bootTier("webgl", true, name)).toEqual({
+        tier: "retained",
+        reason: "software rasteriser",
+      });
+    }
+    for (const name of [
+      "ANGLE (Qualcomm, Adreno (TM) 830, OpenGL ES 3.2)",
+      "Mali-G68 MC4",
+      "Apple GPU",
+      "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 (0x00002504) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "ANGLE (Intel, Mesa Intel(R) UHD Graphics 630 (CFL GT2), OpenGL 4.6)",
+      "",
+    ])
+      expect(bootTier("webgl", true, name)).toEqual({ tier: "field" });
+  });
+
+  it("puts devices without fragment highp on the Canvas path by measurement", () => {
+    // A phone at backing 1.5 (590 px across, 84 device px per tile) and a
+    // desktop at backing 2 (2880 px, 164 per tile), W02's 48-tile world.
+    const phone = coordinateStepPixels(10, 590, 48, 84),
+      desktop = coordinateStepPixels(10, 2880, 48, 164);
+    // Floors must sit within 2 device px of collision (§9.2): mediump cannot.
+    expect(phone).toBeGreaterThan(2);
+    expect(desktop).toBeGreaterThan(2);
+    // highp (23 bits) is far inside it.
+    expect(coordinateStepPixels(23, 2880, 48, 164)).toBeLessThan(0.01);
+  });
+
+  const frame = (interval: number, backing = 2, floor = 2) => ({
+    interval,
+    cost: 4,
+    frameSeconds: interval / 1000,
+    held: false,
+    backing,
+    backingFloor: floor,
+  });
+  const run = (
+    policy: TerrainTierPolicy,
+    seconds: number,
+    f: ReturnType<typeof frame>,
+  ) => {
+    let stepped = false;
+    const frames = Math.ceil(seconds / Math.min(0.05, f.frameSeconds));
+    for (let n = 0; n < frames; n++) stepped = policy.sample(f) || stepped;
+    return stepped;
+  };
+
+  it("keeps the field at the 60 Hz readout's 18 to 20 ms", () => {
+    const policy = new TerrainTierPolicy();
+    expect(run(policy, 60, frame(19.5))).toBe(false);
+    expect(policy.tier).toBe("field");
+  });
+
+  it("steps down after two 3 s windows over 25 ms at the backing floor", () => {
+    const policy = new TerrainTierPolicy();
+    expect(run(policy, 5.9, frame(34))).toBe(false);
+    expect(run(policy, 0.3, frame(34))).toBe(true);
+    expect(policy.tier).toBe("retained");
+    expect(policy.reason).toMatch(/interval p95 34\.0 ms at backing 2/);
+  });
+
+  it("waits four windows while the backing scale can still go down", () => {
+    const policy = new TerrainTierPolicy();
+    expect(run(policy, 11.9, frame(34, 2, 1.5))).toBe(false);
+    // The resolution drops: the count starts again at the new level.
+    expect(run(policy, 5.9, frame(34, 1.5, 1.5))).toBe(false);
+    expect(run(policy, 0.3, frame(34, 1.5, 1.5))).toBe(true);
+  });
+
+  it("ignores loading holds, a clock that is not moving and hidden tabs", () => {
+    const policy = new TerrainTierPolicy();
+    expect(run(policy, 30, { ...frame(50), held: true })).toBe(false);
+    expect(run(policy, 30, { ...frame(50), cost: 0 })).toBe(false);
+    expect(run(policy, 30, frame(5000))).toBe(false);
+    // One slow frame in twenty-five is under the p95.
+    for (let n = 0; n < 500; n++)
+      expect(policy.sample(frame(n % 25 ? 16.7 : 50))).toBe(false);
+  });
+});
+
+describe("T2 field shader and flag", () => {
   it("stays within the §7 budget of 12 taps and 9 Worley seeds", () => {
     expect(FIELD_TAPS).toBeLessThanOrEqual(12);
     expect(FIELD_WORLEY_SEEDS).toBeLessThanOrEqual(9);
@@ -163,12 +453,16 @@ describe("T2 spike shader and flag", () => {
     expect(FIELD_PALETTE.rust).toBe(c.rust.hex);
   });
 
-  it("is off unless asked for", () => {
-    expect(fieldRequested("")).toBe(false);
-    expect(fieldRequested("?mode=campaign")).toBe(false);
-    expect(fieldRequested("?field=1")).toBe(true);
-    expect(fieldRequested("?field=0", "1")).toBe(false);
-    expect(fieldRequested("", "1")).toBe(true);
-    expect(fieldRequested("?field=yes")).toBe(false);
+  it("is the default, pinned by ?field=1 and off with ?field=0", () => {
+    expect(fieldRequest("")).toBe("auto");
+    expect(fieldRequest("?mode=campaign")).toBe("auto");
+    expect(fieldRequest("?field=1")).toBe("full");
+    expect(fieldRequest("?field=0")).toBe("off");
+    expect(fieldRequest("?field=0", "1")).toBe("off");
+    expect(fieldRequest("", "1")).toBe("full");
+    expect(fieldRequest("", "0")).toBe("off");
+    expect(fieldRequest("?field=yes")).toBe("auto");
+    expect(fieldTextureLimit("?fieldmax=512")).toBe(512);
+    expect(fieldTextureLimit("")).toBeUndefined();
   });
 });

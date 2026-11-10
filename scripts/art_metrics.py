@@ -353,9 +353,14 @@ def cave_air_mask(state, view, dpr, shape, scale_to=42.0, visual=None):
     return air, hard
 
 
-def visual_air(path):
-    """A T2 field air mask (white = air) as a device-pixel bool mask."""
-    return luma(load_rgb(path)) > 127
+def visual_air(path, shape=None):
+    """A T2 field air mask (white = air) as a device-pixel bool mask. The
+    mask is as large as the game's drawing buffer: at a backing scale below
+    the screenshot's it is scaled to `shape`, the screenshot's (rows, columns)."""
+    image = Image.open(path).convert('L')
+    if shape is not None and image.size != (shape[1], shape[0]):
+        image = image.resize((shape[1], shape[0]), Image.NEAREST)
+    return np.asarray(image) > 127
 
 
 def visual_vs_collision(visual, state, view, dpr):

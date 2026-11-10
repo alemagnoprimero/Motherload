@@ -1,15 +1,29 @@
 /**
- * T2 spike flag: the WebGL field renderer replaces RetainedTerrain only when
- * asked. `?field=1` turns it on (the phone test uses this), `?field=0` turns
- * it off; without the parameter the build-time `VITE_T2_FIELD=1` decides,
- * so a dev server started with it runs every browser suite with the field
- * on. Off by default: main's renderer path is untouched.
+ * Which terrain renderer a page asks for (T2). The field renderer is the
+ * default wherever it can run; tier.ts decides that by WebGL, fragment highp
+ * and measured frames, never by pointer type:
+ *
+ *   ?field=1   the field shader, pinned (no measured step down), for
+ *              readings and for checks that must run on the field
+ *   ?field=0   main's RetainedTerrain (the Low tier and Canvas path)
+ *
+ * Without the parameter the build-time `VITE_T2_FIELD` ("0" or "1") decides
+ * the same way, and without that the field renderer runs with its tier
+ * policy on ("auto").
  */
-export function fieldRequested(search: string, env?: string) {
-  const value = new URLSearchParams(search).get("field");
-  if (value === "1") return true;
-  if (value === "0") return false;
-  return env === "1";
+export type FieldRequest = "auto" | "full" | "off";
+
+export function fieldRequest(search: string, env?: string): FieldRequest {
+  const value = new URLSearchParams(search).get("field") ?? env;
+  if (value === "1") return "full";
+  if (value === "0") return "off";
+  return "auto";
+}
+
+/** `?fieldmax=N`: a debug cap on the field texture's size, to exercise the ring. */
+export function fieldTextureLimit(search: string) {
+  const value = Number(new URLSearchParams(search).get("fieldmax"));
+  return Number.isFinite(value) && value >= 256 ? Math.floor(value) : undefined;
 }
 
 /** The build-time default (Vite env), read once. */

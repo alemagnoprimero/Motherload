@@ -91,8 +91,8 @@ def measure(name, c):
     if walls:
         out['wall'] = m.wall_profile(free, view, dpr, walls)
     if c['scene'] == 'SITE-4':
-        # T2 spike: the field renderer's own air mask, when it drew.
-        visual = m.visual_air(c['fieldAir']) if c.get('fieldAir') else None
+        # T2: the field renderer's own air mask, when it drew.
+        visual = m.visual_air(c['fieldAir'], free.shape[:2]) if c.get('fieldAir') else None
         air, hard = m.cave_air_mask(state, view, dpr, free.shape[:2], visual=visual)
         if visual is not None:
             out['boundary_source'] = 'field air mask'

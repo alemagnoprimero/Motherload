@@ -9,9 +9,11 @@ import {
   FIELD_K,
   FIELD_PAD,
   FIELD_TOP,
+  FIELD_UPLOAD_MAX,
   FieldData,
   type FieldRect,
 } from "./field-data";
+import type { FieldRequest } from "./flag";
 import { DiscoveredWorldView, pristineTiles } from "./known-world";
 import { FIELD_PALETTE, hexToVec3 } from "./palette";
 import {
@@ -20,12 +22,20 @@ import {
   FIELD_VERTEX,
   FIELD_WORLEY_SEEDS,
 } from "./shader";
+import { TerrainTierPolicy, bootTier, type TierSample } from "./tier";
+import { FieldTransitions } from "./transitions";
 
 type WebGLRenderer = Phaser.Renderer.WebGL.WebGLRenderer;
 type TextureWrapper = Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper;
 
 /** Lattice cells per tile of the shader's value noise; periodic over the world. */
 const NOISE_FREQUENCY = { low: 1.1, jag: 4.3, warp: 1.3, mottle: 0.8 };
+
+/**
+ * The page's clock as it was when this module loaded: the costs below are
+ * real milliseconds even when a test replaces performance.now().
+ */
+const realNow = performance.now.bind(performance);
 
 const UNIFORMS = [
   "u_resolution",
@@ -45,6 +55,8 @@ const UNIFORMS = [
   "u_caveAir",
   "u_rust",
   "u_highContrast",
+  "u_slots",
+  "u_ring",
 ] as const;
 
 interface FrameState {
@@ -58,6 +70,43 @@ interface FrameState {
   bands: [number, number, number, number];
 }
 
+/** The scene clock, as the transitions need it (§5.1 principle 6). */
+export interface FieldClock {
+  /** Scene seconds: frozen under the test clock. */
+  seconds: number;
+  /** False with the clock frozen or reduced motion on: cells change at once. */
+  animate: boolean;
+}
+
+/** p95 over the last 10 s of real time of one measured cost. */
+class CostWindow {
+  private samples: { at: number; value: number }[] = [];
+  /** Samples since the last take(), for the harness. */
+  private fresh: number[] = [];
+  add(value: number, at = realNow()) {
+    this.samples.push({ at, value });
+    this.fresh.push(value);
+    if (this.fresh.length > 4096) this.fresh.shift();
+    while (this.samples.length && this.samples[0]!.at <= at - 10000)
+      this.samples.shift();
+  }
+  p95() {
+    if (!this.samples.length) return undefined;
+    const ordered = this.samples.map((s) => s.value).sort((a, b) => a - b);
+    return ordered[
+      Math.min(ordered.length - 1, Math.floor(ordered.length * 0.95))
+    ];
+  }
+  get count() {
+    return this.samples.length;
+  }
+  take() {
+    const values = this.fresh;
+    this.fresh = [];
+    return values;
+  }
+}
+
 /** What `window.__campaignField` reports (the harness reads it). */
 export interface FieldDebug {
   info(): {
@@ -65,14 +114,36 @@ export interface FieldDebug {
     status: string;
     world: string | null;
     texture: [number, number] | null;
+    ring: { rows: number; window: number } | null;
     uploads: number;
     lastUpload: FieldRect | null;
     pendingGroups: number;
+    transitions: number;
     taps: number;
     worleySeeds: number;
   };
+  /**
+   * The field's CPU cost per frame since the last call, in real
+   * milliseconds: the change scan and the quad's own GL calls (every
+   * frame), and the patch build and the upload (frames that had one), with
+   * each patch's texel count.
+   */
+  costs(): {
+    sync: number[];
+    patch: number[];
+    upload: number[];
+    draw: number[];
+    area: number[];
+  };
   /** The visual air mask of the last frame as a PNG data URL (white = air). */
   airMask(): string | null;
+  /**
+   * The field quad alone as a PNG data URL: the terrain as the shader draws
+   * it this frame, before the light overlay, the rig and everything else
+   * (sky is transparent). The motion check reads the transitions on it,
+   * with `view` holding the camera still while the rig moves.
+   */
+  colour(view?: { scrollX: number; scrollY: number }): string | null;
   /**
    * The field quad alone, `draws` times into an off-screen target of the
    * drawing buffer's size, against a one-tap copy quad, with gl.finish():
@@ -93,28 +164,31 @@ declare global {
 }
 
 /**
- * T2 spike: the terrain drawn by one shader quad from the field texture,
- * behind `?field=1` (flag.ts). The quad is an Extern game object at
- * RetainedTerrain's depth, so the rest of the stack is unchanged: ores,
- * the light overlay (lighting.ts) and the rig draw on top as before.
+ * T2: the terrain drawn by one shader quad from the field texture. The quad
+ * is an Extern game object at RetainedTerrain's depth, so the rest of the
+ * stack is unchanged: ores, the light overlay (lighting.ts) and the rig draw
+ * on top as before.
  *
  * Uploads happen inside the Extern's render, between Phaser's
  * pipelines.clear() and rebind(), which restore Phaser's bound textures,
  * program and attributes: one texSubImage2D of at most 160 × 160 texels per
- * frame, none in a still frame. Without WebGL fragment highp, or if the
- * world does not fit a texture, it keeps RetainedTerrain and says why in
- * `status` (the Medium tier would bake periodic pages instead, §7).
+ * frame, none in a still frame. Where the field cannot run (tier.ts: the
+ * Canvas renderer, no fragment highp, a shader that fails to build, or
+ * frame intervals that do not hold) it draws with RetainedTerrain and says
+ * why in `status`.
  */
 export class FieldTerrain {
   draws = 0;
   dirtyCells = 0;
   bytes = 0;
-  /** "field" when the shader draws the terrain, else why not. */
+  /** "field" when the shader draws the terrain, else "retained (why)". */
   status = "starting";
   private extern: Phaser.GameObjects.Extern;
   private renderer: WebGLRenderer | undefined;
   private gl: WebGLRenderingContext | undefined;
   private fallback: RetainedTerrain | undefined;
+  private fallbackReason: string | undefined;
+  private policy: TerrainTierPolicy | undefined;
   private data: FieldData | undefined;
   private world: CampaignWorld | undefined;
   private worldKey = "";
@@ -125,10 +199,27 @@ export class FieldTerrain {
   private locations = new Map<string, WebGLUniformLocation | null>();
   private patch: FieldRect | undefined;
   private lastUpload: FieldRect | undefined;
-  private staging = new Uint8Array(160 * 160 * 4);
-  private frame: FrameState | undefined;
+  private staging = new Uint8Array(FIELD_UPLOAD_MAX * FIELD_UPLOAD_MAX * 4);
+  private frame: FrameState = {
+    scrollX: 0,
+    scrollY: 0,
+    tile: 1,
+    dpr: 1,
+    highContrast: false,
+    darkU: [0, 0, 0, 0],
+    darkV: [0, 0, 0, 0],
+    bands: [0, 0, 0, 0],
+  };
+  private frameKey = "";
+  private ready = false;
+  private transitions = new FieldTransitions();
+  private slotValues = new Float32Array(16).fill(1);
+  private costSync = new CostWindow();
+  private costPatch = new CostWindow();
+  private costUpload = new CostWindow();
+  private costDraw = new CostWindow();
+  private patchAreas: number[] = [];
   private lost = false;
-  private highp = false;
   private maxTexture = 0;
   private onLose = () => {
     this.lost = true;
@@ -143,39 +234,114 @@ export class FieldTerrain {
     this.locations.clear();
     this.patch = undefined;
   };
-  constructor(private scene: Phaser.Scene) {
+  /**
+   * `request` is "full" for a pinned field (`?field=1`: no measured step
+   * down) and "auto" for the default, which lets tier.ts step down.
+   */
+  constructor(
+    private scene: Phaser.Scene,
+    request: Exclude<FieldRequest, "off"> = "auto",
+    /** Debug: a smaller texture limit, to exercise the ring (`?fieldmax=`). */
+    textureLimit?: number,
+  ) {
     this.extern = scene.add.extern().setDepth(10);
     (
       this.extern as unknown as {
         render: (renderer: WebGLRenderer) => void;
       }
     ).render = (renderer) => this.draw(renderer);
+    let highp = false,
+      rendererName = "";
     if (scene.game.renderer.type === Phaser.WEBGL) {
       this.renderer = scene.game.renderer as WebGLRenderer;
       const gl = this.renderer.gl;
       this.gl = gl;
-      this.highp =
+      highp =
         (gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
           ?.precision ?? 0) > 0;
-      this.maxTexture = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
+      // The unmasked renderer string tells a software rasteriser (tier.ts);
+      // a pinned field does not ask.
+      const info =
+        request === "auto"
+          ? gl.getExtension("WEBGL_debug_renderer_info")
+          : null;
+      if (info)
+        rendererName = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL));
+      this.maxTexture = Math.min(
+        gl.getParameter(gl.MAX_TEXTURE_SIZE) as number,
+        textureLimit ?? Infinity,
+      );
       this.renderer.on(Phaser.Renderer.Events.LOSE_WEBGL, this.onLose);
       this.renderer.on(Phaser.Renderer.Events.RESTORE_WEBGL, this.onRestore);
     }
+    const boot = bootTier(
+      this.renderer ? "webgl" : "canvas",
+      highp,
+      rendererName,
+    );
+    if (boot.tier === "retained") this.fallbackReason = boot.reason;
+    else if (request === "auto") this.policy = new TerrainTierPolicy();
     window.__campaignField = {
       info: () => ({
         active: this.status === "field",
         status: this.status,
         world: this.world?.id ?? null,
         texture: this.data ? [this.data.texWidth, this.data.texHeight] : null,
+        ring: this.data?.ring
+          ? { rows: this.data.ringRows, window: this.data.window }
+          : null,
         uploads: this.draws,
         lastUpload: this.lastUpload ?? null,
         pendingGroups: this.data?.pending ?? 0,
+        transitions: this.transitions.running,
         taps: FIELD_TAPS,
         worleySeeds: FIELD_WORLEY_SEEDS,
       }),
-      airMask: () => this.airMask(),
+      costs: () => ({
+        sync: this.costSync.take(),
+        patch: this.costPatch.take(),
+        upload: this.costUpload.take(),
+        draw: this.costDraw.take(),
+        area: this.patchAreas.splice(0),
+      }),
+      airMask: () => this.capture(true),
+      colour: (view) => this.capture(false, view),
       benchmark: (draws = 5) => this.benchmark(draws),
     };
+  }
+
+  /** True while the field shader is the terrain renderer. */
+  get field() {
+    return !this.fallbackReason;
+  }
+
+  /** The readout's line: the field's CPU cost per frame (p95 over 10 s). */
+  costLine() {
+    if (!this.field) return undefined;
+    const ms = (window: CostWindow) => window.p95()?.toFixed(1) ?? "—";
+    return (
+      `field scan ${ms(this.costSync)} · patch ${ms(this.costPatch)} · ` +
+      `upload ${ms(this.costUpload)} · draw ${ms(this.costDraw)} ms ` +
+      `(${this.costPatch.count} patches)`
+    );
+  }
+
+  /** The tier policy's line for the readout. */
+  tierLine() {
+    if (!this.field) return undefined;
+    if (!this.policy) return "tier pinned";
+    const p95 = this.policy.lastP95;
+    return `tier window ${p95 === undefined ? "—" : p95.toFixed(1)} ms`;
+  }
+
+  /**
+   * One presented frame, for the measured tier step (tier.ts). When the
+   * intervals do not hold, the terrain goes to RetainedTerrain from the next
+   * frame on.
+   */
+  sample(frame: TierSample) {
+    if (!this.field || !this.policy) return;
+    if (this.policy.sample(frame)) this.useFallback(this.policy.reason!);
   }
 
   invalidate() {
@@ -184,42 +350,53 @@ export class FieldTerrain {
   }
 
   private useFallback(reason: string) {
+    this.fallbackReason = reason;
     this.status = `retained (${reason})`;
     this.extern.setVisible(false);
+    this.ready = false;
+    // The field's texture and CPU copy are not needed again this session.
+    if (this.texture) this.renderer?.deleteTexture(this.texture);
+    this.texture = undefined;
+    this.data = undefined;
+    this.world = undefined;
+    this.worldKey = "";
+    this.patch = undefined;
     this.fallback ??= new RetainedTerrain(this.scene);
   }
 
-  render(campaign: Campaign, view: CampaignView, highContrast: boolean) {
-    const world = campaign.world;
-    const fits =
-      world.width * FIELD_K + 2 * FIELD_PAD <= this.maxTexture &&
-      (world.rows + FIELD_TOP + 1) * FIELD_K <= this.maxTexture;
-    if (!this.renderer || !this.gl) this.useFallback("Canvas renderer");
-    else if (!this.highp) this.useFallback("no fragment highp");
-    else if (!fits) this.useFallback(`world exceeds ${this.maxTexture} texels`);
-    else if (this.status === "retained (shader failed)") {
-      // A shader that failed to build stays failed.
-    } else {
-      if (this.fallback) {
-        this.fallback.destroy();
-        this.fallback = undefined;
-      }
-      this.renderField(campaign, view, highContrast);
+  render(
+    campaign: Campaign,
+    view: CampaignView,
+    highContrast: boolean,
+    /** RetainedTerrain's tile size, when the scene overrides it (?tile=). */
+    baseTile?: number,
+    clock: FieldClock = { seconds: 0, animate: false },
+  ) {
+    if (
+      !this.fallbackReason &&
+      campaign.world.width * FIELD_K + 2 * FIELD_PAD > this.maxTexture
+    )
+      this.useFallback(`world wider than ${this.maxTexture} texels`);
+    if (this.fallbackReason) {
+      if (!this.fallback) this.useFallback(this.fallbackReason);
+      this.fallback!.render(campaign, view, highContrast, baseTile);
+      this.draws = this.fallback!.draws;
+      this.dirtyCells = this.fallback!.dirtyCells;
+      this.bytes = this.fallback!.bytes;
       return;
     }
-    this.fallback!.render(campaign, view, highContrast);
-    this.draws = this.fallback!.draws;
-    this.dirtyCells = this.fallback!.dirtyCells;
-    this.bytes = this.fallback!.bytes;
+    this.renderField(campaign, view, highContrast, clock);
   }
 
   private renderField(
     campaign: Campaign,
     view: CampaignView,
     highContrast: boolean,
+    clock: FieldClock,
   ) {
     const world = campaign.world,
-      renderer = this.renderer!;
+      renderer = this.renderer!,
+      transitions = this.transitions;
     const key = `${world.id}:${world.seed}:${world.width}x${world.rows}`;
     const known = new DiscoveredWorldView(world, pristineTiles(world));
     if (world !== this.world || key !== this.worldKey) {
@@ -228,8 +405,10 @@ export class FieldTerrain {
         this.data &&
         this.data.width === world.width &&
         this.data.rows === world.rows;
-      if (!reuse) this.data = new FieldData(world.width, world.rows);
-      this.data!.load(known);
+      if (!reuse)
+        this.data = new FieldData(world.width, world.rows, this.maxTexture);
+      this.data!.load(known, campaign.renderY);
+      transitions.reset();
       if (this.texture && !reuse) {
         renderer.deleteTexture(this.texture);
         this.texture = undefined;
@@ -263,41 +442,72 @@ export class FieldTerrain {
       this.dirtyCells = world.width * world.rows;
       this.world = world;
       this.worldKey = key;
+      this.frameKey = "";
     } else {
-      this.dirtyCells = this.data!.sync(known);
+      const data = this.data!,
+        started = realNow();
+      // A world taller than the texture: keep the rows on screen in the ring.
+      if (data.ring)
+        data.setWindow(
+          Math.floor(view.scrollY / view.tile) + FIELD_TOP,
+          Math.ceil((view.scrollY + view.height) / view.tile) + FIELD_TOP,
+          8,
+        );
+      this.dirtyCells = data.sync(
+        known,
+        clock.animate
+          ? (kind) => transitions.open(kind, clock.seconds)
+          : undefined,
+      );
+      // Transitions that ended: their cells go back to slot 0, and the
+      // slots are free once that rewrite is on the GPU.
+      if (transitions.running)
+        for (const slot of transitions.finished(clock.seconds))
+          data.settle(slot);
+      const scanned = realNow();
+      this.costSync.add(scanned - started, scanned);
       if (!this.patch) {
-        const wrapX =
-          ((campaign.renderX % world.width) + world.width) % world.width;
-        this.patch = this.data!.nextPatch({
-          x: wrapX * FIELD_K + FIELD_PAD,
-          y: (campaign.renderY + FIELD_TOP) * FIELD_K,
-        });
+        if (!data.pending) transitions.release();
+        else {
+          this.patch = data.nextPatch({
+            x: campaign.renderX,
+            y: campaign.renderY,
+          });
+          if (this.patch) {
+            const built = realNow();
+            this.costPatch.add(built - scanned, built);
+            this.patchAreas.push(this.patch.width * this.patch.height);
+            if (this.patchAreas.length > 4096) this.patchAreas.shift();
+          }
+        }
       }
     }
+    transitions.values(clock.seconds, this.slotValues);
     this.bytes = this.data!.texWidth * this.data!.texHeight * 4;
-    const bandStarts = (
-      WORLD_BANDS[world.id as keyof typeof WORLD_BANDS] ?? WORLD_BANDS.W01
-    ).map((band) => band.start);
-    const bandIds = ["a", "b", "c", "d"];
-    this.frame = {
-      scrollX: view.scrollX,
-      scrollY: view.scrollY,
-      tile: view.tile,
-      dpr: view.dpr,
-      highContrast,
-      darkU: bandIds.map((id) =>
-        fogDarkness("unknown", world.id, id, highContrast),
-      ) as FrameState["darkU"],
-      darkV: bandIds.map((id) =>
-        fogDarkness("visible", world.id, id, highContrast),
-      ) as FrameState["darkV"],
-      bands: [
+    const f = this.frame;
+    f.scrollX = view.scrollX;
+    f.scrollY = view.scrollY;
+    f.tile = view.tile;
+    f.dpr = view.dpr;
+    f.highContrast = highContrast;
+    const frameKey = `${key}:${highContrast}`;
+    if (frameKey !== this.frameKey) {
+      this.frameKey = frameKey;
+      const bandStarts = (
+        WORLD_BANDS[world.id as keyof typeof WORLD_BANDS] ?? WORLD_BANDS.W01
+      ).map((band) => band.start);
+      ["a", "b", "c", "d"].forEach((id, i) => {
+        f.darkU[i] = fogDarkness("unknown", world.id, id, highContrast);
+        f.darkV[i] = fogDarkness("visible", world.id, id, highContrast);
+      });
+      f.bands = [
         bandStarts[1] ?? 1e4,
         bandStarts[2] ?? 1e4,
         bandStarts[3] ?? 1e4,
         world.rows,
-      ],
-    };
+      ];
+    }
+    this.ready = true;
     this.status = "field";
     this.extern.setVisible(true);
   }
@@ -328,7 +538,7 @@ export class FieldTerrain {
   /** Inside the Extern render: Phaser has flushed and will rebind afterwards. */
   private draw(renderer: WebGLRenderer, debugAir = false, harness = false) {
     const gl = this.gl;
-    if (!gl || this.lost || !this.texture || !this.frame || !this.data) return;
+    if (!gl || this.lost || !this.texture || !this.ready || !this.data) return;
     if (!this.program) {
       try {
         this.compile();
@@ -340,10 +550,12 @@ export class FieldTerrain {
     }
     const width = gl.drawingBufferWidth,
       height = gl.drawingBufferHeight;
+    let drawStarted = realNow();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.texture.webGLTexture);
     if (this.patch && !debugAir && !harness) {
-      const rect = this.patch;
+      const rect = this.patch,
+        started = realNow();
       const full =
         rect.width === this.data.texWidth &&
         rect.height === this.data.texHeight;
@@ -361,6 +573,8 @@ export class FieldTerrain {
         gl.UNSIGNED_BYTE,
         full ? this.data.pixels : this.data.extract(rect, this.staging),
       );
+      drawStarted = realNow();
+      if (!full) this.costUpload.add(drawStarted - started, drawStarted);
       this.lastUpload = rect;
       this.patch = undefined;
       this.draws++;
@@ -394,17 +608,12 @@ export class FieldTerrain {
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     const f = this.frame,
+      data = this.data,
       u = (name: string) => this.locations.get(name) ?? null;
-    const W = this.data.width;
+    const W = data.width;
     gl.uniform2f(u("u_resolution"), width, height);
     gl.uniform1i(u("u_field"), 0);
-    gl.uniform4f(
-      u("u_tex"),
-      this.data.texWidth,
-      this.data.texHeight,
-      W,
-      FIELD_K,
-    );
+    gl.uniform4f(u("u_tex"), data.texWidth, data.texHeight, W, FIELD_K);
     gl.uniform4f(u("u_layout"), FIELD_PAD, FIELD_TOP, height, debugAir ? 1 : 0);
     gl.uniform4f(u("u_view"), f.scrollX, f.scrollY, f.tile, f.dpr);
     gl.uniform4f(u("u_bands"), ...f.bands);
@@ -428,11 +637,22 @@ export class FieldTerrain {
     ] as const)
       gl.uniform3f(u(name), ...hexToVec3(hex));
     gl.uniform1f(u("u_highContrast"), f.highContrast ? 1 : 0);
+    gl.uniform4fv(u("u_slots"), this.slotValues);
+    // The ring: its height in texels, the repeated row above it, and the
+    // last virtual texel row (the bedrock row's end).
+    gl.uniform4f(
+      u("u_ring"),
+      data.ringRows * FIELD_K,
+      data.padY,
+      data.virtualRows * FIELD_K - 0.01,
+      0,
+    );
     gl.disable(gl.CULL_FACE);
     gl.viewport(0, 0, width, height);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.disableVertexAttribArray(0);
     gl.bindTexture(gl.TEXTURE_2D, null);
+    if (!harness && !debugAir) this.costDraw.add(realNow() - drawStarted);
     void renderer;
   }
 
@@ -518,8 +738,8 @@ export class FieldTerrain {
     return { width, height, fieldMs, copyMs };
   }
 
-  /** Harness: draws the debug air mask off screen and reads it back. */
-  private airMask() {
+  /** Harness: draws the field quad (or its air mask) off screen and reads it back. */
+  private capture(air: boolean, view?: { scrollX: number; scrollY: number }) {
     const gl = this.gl,
       renderer = this.renderer;
     if (!gl || !renderer || this.status !== "field" || !this.texture)
@@ -555,7 +775,16 @@ export class FieldTerrain {
       0,
     );
     gl.disable(gl.BLEND);
-    this.draw(renderer, true);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    const { scrollX, scrollY } = this.frame;
+    if (view) {
+      this.frame.scrollX = view.scrollX;
+      this.frame.scrollY = view.scrollY;
+    }
+    this.draw(renderer, air, true);
+    this.frame.scrollX = scrollX;
+    this.frame.scrollY = scrollY;
     const pixels = new Uint8Array(width * height * 4);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -594,10 +823,16 @@ export class FieldTerrain {
 }
 
 /**
- * The terrain layer the scene draws: main's RetainedTerrain unless the T2
- * spike flag is on (flag.ts), in which case the field renderer, which keeps
- * RetainedTerrain where the field cannot run.
+ * The terrain layer the scene draws: the field renderer wherever it can run
+ * (flag.ts, tier.ts), which keeps RetainedTerrain where it cannot;
+ * `?field=0` asks for RetainedTerrain outright.
  */
-export function createTerrainLayer(scene: Phaser.Scene, field: boolean) {
-  return field ? new FieldTerrain(scene) : new RetainedTerrain(scene);
+export function createTerrainLayer(
+  scene: Phaser.Scene,
+  request: FieldRequest,
+  textureLimit?: number,
+) {
+  return request === "off"
+    ? new RetainedTerrain(scene)
+    : new FieldTerrain(scene, request, textureLimit);
 }

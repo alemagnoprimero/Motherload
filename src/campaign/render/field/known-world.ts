@@ -3,7 +3,7 @@ import { createWorld } from "../../world";
 import { CODE, tileCode, type KnownWorldView } from "./field-data";
 
 /**
- * The spike's stand-in for F7's KnownWorldView (not on main yet): it reads a
+ * T2's stand-in for F7's KnownWorldView (not on main yet): it reads a
  * world's tiles only where `discovered` is set. Undiscovered cells read as
  * CODE.unknown, so the field never sees hidden geology.
  *

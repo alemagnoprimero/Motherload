@@ -1,0 +1,49 @@
+name: T2 static build
+
+# The T2 field renderer (docs/qa/t2/README.md): a static build of every push
+# to the branch, for a phone or a remote device lab. The run's summary carries
+# the serving instructions; the artifact is `t2-dist`.
+on:
+  push:
+    branches:
+      - claude/t2-field-spike
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: t2-dist-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - name: Retain the static build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: t2-dist
+          path: dist/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Serving instructions
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<SUMMARY
+          ## t2-dist (${GITHUB_SHA::7})
+
+          1. Download **t2-dist** from this run's Artifacts and unzip it into an empty folder.
+          2. From inside that folder: \`python3 -m http.server 8080 --bind 0.0.0.0\` (or \`npx serve -l 8080 .\`). The build uses relative paths, so any static server works.
+          3. Phone on the same Wi-Fi: \`http://<computer-LAN-IP>:8080/?debug=frametime&backing=1.5&field=1\`, then the same with \`field=0\` (main's renderer). For Samsung Remote Test Lab, expose the server first: \`npx localtunnel --port 8080\` or \`cloudflared tunnel --url http://localhost:8080\`, and open the https URL it prints with the same query.
+          4. Read the readout (mid-height, left edge) after 10 s parked and after 10 s of digging: \`p95\` (CPU), \`interval p95\` (time between frames), \`terrain\` (which renderer drew), \`field scan · patch · upload\` (the field's CPU share).
+
+          The procedure and the reading table: docs/qa/t2/README.md on the branch.
+          SUMMARY
