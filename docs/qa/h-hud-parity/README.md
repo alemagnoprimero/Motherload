@@ -95,7 +95,42 @@ Probed by `labels.mjs` in this folder; in `measure.mjs` the labels show in every
 
 Capture by `scripts/art-captures.mjs` at backing 2 (a04), cropped to the HUD. The 393 × 851 phone is unchanged (no labels below 900 px).
 
+## H4: the phone tray
+
+**What changed.** On phones (coarse pointer, or 760 px wide or less, or 500 px tall or less) the tool tray's plate is translucent, 45 % instead of 91 % (the board shows no tray at all), and the tray rests 4 s after its last touch when no tool is at work: the plate fades to 12 % and the icons to 75 %, still where they were and still 44 px targets. A touch on the tray, holding Scan, the shaft brace, precision extraction or an open menu wakes it. Text in the tray keeps its full colour (the HUD contrast check reads it); desktop is unchanged; reduced motion drops the fade.
+
+| Line | Result | |
+|---|---|---|
+| The phone tray turns translucent or auto-hides (D3) | 393 × 851: plate 45 % on arrival; at rest (after 5 s) plate 12 %, icons 75 %; a tap on the Scan button wakes it, and it rests again 4.5 s later; buttons stay 44 × 44 throughout. Desktop: plate 91 %, icons 100 %, always | met |
+
+Probed by `tray.mjs` in this folder:
+
+| Viewport | State | Rest flag | Plate | Icons | Buttons |
+|---|---|---|---|---|---|
+| 393 × 851 touch | on arrival | no | rgba(10, 22, 28, 0.45) | 1 | 44x44, 44x44 |
+| 393 × 851 touch | 5 s without a touch | yes | rgba(10, 22, 28, 0.12) | 0.75 | 44x44, 44x44 |
+| 393 × 851 touch | a tap on Scan | no | rgba(10, 22, 28, 0.45) | 1 | 44x44, 44x44 |
+| 393 × 851 touch | 4.5 s later | yes | rgba(10, 22, 28, 0.12) | 0.75 | 44x44, 44x44 |
+| 1440 × 900 | on arrival | no | rgba(10, 22, 28, 0.91) | 1 | 44x44, 44x44 |
+| 1440 × 900 | 5 s without a touch | yes | rgba(10, 22, 28, 0.91) | 1 | 44x44, 44x44 |
+| 1440 × 900 | a tap on Scan | no | rgba(10, 22, 28, 0.91) | 1 | 44x44, 44x44 |
+| 1440 × 900 | 4.5 s later | yes | rgba(10, 22, 28, 0.91) | 1 | 44x44, 44x44 |
+
+The rest flag (`data-campaign-tray-rest` on the body) is set at every size; only the phone rule reads it, so desktop's plate and icons never change.
+
+![Phone tray: H3, H4 awake, H4 at rest](h4-phone-tray.jpg)
+
+## As shipped: the stack's final state (H4)
+
+For the row's last line ("one as-shipped frame per scene scores ≥ 4 on question 4", §6.4: "Same props, with no UI in the world?"), the director's score: T8 to H4 together, with the HUD and default annotations (Scan off), as `scripts/art-captures.mjs` captures the §9 fixtures at backing 2 (the coach is active in these fixtures, as they load).
+
+![As shipped, desktop 1440 × 900: surface, 60 m, SITE-4](as-shipped-desktop.jpg)
+
+![As shipped, phone 393 × 851: surface, 70 m, SITE-4](as-shipped-phone.jpg)
+
 ## Reproduce
+
+`measure.mjs` writes each case to `cases.json` in its output folder; `h1-cases.json` to `h4-cases.json` here are its runs on each item's branch.
 
 ```bash
 node docs/qa/h-hud-parity/measure.mjs http://127.0.0.1:5173/ artifacts/hud
@@ -107,6 +142,10 @@ node docs/qa/h-hud-parity/fit.mjs http://127.0.0.1:5173/
 
 ```bash
 node docs/qa/h-hud-parity/labels.mjs http://127.0.0.1:5173/
+```
+
+```bash
+node docs/qa/h-hud-parity/tray.mjs http://127.0.0.1:5173/
 ```
 
 ## Verification
