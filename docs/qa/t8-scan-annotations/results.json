@@ -1,0 +1,418 @@
+[
+  {
+    "name": "desktop-coach-active-spawn-scan-off",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "spawn",
+    "scan": false,
+    "text": [
+      "Hold Down to drill.",
+      "Skip",
+      "HOME \u00b7 150 m",
+      "A",
+      "B"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.148,
+    "edges_full": 26414,
+    "edges_hudfree": 22493
+  },
+  {
+    "name": "desktop-coach-active-spawn-scan-on",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "spawn",
+    "scan": true,
+    "text": [
+      "Hold Down to drill.",
+      "Skip",
+      "Home 0.4L \u00b7 Safe",
+      "HOME \u00b7 150 m",
+      "Marked seam A \u00b7 69 m",
+      "A",
+      "B"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.269,
+    "edges_full": 30755,
+    "edges_hudfree": 22494
+  },
+  {
+    "name": "desktop-coach-active-60m-scan-off",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "60m",
+    "scan": false,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.266,
+    "edges_full": 19698,
+    "edges_hudfree": 14463
+  },
+  {
+    "name": "desktop-coach-active-60m-scan-on",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "60m",
+    "scan": true,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "Home 0.6L \u00b7 Safe",
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.358,
+    "edges_full": 22556,
+    "edges_hudfree": 14485
+  },
+  {
+    "name": "desktop-coach-active-site4-scan-off",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "site4",
+    "scan": false,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "HOME \u00b7 473 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.116,
+    "edges_full": 32672,
+    "edges_hudfree": 28898
+  },
+  {
+    "name": "desktop-coach-active-site4-scan-on",
+    "form": "desktop",
+    "coach": "active",
+    "scene": "site4",
+    "scan": true,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "Home 1.7L \u00b7 Safe",
+      "HOME \u00b7 473 m",
+      "Marked seam A \u00b7 398 m",
+      "Survey wreck \u00b7 survey signal",
+      "Collapsed crew gallery"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.324,
+    "edges_full": 42818,
+    "edges_hudfree": 28951
+  },
+  {
+    "name": "desktop-coach-skipped-spawn-scan-off",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "spawn",
+    "scan": false,
+    "text": [
+      "HOME \u00b7 150 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.062,
+    "edges_full": 24001,
+    "edges_hudfree": 22504
+  },
+  {
+    "name": "desktop-coach-skipped-spawn-scan-on",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "spawn",
+    "scan": true,
+    "text": [
+      "Home 0.4L \u00b7 Safe",
+      "HOME \u00b7 150 m",
+      "Marked seam A \u00b7 69 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.207,
+    "edges_full": 28377,
+    "edges_hudfree": 22504
+  },
+  {
+    "name": "desktop-coach-skipped-60m-scan-off",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "60m",
+    "scan": false,
+    "text": [
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.085,
+    "edges_full": 17476,
+    "edges_hudfree": 15985
+  },
+  {
+    "name": "desktop-coach-skipped-60m-scan-on",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "60m",
+    "scan": true,
+    "text": [
+      "Home 0.6L \u00b7 Safe",
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.208,
+    "edges_full": 20213,
+    "edges_hudfree": 16016
+  },
+  {
+    "name": "desktop-coach-skipped-site4-scan-off",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "site4",
+    "scan": false,
+    "text": [
+      "HOME \u00b7 473 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.043,
+    "edges_full": 32429,
+    "edges_hudfree": 31040
+  },
+  {
+    "name": "desktop-coach-skipped-site4-scan-on",
+    "form": "desktop",
+    "coach": "skipped",
+    "scene": "site4",
+    "scan": true,
+    "text": [
+      "Home 1.7L \u00b7 Safe",
+      "HOME \u00b7 473 m",
+      "Marked seam A \u00b7 398 m",
+      "Survey wreck \u00b7 survey signal",
+      "Collapsed crew gallery"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.272,
+    "edges_full": 42741,
+    "edges_hudfree": 31103
+  },
+  {
+    "name": "phone-coach-active-spawn-scan-off",
+    "form": "phone",
+    "coach": "active",
+    "scene": "spawn",
+    "scan": false,
+    "text": [
+      "Hold Down to drill.",
+      "Skip",
+      "HOME \u00b7 150 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.303,
+    "edges_full": 9914,
+    "edges_hudfree": 6907
+  },
+  {
+    "name": "phone-coach-active-spawn-scan-on",
+    "form": "phone",
+    "coach": "active",
+    "scene": "spawn",
+    "scan": true,
+    "text": [
+      "Hold Down to drill.",
+      "Skip",
+      "Home 0.4L \u00b7 Safe",
+      "HOME \u00b7 150 m",
+      "Marked seam A \u00b7 69 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.511,
+    "edges_full": 14095,
+    "edges_hudfree": 6892
+  },
+  {
+    "name": "phone-coach-active-60m-scan-off",
+    "form": "phone",
+    "coach": "active",
+    "scene": "60m",
+    "scan": false,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.325,
+    "edges_full": 13730,
+    "edges_hudfree": 9273
+  },
+  {
+    "name": "phone-coach-active-60m-scan-on",
+    "form": "phone",
+    "coach": "active",
+    "scene": "60m",
+    "scan": true,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "Home 0.6L \u00b7 Safe",
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.4,
+    "edges_full": 15435,
+    "edges_hudfree": 9259
+  },
+  {
+    "name": "phone-coach-active-site4-scan-off",
+    "form": "phone",
+    "coach": "active",
+    "scene": "site4",
+    "scan": false,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "HOME \u00b7 473 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.152,
+    "edges_full": 17735,
+    "edges_hudfree": 15047
+  },
+  {
+    "name": "phone-coach-active-site4-scan-on",
+    "form": "phone",
+    "coach": "active",
+    "scene": "site4",
+    "scan": true,
+    "text": [
+      "Collect the marked seam.",
+      "Skip",
+      "Home 1.7L \u00b7 Safe",
+      "HOME \u00b7 473 m",
+      "Marked seam A \u00b7 398 m",
+      "Survey wreck \u00b7 survey signal",
+      "Collapsed crew gallery"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.456,
+    "edges_full": 27558,
+    "edges_hudfree": 14986
+  },
+  {
+    "name": "phone-coach-skipped-spawn-scan-off",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "spawn",
+    "scan": false,
+    "text": [
+      "HOME \u00b7 150 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.159,
+    "edges_full": 8210,
+    "edges_hudfree": 6907
+  },
+  {
+    "name": "phone-coach-skipped-spawn-scan-on",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "spawn",
+    "scan": true,
+    "text": [
+      "Home 0.4L \u00b7 Safe",
+      "HOME \u00b7 150 m",
+      "Marked seam A \u00b7 69 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.451,
+    "edges_full": 12557,
+    "edges_hudfree": 6892
+  },
+  {
+    "name": "phone-coach-skipped-60m-scan-off",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "60m",
+    "scan": false,
+    "text": [
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.136,
+    "edges_full": 10732,
+    "edges_hudfree": 9273
+  },
+  {
+    "name": "phone-coach-skipped-60m-scan-on",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "60m",
+    "scan": true,
+    "text": [
+      "Home 0.6L \u00b7 Safe",
+      "HOME \u00b7 155 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.284,
+    "edges_full": 12923,
+    "edges_hudfree": 9259
+  },
+  {
+    "name": "phone-coach-skipped-site4-scan-off",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "site4",
+    "scan": false,
+    "text": [
+      "HOME \u00b7 473 m"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.084,
+    "edges_full": 16432,
+    "edges_hudfree": 15047
+  },
+  {
+    "name": "phone-coach-skipped-site4-scan-on",
+    "form": "phone",
+    "coach": "skipped",
+    "scene": "site4",
+    "scan": true,
+    "text": [
+      "Home 1.7L \u00b7 Safe",
+      "HOME \u00b7 473 m",
+      "Marked seam A \u00b7 398 m",
+      "Survey wreck \u00b7 survey signal",
+      "Collapsed crew gallery"
+    ],
+    "near_rig": [],
+    "overlaps": [],
+    "overlay_share": 0.417,
+    "edges_full": 25684,
+    "edges_hudfree": 14986
+  }
+]
