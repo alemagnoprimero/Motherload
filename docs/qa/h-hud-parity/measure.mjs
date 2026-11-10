@@ -118,6 +118,14 @@ async function hud(page) {
         })(),
       },
       pips: shown("#campaign-cargo-pips"),
+      // H3: the ENERGY and HULL labels.
+      labels: [...document.querySelectorAll(".instrument-row > span")]
+        .filter(
+          (label) =>
+            shown(`#${label.parentElement.querySelector("strong").id}`) &&
+            getComputedStyle(label).display !== "none",
+        )
+        .map((label) => label.textContent),
       rowOverflow: (() => {
         const row = document.querySelector(".instrument-right");
         return row.scrollWidth - row.clientWidth;
@@ -175,7 +183,7 @@ try {
           entry.objective = entry.objective && box(entry.objective);
           cases.push(entry);
           console.log(
-            `${name}: objective ${entry.objective?.width}×${entry.objective?.height} "${entry.objectiveText}"; details ${entry.detailsShown}→${entry.detailsOnHover ?? entry.detailsOnTap}; haul ${entry.haul.shown ? entry.haul.text : "hidden"}${entry.haul.cut ? " (cut)" : ""}, pips ${entry.pips}, row overflow ${entry.rowOverflow}`,
+            `${name}: objective ${entry.objective?.width}×${entry.objective?.height} "${entry.objectiveText}"; details ${entry.detailsShown}→${entry.detailsOnHover ?? entry.detailsOnTap}; haul ${entry.haul.shown ? entry.haul.text : "hidden"}${entry.haul.cut ? " (cut)" : ""}, pips ${entry.pips}, row overflow ${entry.rowOverflow}; labels ${entry.labels.join("/") || "none"}`,
           );
         }
       } finally {
