@@ -4156,3 +4156,46 @@ body .campaign-mission-stack .campaign-objective {
     width: calc(50vw - 20px);
   }
 }
+
+/*
+ * H2 (D3): the HAUL value shows beside depth and cargo, as on the board
+ * ("HAUL 60 CR"); the readout and its value were in the HUD, hidden.
+ */
+.campaign-hud .haul-readout {
+  display: flex;
+}
+/*
+ * On phones the row has no room for both: HAUL takes the cargo pips' place,
+ * as on the board's tall panels (the count stays, "2/7"). Depth, cargo and
+ * credits never shorten; a HAUL value too long for the row does, rather
+ * than slide under the menu button.
+ */
+@media (pointer: coarse), (max-width: 760px), (max-height: 500px) {
+  .campaign-hud #campaign-cargo-pips {
+    display: none;
+  }
+  .campaign-hud .instrument-right {
+    gap: 8px;
+    min-width: 0;
+  }
+  .campaign-hud .instrument-right > * {
+    flex-shrink: 0;
+  }
+  .campaign-hud .instrument-right > .haul-readout {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .campaign-hud .haul-readout strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+/* Below 381 px, or 340 px tall, four readouts do not fit: main's row stays. */
+@media (max-width: 380px), (max-height: 340px) {
+  .campaign-hud .haul-readout {
+    display: none;
+  }
+  .campaign-hud #campaign-cargo-pips {
+    display: flex;
+  }
+}
