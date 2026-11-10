@@ -1,0 +1,439 @@
+{
+ "cases": [
+  {
+   "label": "new W01 row 8 x 10.5",
+   "frames": 166,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 8 x 30.5",
+   "frames": 150,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 23 x 10.5",
+   "frames": 109,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 23 x 30.5",
+   "frames": 128,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 38 x 10.5",
+   "frames": 193,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 38 x 30.5",
+   "frames": 178,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 43 x 10.5",
+   "frames": 206,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 43 x 30.5",
+   "frames": 219,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 47 x 10.5",
+   "frames": 213,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 47 x 30.5",
+   "frames": 225,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 53 x 10.5",
+   "frames": 230,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 53 x 30.5",
+   "frames": 224,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 56 x 10.5",
+   "frames": 205,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 56 x 30.5",
+   "frames": 201,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 59 x 10.5",
+   "frames": 157,
+   "missed": {}
+  },
+  {
+   "label": "new W01 row 59 x 30.5",
+   "frames": 161,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 18, W02 hardware",
+   "frames": 196,
+   "missed": {}
+  },
+  {
+   "label": "W01 surface",
+   "frames": 72,
+   "missed": {}
+  },
+  {
+   "label": "W02 surface",
+   "frames": 75,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 8 x 12.5",
+   "frames": 182,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 8 x 36.5",
+   "frames": 144,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 23 x 12.5",
+   "frames": 139,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 23 x 36.5",
+   "frames": 188,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 38 x 12.5",
+   "frames": 137,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 38 x 36.5",
+   "frames": 162,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 43 x 12.5",
+   "frames": 138,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 43 x 36.5",
+   "frames": 154,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 50 x 12.5",
+   "frames": 153,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 50 x 36.5",
+   "frames": 129,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 53 x 12.5",
+   "frames": 143,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 53 x 36.5",
+   "frames": 123,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 56 x 12.5",
+   "frames": 130,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 56 x 36.5",
+   "frames": 114,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 59 x 12.5",
+   "frames": 119,
+   "missed": {}
+  },
+  {
+   "label": "W01 row 59 x 36.5",
+   "frames": 88,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 12 x 12.5",
+   "frames": 133,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 12 x 36.5",
+   "frames": 138,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 29 x 12.5",
+   "frames": 140,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 29 x 36.5",
+   "frames": 114,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 43 x 12.5",
+   "frames": 136,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 43 x 36.5",
+   "frames": 194,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 49 x 12.5",
+   "frames": 95,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 49 x 36.5",
+   "frames": 152,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 58 x 12.5",
+   "frames": 83,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 58 x 36.5",
+   "frames": 117,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 62 x 12.5",
+   "frames": 115,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 62 x 36.5",
+   "frames": 107,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 72 x 12.5",
+   "frames": 101,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 72 x 36.5",
+   "frames": 149,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 84 x 12.5",
+   "frames": 73,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 84 x 36.5",
+   "frames": 118,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 86 x 12.5",
+   "frames": 79,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 86 x 36.5",
+   "frames": 118,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 94 x 12.5",
+   "frames": 93,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 94 x 36.5",
+   "frames": 140,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 99 x 12.5",
+   "frames": 83,
+   "missed": {}
+  },
+  {
+   "label": "W02 row 99 x 36.5",
+   "frames": 101,
+   "missed": {}
+  }
+ ],
+ "drawn": {
+  "__BASE": [
+   "campaign-fx-glint-silver"
+  ],
+  "cold-pocket": [
+   "campaign-w01-core-3x-0"
+  ],
+  "cold-warning": [
+   "campaign-w02-core-3x-0"
+  ],
+  "deposit-socket": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "dock-stage-0": [
+   "campaign-w01-surface-stage0-3x-0",
+   "campaign-w02-surface-stage0-3x-0"
+  ],
+  "ice-vent": [
+   "campaign-w02-cave-3x-0"
+  ],
+  "mission-antenna": [
+   "campaign-w01-core-3x-0"
+  ],
+  "mission-beacon": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "mission-catalyst": [
+   "campaign-w02-core-3x-0"
+  ],
+  "mission-core": [
+   "campaign-w01-core-3x-0"
+  ],
+  "mission-cryovein": [
+   "campaign-w02-core-3x-0"
+  ],
+  "mission-sample": [
+   "campaign-w02-core-3x-0"
+  ],
+  "mission-valve": [
+   "campaign-w01-core-3x-0"
+  ],
+  "ore-o1": [
+   "campaign-w01-core-hero-3x-0",
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "ore-o2": [
+   "campaign-w01-core-hero-3x-0",
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "ore-o3": [
+   "campaign-w01-core-hero-3x-0",
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "ore-o4": [
+   "campaign-w01-core-hero-3x-0",
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "package-o1": [
+   "campaign-w01-core-hero-3x-0",
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "package-o2": [
+   "campaign-w01-core-hero-3x-0",
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "package-o3": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "pressure-seam": [
+   "campaign-w01-cave-3x-0"
+  ],
+  "relic": [
+   "campaign-w01-core-hero-3x-0",
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "rig-bay-0": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-bay-2": [
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "rig-body-0": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-cabin": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-damage-2": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-drill-collar-right-2": [
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "rig-drill-idle": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-energy-0": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-energy-2": [
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "rig-engine-0": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-engine-2": [
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "rig-hull-0": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "rig-hull-2": [
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "site-cache": [
+   "campaign-w01-cave-3x-0"
+  ],
+  "site-core": [
+   "campaign-w01-cave-3x-0"
+  ],
+  "site-geode": [
+   "campaign-w01-cave-3x-0"
+  ],
+  "site-mission": [
+   "campaign-w01-core-3x-0"
+  ],
+  "site-survey": [
+   "campaign-w01-core-3x-0"
+  ],
+  "site-wreck": [
+   "campaign-w01-core-hero-3x-0"
+  ],
+  "sky-body": [
+   "campaign-w01-surface-3x-0",
+   "campaign-w02-surface-3x-0"
+  ],
+  "surface-salvage": [
+   "campaign-w01-core-3x-0"
+  ],
+  "tool-thermal": [
+   "campaign-w02-core-hero-3x-0"
+  ],
+  "ui-mission": [
+   "campaign-w01-core-3x-0"
+  ],
+  "warning-shelf": [
+   "campaign-w01-core-3x-0"
+  ]
+ },
+ "misses": {}
+}

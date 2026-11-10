@@ -15,6 +15,16 @@ const engine = process.env.BROWSER || "chromium";
 const output = process.env.SURFACE_ARTIFACTS || `artifacts/surface-${engine}`;
 await mkdir(output, { recursive: true });
 const browser = await launchBrowser();
+/** The production surface frames the board draws. */
+const SURFACE_FRAMES = [
+  "dock-stage-0",
+  "dock-stage-1",
+  "dock-stage-2",
+  "dock-stage-3",
+  "surface-salvage",
+  "refuge-stage-2",
+  "relay-stage-2",
+];
 const results = {
   engine,
   browserVersion: browser.version(),
@@ -121,12 +131,28 @@ try {
           }, worldId);
           await page.waitForTimeout(800);
           await page.screenshot({ path: `${output}/${name}-world.png` });
+          // Audit T13b: only the current lander stage and the next are
+          // resident, and W01's surface page only in W01. Hold the pages of
+          // every board frame (at the scene's densities) until they load.
+          await page.evaluate(
+            ({ worldId, frames }) =>
+              Promise.race([
+                window.__surfaceGame.scene.scenes[0].art.hold(frames, worldId),
+                new Promise((resolve, reject) =>
+                  setTimeout(
+                    () => reject(new Error("Surface pages did not load")),
+                    20000,
+                  ),
+                ),
+              ]),
+            { worldId, frames: SURFACE_FRAMES },
+          );
           await page.addStyleTag({
             content:
               "body *{visibility:hidden!important}#campaign-game canvas{visibility:visible!important}",
           });
           const report = await page.evaluate(
-            ({ worldId }) => {
+            ({ worldId, SURFACE_FRAMES }) => {
               const game = window.__surfaceGame;
               const scene = game.scene.scenes[0];
               const gl = game.renderer.gl;
@@ -140,15 +166,7 @@ try {
                     ),
                   }
                 : null;
-              const frames = [
-                "dock-stage-0",
-                "dock-stage-1",
-                "dock-stage-2",
-                "dock-stage-3",
-                "surface-salvage",
-                "refuge-stage-2",
-                "relay-stage-2",
-              ];
+              const frames = SURFACE_FRAMES;
               const canvas = document.createElement("canvas");
               const dpr = devicePixelRatio;
               canvas.width = 360 * dpr;
@@ -156,15 +174,15 @@ try {
               const ctx = canvas.getContext("2d");
               ctx.scale(dpr, dpr);
               const images = [];
-              const atlas = worldId === "W02" ? "campaign-w02" : "campaign-w01";
               const entries = [];
               for (const [index, name] of frames.entries()) {
-                const key =
-                  scene.art.textureFor(name, worldId, scene.artQuality) ??
-                  (scene.textures.get(atlas).has(name)
-                    ? atlas
-                    : "campaign-w01");
-                const frame = scene.textures.getFrame(key, name);
+                // The zone page the scene draws `name` from in this world.
+                const key = scene.art.textureFor(
+                  name,
+                  scene.art.owner(name, worldId),
+                  scene.artQuality,
+                );
+                const frame = key && scene.textures.getFrame(key, name);
                 if (!frame || frame.name !== name)
                   throw new Error("Missing production frame: " + name);
                 const left = (index % 2) * 180 + 8,
@@ -211,7 +229,7 @@ try {
                 expected: canvas.toDataURL("image/png"),
               };
             },
-            { worldId },
+            { worldId, SURFACE_FRAMES },
           );
           await page.waitForFunction(() => window.__surfaceBoardFrames >= 3);
           await page.screenshot({

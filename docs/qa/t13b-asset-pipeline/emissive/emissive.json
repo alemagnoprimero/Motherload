@@ -1,0 +1,166 @@
+[
+  {
+    "renderer": "webgl",
+    "form": "desktop",
+    "highContrast": false,
+    "draws": {
+      "lit scene, bases alone": 6,
+      "lit scene, with ADD": 6,
+      "masked scene, bases alone": 6,
+      "masked scene, with ADD": 8
+    },
+    "bytes": 41896756,
+    "lampPixels": 575,
+    "lampAddedMax": 171,
+    "lampAddedMean": 121.6,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 143,
+    "beforeDraws": 6,
+    "beforeBytes": 41896756,
+    "outsideLampChanged": 0,
+    "rimChanged": 3,
+    "lampVsBeforeMax": 38,
+    "lampVsBeforeMean": 3.5,
+    "lampBaseVsBeforeMean": -118.1
+  },
+  {
+    "renderer": "webgl",
+    "form": "desktop",
+    "highContrast": true,
+    "draws": {
+      "lit scene, bases alone": 6,
+      "lit scene, with ADD": 6,
+      "masked scene, bases alone": 6,
+      "masked scene, with ADD": 8
+    },
+    "bytes": 41896756,
+    "lampPixels": 575,
+    "lampAddedMax": 171,
+    "lampAddedMean": 121.6,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 143
+  },
+  {
+    "renderer": "webgl",
+    "form": "phone",
+    "highContrast": false,
+    "draws": {
+      "lit scene, bases alone": 6,
+      "lit scene, with ADD": 6,
+      "masked scene, bases alone": 6,
+      "masked scene, with ADD": 8
+    },
+    "bytes": 22961456,
+    "lampPixels": 713,
+    "lampAddedMax": 171,
+    "lampAddedMean": 100.9,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 230,
+    "beforeDraws": 6,
+    "beforeBytes": 22961456,
+    "outsideLampChanged": 0,
+    "rimChanged": 0,
+    "lampVsBeforeMax": 17,
+    "lampVsBeforeMean": 3.5,
+    "lampBaseVsBeforeMean": -97.4
+  },
+  {
+    "renderer": "webgl",
+    "form": "phone",
+    "highContrast": true,
+    "draws": {
+      "lit scene, bases alone": 6,
+      "lit scene, with ADD": 6,
+      "masked scene, bases alone": 6,
+      "masked scene, with ADD": 8
+    },
+    "bytes": 22961456,
+    "lampPixels": 712,
+    "lampAddedMax": 171,
+    "lampAddedMean": 101.0,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 230
+  },
+  {
+    "renderer": "canvas",
+    "form": "desktop",
+    "highContrast": false,
+    "draws": {
+      "lit scene, bases alone": null,
+      "lit scene, with ADD": null,
+      "masked scene, bases alone": null,
+      "masked scene, with ADD": null
+    },
+    "bytes": 40209200,
+    "lampPixels": 553,
+    "lampAddedMax": 171,
+    "lampAddedMean": 126.5,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 143,
+    "beforeDraws": null,
+    "beforeBytes": 40209200,
+    "outsideLampChanged": 0,
+    "rimChanged": 25,
+    "lampVsBeforeMax": 34,
+    "lampVsBeforeMean": 4.4,
+    "lampBaseVsBeforeMean": -122.1
+  },
+  {
+    "renderer": "canvas",
+    "form": "desktop",
+    "highContrast": true,
+    "draws": {
+      "lit scene, bases alone": null,
+      "lit scene, with ADD": null,
+      "masked scene, bases alone": null,
+      "masked scene, with ADD": null
+    },
+    "bytes": 40209200,
+    "lampPixels": 553,
+    "lampAddedMax": 171,
+    "lampAddedMean": 126.5,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 143
+  },
+  {
+    "renderer": "canvas",
+    "form": "phone",
+    "highContrast": false,
+    "draws": {
+      "lit scene, bases alone": null,
+      "lit scene, with ADD": null,
+      "masked scene, bases alone": null,
+      "masked scene, with ADD": null
+    },
+    "bytes": 22961452,
+    "lampPixels": 691,
+    "lampAddedMax": 171,
+    "lampAddedMean": 104.1,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 220,
+    "beforeDraws": null,
+    "beforeBytes": 22961452,
+    "outsideLampChanged": 0,
+    "rimChanged": 19,
+    "lampVsBeforeMax": 20,
+    "lampVsBeforeMean": 3.6,
+    "lampBaseVsBeforeMean": -100.5
+  },
+  {
+    "renderer": "canvas",
+    "form": "phone",
+    "highContrast": true,
+    "draws": {
+      "lit scene, bases alone": null,
+      "lit scene, with ADD": null,
+      "masked scene, bases alone": null,
+      "masked scene, with ADD": null
+    },
+    "bytes": 22961452,
+    "lampPixels": 691,
+    "lampAddedMax": 171,
+    "lampAddedMean": 104.1,
+    "unknownCellChanged": 0,
+    "maskedLampPixels": 220
+  }
+]

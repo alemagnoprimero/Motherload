@@ -48,7 +48,7 @@ Optional contracts pay 300 CR for six intact volatile sales after acceptance, or
 
 ## Artwork and controls
 
-Original editable SVG sources live in `assets/campaign/w02/`. The renderer uses the shared world/view, lighting, depth-band, effects and HUD systems; authoring uses Chromium/Pillow while normal builds consume committed assets with Node only. Atlas/resolution details and current measurements are maintained in [CAMPAIGN_ASSETS.md](CAMPAIGN_ASSETS.md).
+Original editable SVG sources live in `assets/campaign/w02/`. The renderer uses the shared world/view, lighting, depth-band, effects and HUD systems; authoring uses resvg and Pillow (byte-identical rebuilds, audit T13b) while normal builds consume committed assets with Node only. Atlas/resolution details and current measurements are maintained in [CAMPAIGN_ASSETS.md](CAMPAIGN_ASSETS.md).
 
 The same keyboard, mouse, floating joystick and controller actions apply in both worlds. Precision, reserve release, mission guidance, danger notices and recovery remain in the game interface. Accessibility settings apply to the comet as well as the asteroid; physical Android comfort/performance still requires device testing.
 

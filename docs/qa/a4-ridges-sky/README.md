@@ -70,9 +70,7 @@ The phone spawn (393 × 851 @3) moves the same way: horizon L\* 37.1 to 29.2, pe
 ## Reproduce
 
 ```
-node assets/campaign/source/create-w01-sources.mjs
-npm run campaign:assets
-python3 scripts/art-unchanged-pngs.py --restore
+PYTHON=python3 npm run assets:rebuild   # since T13b (resvg, byte-identical); A4 used Chromium, then art-unchanged-pngs.py --restore
 node scripts/art-review-a4.mjs artifacts/art-review-a4
 python3 scripts/art-review.py artifacts/art-review-a4/review.json artifacts/art-review-a4/sheet.png
 ART_CAPTURES=a02,p-portrait-02 ART_BACKING=2 node scripts/art-captures.mjs

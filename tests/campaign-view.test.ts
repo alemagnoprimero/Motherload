@@ -483,6 +483,7 @@ describe("render scale budget (F1)", () => {
       backingPin: 2,
       frameTime: false,
       testRaster: false,
+      emissive: true,
     });
     expect(
       renderDebugOptions("?mode=campaign&backing=1.5&debug=frametime"),
@@ -490,23 +491,31 @@ describe("render scale budget (F1)", () => {
       backingPin: 1.5,
       frameTime: true,
       testRaster: false,
+      emissive: true,
     });
     expect(renderDebugOptions("?backing=3&debug=x,frametime")).toEqual({
       backingPin: undefined,
       frameTime: true,
       testRaster: false,
+      emissive: true,
     });
     expect(renderDebugOptions("")).toEqual({
       backingPin: undefined,
       frameTime: false,
       testRaster: false,
+      emissive: true,
     });
   });
   it("parses the raster placeholder switch from the URL (T13a)", () => {
     expect(renderDebugOptions("?debug=test-raster").testRaster).toBe(true);
     expect(
       renderDebugOptions("?debug=frametime,test-raster&backing=2"),
-    ).toEqual({ backingPin: 2, frameTime: true, testRaster: true });
+    ).toEqual({
+      backingPin: 2,
+      frameTime: true,
+      testRaster: true,
+      emissive: true,
+    });
     expect(renderDebugOptions("?debug=test-rasters").testRaster).toBe(false);
     expect(renderDebugOptions("?test-raster=1").testRaster).toBe(false);
   });

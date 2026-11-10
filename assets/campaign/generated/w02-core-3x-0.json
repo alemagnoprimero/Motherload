@@ -1,0 +1,136 @@
+{
+  "frames": {
+    "mission-cryovein": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 122,
+        "h": 123
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 11,
+        "y": 12,
+        "w": 122,
+        "h": 123
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "mission-catalyst": {
+      "frame": {
+        "x": 128,
+        "y": 2,
+        "w": 88,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 15,
+        "w": 88,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "mission-sample": {
+      "frame": {
+        "x": 220,
+        "y": 2,
+        "w": 67,
+        "h": 113
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 39,
+        "y": 17,
+        "w": 67,
+        "h": 113
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "cold-warning": {
+      "frame": {
+        "x": 291,
+        "y": 2,
+        "w": 124,
+        "h": 110
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 13,
+        "w": 124,
+        "h": 110
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    }
+  },
+  "meta": {
+    "app": "Deep Frontier original layered SVG artwork",
+    "version": "0.3",
+    "image": "w02-core-3x-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 448,
+      "h": 128
+    },
+    "scale": "3",
+    "logicalTile": 48,
+    "rigPivot": [
+      96.0,
+      96.0
+    ],
+    "rigTreadBaseline": 150.0,
+    "framePadding": 2,
+    "zone": "core",
+    "hero": false
+  }
+}

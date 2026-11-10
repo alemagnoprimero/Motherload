@@ -1,0 +1,360 @@
+{
+  "frames": {
+    "site-survey": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 173,
+        "h": 102
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 12,
+        "w": 173,
+        "h": 102
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 64
+      }
+    },
+    "crack-2": {
+      "frame": {
+        "x": 179,
+        "y": 2,
+        "w": 90,
+        "h": 93
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 1,
+        "w": 90,
+        "h": 93
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "crack-3": {
+      "frame": {
+        "x": 273,
+        "y": 2,
+        "w": 90,
+        "h": 93
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 1,
+        "w": 90,
+        "h": 93
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "crack-1": {
+      "frame": {
+        "x": 367,
+        "y": 2,
+        "w": 56,
+        "h": 91
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 2,
+        "w": 56,
+        "h": 91
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "warning-shelf": {
+      "frame": {
+        "x": 427,
+        "y": 2,
+        "w": 83,
+        "h": 79
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 7,
+        "y": 8,
+        "w": 83,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "mission-core": {
+      "frame": {
+        "x": 2,
+        "y": 108,
+        "w": 76,
+        "h": 79
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 7,
+        "w": 76,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "cold-pocket": {
+      "frame": {
+        "x": 82,
+        "y": 108,
+        "w": 174,
+        "h": 77
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 30,
+        "w": 174,
+        "h": 77
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 64
+      }
+    },
+    "mission-antenna": {
+      "frame": {
+        "x": 260,
+        "y": 108,
+        "w": 76,
+        "h": 75
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 11,
+        "w": 76,
+        "h": 75
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "mission-valve": {
+      "frame": {
+        "x": 340,
+        "y": 108,
+        "w": 76,
+        "h": 75
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 11,
+        "w": 76,
+        "h": 75
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "ui-mission": {
+      "frame": {
+        "x": 420,
+        "y": 108,
+        "w": 72,
+        "h": 70
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 13,
+        "w": 72,
+        "h": 70
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "site-mission": {
+      "frame": {
+        "x": 2,
+        "y": 191,
+        "w": 173,
+        "h": 63
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 51,
+        "w": 173,
+        "h": 63
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 64
+      }
+    },
+    "surface-salvage": {
+      "frame": {
+        "x": 179,
+        "y": 191,
+        "w": 178,
+        "h": 51
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 36,
+        "w": 178,
+        "h": 51
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 48
+      }
+    }
+  },
+  "meta": {
+    "app": "Deep Frontier original layered SVG artwork",
+    "version": "0.3",
+    "image": "w01-core-2x-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 512,
+      "h": 256
+    },
+    "scale": "2",
+    "logicalTile": 48,
+    "rigPivot": [
+      64.0,
+      64.0
+    ],
+    "rigTreadBaseline": 100.0,
+    "framePadding": 2,
+    "zone": "core",
+    "hero": false
+  }
+}

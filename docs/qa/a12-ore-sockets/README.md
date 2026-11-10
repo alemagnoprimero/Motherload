@@ -138,14 +138,11 @@ The socket is drawn only in known cells, so the hidden-geology inset crops (rend
 ## Reproduce
 
 ```
-node assets/campaign/source/create-w01-sources.mjs && node assets/campaign/w02/create-sources.mjs
-CHROMIUM_PATH=/opt/pw-browsers/chromium-1248/chrome-linux64/chrome PYTHON=python3 npm run campaign:assets
-CHROMIUM_PATH=... PYTHON=python3 npm run frontier:assets
-python3 scripts/art-unchanged-pngs.py --restore
+PYTHON=python3 npm run assets:rebuild   # since T13b: resvg, byte-identical; A12's PNGs were first rendered by Chromium 156
 node scripts/art-review-a12.mjs artifacts/art-review-a12
 python3 scripts/art-review-a12.py artifacts/art-review-a12/review.json docs/qa/a12-ore-sockets
 # captures, from a private copy served with npx vite --port P (main: git archive origin/main)
-PREVIEW_URL=http://127.0.0.1:P/ CHROMIUM_PATH=... node docs/qa/a12-ore-sockets/capture.mjs OUT 2
+PREVIEW_URL=http://127.0.0.1:P/ CHROMIUM_PATH=/opt/pw-browsers/chromium-1248/chrome-linux64/chrome node docs/qa/a12-ore-sockets/capture.mjs OUT 2
 python3 scripts/art-sheets.py --captures OUT --out OUT-sheets --table-only
 python3 docs/qa/a12-ore-sockets/evidence.py BEFORE AFTER docs/qa/a12-ore-sockets
 ```

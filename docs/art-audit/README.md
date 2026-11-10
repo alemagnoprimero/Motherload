@@ -55,7 +55,7 @@ python3 docs/art-audit/data/budget.py
 ```
 
 - `render.mjs` imports `playwright-core` from the repository's `node_modules` and launches Chromium from `CHROMIUM_PATH` (default `/opt/pw-browsers/chromium`) with SwiftShader. It serves the game's atlas from `assets/campaign/generated/`, so nothing needs copying. A full run takes several minutes and writes about 95 MB of PNG files and `render-report.json` into `prototype/out/`; `prototype/.gitignore` keeps them out of git.
-- To look at one scene in a browser, copy `assets/campaign/generated/w01-atlas-3x-0.json` and `.png` into `docs/art-audit/prototype/assets/` (git ignores the copies), serve `docs/art-audit/prototype/` with any static file server and open `index.html?scene=cavern&vw=1440&vh=900&dpr=2`. `06-prototype.md` §1 lists the URL parameters.
+- To look at one scene in a browser, copy `assets/campaign/generated/w01-zones.json` and the W01 `-3x-` zone pages it lists (`.json` and `.png`) into `docs/art-audit/prototype/assets/` (git ignores the copies), serve `docs/art-audit/prototype/` with any static file server and open `index.html?scene=cavern&vw=1440&vh=900&dpr=2`. `06-prototype.md` §1 lists the URL parameters.
 - `metrics.py` and `compare.py` read the renders in `prototype/out/` and the session captures, which are not committed. Set `CAPTURES` to a folder that holds the `shots/` and `shots2/` capture folders. `compare.py` also expects the portrait cavern capture at `prototype/game/p-portrait-cavern-site4@3.png`. Both read the board from `docs/art-direction/` by a relative path. They need Python 3 with Pillow and NumPy.
 
 ## Not included

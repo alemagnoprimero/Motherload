@@ -1,0 +1,2096 @@
+{
+  "frames": {
+    "relic": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 81,
+        "h": 86
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 7,
+        "y": 6,
+        "w": 81,
+        "h": 86
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "ore-o3": {
+      "frame": {
+        "x": 87,
+        "y": 2,
+        "w": 70,
+        "h": 86
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 16,
+        "y": 6,
+        "w": 70,
+        "h": 86
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "ore-o4": {
+      "frame": {
+        "x": 161,
+        "y": 2,
+        "w": 84,
+        "h": 79
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 12,
+        "w": 84,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "ore-o2": {
+      "frame": {
+        "x": 2,
+        "y": 92,
+        "w": 71,
+        "h": 79
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 16,
+        "y": 9,
+        "w": 71,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "mission-beacon": {
+      "frame": {
+        "x": 77,
+        "y": 92,
+        "w": 63,
+        "h": 79
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 5,
+        "w": 63,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "package-o3": {
+      "frame": {
+        "x": 144,
+        "y": 92,
+        "w": 73,
+        "h": 77
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 14,
+        "w": 73,
+        "h": 77
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "package-o2": {
+      "frame": {
+        "x": 2,
+        "y": 175,
+        "w": 74,
+        "h": 75
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 16,
+        "w": 74,
+        "h": 75
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "package-o4": {
+      "frame": {
+        "x": 80,
+        "y": 175,
+        "w": 73,
+        "h": 73
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 18,
+        "w": 73,
+        "h": 73
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "site-wreck": {
+      "frame": {
+        "x": 2,
+        "y": 254,
+        "w": 173,
+        "h": 63
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 51,
+        "w": 173,
+        "h": 63
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 64
+      }
+    },
+    "ore-o1": {
+      "frame": {
+        "x": 2,
+        "y": 321,
+        "w": 76,
+        "h": 57
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 36,
+        "w": 76,
+        "h": 57
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "package-o1": {
+      "frame": {
+        "x": 82,
+        "y": 321,
+        "w": 74,
+        "h": 57
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 36,
+        "w": 74,
+        "h": 57
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "deposit-socket": {
+      "frame": {
+        "x": 160,
+        "y": 321,
+        "w": 72,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 33,
+        "w": 72,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "rig-damage-3": {
+      "frame": {
+        "x": 2,
+        "y": 382,
+        "w": 77,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 39,
+        "w": 77,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-damage-2": {
+      "frame": {
+        "x": 83,
+        "y": 382,
+        "w": 74,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 26,
+        "y": 39,
+        "w": 74,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-cabin": {
+      "frame": {
+        "x": 161,
+        "y": 382,
+        "w": 63,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 44,
+        "y": 22,
+        "w": 63,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-feet-deployed": {
+      "frame": {
+        "x": 2,
+        "y": 440,
+        "w": 119,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 66,
+        "w": 119,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-0": {
+      "frame": {
+        "x": 125,
+        "y": 440,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-1": {
+      "frame": {
+        "x": 2,
+        "y": 492,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-2": {
+      "frame": {
+        "x": 98,
+        "y": 492,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-3": {
+      "frame": {
+        "x": 2,
+        "y": 539,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-4": {
+      "frame": {
+        "x": 98,
+        "y": 539,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-5": {
+      "frame": {
+        "x": 2,
+        "y": 586,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-6": {
+      "frame": {
+        "x": 98,
+        "y": 586,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-body-7": {
+      "frame": {
+        "x": 2,
+        "y": 633,
+        "w": 92,
+        "h": 43
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 57,
+        "w": 92,
+        "h": 43
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-6": {
+      "frame": {
+        "x": 98,
+        "y": 633,
+        "w": 36,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 46,
+        "y": 89,
+        "w": 36,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-5": {
+      "frame": {
+        "x": 138,
+        "y": 633,
+        "w": 34,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 47,
+        "y": 89,
+        "w": 34,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-7": {
+      "frame": {
+        "x": 176,
+        "y": 633,
+        "w": 34,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 47,
+        "y": 89,
+        "w": 34,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-0": {
+      "frame": {
+        "x": 214,
+        "y": 633,
+        "w": 30,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 49,
+        "y": 89,
+        "w": 30,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-4": {
+      "frame": {
+        "x": 2,
+        "y": 680,
+        "w": 30,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 49,
+        "y": 89,
+        "w": 30,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-1": {
+      "frame": {
+        "x": 36,
+        "y": 680,
+        "w": 26,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 51,
+        "y": 89,
+        "w": 26,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-3": {
+      "frame": {
+        "x": 66,
+        "y": 680,
+        "w": 26,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 51,
+        "y": 89,
+        "w": 26,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-down-2": {
+      "frame": {
+        "x": 96,
+        "y": 680,
+        "w": 24,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 52,
+        "y": 89,
+        "w": 24,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-energy-0": {
+      "frame": {
+        "x": 124,
+        "y": 680,
+        "w": 18,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 34,
+        "w": 18,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-energy-1": {
+      "frame": {
+        "x": 146,
+        "y": 680,
+        "w": 18,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 11,
+        "y": 34,
+        "w": 18,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-engine-1": {
+      "frame": {
+        "x": 168,
+        "y": 680,
+        "w": 31,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 37,
+        "w": 31,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-engine-0": {
+      "frame": {
+        "x": 203,
+        "y": 680,
+        "w": 26,
+        "h": 37
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 38,
+        "w": 26,
+        "h": 37
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-6": {
+      "frame": {
+        "x": 2,
+        "y": 723,
+        "w": 39,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 50,
+        "w": 39,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-6": {
+      "frame": {
+        "x": 45,
+        "y": 723,
+        "w": 39,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 50,
+        "w": 39,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-5": {
+      "frame": {
+        "x": 88,
+        "y": 723,
+        "w": 39,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 51,
+        "w": 39,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-7": {
+      "frame": {
+        "x": 131,
+        "y": 723,
+        "w": 39,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 51,
+        "w": 39,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-5": {
+      "frame": {
+        "x": 174,
+        "y": 723,
+        "w": 39,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 51,
+        "w": 39,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-7": {
+      "frame": {
+        "x": 2,
+        "y": 763,
+        "w": 39,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 51,
+        "w": 39,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-rack": {
+      "frame": {
+        "x": 45,
+        "y": 763,
+        "w": 32,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 43,
+        "w": 32,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-collar-left-1": {
+      "frame": {
+        "x": 81,
+        "y": 763,
+        "w": 17,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 51,
+        "w": 17,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-collar-right-1": {
+      "frame": {
+        "x": 102,
+        "y": 763,
+        "w": 17,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 96,
+        "y": 51,
+        "w": 17,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "thrust-5": {
+      "frame": {
+        "x": 123,
+        "y": 763,
+        "w": 61,
+        "h": 31
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 95,
+        "w": 61,
+        "h": 31
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-idle": {
+      "frame": {
+        "x": 188,
+        "y": 763,
+        "w": 39,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 53,
+        "w": 39,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-0": {
+      "frame": {
+        "x": 2,
+        "y": 801,
+        "w": 39,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 53,
+        "w": 39,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-4": {
+      "frame": {
+        "x": 45,
+        "y": 801,
+        "w": 39,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 53,
+        "w": 39,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-0": {
+      "frame": {
+        "x": 88,
+        "y": 801,
+        "w": 39,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 53,
+        "w": 39,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-4": {
+      "frame": {
+        "x": 131,
+        "y": 801,
+        "w": 39,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 53,
+        "w": 39,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "thrust-3": {
+      "frame": {
+        "x": 174,
+        "y": 801,
+        "w": 61,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 95,
+        "w": 61,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-bay-1": {
+      "frame": {
+        "x": 2,
+        "y": 835,
+        "w": 29,
+        "h": 27
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 18,
+        "y": 50,
+        "w": 29,
+        "h": 27
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-1": {
+      "frame": {
+        "x": 35,
+        "y": 835,
+        "w": 39,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 55,
+        "w": 39,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-3": {
+      "frame": {
+        "x": 78,
+        "y": 835,
+        "w": 39,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 55,
+        "w": 39,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-1": {
+      "frame": {
+        "x": 121,
+        "y": 835,
+        "w": 39,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 55,
+        "w": 39,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-3": {
+      "frame": {
+        "x": 164,
+        "y": 835,
+        "w": 39,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 55,
+        "w": 39,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-damage-1": {
+      "frame": {
+        "x": 2,
+        "y": 866,
+        "w": 68,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 29,
+        "y": 64,
+        "w": 68,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "thrust-1": {
+      "frame": {
+        "x": 74,
+        "y": 866,
+        "w": 61,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 95,
+        "w": 61,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-left-2": {
+      "frame": {
+        "x": 139,
+        "y": 866,
+        "w": 39,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 56,
+        "w": 39,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-right-2": {
+      "frame": {
+        "x": 182,
+        "y": 866,
+        "w": 39,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 56,
+        "w": 39,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-feet-stowed": {
+      "frame": {
+        "x": 2,
+        "y": 894,
+        "w": 82,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 22,
+        "y": 65,
+        "w": 82,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-bay-0": {
+      "frame": {
+        "x": 88,
+        "y": 894,
+        "w": 24,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 24,
+        "y": 55,
+        "w": 24,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "thrust-4": {
+      "frame": {
+        "x": 116,
+        "y": 894,
+        "w": 61,
+        "h": 21
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 95,
+        "w": 61,
+        "h": 21
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "thrust-2": {
+      "frame": {
+        "x": 181,
+        "y": 894,
+        "w": 61,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 95,
+        "w": 61,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-hull-1": {
+      "frame": {
+        "x": 2,
+        "y": 920,
+        "w": 61,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 43,
+        "y": 59,
+        "w": 61,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "rig-drill-collar-down-1": {
+      "frame": {
+        "x": 67,
+        "y": 920,
+        "w": 33,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 48,
+        "y": 96,
+        "w": 33,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "tier-mark-hc-3": {
+      "frame": {
+        "x": 104,
+        "y": 920,
+        "w": 16,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 70,
+        "y": 73,
+        "w": 16,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "thrust-0": {
+      "frame": {
+        "x": 124,
+        "y": 920,
+        "w": 61,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 95,
+        "w": 61,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "tier-mark-hc-1": {
+      "frame": {
+        "x": 189,
+        "y": 920,
+        "w": 16,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 71,
+        "y": 77,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "tier-mark-hc-2": {
+      "frame": {
+        "x": 209,
+        "y": 920,
+        "w": 16,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 71,
+        "y": 66,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "tier-mark-hc-4": {
+      "frame": {
+        "x": 229,
+        "y": 920,
+        "w": 16,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 70,
+        "y": 75,
+        "w": 16,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "mission-beacon-emissive": {
+      "frame": {
+        "x": 2,
+        "y": 942,
+        "w": 14,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 41,
+        "y": 8,
+        "w": 14,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "rig-hull-0": {
+      "frame": {
+        "x": 20,
+        "y": 942,
+        "w": 59,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 44,
+        "y": 64,
+        "w": 59,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 64,
+        "h": 64
+      }
+    }
+  },
+  "meta": {
+    "app": "Deep Frontier original layered SVG artwork",
+    "version": "0.3",
+    "image": "w01-core-hero-2x-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 256,
+      "h": 960
+    },
+    "scale": "2",
+    "logicalTile": 48,
+    "rigPivot": [
+      64.0,
+      64.0
+    ],
+    "rigTreadBaseline": 100.0,
+    "framePadding": 2,
+    "zone": "core",
+    "hero": true
+  }
+}

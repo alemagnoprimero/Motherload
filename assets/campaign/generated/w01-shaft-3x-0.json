@@ -1,0 +1,53 @@
+{
+  "frames": {
+    "test-raster": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 132,
+        "h": 132
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 132,
+        "h": 132
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    }
+  },
+  "meta": {
+    "app": "Deep Frontier original layered SVG artwork",
+    "version": "0.3",
+    "image": "w01-shaft-3x-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 192,
+      "h": 192
+    },
+    "scale": "3",
+    "logicalTile": 48,
+    "rigPivot": [
+      96.0,
+      96.0
+    ],
+    "rigTreadBaseline": 150.0,
+    "framePadding": 2,
+    "zone": "shaft",
+    "hero": false
+  }
+}

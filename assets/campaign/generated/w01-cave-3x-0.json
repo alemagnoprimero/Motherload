@@ -1,0 +1,136 @@
+{
+  "frames": {
+    "site-geode": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 260,
+        "h": 136
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 35,
+        "w": 260,
+        "h": 136
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 64
+      }
+    },
+    "pressure-seam": {
+      "frame": {
+        "x": 2,
+        "y": 142,
+        "w": 140,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 15,
+        "w": 140,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "site-core": {
+      "frame": {
+        "x": 2,
+        "y": 242,
+        "w": 260,
+        "h": 94
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 77,
+        "w": 260,
+        "h": 94
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 64
+      }
+    },
+    "site-cache": {
+      "frame": {
+        "x": 2,
+        "y": 340,
+        "w": 260,
+        "h": 75
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 96,
+        "w": 260,
+        "h": 75
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 192
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 64
+      }
+    }
+  },
+  "meta": {
+    "app": "Deep Frontier original layered SVG artwork",
+    "version": "0.3",
+    "image": "w01-cave-3x-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 320,
+      "h": 448
+    },
+    "scale": "3",
+    "logicalTile": 48,
+    "rigPivot": [
+      96.0,
+      96.0
+    ],
+    "rigTreadBaseline": 150.0,
+    "framePadding": 2,
+    "zone": "cave",
+    "hero": false
+  }
+}

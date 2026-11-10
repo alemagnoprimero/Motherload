@@ -4,7 +4,7 @@
       "frame": {
         "x": 2,
         "y": 2,
-        "w": 380,
+        "w": 379,
         "h": 193
       },
       "rotated": false,
@@ -12,7 +12,7 @@
       "spriteSourceSize": {
         "x": 3,
         "y": 88,
-        "w": 380,
+        "w": 379,
         "h": 193
       },
       "sourceSize": {
@@ -30,9 +30,9 @@
     },
     "dock-stage-2": {
       "frame": {
-        "x": 386,
+        "x": 385,
         "y": 2,
-        "w": 380,
+        "w": 379,
         "h": 193
       },
       "rotated": false,
@@ -40,7 +40,7 @@
       "spriteSourceSize": {
         "x": 3,
         "y": 88,
-        "w": 380,
+        "w": 379,
         "h": 193
       },
       "sourceSize": {
@@ -60,7 +60,7 @@
       "frame": {
         "x": 2,
         "y": 199,
-        "w": 380,
+        "w": 379,
         "h": 193
       },
       "rotated": false,
@@ -68,7 +68,7 @@
       "spriteSourceSize": {
         "x": 3,
         "y": 88,
-        "w": 380,
+        "w": 379,
         "h": 193
       },
       "sourceSize": {
@@ -86,7 +86,7 @@
     },
     "sky-body": {
       "frame": {
-        "x": 386,
+        "x": 385,
         "y": 199,
         "w": 223,
         "h": 189
@@ -114,9 +114,9 @@
     },
     "dock-stage-0": {
       "frame": {
-        "x": 613,
+        "x": 612,
         "y": 199,
-        "w": 380,
+        "w": 379,
         "h": 171
       },
       "rotated": false,
@@ -124,7 +124,7 @@
       "spriteSourceSize": {
         "x": 3,
         "y": 110,
-        "w": 380,
+        "w": 379,
         "h": 171
       },
       "sourceSize": {

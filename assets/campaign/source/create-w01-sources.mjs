@@ -19,6 +19,7 @@ import {
   SOCKET_VARIANT,
 } from "./w01-ore.mjs";
 import { writeProvenance } from "../kit/records.mjs";
+import { emissivePair } from "../kit/emissive.mjs";
 
 const source = new URL("./", import.meta.url);
 const O = "#14232b",
@@ -156,7 +157,10 @@ function body(frame) {
     "undercarriage",
     path("M23 79 L32 70 H94 L107 80 L102 97 H29 Z", "#344853", INK, 5),
   );
-  s += layer("track", rect(21, 79, 85, 23, "#1c2c34", 11, INK, 5));
+  // The track's outer edge sits on rigTreadBaseline (100 after the -5 shift):
+  // 79 + 23.5 + 5/2 = 105. At 23 it stopped half a unit short, on a pixel
+  // boundary at @4x, where the tread-baseline check read 199 for 200 (T13b).
+  s += layer("track", rect(21, 79, 85, 23.5, "#1c2c34", 11, INK, 5));
   for (const x of [34, 51, 68, 86, 96])
     s +=
       circle(x, 91, x === 34 || x === 96 ? 8 : 6, "#65767c", INK, 3) +
@@ -349,17 +353,64 @@ function thrust(i) {
       ),
   );
 }
+// Audit T13b, the first -emissive sibling (kit/emissive.mjs): the survey
+// beacon's lamp head. The base draws the glass with the power off; the
+// sibling holds only the lit glass, which the game adds (ADD blend) above the
+// darkness. Off + lit is the lamp's old fill, so where nothing darkens it the
+// beacon looks as it did. The pennant is a painted flag, not a light, and stays
+// in the base.
+const BEACON_LAMP = "#f6e1af";
+const BEACON_LAMP_OFF = "#4b4336";
+const hexAdd = (a, b, sign) =>
+  "#" +
+  [1, 3, 5]
+    .map((i) =>
+      Math.max(
+        0,
+        Math.min(
+          255,
+          parseInt(a.slice(i, i + 2), 16) +
+            sign * parseInt(b.slice(i, i + 2), 16),
+        ),
+      )
+        .toString(16)
+        .padStart(2, "0"),
+    )
+    .join("");
+const BEACON_LAMP_LIT = hexAdd(BEACON_LAMP, BEACON_LAMP_OFF, -1);
+function beaconFrames() {
+  return emissivePair({
+    name: "mission-beacon",
+    width: 96,
+    height: 96,
+    layers: [
+      {
+        name: "beacon",
+        body:
+          path("M48 17 V78 M32 80 H64", "none", O, 8) +
+          path("M48 17 V78 M32 80 H64", "none", "#aabbb6", 4) +
+          path("M49 22 H79 L71 34 H49 Z", "#f0a43c", O, 3),
+      },
+      {
+        // The glass inside the outline (r 8, stroke 3) is r 6.5.
+        name: "beacon-lamp",
+        unlit: circle(48, 15, 8, BEACON_LAMP_OFF, O, 3),
+        lit: circle(48, 15, 6.5, BEACON_LAMP_LIT, "none", 0),
+      },
+      {
+        name: "beacon-signal",
+        body: path(
+          "M24 11 Q15 18 24 27 M72 11 Q81 18 72 27",
+          "none",
+          "#9dbbad",
+          3,
+        ),
+      },
+    ],
+  });
+}
 function mission(kind) {
   let p = "";
-  if (kind === "beacon")
-    return layer(
-      "beacon",
-      path("M48 17 V78 M32 80 H64", "none", O, 8) +
-        path("M48 17 V78 M32 80 H64", "none", "#aabbb6", 4) +
-        path("M49 22 H79 L71 34 H49 Z", "#f0a43c", O, 3) +
-        circle(48, 15, 8, "#f6e1af", O, 3) +
-        path("M24 11 Q15 18 24 27 M72 11 Q81 18 72 27", "none", "#9dbbad", 3),
-    );
   if (kind === "valve")
     p =
       circle(48, 48, 22, "#d39545", O, 4) +
@@ -743,7 +794,9 @@ await save("rig-feet-stowed", 128, 128, feet(false));
 await save("rig-feet-deployed", 128, 128, feet(true));
 await save("rig-rack", 128, 128, rack());
 for (let i = 0; i < 6; i++) await save(`thrust-${i}`, 128, 128, thrust(i));
-for (const k of ["beacon", "valve", "antenna", "core"])
+for (const frame of beaconFrames())
+  await save(frame.name, frame.width, frame.height, frame.body);
+for (const k of ["valve", "antenna", "core"])
   await save(`mission-${k}`, 96, 96, mission(k));
 await save("relic", 96, 96, relic());
 await save("warning-shelf", 96, 96, shelfWarning());

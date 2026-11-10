@@ -5,7 +5,7 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 ## How to read it
 
 - **Pipeline** (D5 in `decisions.md`; pipeline C, painted raster, is gone):
-  - **SVG**: hand-written layered SVG in `assets/campaign/source/` with `data-layer` groups, rasterized by the existing Chromium path (pipeline B).
+  - **SVG**: hand-written layered SVG in `assets/campaign/source/` with `data-layer` groups, rasterized by the asset pipeline's resvg path (pipeline B; a Chromium screenshot until T13b).
   - **Generator**: a seeded script that writes SVG frames or pages, so every variant and every density rebuilds byte-identically. New scripts are pipeline P; extensions of today's generators (`phase0-sources.mjs`, `render-sources.mjs`, `source/create-w01-sources.mjs`) are named in the row.
   - **Shader**: parameters of the T2 field shader or the T1 light stack. Canvas and Medium-tier pages are baked from the same shader code.
   - **Underlay allowed**: a generated image may guide the silhouette (hero props only), with a provenance record; see D5.
@@ -18,10 +18,10 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 
 | # | Asset | Item | Pipeline | Pri | Status | Owner | Waits on |
 |---|---|---|---|---|---|---|---|
-| 1 | Lander, physical damaged stage 0, at the D12 scale | A2 | SVG; underlay allowed | P0 | Exists, to rework (`dock-stage-0` is a wireframe) | Art (A2) | D12 |
+| 1 | Lander, physical damaged stage 0, at the D12 scale | A2 | SVG; underlay allowed | P0 | Exists, to rework (`dock-stage-0` is a wireframe; since T13b each lander stage has its own zone pages at @2x, @3x and @4x, and only the current stage and the next are resident) | Art (A2) | D12 |
 | 2 | Lander stages 1 to 3 | W5 | SVG on asset 1's layers; underlay allowed | P1 | Exists, to rework (`dock-stage-1` to `3`) | Art (W5) | asset 1 |
 | 3 | Lander dish, 6-frame scan | A2 | SVG; frames by transforming one dish group | P0 | Not started | Art (A2) | asset 1 |
-| 4 | Lander emissive: windows, lamps, sparks | A2 | SVG `-emissive` sibling of asset 1 | P0 | Not started | Art (A2) | asset 1; T13b convention; T1 to see it glow |
+| 4 | Lander emissive: windows, lamps, sparks | A2 | SVG `-emissive` sibling of asset 1 | P0 | Not started | Art (A2) | asset 1; T1 to see it glow (the T13b convention is built, in review: kit README "Emissive siblings at runtime") |
 | 5 | Pole lamp, ADD head | A3 | SVG with an emissive sibling | P0 | Not started | Art (A3) | T7 for placement |
 | 6 | Tripod lamp, head, ground pool | A3 | SVG with an emissive sibling | P0 | Not started | Art (A3) | T7 |
 | 7 | Cable strip and plug ends | A3 | SVG; the cable curve is code (Rope or bezier, T7) | P0 | Not started | Art (A3) | T7 |
@@ -32,7 +32,7 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 | 12 | W01 ridges far, mid, near | A4 | Generator (`ridges()` and `w01RidgeLayout()` in `assets/campaign/phase0-sources.mjs`, preset "pyramids"; art kit in `assets/campaign/kit/`) | P0 | Done: signed 2026-11-08 at round 2 in the a02 spawn capture (variant A of three; one dominant peak a page, foothills to 1.45 tiles). Pages `w01-ridge-far`, `-mid`, `-near`, 1024 × 384 at @2x; evidence in `docs/qa/a4-ridges-sky/` | Art (A4) | T7 for the far layer's 0.2 slot; until then the game's 0.35 slot shows the mid layer (`src/campaign/render/art.ts`) |
 | 13 | Sky-body recolour, keeping the board's crescent | A4 | Generator (`skyBody()` in the same file) | P0 | Done: signed 2026-11-08 with asset 12. The board's crescent unflipped, disc `#334a57`, crescent `#d79a61` darkening to the tips; the W01 sky gradient (`scene.ts`) moves to `#112631` to `#354c59`, horizon L\* 28 at spawn | Art (A4) | T7 for the gradient's anchoring to the ground and the planet's size (disc 2.85 tiles in game, about 2.1 on the board) |
 | 14 | Wreck hull, five rib arcs: back, front mound, rust | A5 | SVG; rust from a generated recipe built here and reused by A7 and A14; underlay allowed | P0 | Exists, to rework (shared wedge `site-wreck`) | Art (A5) | T6 for layering in the game |
-| 15 | Beacon tripod, ADD diamond and pool; wall-mounted variant | A6 | SVG; underlay allowed | P0 | Exists, to rework (the game draws the `mission-beacon` object icon at 1.2 × 1.6 tiles, `src/campaign/render/poi-art.ts`; the `site-beacon` wedge is in the atlas but never drawn) | Art (A6) | D14 (which variant leads) |
+| 15 | Beacon tripod, ADD diamond and pool; wall-mounted variant | A6 | SVG; underlay allowed | P0 | Exists, to rework (the game draws the `mission-beacon` object icon at 1.2 × 1.6 tiles, `src/campaign/render/poi-art.ts`; the `site-beacon` wedge is in the atlas but never drawn; T13b split its lamp into the first `-emissive` sibling, `mission-beacon-emissive`, which the game adds above the darkness) | Art (A6) | D14 (which variant leads) |
 | 16 | Stalactites ×9 | A7 | Generator | P0 | Not started | Art (A7) | T5 for placement (prototype render until then) |
 | 17 | Rust drips ×4, drip particle, rust seams | A7 | Generator for drips and particle; seams as a T2 inclusion on known joints near ceilings, not decal strips (signed in A1, 2026-11-08; T2's acceptance includes the band-C ceiling seams) | P0 | Not started | Art (A7); seams in Code (T2) | T5 for drips; T2 for seams |
 | 18 | Floor rubble ×6 | A7 | Generator (rock-chunk recipe) | P0 | Not started | Art (A7) | T5 |
@@ -47,7 +47,7 @@ Started 2026-11-03 (step 2). One row per asset in `docs/ART_QUALITY_AUDIT.md` §
 | 27 | Drill FX: chunks, dust, spark, bit glow, cracks 1 to 4 | A11 | Generator (procedural in T12; cracks extend `crack-1` to `crack-3`) | P0; cracks P1 | Exists, to rework (rectangle debris, 3 crack frames) | Code (T12; cracks in W6) | T1 |
 | 28 | Edge chevron, pulse ring, Scan glyph, leader tick | T8 | SVG | P0 | Not started | Code (T8) | D3 |
 | 38 | Plate and shelf page, 3 crack decals | A14 | Generator (new periodic page script; reuses the wrap masks and hash noise of the band pages in `assets/campaign/render-sources.mjs`, not their plate layout) | P0 | Exists, to rework (the plate layer is diagonal stripes drawn in code, `src/campaign/render/terrain.ts`) | Art (A14) | T14 for the 330 m check |
-| 40 | Rig shading, emissive headlamp | A13 | Generator (rig frames in `create-w01-sources.mjs`, new gradient helpers) | P0 under the recommended D1 | Exists, to rework (rig at concept level, flat shading) | Code (A13) | D1 |
+| 40 | Rig shading, emissive headlamp | A13 | Generator (rig frames in `create-w01-sources.mjs`, new gradient helpers) | P0 under the recommended D1 | Exists, to rework (rig at concept level, flat shading; since T13b the rig is in the hero set with @4x pages, its track edge sits on the tread baseline at every density, and the headlamp can use the `-emissive` convention) | Code (A13) | D1 |
 | 29 | Material and inclusions, band D | W1 | Shader | P1 | Exists, to rework (band D pages) | Code (W1) | D6; G1 |
 | 30 | Back-wall strips, bands A, B, D ×6 | W1 | Generator (A8 recipe with band parameters) | P1 | Not started | Art (W1) | asset 21 |
 | 31 | Band dressing: pebbles, fractures, cables, crystal seams, wall cracks (about 16) | W1 | Generator (A7 recipes); fractures and crystal seams may become T2 inclusions | P1 | Not started | Art (W1) | assets 16 to 20 |

@@ -57,6 +57,58 @@ export interface CampaignDebug {
    * CSS px: the harness counts them with the DOM's playfield text (F6).
    */
   worldLabels(): WorldLabelSnapshot[];
+  /**
+   * Every resident texture with its decoded bytes (width × height × 4, the
+   * `data-resident-texture-bytes` metric) and its F1 readout group; zone
+   * pages (audit T13b) also give their zone, density and atlas world.
+   */
+  textures(): TextureSnapshot[];
+  /**
+   * Frames the scene asked for this run that no resident page could draw,
+   * with how many times; `reset` clears the count after reading it.
+   */
+  frameMisses(reset?: boolean): Record<string, number>;
+  /** The sprites drawn this frame: frame name and texture (page) key. */
+  drawnFrames(): { frame: string; texture: string }[];
+  /**
+   * The `-emissive` siblings drawn this frame (audit T13b), each with the
+   * base sprite it copied: blend mode 1 is ADD.
+   */
+  emissives(): (EmissiveSnapshot & { base: EmissiveSnapshot })[];
+}
+
+/** A sprite's state as `emissives()` reports it, in CSS px. */
+export interface EmissiveSnapshot {
+  frame: string;
+  texture: string;
+  x: number;
+  y: number;
+  originX: number;
+  originY: number;
+  width: number;
+  height: number;
+  rotation: number;
+  flipX: boolean;
+  alpha: number;
+  depth: number;
+  blendMode: number;
+  masked: boolean;
+  visible: boolean;
+}
+
+/** A resident texture, as `textures()` lists it. */
+export interface TextureSnapshot {
+  key: string;
+  bytes: number;
+  width: number;
+  height: number;
+  group: "atlas" | "bands" | "bg" | "layers" | "other";
+  /** core | surface | shaft | cave for zone pages; surface for the sky and ridges. */
+  zone: string | null;
+  /** 2, 3 or 4 for zone pages. */
+  density: number | null;
+  /** The atlas a zone page belongs to. */
+  world: string | null;
 }
 
 /** A canvas world label as last drawn, in CSS px. */

@@ -20,7 +20,7 @@ const lab = (rgb) => {
   ].map((v) => (v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116));
   return [116 * xyz[1] - 16, 500 * (xyz[0] - xyz[1]), 200 * (xyz[1] - xyz[2])];
 };
-// Audit T13a: raster-source frames reach the runtime pages at every scale.
+// Audit T13a: raster-source frames reach the zone pages at @2x and @3x.
 const rasterFrames = JSON.parse(
   await readFile(
     new URL("../assets/campaign/source/frames.json", import.meta.url),
@@ -30,37 +30,47 @@ const rasterFrames = JSON.parse(
   .frames.filter((frame) => frame.source === "raster")
   .map((frame) => frame.name);
 let frames = 0;
-for (const world of ["w01", "w02"])
-  for (const scale of [2, 3]) {
-    const index = await json(`${world}-pages-runtime-${scale}x.json`);
-    assert.equal(index.scale, scale);
+// Audit T13b: the zone pages at every density (decisions.md D1, D5). Each
+// page passes the atlas gates (gutters, trims, sizes, the rig's tread
+// baseline); its frames are scaled to its density; no frame repeats within a
+// density; the raster frames reach @2x and @3x (never @4x: no master).
+let zonePages = 0;
+for (const world of ["w01", "w02"]) {
+  const zones = await json(`${world}-zones.json`);
+  for (const density of [2, 3, 4]) {
     const names = new Set(),
       raster = new Set();
-    for (const page of index.pages) {
+    for (const page of zones.pages.filter((p) => p.density === density)) {
       const png = await readFile(new URL(page.image, directory));
       const atlas = await json(page.data);
       checkCampaignAtlas(png, atlas, []);
-      assert.equal(Number(atlas.meta.scale), scale);
-      assert.deepEqual(atlas.meta.rigPivot, [32 * scale, 32 * scale]);
-      assert.equal(atlas.meta.rigTreadBaseline, 50 * scale);
+      assert.equal(Number(atlas.meta.scale), density);
+      assert.deepEqual(atlas.meta.rigPivot, [32 * density, 32 * density]);
+      assert.equal(atlas.meta.rigTreadBaseline, 50 * density);
       for (const [name, frame] of Object.entries(atlas.frames)) {
-        assert.ok(!names.has(name), "Duplicate frame across pages");
+        assert.ok(!names.has(name), `${name} is on two @${density}x pages`);
         names.add(name);
-        assert.equal(frame.sourceSize.w / frame.logicalSize.w, scale);
-        assert.equal(frame.sourceSize.h / frame.logicalSize.h, scale);
+        assert.equal(frame.sourceSize.w / frame.logicalSize.w, density);
+        assert.equal(frame.sourceSize.h / frame.logicalSize.h, density);
         if (frame.source === "raster") raster.add(name);
         frames++;
       }
+      zonePages++;
     }
     if (world === "w01")
       for (const name of rasterFrames)
-        assert.ok(
+        assert.equal(
           raster.has(name),
-          `Raster frame ${name} is missing from the @${scale}x runtime pages`,
+          density < 4,
+          `Raster frame ${name} on the @${density}x zone pages: ${raster.has(name)}`,
         );
-    assert.ok(names.has("sky-body"));
-    assert.ok(names.has(world === "w01" ? "rig-cabin" : "mission-sample"));
+    assert.ok(names.has(world === "w01" ? "rig-cabin" : "rig-engine-2"));
+    if (density < 4) {
+      assert.ok(names.has("sky-body"));
+      assert.ok(names.has(world === "w01" ? "rig-cabin" : "mission-sample"));
+    }
   }
+}
 const manifest = await json("bands/manifest.json");
 assert.equal(manifest.pages.length, 48);
 const means = {};
@@ -116,7 +126,7 @@ for (const world of ["W01", "W02"])
     }
   }
 console.log(
-  `Render kit verified: ${frames} native scaled sprite frames;48seamlessmacro pages;maximumseam${maximumSeam};material ΔL≥${minimumMaterial.toFixed(1)},band ΔE≥${minimumBand.toFixed(1)}.`,
+  `Render kit verified: ${frames} native scaled sprite frames (${zonePages} zone pages @2x/@3x/@4x);48seamlessmacro pages;maximumseam${maximumSeam};material ΔL≥${minimumMaterial.toFixed(1)},band ΔE≥${minimumBand.toFixed(1)}.`,
 );
 
 // Art item A12 with T9: the tier mark. Its place and size come from one
@@ -126,16 +136,17 @@ console.log(
 // each world's centres. The identification edge stays the gate it was: the
 // 2nd and 98th L* percentiles of the opaque disc pixels must clear every
 // band's soil and rock page means by ΔE ≥ 30 and ΔL ≥ 15, on the @2x and @3x
-// runtime pages. It measures the identification edge, not a misleading
+// runtime pages (the zone pages, audit T13b), and at @4x, where they are
+// hero frames. It measures the identification edge, not a misleading
 // whole-fill average. The size and ring gates read the rendered pixels.
 const MARK_SHARE = 0.18; // audit §5.3 T9: the mark ≤ 0.18 of the ore frame
 const HC_COPPER_DL = 20; // the HC mark's value against copper's body
 const HC_LIGHT_SHARE = 0.45; // the HC disc's field is light (L* ≥ 85); a dark disc with a light glyph reads 0.1 to 0.3
 const HC_MARK_DL = 60; // the HC disc against the normal (dark) disc
 const pagesOf = async (world, scale) => {
-  const index = await json(`${world}-pages-runtime-${scale}x.json`);
+  const zones = await json(`${world}-zones.json`);
   const frames = new Map();
-  for (const page of index.pages) {
+  for (const page of zones.pages.filter((p) => p.density === scale)) {
     const png = await readFile(new URL(page.image, directory));
     const atlas = await json(page.data);
     const pixels = decodeCampaignPixels(png),
@@ -224,9 +235,9 @@ for (const world of ["W01", "W02"])
     );
   }
 const w01Pages = {};
-for (const scale of [2, 3]) w01Pages[scale] = await pagesOf("w01", scale);
+for (const scale of [2, 3, 4]) w01Pages[scale] = await pagesOf("w01", scale);
 for (const world of ["W01", "W02"])
-  for (const scale of [2, 3]) {
+  for (const scale of [2, 3, 4]) {
     const frames =
         world === "W01" ? w01Pages[scale] : await pagesOf("w02", scale),
       k = scale / 2;
@@ -388,5 +399,5 @@ for (const world of ["W01", "W02"])
     );
   }
 console.log(
-  `Tier marks (r ${oreMarkGeometry(1).r} of 96, drawn span ≤ ${maximumSpan.toFixed(3)} of the frame, ≤ ${MARK_SHARE}; no ring inside or outside) on ${markFrames} ore/package frames, W01 and W02, @2x and @3x: identification edge ΔE≥${minimumBadgeE.toFixed(1)}, ΔL≥${minimumBadgeL.toFixed(1)} across all bands; high-contrast marks ≥${minimumHcL.toFixed(1)} L* over copper's body, ≥${(minimumHcLight * 100).toFixed(0)} % light; the socket is translucent (alpha ≤ ${maximumSocketAlpha}). Body-fill contrast and player naming still require visual review.`,
+  `Tier marks (r ${oreMarkGeometry(1).r} of 96, drawn span ≤ ${maximumSpan.toFixed(3)} of the frame, ≤ ${MARK_SHARE}; no ring inside or outside) on ${markFrames} ore/package frames, W01 and W02, @2x, @3x and @4x: identification edge ΔE≥${minimumBadgeE.toFixed(1)}, ΔL≥${minimumBadgeL.toFixed(1)} across all bands; high-contrast marks ≥${minimumHcL.toFixed(1)} L* over copper's body, ≥${(minimumHcLight * 100).toFixed(0)} % light; the socket is translucent (alpha ≤ ${maximumSocketAlpha}). Body-fill contrast and player naming still require visual review.`,
 );

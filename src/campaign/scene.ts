@@ -2,7 +2,11 @@ import Phaser from "phaser";
 import type { Campaign } from "./model";
 import type { CampaignEvent } from "./events";
 import type { CampaignControls, CampaignPackage, CampaignWorld } from "./types";
-import { campaignSafeArea, campaignTileSize } from "./layout";
+import {
+  campaignSafeArea,
+  campaignTileSize,
+  retainedTerrainGrid,
+} from "./layout";
 import {
   CAMERA_ZOOM,
   CampaignView,
@@ -23,6 +27,7 @@ import { mergePilotControls } from "./input";
 import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
 import { W02_HAZARDS } from "./frontier";
 import { RetainedTerrain } from "./render/terrain";
+import { EmissivePass, cellsUnder, spriteBounds } from "./render/emissive";
 import { CampaignLighting } from "./render/lighting";
 import { CampaignArt } from "./render/art";
 import { renderRig } from "./render/rig";
@@ -34,8 +39,23 @@ import {
   poiArtwork,
   poiSecondaryCaption,
 } from "./render/poi-art";
+import {
+  LIGHT_MAP_SCALE,
+  SMALL_TEXTURE_BYTES,
+  TEXTURE_GROUPS,
+  devicePxPerTile,
+  pageByKey,
+  pageWorld,
+  rigZone,
+  textureGroup,
+  type TextureGroup,
+} from "./render/zones";
 export { campaignSafeArea, campaignTileSize } from "./layout";
 
+/**
+ * Each world's atlas label (`data-world-texture`) and the prefix of its zone
+ * page keys (render/zones.ts, audit T13b): campaign-w01-core-hero-3x-0, …
+ */
 export const CAMPAIGN_TEXTURE = "campaign-w01";
 export const FRONTIER_TEXTURE = "campaign-w02";
 /**
@@ -112,7 +132,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private frameP95: number | undefined;
     private art!: CampaignArt;
     private diagnostics!: RenderDiagnostics;
+    /** The hero pages' density, 2 | 3 | 4 (D1; surface-render-smoke reads it). */
     private artQuality = 2;
+    /** Frames image() could not draw (no resident page holds them), by name. */
+    private frameMisses = new Map<string, number>();
+    /** The F1 readout group of each texture key, classified once (T13b). */
+    private textureGroups = new Map<string, TextureGroup>();
     private contextZoom = 1;
     /** F5: the zoom's spring velocity, per second. */
     private zoomVelocity = 0;
@@ -141,6 +166,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private wreckMaskShape!: Phaser.GameObjects.Graphics;
     private wreckMask!: Phaser.Display.Masks.GeometryMask;
     private images: Phaser.GameObjects.Image[] = [];
+    /** T13b: `-emissive` siblings, ADD above the darkness, own pool. */
+    private emissive!: EmissivePass;
     private labels: Phaser.GameObjects.Text[] = [];
     private skyGradient!: Phaser.GameObjects.Image;
     private sky!: Phaser.GameObjects.TileSprite;
@@ -211,31 +238,122 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.artFailed = true;
       });
       this.art = new CampaignArt(this);
-      this.art.preload(bindings.getCampaign());
+      this.art.preload(
+        bindings.getCampaign(),
+        this.artLayout(
+          host?.clientWidth || 1280,
+          host?.clientHeight || 720,
+          this.renderTier(),
+        ),
+      );
+    }
+
+    /** F1's quality tier, from the renderer and the device (§7). */
+    private renderTier() {
+      const webgl = this.game.renderer.type !== Phaser.CANVAS;
+      let fragmentHighp = false;
+      if (webgl) {
+        const gl = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer)
+          .gl;
+        fragmentHighp =
+          (gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
+            ?.precision ?? 0) > 0;
+      }
+      return qualityTier(
+        webgl ? "webgl" : "canvas",
+        fragmentHighp,
+        matchMedia("(pointer: coarse)").matches,
+      );
+    }
+
+    /** F1's backing ceiling, min(DPR, Render quality, 2), or the debug pin. */
+    private backingCap() {
+      // The pin from the URL: preload runs before create() sets the budget's.
+      return (
+        this.renderDebug.backingPin ??
+        Math.max(
+          1,
+          Math.min(
+            window.devicePixelRatio || 1,
+            bindings.renderScale?.() ?? 2,
+            2,
+          ),
+        )
+      );
+    }
+
+    /**
+     * Audit T13b: what page choice reads of the screen. Device px per tile
+     * from the base tile and the backing ceiling (D1), and the bytes of the
+     * render layers the budget guard projects: the retained terrain as
+     * render/terrain.ts sizes it (layout.ts), the light map and small canvases.
+     */
+    private artLayout(
+      cssWidth: number,
+      cssHeight: number,
+      tier = this.resolutionBudget.tier,
+    ) {
+      const cap = this.backingCap(),
+        tile = this.renderDebug.tile;
+      const terrain = retainedTerrainGrid(
+        cssWidth,
+        cssHeight,
+        tile ?? campaignTileSize(cssWidth, cssHeight),
+        cap,
+        matchMedia("(pointer: coarse)").matches,
+      );
+      // Rows surely on screen around the rig: campaignCameraY anchors it at
+      // 43–57 % of the usable height, with up to a tile of look-ahead, and the
+      // context zoom is at most the inspection zoom.
+      const safe = this.view.safe,
+        usable = Math.max(100, cssHeight - safe.top - safe.bottom),
+        largest =
+          (tile ?? campaignTileSize(cssWidth, cssHeight)) *
+          CAMERA_ZOOM.inspection;
+      return {
+        viewRows: {
+          above: Math.max(0, (safe.top + usable * 0.43) / largest - 1),
+          below: Math.max(
+            0,
+            (cssHeight - safe.top - usable * 0.57) / largest - 1,
+          ),
+        },
+        pxPerTile: devicePxPerTile(cssWidth, cssHeight, cap, tile),
+        tier,
+        layerBytes:
+          terrain.pixelWidth * terrain.pixelHeight * 4 +
+          Math.ceil(cssWidth * LIGHT_MAP_SCALE) *
+            Math.ceil(cssHeight * LIGHT_MAP_SCALE) *
+            4 +
+          SMALL_TEXTURE_BYTES,
+      };
     }
 
     create() {
-      const required = [
-        "sky-body",
-        "rig-body-0",
-        "rig-cabin",
-        "rig-drill-down-0",
-        "ore-o1",
-        "ore-o4",
-        "package-o1",
-        "mission-core",
-        "dock-stage-0",
-        "dock-stage-3",
-      ];
+      // T13b: the manifests list the frames the game needs, and the core
+      // pages of every atlas in play are resident.
+      const campaign = bindings.getCampaign();
       this.artFailed ||=
-        !this.textures.exists(CAMPAIGN_TEXTURE) ||
-        required.some((name) => !this.textures.get(CAMPAIGN_TEXTURE).has(name));
-      this.artFailed ||=
-        bindings.getCampaign().world.id === "W02" &&
-        (!this.textures.exists(FRONTIER_TEXTURE) ||
-          ["ore-o3", "mission-sample", "mission-catalyst", "sky-body"].some(
-            (name) => !this.textures.get(FRONTIER_TEXTURE).has(name),
-          ));
+        !this.art.coreReady(campaign) ||
+        this.art.missingFrames("W01", [
+          "sky-body",
+          "rig-body-0",
+          "rig-cabin",
+          "rig-drill-down-0",
+          "ore-o1",
+          "ore-o4",
+          "package-o1",
+          "mission-core",
+          "dock-stage-0",
+          "dock-stage-3",
+        ]).length > 0 ||
+        (campaign.world.id === "W02" &&
+          this.art.missingFrames("W02", [
+            "ore-o3",
+            "mission-sample",
+            "mission-catalyst",
+            "sky-body",
+          ]).length > 0);
       this.art.created();
       const initialPrefix =
         bindings.getCampaign().world.id === "W02" ? "frontier" : "campaign";
@@ -254,22 +372,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.resolutionBudget.sample(milliseconds, dt);
       });
       // Quality tier is chosen once, from the renderer and the device (§7).
-      const webgl = this.game.renderer.type !== Phaser.CANVAS;
-      let fragmentHighp = false;
-      if (webgl) {
-        const gl = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer)
-          .gl;
-        fragmentHighp =
-          (gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
-            ?.precision ?? 0) > 0;
-      }
-      this.resolutionBudget.setTier(
-        qualityTier(
-          webgl ? "webgl" : "canvas",
-          fragmentHighp,
-          matchMedia("(pointer: coarse)").matches,
-        ),
-      );
+      this.resolutionBudget.setTier(this.renderTier());
       this.resolutionBudget.pin = this.renderDebug.backingPin;
       // Boot uploads and shader compilation are a loading window.
       this.resolutionBudget.hold(1);
@@ -315,6 +418,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.installDebugHooks();
       this.wreckMaskShape = this.add.graphics().setVisible(false);
       this.wreckMask = this.wreckMaskShape.createGeometryMask();
+      // T13b: the ADD pool for -emissive siblings (render/emissive.ts).
+      this.emissive = new EmissivePass(
+        () => this.add.image(0, 0, "__DEFAULT").setVisible(false),
+        this.renderDebug.emissive,
+      );
       // Stretch a gradient once; only the transparent stars may tile. The
       // former combined sky repeated its planet and horizon on tall displays.
       // W01 (art item A4): the board's sky, palette.json sky_top at the
@@ -549,6 +657,60 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
                 label.y < this.view.height &&
                 label.y + label.height > 0,
             ),
+        textures: () =>
+          Object.entries(this.textures.list)
+            .map(([key, texture]) => {
+              const page = pageByKey(key),
+                group = textureGroup(key);
+              return {
+                key,
+                bytes: texture.source.reduce(
+                  (bytes: number, source: Phaser.Textures.TextureSource) =>
+                    bytes + source.width * source.height * 4,
+                  0,
+                ),
+                width: texture.source[0]?.width ?? 0,
+                height: texture.source[0]?.height ?? 0,
+                group,
+                zone: page?.zone ?? (group === "bg" ? "surface" : null),
+                density: page?.density ?? null,
+                world: pageWorld(key) ?? null,
+              };
+            })
+            .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0)),
+        frameMisses: (reset = false) => {
+          const misses = Object.fromEntries(this.frameMisses);
+          if (reset) this.frameMisses.clear();
+          return misses;
+        },
+        drawnFrames: () =>
+          this.images
+            .filter((image) => image.visible)
+            .map((image) => ({
+              frame: image.frame.name,
+              texture: image.texture.key,
+            })),
+        emissives: () =>
+          this.emissive.drawn().map(({ sprite, base }) => {
+            const state = (image: Phaser.GameObjects.Image) => ({
+              frame: image.frame.name,
+              texture: image.texture.key,
+              x: image.x,
+              y: image.y,
+              originX: image.originX,
+              originY: image.originY,
+              width: image.displayWidth,
+              height: image.displayHeight,
+              rotation: image.rotation,
+              flipX: image.flipX,
+              alpha: image.alpha,
+              depth: image.depth,
+              blendMode: Number(image.blendMode),
+              masked: Boolean(image.mask),
+              visible: image.visible,
+            });
+            return { ...state(sprite), base: state(base) };
+          }),
       };
       this.debugHooks = hooks;
       window.__campaignDebug = hooks;
@@ -563,6 +725,65 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.overlaysVisible = visible;
       if (visible) delete document.body.dataset.annotations;
       else document.body.dataset.annotations = "off";
+    }
+
+    /**
+     * T13b: the sky and ridges stream with band A (render/art.ts). A tile
+     * sprite draws from its own copy of its texture, so while the texture is
+     * out the sprite points at Phaser's 32 px default (which frees that copy
+     * too), and back at the texture once it is resident again.
+     */
+    private syncBackgrounds(prefix: string) {
+      for (const [sprite, part] of [
+        [this.sky, "sky"],
+        [this.ridgeFar, "ridge-far"],
+        [this.ridgeNear, "ridge-near"],
+      ] as const) {
+        const key = `${prefix}-${part}`;
+        const target = this.textures.exists(key) ? key : "__DEFAULT";
+        // A tile sprite's `texture` is its own canvas; `displayTexture` (not
+        // in Phaser's typings) is the one setTexture() copies from.
+        const shown = (sprite as { displayTexture?: Phaser.Textures.Texture })
+          .displayTexture;
+        if (shown !== this.textures.get(target)) sprite.setTexture(target);
+      }
+    }
+
+    /**
+     * Resident texture bytes in all and per F1 readout group (T13b), every
+     * frame for the dataset: one pass over the TextureManager, with each key's
+     * group classified once.
+     */
+    private residentTextures() {
+      const groups = Object.fromEntries(
+        TEXTURE_GROUPS.map((group) => [group, 0]),
+      ) as Record<TextureGroup, number>;
+      let total = 0;
+      const pages: string[] = [];
+      for (const [key, texture] of Object.entries(this.textures.list)) {
+        let bytes = 0;
+        for (const source of texture.source)
+          bytes += source.width * source.height * 4;
+        let group = this.textureGroups.get(key);
+        if (!group) this.textureGroups.set(key, (group = textureGroup(key)));
+        groups[group] += bytes;
+        total += bytes;
+        if (group === "atlas") pages.push(key);
+      }
+      const art = this.art.state();
+      const zone = art ? rigZone(art.band, art.row) : "surface";
+      const plain = art?.densities.plain[zone] ?? 2,
+        hero = art?.densities.hero ?? 2;
+      return {
+        total,
+        groups,
+        zone,
+        density: plain === hero ? `${plain}` : `${plain}/${hero}`,
+        guard: art?.stepped ?? [],
+        /** The guard's projection is over the form's §7 budget. */
+        over: art?.fits === false,
+        pages: pages.sort(),
+      };
     }
 
     private inspectableAt(screenX: number, screenY: number) {
@@ -649,38 +870,30 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       originY = 0.5,
     ) {
       if (!this.overlaysVisible && ANNOTATION_FRAMES.has(frame)) return false;
-      const icy = bindings.getCampaign().state.currentWorld === "W02";
-      const sharedUpgrade =
-        /^rig-(engine|energy|bay|hull)-2$/.test(frame) ||
-        /^rig-drill-collar-(left|right|down)-2$/.test(frame);
-      const worldFrame = icy
-        ? frame
-            .replace(/^soil-(\d+)$/, "ice-$1")
-            .replace(/^stone-(\d+)$/, "frozen-rock-$1")
-        : frame;
-      let texture =
-        (icy || frame.startsWith("tool-") || sharedUpgrade) &&
-        this.textures.exists(FRONTIER_TEXTURE) &&
-        this.textures.get(FRONTIER_TEXTURE).has(worldFrame)
-          ? FRONTIER_TEXTURE
-          : CAMPAIGN_TEXTURE;
-      let actualFrame = texture === FRONTIER_TEXTURE ? worldFrame : frame;
+      const currentWorld = bindings.getCampaign().state.currentWorld;
+      const worldFrame =
+        currentWorld === "W02"
+          ? frame
+              .replace(/^soil-(\d+)$/, "ice-$1")
+              .replace(/^stone-(\d+)$/, "frozen-rock-$1")
+          : frame;
+      // T13b: the owner atlas comes from the manifests (W02's for W02 frames,
+      // tools and shared upgrades); the page from what is resident.
+      const owner = this.art.owner(worldFrame, currentWorld);
+      let actualFrame = owner === "W02" ? worldFrame : frame;
+      let texture: string | undefined;
       if (frame.startsWith("fx-glint-")) {
         texture = "campaign-" + frame;
         actualFrame = "__BASE";
-      }
-      if (!frame.startsWith("fx-glint-"))
-        texture =
-          this.art.textureFor(
-            actualFrame,
-            texture === FRONTIER_TEXTURE ? "W02" : "W01",
-            this.artQuality,
-          ) ?? texture;
+      } else texture = this.art.textureFor(actualFrame, owner);
       if (
+        !texture ||
         !this.textures.exists(texture) ||
         !this.textures.get(texture).has(actualFrame)
-      )
+      ) {
+        this.frameMisses.set(frame, (this.frameMisses.get(frame) ?? 0) + 1);
         return false;
+      }
       const displayWidth = Math.round(width * this.view.dpr) / this.view.dpr;
       const displayHeight = Math.round(height * this.view.dpr) / this.view.dpr;
       let image = this.images[this.imageIndex++];
@@ -776,6 +989,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.view.dpr;
       // T1-lite: remember the cabin, whose lens the headlamp core sits on.
       if (frame === "rig-cabin") this.rigCabin = image;
+      // T13b: its -emissive sibling, if the page has one, is drawn from this
+      // sprite's final state once the frame's last sprite is (emissive.draw).
+      this.emissive.queue(image, owner, actualFrame, depth);
       return true;
     }
 
@@ -988,8 +1204,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.contextZoom = zoom.position;
         this.zoomVelocity = zoom.velocity;
       }
-      const contextTile =
-        campaignTileSize(cssWidth, cssHeight) * this.contextZoom;
+      // T13b: `?tile=` (debug only) stands in for campaignTileSize().
+      const baseTile =
+        this.renderDebug.tile ?? campaignTileSize(cssWidth, cssHeight);
+      const contextTile = baseTile * this.contextZoom;
       this.view.configure(
         cssWidth,
         cssHeight,
@@ -1021,12 +1239,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         for (const label of this.labels) label.setResolution(renderDpr);
       }
       const campaign = bindings.getCampaign();
-      this.artQuality = matchMedia("(pointer: coarse)").matches
-        ? 2
-        : this.view.tile * this.view.dpr > 110
-          ? 3
-          : 2;
-      this.art.update(campaign, this.artQuality);
+      // T13b (D1): zone pages by device px per tile, never by pointer type.
+      this.art.update(campaign, this.artLayout(cssWidth, cssHeight));
+      this.artQuality = this.art.state()?.densities.hero ?? 2;
       // Asset loading and the uploads it causes are not steady-state frames.
       if (this.load.isLoading() || !this.art.ready(campaign))
         this.resolutionBudget.hold(1);
@@ -1135,6 +1350,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           icy ? "frontier-ridge-near" : "campaign-ridge-near",
         );
       }
+      this.syncBackgrounds(icy ? "frontier" : "campaign");
       const vehicle = campaign.state.vehicle;
       const jumped =
         Math.abs(campaign.renderY - this.previousY) > 8 ||
@@ -1350,11 +1566,14 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.imageIndex = 0;
       this.labelIndex = 0;
       this.rigCabin = undefined; // T1-lite
+      this.emissive.begin(); // T13b
 
       // The opaque retained terrain and sky cover the view. Older parallax
       // polygons behind them were fully occluded but still consumed fill rate.
       this.skyGradient.setVisible(surfaceY > 0);
-      this.sky.setVisible(surfaceY > 0);
+      // A tile sprite under 1 px high has a 0-high canvas, which Canvas 2D
+      // cannot draw (drawImage throws and stops the game loop).
+      this.sky.setVisible(surfaceY >= 1);
       this.ridgeFar.setVisible(surfaceY > 0);
       this.ridgeNear.setVisible(surfaceY > 0);
       let skyBodyVisible = false;
@@ -1403,7 +1622,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.ridgeNear.tilePositionX = (cx * 0.6) / scale;
       }
 
-      this.terrainLayer.render(campaign, this.view, highContrast);
+      this.terrainLayer.render(campaign, this.view, highContrast, baseTile);
       this.lightingLayer.render(
         campaign,
         this.view,
@@ -2032,7 +2251,12 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               tile -
             cx,
           y = seam.y * tile - cy;
+        // Only seams in view draw (T13b: off-screen ones may lie in bands
+        // whose pages are not resident); their warning below still shows.
+        const inView =
+          x > -tile && x < width + tile && y > -tile && y < height + tile;
         if (
+          inView &&
           this.image(
             "pressure-seam",
             x,
@@ -2209,6 +2433,18 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         damageLife: this.damageLife,
         overlays: this.overlaysVisible,
       });
+      // T13b: every sprite of the frame is drawn; their -emissive siblings
+      // follow. A sibling keeps its base's wreck mask (known cells) only when
+      // its drawn box reaches a cell the mask leaves out; elsewhere the mask
+      // passes every pixel, and the sibling joins the ADD run unmasked.
+      this.emissive.draw((sprite) =>
+        cellsUnder(spriteBounds(sprite), cx, cy, tile).some(
+          ([column, row]) =>
+            row < 0 ||
+            row >= world.rows ||
+            !campaign.isKnown(wrap(column, world.width), row),
+        ),
+      );
       // T1-lite: the headlamp core follows the cabin sprite just drawn.
       this.headlamp.render(this.rigCabin, tile);
       // T1-lite: the surface ground light follows the rig and the ground line.
@@ -2263,14 +2499,26 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.screen.setVisible(this.overlaysVisible);
       // Twice a second of scene time: the 10 s p95 and the readout.
       this.frameReadoutTimer += dt;
+      const resident = this.residentTextures();
       if (this.frameReadoutTimer >= 0.5) {
         this.frameReadoutTimer = 0;
         this.frameP95 = this.resolutionBudget.p95();
+        const mib = (bytes: number) => (bytes / 2 ** 20).toFixed(1);
         if (this.frameReadout)
           this.frameReadout.textContent =
             `p95 ${this.frameP95 === undefined ? "—" : this.frameP95.toFixed(1) + " ms"}\n` +
             `backing ${Number(this.view.dpr.toFixed(2))}× · ${this.resolutionBudget.tier}` +
             (this.resolutionBudget.pin === undefined ? "" : " · pinned") +
+            // T13b: resident texture bytes, by group, and the page densities.
+            `\ntex ${mib(resident.total)} MiB · ${world.id} ${resident.zone} (` +
+            TEXTURE_GROUPS.map(
+              (group) => `${group} ${mib(resident.groups[group])}`,
+            ).join(" · ") +
+            `) · pages @${resident.density.replace("/", "x/@")}x` +
+            (resident.guard.length
+              ? ` · guard ${resident.guard.join(",")} @2x`
+              : "") +
+            (resident.over ? " · over §7" : "") +
             // One line per policy segment: next step, probation, back-off.
             `\n${backoffLine(this.resolutionBudget.state()).replaceAll(" · ", "\n")}`;
       }
@@ -2320,18 +2568,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           qualityTier: this.resolutionBudget.tier,
           backingPinned: String(this.resolutionBudget.pin !== undefined),
           frameP95: this.frameP95?.toFixed(1) ?? "",
-          residentTextureBytes: String(
-            Object.values(this.textures.list).reduce(
-              (sum, texture) =>
-                sum +
-                texture.source.reduce(
-                  (bytes: number, source: Phaser.Textures.TextureSource) =>
-                    bytes + source.width * source.height * 4,
-                  0,
-                ),
-              0,
-            ),
-          ),
+          residentTextureBytes: String(resident.total),
+          // T13b: -emissive siblings drawn this frame (ADD).
+          emissiveSprites: String(this.emissive.count),
+          // T13b: the rig's zone, bytes per readout group, page densities.
+          residentTextureZone: resident.zone,
+          residentTextureGroups: JSON.stringify(resident.groups),
+          atlasDensity: resident.density,
+          atlasGuard: resident.guard.join(","),
+          atlasPages: resident.pages.join(","),
           terrainDirtyCells: String(this.terrainLayer.dirtyCells),
           terrainUploads: String(this.terrainLayer.draws),
           renderLayerBytes: String(

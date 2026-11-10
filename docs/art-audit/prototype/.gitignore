@@ -8,3 +8,5 @@ out/swiftshader-baseline.json
 game/
 # Older instructions copied the game atlas here; render.mjs now reads it from assets/.
 assets/w01-atlas-3x-0.*
+assets/w01-zones.json
+assets/w01-*-3x-*.*

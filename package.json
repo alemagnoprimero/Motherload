@@ -8,6 +8,7 @@
     "build": "npm run campaign:check && tsc --noEmit && vite build",
     "assets:build": "npm run campaign:assets",
     "assets:check": "node scripts/check-campaign-assets.mjs && node scripts/check-frontier-assets.mjs && node scripts/check-render-assets.mjs",
+    "assets:rebuild": "node assets/campaign/source/create-w01-sources.mjs && node assets/campaign/w02/create-sources.mjs && node scripts/build-campaign-assets.mjs && node scripts/build-frontier-assets.mjs && node scripts/build-band-assets.mjs",
     "campaign:check": "node scripts/check-campaign-data.mjs && npm run assets:check",
     "campaign:assets": "node scripts/build-campaign-assets.mjs",
     "frontier:assets": "node scripts/build-frontier-assets.mjs",
@@ -45,7 +46,9 @@
     "phaser": "3.90.0"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "2.6.2",
     "@ruffle-rs/ruffle": "0.7.1",
+    "pako": "2.1.0",
     "playwright-core": "1.64.1",
     "prettier": "3.9.10",
     "typescript": "7.0.2",

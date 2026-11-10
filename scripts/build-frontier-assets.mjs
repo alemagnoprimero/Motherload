@@ -1,8 +1,16 @@
-/** Authoring only. Normal builds validate committed W02 files using Node alone. */
+/**
+ * Authoring only. Normal builds validate committed W02 files using Node alone.
+ * Audit T13b: byte-identical on every machine, like build-campaign-assets.mjs.
+ */
 import { mkdir, readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { rasterizeCampaignSources } from "./rasterize-campaign-svgs.mjs";
+import {
+  RASTERIZER,
+  rasterizeCampaignSources,
+} from "./rasterize-campaign-svgs.mjs";
+import { CANONICAL_PNG, canonicalizePngs, pngFiles } from "./png-canonical.mjs";
+import { buildZonePages } from "./build-zone-pages.mjs";
 
 const root = new URL("../", import.meta.url);
 const source = new URL("assets/campaign/w02/", root);
@@ -18,25 +26,13 @@ await Promise.all([
 await rasterizeCampaignSources(source, temporary, manifest);
 
 const packing = String.raw`
-import json, math
+import json, sys
 from pathlib import Path
 from PIL import Image
-root=Path(__import__('sys').argv[1]);source=root/'assets/campaign/w02';out=root/'assets/campaign/generated';renders=root/'.cache/frontier-renders'
-m=json.loads((source/'frames.json').read_text());padding=2;width=1024;x=padding;y=padding;shelf=0;positions={}
-for f in sorted(m['frames'],key=lambda a:(-a['height'],-a['width'],a['name'])):
- w,h=f['width'],f['height']
- if x+w+padding>width:x=padding;y+=shelf+padding*2;shelf=0
- positions[f['name']]=(x,y,w,h);x+=w+padding*2;shelf=max(shelf,h)
-height=math.ceil((y+shelf+padding)/64)*64
-if height>2048:raise ValueError(f'W02 atlas height {height} exceeds mobile budget')
-atlas=Image.new('RGBA',(width,height));frames={}
-for f in m['frames']:
- x,y,w,h=positions[f['name']];im=Image.open(renders/(f['name']+'.png')).convert('RGBA')
- if im.size!=(w,h):raise ValueError(f"Wrong raster dimensions: {f['name']}")
- atlas.paste(im,(x,y));frames[f['name']]={'frame':{'x':x,'y':y,'w':w,'h':h},'rotated':False,'trimmed':False,'spriteSourceSize':{'x':0,'y':0,'w':w,'h':h},'sourceSize':{'w':w,'h':h},'pivot':f.get('pivot',{'x':.5,'y':.5}),'logicalSize':{'w':f['logicalWidth'],'h':f['logicalHeight']}}
-atlas.save(out/'w02-atlas.png',optimize=True)
-(out/'w02-atlas.json').write_text(json.dumps({'frames':frames,'meta':{'app':'Motherload original W02 2D artwork','version':'0.1','image':'w02-atlas.png','format':'RGBA8888','size':{'w':width,'h':height},'scale':'2','logicalTile':48,'rigPivot':m['rigPivot'],'rigTreadBaseline':m['rigTreadBaseline'],'framePadding':padding}},indent=2)+'\n')
-for f in m['backgrounds']:Image.open(renders/(f['name']+'.png')).convert('RGBA').save(out/(f['name']+'.png'),optimize=True)
+root=Path(sys.argv[1]);source=root/'assets/campaign/w02';out=root/'assets/campaign/generated';renders=root/'.cache/frontier-renders'
+m=json.loads((source/'frames.json').read_text())
+# Intermediates: png-canonical.mjs re-encodes every PNG at the end of the build.
+for f in m['backgrounds']:Image.open(renders/(f['name']+'.png')).convert('RGBA').save(out/(f['name']+'.png'),compress_level=1)
 registry=json.loads((source/'asset-map.json').read_text())
 icons=out/'w02-icons';icons.mkdir(exist_ok=True)
 def icon_image(name,size):
@@ -47,53 +43,59 @@ def icon_image(name,size):
 iconcount=0
 for f in m['frames']:
  if f.get('category') in ('mineral','package','mission','relic','equipment','core_hardware','hazard','world'):
-  for size in (64,128):icon_image(f['name'],size).save(icons/(f['name']+f'-{size}.png'),optimize=True);iconcount+=1
+  for size in (64,128):icon_image(f['name'],size).save(icons/(f['name']+f'-{size}.png'),compress_level=1);iconcount+=1
 for assetid,record in registry['assets'].items():
  for size in record['iconSizes']:
-  icon_image(record['icon'],size).save(icons/(assetid.lower()+f'-icon-{size}.png'),optimize=True);iconcount+=1
-registry['provenance']={'renderer':'Chromium SVG rasterizer','packing':'Node orchestrates Pillow lossless RGBA packing','source':'assets/campaign/w02/*.svg','authoring':'node assets/campaign/w02/create-sources.mjs; node scripts/build-frontier-assets.mjs','frameCount':len(frames),'backgroundCount':len(m['backgrounds']),'iconCount':iconcount}
+  icon_image(record['icon'],size).save(icons/(assetid.lower()+f'-icon-{size}.png'),compress_level=1);iconcount+=1
+registry['provenance']={'renderer':sys.argv[2],'packing':'Node orchestrates Pillow lossless RGBA packing; '+sys.argv[3],'source':'assets/campaign/w02/*.svg','authoring':'node assets/campaign/w02/create-sources.mjs; node scripts/build-frontier-assets.mjs','frameCount':len(m['frames']),'backgroundCount':len(m['backgrounds']),'iconCount':iconcount}
 (out/'w02-assets.json').write_text(json.dumps(registry,indent=2)+'\n')
-print(f"W02 atlas: {len(frames)} original frames, {width}x{height}, {(out/'w02-atlas.png').stat().st_size//1024}KiB; {iconcount} icons and three backgrounds exported.")
+print(f"W02: {len(m['frames'])} original frames; {iconcount} icons and {len(m['backgrounds'])} backgrounds exported.")
 `;
 const result = spawnSync(
   process.env.PYTHON || "python",
-  ["-c", packing, fileURLToPath(root)],
+  ["-c", packing, fileURLToPath(root), RASTERIZER, CANONICAL_PNG],
   { stdio: "inherit" },
 );
 if (result.status !== 0) process.exit(result.status || 1);
 
-for (const scale of [2, 3]) {
-  if (scale === 3) {
-    const renders3 = new URL(".cache/frontier-renders-3x/", root);
-    await mkdir(renders3, { recursive: true });
-    await rasterizeCampaignSources(
-      source,
-      renders3,
-      { ...manifest, backgrounds: [] },
-      1.5,
-    );
-  }
+// Every density is rendered from source (decisions.md D5): @3x at scale 1.5.
+const renders3 = new URL(".cache/frontier-renders-3x/", root);
+await mkdir(renders3, { recursive: true });
+await rasterizeCampaignSources(
+  source,
+  renders3,
+  { ...manifest, backgrounds: [] },
+  1.5,
+);
+const pack = (...args) => {
   const packed = spawnSync(
     process.env.PYTHON || "python",
     [
       fileURLToPath(new URL("scripts/pack-campaign-atlas.py", root)),
       fileURLToPath(root),
       "w02",
-      String(scale),
+      ...args,
     ],
     { stdio: "inherit" },
   );
   if (packed.status !== 0) process.exit(packed.status || 1);
-  const runtime = spawnSync(
-    process.env.PYTHON || "python",
-    [
-      fileURLToPath(new URL("scripts/pack-campaign-atlas.py", root)),
-      fileURLToPath(root),
-      "w02",
-      String(scale),
-      "runtime",
-    ],
-    { stdio: "inherit" },
-  );
-  if (runtime.status !== 0) process.exit(runtime.status || 1);
-}
+};
+// The full @2x atlas: every frame, for the asset checks.
+pack("2");
+// Audit T13b: zone pages at @2x, @3x and (hero set) @4x, and their manifest.
+await buildZonePages({
+  root,
+  world: "W02",
+  source,
+  manifest,
+  renders: temporary,
+});
+
+// Audit T13b: one encoding for every PNG this build wrote.
+const canonical = await canonicalizePngs([
+  ...(await pngFiles(output, (name) => name.startsWith("w02-"))),
+  ...(await pngFiles(new URL("w02-icons/", output))),
+]);
+console.log(
+  `W02: ${canonical.files} PNGs in canonical form (${canonical.rewritten} re-encoded).`,
+);
