@@ -34,6 +34,28 @@
  *              field quad alone (no light, no rig); with the clock frozen
  *              both change at once; texels farther than 1.2 tiles from the
  *              dug cell do not change.
+ *   look       the material and geometry rows T2 answers for (§9.2, §5.3
+ *              T2), at backing 1 on frames in every band of both worlds, the
+ *              SITE-4 cavern on two seeds among them: unknown rock luma in
+ *              range with sd ≥ 7; lit known rock, and lit hard rock alone,
+ *              ≥ +15 over unknown near the lamp; rock sd within 3 tiles of
+ *              the lamp ≥ 15; floors within 2 px of the collision line;
+ *              walls and ceilings within 0.3 tile and 5 % of pixels;
+ *              1-cell pillars flat for ≥ 0.8 tile; the natural-cave boundary
+ *              ≤ 30 % axis-aligned; the frame's L* within 4 of its concept
+ *              panel's at 60 m and SITE-4.
+ *   ring       a world taller than one texture: with ?fieldmax=512 the field
+ *              holds 31 of W01's 63 rows as a ring that follows the camera.
+ *              The field quad must match the whole texture's at 60 m, after
+ *              a dig that moves the window, and at SITE-4 (no pixel more
+ *              than 2 levels off: the two textures round a coordinate
+ *              differently here and there), with at most one upload per
+ *              frame on the way.
+ *   seam       x = 0, where the world wraps: the field quad alone, drawn
+ *              one world width apart, is the same picture (no pixel more
+ *              than 4 levels off: float rounding at edges), and the
+ *              luma step across the seam's column is within 2 of the median
+ *              step across the other cell boundaries in the frame.
  *   draws      GL draw calls and texture uploads in still frames (desktop
  *              @2 and phone @3).
  *   context    WEBGL_lose_context: lose and restore the context; the field
@@ -43,12 +65,14 @@
  *              rasteriser, not the technique (audit §7, "CI time").
  *
  * Environment: PREVIEW_URL; T2_DIR (artifacts/t2); T2_CHECKS, a comma list
- * (default tier,scramble,poi,dig,digcost,motion,draws,context); T2_FIELDS (1,0);
+ * (default tier,scramble,poi,dig,digcost,motion,look,ring,seam,draws,
+ * context); T2_FIELDS (1,0);
  * T2_PLAY_SECONDS (12); T2_THROTTLE (1); T2_DIG_FRAMES (600);
  * T2_DIGCOST_ASSERT=0 reports the dig cost without asserting the 2 ms limit.
  */
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { launchBrowser } from "./browser-launch.mjs";
 import {
@@ -61,7 +85,7 @@ import {
   importCheckpoint,
   keys,
 } from "./campaign-smoke.mjs";
-import { CAPTURES, FORMS } from "./art-captures.mjs";
+import { CAPTURES, FORMS, runArtCaptures } from "./art-captures.mjs";
 import { fixture, restore, settledView } from "./improvement-smoke.mjs";
 import { installRenderProbe, readRenderProbe } from "./render-probe.mjs";
 
@@ -70,7 +94,7 @@ const out = process.env.T2_DIR || "artifacts/t2";
 const checks = new Set(
   (
     process.env.T2_CHECKS ||
-    "tier,scramble,poi,dig,digcost,motion,draws,context"
+    "tier,scramble,poi,dig,digcost,motion,look,ring,seam,draws,context"
   ).split(","),
 );
 const throttle = Number(process.env.T2_THROTTLE || 1);
@@ -497,6 +521,352 @@ try {
       // With the clock frozen both show at once.
       assert.equal(b.dig[0], 0, "frozen clock: the dig shows at once");
       assert.equal(b.reveal[0], 0, "frozen clock: reveals show at once");
+      assert.deepEqual(faults, []);
+    } finally {
+      await context.close();
+    }
+  }
+  if (checks.has("look")) {
+    // Frames in every band of both worlds, some with hard rock beside the
+    // shaft (the columns F4 measured: docs/qa/f4-value-rekey), and the
+    // cavern on two seeds.
+    const named = (name) => CAPTURES.find((capture) => capture.name === name);
+    const shaft = (name, world, row, x) => ({
+      name,
+      form: "desktop",
+      scene: name,
+      checkpoint: () => fixture(world, row, x),
+    });
+    const frames = [
+      named("a04-dive-60m@2"),
+      named("a05-dive-150m@2"),
+      named("b-330m-plate-band-C@2"),
+      named("c-site-W01-SITE-4-wreck@2"),
+      named("c-site-W01-SITE-4-seed2@2"),
+      named("b-550m-band-D@2"),
+      shaft("w01-hard-rock-C-380m", "W01", 38, 9.5),
+      shaft("w01-hard-rock-D-530m", "W01", 53, 2.5),
+      shaft("w02-band-A-70m", "W02", 7),
+      shaft("w02-hard-rock-A-106m", "W02", 11, 36.5),
+      shaft("w02-band-B-300m", "W02", 30),
+      shaft("w02-hard-rock-C-526m", "W02", 53, 20.5),
+      shaft("w02-band-D-850m", "W02", 85),
+    ];
+    const directory = `${out}/look`;
+    await runArtCaptures(browser, base, directory, {
+      captures: frames,
+      backing: 1,
+      search: "field=1",
+    });
+    const look = JSON.parse(
+      execFileSync("python3", ["scripts/t2-look.py", directory], {
+        maxBuffer: 1 << 26,
+      }).toString(),
+    );
+    const table = (() => {
+      execFileSync("python3", [
+        "scripts/art-sheets.py",
+        "--captures",
+        directory,
+        "--out",
+        directory,
+        "--table-only",
+      ]);
+      return JSON.parse(readFileSync(`${directory}/table.json`, "utf8"));
+    })();
+    results.look = look;
+    const problems = [];
+    const hold = (ok, message) => {
+      if (!ok) problems.push(message);
+    };
+    for (const [name, frame] of Object.entries(look)) {
+      const q = frame.geometry,
+        [low, high] = frame.world === "W02" ? [64, 75] : [45, 65];
+      console.log(
+        `look ${name}: unknown ${frame.unknown?.luma} (sd ${frame.unknown?.sd}); lit − unknown ${frame.known_lit_minus_unknown ?? "—"} (${frame.lit_cells} cells), hard ${frame.hard_lit_minus_unknown ?? "—"}; rock sd near the lamp ${frame.rock_near_light?.sd ?? "—"}; floors ${q.floor_max_px ?? "—"} px (${q.floors}); walls ${q.wall_max_tiles} tile, ${(100 * q.mismatch_share).toFixed(1)} %; pillars ${q.pillar_min_flat ?? "—"}; boundary ${frame.boundary_axis_share ?? "—"}`,
+      );
+      hold(frame.terrainRenderer === "field", `${name}: drawn by the field`);
+      if (frame.unknown) {
+        hold(
+          frame.unknown.luma >= low && frame.unknown.luma <= high,
+          `${name}: unknown rock luma ${frame.unknown.luma} outside ${low} to ${high}`,
+        );
+        hold(
+          frame.unknown.sd >= 7,
+          `${name}: unknown rock sd ${frame.unknown.sd} under 7`,
+        );
+      }
+      if (frame.known_lit_minus_unknown !== null)
+        hold(
+          frame.known_lit_minus_unknown >= 15,
+          `${name}: lit − unknown ${frame.known_lit_minus_unknown} under +15`,
+        );
+      if (frame.hard_lit_minus_unknown !== undefined)
+        hold(
+          frame.hard_lit_minus_unknown >= 15,
+          `${name}: lit hard rock − unknown ${frame.hard_lit_minus_unknown} under +15`,
+        );
+      // The plate layer (rows 30 and 31) is T14's to restyle: its tiles
+      // are one flat fill, so the 330 m frame reads about 14 and is
+      // reported, not held.
+      if (frame.rock_near_light && !name.startsWith("b-330m-plate"))
+        hold(
+          frame.rock_near_light.sd >= 15,
+          `${name}: rock sd near the lamp ${frame.rock_near_light.sd} under 15`,
+        );
+      if (q.floor_columns) {
+        hold(
+          q.floor_max_px <= 2,
+          `${name}: a floor is ${q.floor_max_px} px off the collision line`,
+        );
+        // 0.01 tile, plus the pixel a backing-1 mask cannot split.
+        hold(
+          q.floor_jag_tiles <= 0.01 + 1 / q.tile_px,
+          `${name}: floor jag ${q.floor_jag_tiles} tile`,
+        );
+      }
+      hold(
+        q.wall_max_tiles <= 0.3 && q.mismatch_share <= 0.05,
+        `${name}: walls ${q.wall_max_tiles} tile, ${q.mismatch_share} of pixels`,
+      );
+      if (q.pillars)
+        hold(
+          q.pillar_min_flat >= 0.8,
+          `${name}: a pillar's flat top is ${q.pillar_min_flat} tile`,
+        );
+      if (frame.boundary_axis_share !== undefined)
+        hold(
+          frame.boundary_axis_share <= 0.3,
+          `${name}: boundary ${frame.boundary_axis_share} axis-aligned`,
+        );
+    }
+    // Frame L* against the concept crops' interiors (d0-target-panels.json).
+    results.lookFrames = {};
+    for (const name of ["a04-dive-60m@2", "c-site-W01-SITE-4-wreck@2"]) {
+      const frame = table.frames[name],
+        concept = table.concept[frame.panel];
+      results.lookFrames[name] = {
+        frame: frame.frame.L_mean,
+        concept: concept.L_mean,
+      };
+      console.log(
+        `look ${name}: frame L* ${frame.frame.L_mean}, concept ${concept.L_mean}`,
+      );
+      hold(
+        Math.abs(frame.frame.L_mean - concept.L_mean) <= 4,
+        `${name}: frame L* ${frame.frame.L_mean} against ${concept.L_mean}`,
+      );
+    }
+    results.lookProblems = problems;
+    assert.deepEqual(problems, [], "T2's material and geometry rows hold");
+  }
+  if (checks.has("ring")) {
+    // The same play on two pages: the whole texture, and a 512-texel limit
+    // that makes the field a ring of 31 rows.
+    const pages = [];
+    for (const search of [
+      { field: 1, backing: 1 },
+      { field: 1, backing: 1, fieldmax: 512 },
+    ])
+      pages.push(await open(browser, FORMS.desktop, search));
+    try {
+      // The field quad alone (a dig throws chips, which are random). The
+      // two textures differ in height, so a texture coordinate can round
+      // differently: a pixel may differ by a level or two, never more.
+      const shot = async (page, file) => {
+        await writeFile(
+          file,
+          Buffer.from(
+            (await page.evaluate(() => window.__campaignField.colour())).split(
+              ",",
+            )[1],
+            "base64",
+          ),
+        );
+        return file;
+      };
+      const frames = {},
+        rounding = {};
+      const compare = async (label) => {
+        const files = [];
+        for (const [n, { page }] of pages.entries())
+          files.push(await shot(page, `${out}/ring-${label}-${n}.png`));
+        const [beyond, any] = JSON.parse(
+          execFileSync("python3", [
+            "-c",
+            "import sys,json;import numpy as np;from PIL import Image;a=np.asarray(Image.open(sys.argv[1]).convert('RGB')).astype(int);b=np.asarray(Image.open(sys.argv[2]).convert('RGB')).astype(int);d=np.abs(a-b).max(2);print(json.dumps([int((d>2).sum()),int((d>0).sum())]))",
+            files[0],
+            files[1],
+          ]).toString(),
+        );
+        frames[label] = beyond;
+        rounding[label] = any;
+        console.log(
+          `ring ${label}: ${beyond} pixels differ by more than 2 levels (${any} by 1 or 2)`,
+        );
+      };
+      const both = (action) =>
+        Promise.all(pages.map(({ page }) => action(page)));
+      const a04 = fixtures["a04-dive-60m@2"].checkpoint();
+      for (const { page } of pages) {
+        await restore(page, a04);
+        await settledView(page, a04);
+      }
+      const info = await both((page) =>
+        page.evaluate(() => window.__campaignField.info()),
+      );
+      await compare("60m");
+      // Dig down: the window follows, patch by patch.
+      await both((page) =>
+        page.evaluate(() => (window.__renderProbe.frames.length = 0)),
+      );
+      for (const { page } of pages) {
+        await keys(page, ["ArrowDown"]);
+        for (let step = 0; step < 240; step++) await advance(page, 50);
+        await keys(page, []);
+        for (let step = 0; step < 30; step++) await advance(page, 50);
+      }
+      const uploads = await pages[1].page.evaluate(() =>
+        Math.max(0, ...window.__renderProbe.frames.map((f) => f.subUploads)),
+      );
+      const after = await both((page) =>
+        page.evaluate(() => ({
+          field: window.__campaignField.info(),
+          rigY: Number(
+            document.querySelector("#campaign-game").dataset.rigWorldY,
+          ),
+        })),
+      );
+      await compare("dug");
+      const site = fixtures["c-site-W01-SITE-4-wreck@2"].checkpoint();
+      for (const { page } of pages) {
+        await restore(page, site);
+        await settledView(page, site);
+      }
+      const deep = await pages[1].page.evaluate(() =>
+        window.__campaignField.info(),
+      );
+      await compare("site4");
+      results.ring = {
+        whole: { texture: info[0].texture, ring: info[0].ring },
+        ringed: { texture: info[1].texture, ring: info[1].ring },
+        rigY: after.map((a) => a.rigY),
+        windowAfterDig: after[1].field.ring,
+        windowAtSite4: deep.ring,
+        maxSubUploadsPerFrame: uploads,
+        pendingAfterDig: after[1].field.pendingGroups,
+        differingPixels: frames,
+        roundingPixels: rounding,
+      };
+      console.log("ring " + JSON.stringify(results.ring));
+      assert.equal(info[0].ring, null, "W01 fits one texture");
+      assert.ok(info[1].ring, "the 512-texel limit makes a ring");
+      assert.ok(info[1].texture[1] <= 512, "the ring fits the limit");
+      assert.equal(after[0].rigY, after[1].rigY, "the same play on both");
+      assert.ok(after[1].rigY - 5.64 > 3, "the rig dug down");
+      assert.ok(
+        deep.ring.window > info[1].ring.window,
+        "the window moved down with the camera",
+      );
+      assert.ok(uploads <= 1, "one upload per frame while the window moves");
+      assert.equal(after[1].field.pendingGroups, 0, "the window is built");
+      assert.deepEqual(frames, { "60m": 0, dug: 0, site4: 0 });
+      for (const { faults } of pages) assert.deepEqual(faults, []);
+    } finally {
+      for (const { context } of pages) await context.close();
+    }
+  }
+  if (checks.has("seam")) {
+    // A shaft 2.5 tiles right of x = 0, so the seam crosses the frame.
+    const { context, page, faults } = await open(browser, FORMS.desktop, {
+      field: 1,
+      backing: 1,
+    });
+    try {
+      const checkpoint = fixture("W01", 6, 2.5);
+      await restore(page, checkpoint);
+      await settledView(page, checkpoint);
+      const info = await dataset(page),
+        view = JSON.parse(info.viewSnapshot),
+        width = Number(info.worldWidth);
+      const here = { scrollX: view.scrollX, scrollY: view.scrollY },
+        around = {
+          scrollX: view.scrollX + width * view.tile,
+          scrollY: view.scrollY,
+        };
+      const frame = (camera) =>
+        page.evaluate((c) => window.__campaignField.colour(c), camera);
+      const files = [];
+      for (const [name, camera] of [
+        ["here", here],
+        ["around", around],
+      ]) {
+        files.push(`${out}/seam-${name}.png`);
+        await writeFile(
+          files.at(-1),
+          Buffer.from((await frame(camera)).split(",")[1], "base64"),
+        );
+      }
+      // One world width on, the same coordinates arrive with other float
+      // rounding: an edge pixel may move a few levels, nothing more.
+      const [wrapped, rounding] = JSON.parse(
+        execFileSync("python3", [
+          "-c",
+          "import sys,json;import numpy as np;from PIL import Image;a=np.asarray(Image.open(sys.argv[1]).convert('RGB')).astype(int);b=np.asarray(Image.open(sys.argv[2]).convert('RGB')).astype(int);d=np.abs(a-b).max(2);print(json.dumps([int((d>4).sum()),int((d>0).sum())]))",
+          files[0],
+          files[1],
+        ]).toString(),
+      );
+      // Luma steps across cell boundaries: the seam's against the others'.
+      const steps = JSON.parse(
+        execFileSync("python3", [
+          "-c",
+          `
+import json, sys
+import numpy as np
+from PIL import Image
+rgb = np.asarray(Image.open(sys.argv[1]).convert("RGB")).astype(float)
+luma = rgb @ np.array([0.2126, 0.7152, 0.0722])
+tile, scroll_x, scroll_y, dpr = map(float, sys.argv[2:6])
+top = max(0, int(round((0.5 * tile - scroll_y) * dpr)))
+def step(cell):
+    x = int(round((cell * tile - scroll_x) * dpr))
+    if x < 2 or x > luma.shape[1] - 2:
+        return None
+    return float(np.abs(luma[top:, x] - luma[top:, x - 1]).mean())
+first = int(np.floor(scroll_x / tile)) + 1
+cells = [c for c in range(first, first + int(luma.shape[1] / dpr / tile)) if step(c) is not None]
+print(json.dumps({"seam": step(0), "others": {str(c): round(step(c), 2) for c in cells if c != 0}}))
+`,
+          files[0],
+          String(view.tile),
+          String(view.scrollX),
+          String(view.scrollY),
+          String(view.dpr),
+        ]).toString(),
+      );
+      const others = Object.values(steps.others);
+      results.seam = {
+        seamColumnPx: Math.round(-view.scrollX * view.dpr),
+        wrappedDifferingPixels: wrapped,
+        wrappedRoundingPixels: rounding,
+        seamStep: Number(steps.seam.toFixed(2)),
+        otherBoundaries: {
+          median: [...others].sort((a, b) => a - b)[others.length >> 1],
+          max: Math.max(...others),
+        },
+      };
+      console.log("seam " + JSON.stringify(results.seam));
+      assert.ok(steps.seam !== null, "x = 0 is in the frame");
+      assert.equal(
+        wrapped,
+        0,
+        "one world width apart, the same picture (within 4 levels)",
+      );
+      assert.ok(
+        steps.seam <= results.seam.otherBoundaries.median + 2,
+        "the step across x = 0 is within 2 luma of an ordinary cell boundary's",
+      );
       assert.deepEqual(faults, []);
     } finally {
       await context.close();

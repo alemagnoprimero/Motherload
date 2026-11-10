@@ -82,6 +82,12 @@ const freshW01 = JSON.parse(
     "utf8",
   ),
 );
+const seed2W01 = JSON.parse(
+  await readFile(
+    new URL("../docs/qa/t2/fresh-w01-seed2.json", import.meta.url),
+    "utf8",
+  ),
+);
 
 export const FORMS = {
   desktop: { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 },
@@ -194,6 +200,16 @@ export const CAPTURES = [
     scene: "SITE-4",
     panel: "cavern-wide",
     checkpoint: () => siteCheckpoint(freshW01, "W01-SITE-4"),
+  },
+  {
+    // T2: the same cavern on a second seed, for the boundary and geometry
+    // rows (§9.2: two seeds; scripts/t2-field.mjs "look"). It has no panel:
+    // the board shows one cavern. docs/qa/t2/fresh-w01-seed2.json is
+    // createCampaign(20261110) in the audit fixture's envelope.
+    name: "c-site-W01-SITE-4-seed2@2",
+    form: "desktop",
+    scene: "SITE-4 (seed 2)",
+    checkpoint: () => siteCheckpoint(seed2W01, "W01-SITE-4"),
   },
   {
     name: "p-portrait-02-spawn@3",
@@ -329,13 +345,21 @@ async function rigBox(page, dpr) {
 }
 
 export async function runArtCaptures(browser, base, path, options = {}) {
-  const { only, playSeconds = 0, backing, search: extra } = options;
+  // `captures`: a list to draw from in place of CAPTURES (T2's look check
+  // adds per-band frames of both worlds without growing the nightly sheets).
+  const {
+    only,
+    playSeconds = 0,
+    backing,
+    search: extra,
+    captures: source = CAPTURES,
+  } = options;
   await mkdir(path, { recursive: true });
   const url = new URL(base);
   if (backing !== undefined) url.searchParams.set("backing", String(backing));
   for (const [key, value] of new URLSearchParams(extra ?? ""))
     url.searchParams.set(key, value);
-  const selected = CAPTURES.filter(
+  const selected = source.filter(
     (capture) =>
       !only?.length || only.some((name) => capture.name.startsWith(name)),
   );

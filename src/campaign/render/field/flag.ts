@@ -20,7 +20,7 @@ export function fieldRequest(search: string, env?: string): FieldRequest {
   return "auto";
 }
 
-/** `?fieldmax=N`: a debug cap on the field texture's size, to exercise the ring. */
+/** `?fieldmax=N`: a debug cap on the field texture's height, to exercise the ring. */
 export function fieldTextureLimit(search: string) {
   const value = Number(new URLSearchParams(search).get("fieldmax"));
   return Number.isFinite(value) && value >= 256 ? Math.floor(value) : undefined;

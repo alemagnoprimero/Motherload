@@ -89,9 +89,70 @@ Reveals cross-fade over 250 ms and digs ease out over 120 ms, on the scene clock
 - Pixels farther than 1.2 tiles from the dug cell (and from any revealed cell) change by at most 1 luma. With the clock frozen both changes show in the first frame.
 - Found on the way: the spike's "undercut" was a hard-edged dark band 0.3 tile wide whose outer edge followed the field's gradient direction, so it flickered up to 7 luma as far as 1.5 tiles from a dig. It is now the 0.03-tile line of §6.1 plus a soft occlusion from the wide blur, gone by about 0.37 tile.
 
+## Material look and geometry (stage 2, §6.1)
+
+The shader draws the rock as the swatch cards do (`scripts/swatch-cards.py`): courses of jointed stones, toned in tiers, with a top facet, bevels and dark joints, at the D6 ladder's colours from `docs/art-direction/swatches/w01-swatches.json`. A unit test holds `palette.ts` to that JSON for every band and `FIELD_SHAPE` to the card script's constants.
+
+| §6.1 line | What the shader draws (`shader.ts`, `palette.ts`) |
+|---|---|
+| Bands A and B: horizontal strata, courses 0.7 to 1.2 tiles, slabs 2 to 4 tiles, staggered joints, 2 to 3 facet tones, dark cracks | courses 0.70 to 1.06 tiles tall with wavy tops, slabs 2.0 to 3.2 tiles long, each course's joints offset and slanted, three tone tiers (0.86 / 1 / 1.24 unknown, 0.86 / 1 / 1.18 lit) and a lighter top cap, joints 0.024 tile in the crack colour; pebbles at 0.45 per tile |
+| Bands C and D: chunky angular blocks with a lighter top facet | C: blocks 0.78 to 1.0 by 1.0 to 1.6 tiles with angular tops; D: rubble 0.62 to 0.84 by 0.75 to 1.2; top facet × 1.22 |
+| Hard rock: square, cracked, chamfered 0.03 tile | drawn on the cell grid from the cell codes: square blocks, two cracks each, a 0.03-tile chamfer (lighter above, darker below); fill 0.79 of the lit rock, bedrock 0.70 |
+| Plate fill at L\* −8 | plate cells: fill 0.86 of the lit rock with a rust tint. The plate layer's own look is T14's; this is a holding value |
+| Lips 0.085 to 0.1 tile at about rock +80 luma | 0.09 tile in the swatch's lip colour, with a 0.065-tile shade under it. **Read from the frame the lip is rock +143 at 60 m (93 → 236), above the guide's "about +80"**: the lip colour is the swatch's (`#dfe8ea`), not rekeyed here. The check's limit is lip ≥ rock +55 |
+| Dark ceiling edge, undercut 0.03 tile, 0.3 to 0.4 tile occlusion | ceiling edge 0.05 tile; undercut a 0.03-tile line, 15 luma down (5 on floors); occlusion from the wide blur, gone by 0.35 tile |
+| Rust-seam inclusion along band-C ceiling joints (A1 rider) | band C: rust (`#89532b`) in the joints above a cave ceiling and on the ceiling edge, gated by a slow noise; band D the same at 0.6 with `#7e5924`; none in A and B |
+| Hue turns for B and D | the swatch JSON's per-band colours (B and D turn from A and C) |
+| W02 provisional key | the same shapes on a cool key, unknown rock held to F4's 64 to 75 band (`FIELD_PALETTES.W02`); provisional until W02 has swatches |
+
+**Geometry.** A natural edge is the 0.5 line of the blurred cell grid moved by an angular zig-zag (2 per tile, 0.17 tile) and two slow noises, held within 0.28 tile of the cells' own boundary. Sharp edges (hard rock, plate, bedrock, dug air) and floors come from the exact distance to the four cells around the pixel, chosen by cell code: a floor under known air is flat on the collision line, and nothing is drawn above that line in the air cell over it.
+
+`T2_CHECKS=look` captures thirteen frames at backing 1 (1440 × 900) with the field pinned and asserts the rows below on each (`scripts/t2-look.py`, `art_metrics.field_geometry`); the two SITE-4 rows are the audit fixture and a second seed (`createCampaign(20261110)`, `fresh-w01-seed2.json`).
+
+| Frame | Unknown rock luma (sd) | Lit − unknown near the lamp | Lit hard rock − unknown | Rock sd near the lamp | Floors: off the line, jag | Walls: off collision, pixels | Pillar flat top | Axis-aligned boundary |
+|---|---|---|---|---|---|---|---|---|
+| W01 A, 60 m | 59.3 (11.9) | +40.2 | — | 18.3 | 0.27 px, 0.004 tile (1) | 0.01 tile, 0.0 % | — | — |
+| W01 B, 150 m | 59.6 (12.3) | +42.3 | +15.4 | 45.5 | 0.09 px, 0.001 tile (4) | 0.20 tile, 0.4 % | — | — |
+| W01 C, 330 m (plate) | 60.0 (11.5) | +23.9 | +17.7 | 13.9 | 0.27 px, 0.004 tile (7) | 0.18 tile, 0.1 % | — | — |
+| W01 C, SITE-4 | 58.7 (10.6) | — | — | 30.6 | 0.82 px, 0.012 tile (12) | 0.21 tile, 1.6 % | 0.99 tile | 23.2 % |
+| W01 C, SITE-4, seed 2 | 60.0 (12.2) | +65.3 | +23.9 | 51.3 | 0.82 px, 0.012 tile (7) | 0.23 tile, 0.6 % | 0.99 tile | 26.3 % |
+| W01 D, 550 m | 59.3 (11.7) | +56.4 | — | 37.5 | 0.00 px, 0.000 tile (1) | 0.00 tile, 0.0 % | — | — |
+| W01 C, 380 m, hard rock | 58.7 (10.8) | +58.3 | +93.4 | 37.6 | 0.36 px, 0.005 tile (1) | 0.00 tile, 0.0 % | — | — |
+| W01 D, 530 m, hard rock | 60.2 (11.9) | +52.6 | +52.1 | 37.8 | 0.45 px, 0.007 tile (1) | 0.00 tile, 0.0 % | — | — |
+| W02 A, 70 m | 71.8 (16.3) | — | — | 19.4 | 0.18 px, 0.003 tile (1) | 0.00 tile, 0.0 % | — | — |
+| W02 A, 106 m, hard rock | 71.0 (16.9) | +48.9 | +23.6 | 37.4 | 0.38 px, 0.006 tile (1) | 0.00 tile, 0.0 % | — | — |
+| W02 B, 300 m | 71.2 (15.5) | +50.2 | +19.2 | 39.7 | 0.18 px, 0.003 tile (4) | 0.19 tile, 0.1 % | — | — |
+| W02 C, 526 m, hard rock | 71.0 (13.7) | +33.3 | +33.6 | 33.6 | 0.45 px, 0.007 tile (1) | 0.00 tile, 0.0 % | — | — |
+| W02 D, 850 m | 70.2 (13.9) | +69.9 | +60.9 | 41.3 | 0.18 px, 0.003 tile (1) | 0.00 tile, 0.0 % | — | — |
+
+| Acceptance | Target | Measured | |
+|---|---|---|---|
+| Unknown rock sd | ≥ 7 | 10.6 to 16.9 | met |
+| Rock sd within 3 tiles of a light | ≥ 15 | 18.3 to 51.3 | met in twelve frames; **the 330 m plate frame reads 13.9** (below) |
+| Lit known minus unknown near the lamp, every band, both worlds | ≥ +15 | +23.9 to +69.9; lit hard rock +15.4 to +93.4 | met; the thinnest margin is W01 band B hard rock |
+| Boundary axis-aligned share, two seeds | ≤ 30 % | 23.2 % and 26.3 % | met |
+| Floors flat | jag ≤ 0.01 tile, ≤ 2 px off the collision line | at most 0.82 px; jag at most 0.012 tile at backing 1 | met |
+| Walls against collision | within 0.3 tile and 5 % of pixels | at most 0.23 tile and 1.6 % | met |
+| 1-cell pillars, flat top | ≥ 0.8 tile | 0.99 tile | met |
+| Frame L\* against the concept crops | within ± 4 | 60 m 25.7 against 25.9; SITE-4 22.7 against 21.0 | met |
+
+At backing 2 (2880 × 1800, where §9.2's gradient is defined) the 60 m frame reads tile-normalised gradient 2.61 (≥ 2.5), edge density 0.068 (≥ 0.06), rock sd near the lamp 19.9, wall profile 93 → 236 → 14 → 31; SITE-4 reads gradient 3.41, edge density 0.084, boundary 23.6 %, floors 1.1 px with jag 0.008 tile over 12 floors, walls 1.6 % and 0.22 tile.
+
+- **The 330 m plate frame's rock sd near the lamp is reported, not held.** The plate layer's cells are one flat fill each until T14 restyles them, and they are most of the rock near the lamp in that frame. Fallback: none needed in T2; the row is T14's to close. Its frame L\* (26.2) is read against the cavern crop (21.0) only because the harness has no plate-band panel; it is not one of the two crops this row is held on.
+- **The floor jag limit at backing 1** is 0.01 tile plus one pixel of the mask (a 65 px tile cannot split 0.65 px); at backing 2 it is 0.004 to 0.008 tile.
+- **Not T2's rows**, still red on the §9.2 table and unchanged by the material: p2 to p98 range and warm-accent share (T1's lights and emitters), playfield within 10 luma of one value (G2), text items (T8, PR #20).
+
+![60 m, 1440 × 900 at backing 2](frame-60m.jpg)
+![SITE-4, 1440 × 900 at backing 2](frame-site4.jpg)
+
+Beside the board crops (concept, game at the panel's scale, both in L\*, histogram); stage 4 brings the full set:
+
+![60 m beside the board crop](sheet-60m.jpg)
+![SITE-4 beside the board crop](sheet-site4.jpg)
+
 ## Draw calls
 
-The field's quad is one draw, and where the sky is in the frame it also splits the sprite batch around it (the sky below, everything else above). T1-lite's two lights were each an ADD sprite, which ends the batch before the light and again after it. On WebGL they now carry their light in RGB with alpha 0 and draw with the normal blend (ONE, ONE_MINUS_SRC_ALPHA), which adds the same amount inside the batch (`render/additive-texture.ts`; Canvas keeps `lighter`). Before the rebase, the surface, 60 m and SITE-4 frames with `?field=0` were pixel-identical to main's (0 differing pixels at 1440 × 900 @2).
+The field's quad is one draw, and where the sky is in the frame it also splits the sprite batch around it (the sky below, everything else above). T1-lite's two lights were each an ADD sprite, which ends the batch before the light and again after it. On WebGL they now carry their light in RGB with alpha 0 and draw with the normal blend (ONE, ONE_MINUS_SRC_ALPHA), which adds the same amount inside the batch (`render/additive-texture.ts`; Canvas keeps `lighter`). With `?field=0` the surface, 60 m and SITE-4 frames are pixel-identical to main's (0 differing pixels at 1440 × 900 @2, on main with #17 to #19; measured on stage 1's commit, and stage 2 changes neither `RetainedTerrain` nor the lights).
 
 Still frames, desktop 1440 × 900 @2 and phone 393 × 851 @3 alike, on main with #17 to #19:
 
@@ -117,10 +178,10 @@ The check asserts at most 12 draws on desktop and 10 on a phone, and no more tha
 | `scramble` | full frames at 60 m and SITE-4, 1440 × 900 @2, every unknown cell beyond 5.5 tiles re-rolled and hidden deposits moved: 0 px |
 | `poi` | PR #3's POI probe on the fog fixture: the antenna stands in a known column beside the hidden block, its artwork clipped at the block; the block is 0 px different with a cave behind it |
 | `dig` | at most one upload of at most 160 × 160 texels per frame; none while parked |
-| `motion`, `digcost`, `draws` | above |
+| `motion`, `digcost`, `look`, `draws` | above |
 | `context` | `WEBGL_lose_context` lose and restore at 60 m: the field draws the same frame, 0 px |
 
-`improvement-smoke`'s fog check and §9 harness captures, and `render-acceptance`'s WebGL runs, pin `?field=1` and assert the field drew (`T2_FIELD=0` runs them on `RetainedTerrain`). `art-captures.mjs` pins it by default (`ART_SEARCH=field=0` for main's renderer).
+`improvement-smoke`'s fog check and §9 harness captures, and `render-acceptance`'s WebGL runs, pin `?field=1` and assert the field drew (`T2_FIELD=0` runs them on `RetainedTerrain`). With the field forced on everywhere (`VITE_T2_FIELD=1`, stage 2's code), `campaign-smoke` passes all 15 of its steps, and `improvement-smoke`'s visual, fog and harness sections and `render-acceptance` pass; on SwiftShader that campaign run took 69 minutes here against 14 to 25 on the default path (a shared machine, other runs alongside), which is why it is not CI's default. `art-captures.mjs` pins it by default (`ART_SEARCH=field=0` for main's renderer).
 
 ## Reproduce
 

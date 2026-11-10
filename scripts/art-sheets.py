@@ -90,9 +90,12 @@ def measure(name, c):
     walls = m.shaft_walls(state, rig)
     if walls:
         out['wall'] = m.wall_profile(free, view, dpr, walls)
-    if c['scene'] == 'SITE-4':
-        # T2: the field renderer's own air mask, when it drew.
-        visual = m.visual_air(c['fieldAir'], free.shape[:2]) if c.get('fieldAir') else None
+    # T2: the field renderer's own air mask, when it drew, and the geometry
+    # rows read on it (floors, pillar tops, walls and ceilings).
+    visual = m.visual_air(c['fieldAir'], free.shape[:2]) if c.get('fieldAir') else None
+    if visual is not None:
+        out['geometry'] = m.field_geometry(c['fieldAir'], state, view)
+    if c['scene'].startswith('SITE-4'):
         air, hard = m.cave_air_mask(state, view, dpr, free.shape[:2], visual=visual)
         if visual is not None:
             out['boundary_source'] = 'field air mask'
@@ -207,6 +210,33 @@ row('Warm-accent share, % (concept)', '1.5–4 % surface; 2–5 % cavern (G1)', 
 row('Natural-cave boundary, axis-aligned share', '≤30 % (G1), cavern; hard rock excluded',
     lambda g, _: '—' if 'boundary_axis_share' not in g else f"{100 * g['boundary_axis_share']:.1f} %{ok(g['boundary_axis_share'] <= 0.30)}")
 row('Wall profile (rock → lip → undercut → air)', 'lip ≥ rock +55; undercut ≤ air −8 (G1)', wall_cell)
+
+
+def floor_cell(g, _):
+    q = g.get('geometry')
+    if not q or not q['floor_columns']:
+        return '—'
+    return (f"{q['floor_max_px']:.1f} px, jag {q['floor_jag_tiles']:.3f} tile ({q['floors']} floors)"
+            + ok(q['floor_max_px'] <= 2 and q['floor_jag_tiles'] <= 0.01 + 1 / q['tile_px']))
+
+
+def wall_fit_cell(g, _):
+    q = g.get('geometry')
+    if not q:
+        return '—'
+    return f"{100 * q['mismatch_share']:.1f} %, {q['wall_max_tiles']:.2f} tile" + ok(q['mismatch_share'] <= 0.05 and q['wall_max_tiles'] <= 0.3)
+
+
+def pillar_cell(g, _):
+    q = g.get('geometry')
+    if not q or not q['pillars']:
+        return '—'
+    return f"{q['pillar_min_flat']:.2f} tile ({q['pillars']})" + ok(q['pillar_min_flat'] >= 0.8)
+
+
+row('Floor contact: \\|visual − collision\\|, field air mask', '≤2 device px and jag ≤0.01 tile at every column the tracks can occupy (G1)', floor_cell)
+row('Walls and ceilings: visual vs collision air, field air mask', '≤5 % of pixels and ≤0.3 tile (G1)', wall_fit_cell)
+row('1-cell pillars: narrowest flat top', '≥0.8 tile (T2)', pillar_cell)
 row('Tile-normalised mean gradient', '≥2.5 (G1)',
     lambda g, _: '—' if 'mean_gradient' not in g else f"{g['mean_gradient']:.2f}{ok(g['mean_gradient'] >= 2.5)}")
 row('Playfield within 10 luma of one value', '≤25 % (G2)',
@@ -221,13 +251,13 @@ row('Framing, tiles across', 'per D1, still pending (G1)', lambda g, _: f"{g['ti
 
 NOT_MEASURED = [
     ('Brightness order: lamp > rims > walls > unknown > interior and cave air', 'needs the T1 light layers'),
-    ('Floor contact; walls and ceilings visual vs collision air', 'needs the T2 field geometry'),
+    ('Floor contact; walls and ceilings visual vs collision air, on main\'s RetainedTerrain', 'the rows above read the T2 field\'s air mask; RetainedTerrain draws the cells themselves'),
     ('Headlamp occlusion test; bore spill in the down pose', 'needs the T1 light stack'),
     ('Warm accents by emitter', 'needs T1 emitters'),
     ('Objective size; HAUL; bar labels; tier badge diameter', 'HUD work (H items); DOM boxes are in the manifest'),
     ('Board inventory; prop grounding; hero props structural', 'art items and owner review'),
     ('p95 on a physical phone', 'read on a remote real device with ?debug=frametime'),
-    ('Hidden information under full-frame scramble', 'F7; the inset-crop checks still run in verify'),
+    ('Hidden information under full-frame scramble', 'F7; scripts/t2-field.mjs runs the T2 field\'s; the inset-crop checks still run in verify'),
 ]
 
 

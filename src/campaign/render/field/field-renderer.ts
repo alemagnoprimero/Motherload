@@ -15,7 +15,12 @@ import {
 } from "./field-data";
 import type { FieldRequest } from "./flag";
 import { DiscoveredWorldView, pristineTiles } from "./known-world";
-import { FIELD_PALETTE, hexToVec3 } from "./palette";
+import {
+  FIELD_BANDS,
+  FIELD_KINDS,
+  FIELD_PALETTES,
+  roleUniform,
+} from "./palette";
 import {
   FIELD_FRAGMENT,
   FIELD_TAPS,
@@ -28,8 +33,22 @@ import { FieldTransitions } from "./transitions";
 type WebGLRenderer = Phaser.Renderer.WebGL.WebGLRenderer;
 type TextureWrapper = Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper;
 
-/** Lattice cells per tile of the shader's value noise; periodic over the world. */
-const NOISE_FREQUENCY = { low: 1.1, jag: 4.3, warp: 1.3, mottle: 0.8 };
+/**
+ * Lattice cells per tile of the shader's noises, each rounded to a whole
+ * number of cells over the world width so the terrain is periodic across
+ * x = 0: the edge displacement (low, jag), the rust gate, the cave air's
+ * mottle, and the courses' waves (strata wave and ripple, block nodes).
+ */
+const NOISE_FREQUENCY = {
+  low: 1.1,
+  jag: 4.3,
+  rust: 2.2,
+  mottle: 0.8,
+  wave: 1.6,
+  ripple: 4.3,
+  nodes: 1 / 0.75,
+  zigzag: 2,
+};
 
 /**
  * The page's clock as it was when this module loaded: the costs below are
@@ -47,13 +66,16 @@ const UNIFORMS = [
   "u_periods",
   "u_darkU",
   "u_darkV",
+  "u_course",
+  "u_kind",
   "u_unknown",
   "u_lit",
   "u_lip",
   "u_crack",
-  "u_interior",
+  "u_backWall",
   "u_caveAir",
   "u_rust",
+  "u_rustBand",
   "u_highContrast",
   "u_slots",
   "u_ring",
@@ -68,6 +90,10 @@ interface FrameState {
   darkU: [number, number, number, number];
   darkV: [number, number, number, number];
   bands: [number, number, number, number];
+  /** The world's palette as uniforms: roles (vec3[4]), kinds and rust. */
+  roles: Record<string, Float32Array>;
+  kinds: [number, number, number, number];
+  rust: [number, number, number, number];
 }
 
 /** The scene clock, as the transitions need it (§5.1 principle 6). */
@@ -209,6 +235,9 @@ export class FieldTerrain {
     darkU: [0, 0, 0, 0],
     darkV: [0, 0, 0, 0],
     bands: [0, 0, 0, 0],
+    roles: {},
+    kinds: [0, 0, 0, 0],
+    rust: [0, 0, 0, 0],
   };
   private frameKey = "";
   private ready = false;
@@ -221,6 +250,7 @@ export class FieldTerrain {
   private patchAreas: number[] = [];
   private lost = false;
   private maxTexture = 0;
+  private maxHeight = 0;
   private onLose = () => {
     this.lost = true;
   };
@@ -241,7 +271,7 @@ export class FieldTerrain {
   constructor(
     private scene: Phaser.Scene,
     request: Exclude<FieldRequest, "off"> = "auto",
-    /** Debug: a smaller texture limit, to exercise the ring (`?fieldmax=`). */
+    /** Debug: a lower limit on the texture's height, to exercise the ring (`?fieldmax=`). */
     textureLimit?: number,
   ) {
     this.extern = scene.add.extern().setDepth(10);
@@ -267,10 +297,9 @@ export class FieldTerrain {
           : null;
       if (info)
         rendererName = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL));
-      this.maxTexture = Math.min(
-        gl.getParameter(gl.MAX_TEXTURE_SIZE) as number,
-        textureLimit ?? Infinity,
-      );
+      this.maxTexture = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
+      // The debug limit applies to the texture's height, where the ring is.
+      this.maxHeight = Math.min(this.maxTexture, textureLimit ?? Infinity);
       this.renderer.on(Phaser.Renderer.Events.LOSE_WEBGL, this.onLose);
       this.renderer.on(Phaser.Renderer.Events.RESTORE_WEBGL, this.onRestore);
     }
@@ -406,7 +435,7 @@ export class FieldTerrain {
         this.data.width === world.width &&
         this.data.rows === world.rows;
       if (!reuse)
-        this.data = new FieldData(world.width, world.rows, this.maxTexture);
+        this.data = new FieldData(world.width, world.rows, this.maxHeight);
       this.data!.load(known, campaign.renderY);
       transitions.reset();
       if (this.texture && !reuse) {
@@ -506,6 +535,21 @@ export class FieldTerrain {
         bandStarts[3] ?? 1e4,
         world.rows,
       ];
+      const palette = FIELD_PALETTES[world.id === "W02" ? "W02" : "W01"];
+      f.roles = {
+        u_unknown: roleUniform(world.id, (band) => band.unknown),
+        u_lit: roleUniform(world.id, (band) => band.lit),
+        u_lip: roleUniform(world.id, (band) => band.lip),
+        u_crack: roleUniform(world.id, (band) => band.crack),
+        u_backWall: roleUniform(world.id, (band) => band.backWall),
+        u_caveAir: roleUniform(world.id, (band) => band.caveAir),
+        // A band without rust never mixes it in: any colour will do.
+        u_rust: roleUniform(world.id, (band) => band.rust ?? "#000000"),
+      };
+      FIELD_BANDS.forEach((id, i) => {
+        f.kinds[i] = FIELD_KINDS[palette[id].kind];
+        f.rust[i] = palette[id].rust ? (palette[id].rustAmount ?? 1) : 0;
+      });
     }
     this.ready = true;
     this.status = "field";
@@ -617,25 +661,27 @@ export class FieldTerrain {
     gl.uniform4f(u("u_layout"), FIELD_PAD, FIELD_TOP, height, debugAir ? 1 : 0);
     gl.uniform4f(u("u_view"), f.scrollX, f.scrollY, f.tile, f.dpr);
     gl.uniform4f(u("u_bands"), ...f.bands);
+    const cells = (perTile: number) => Math.max(1, Math.round(perTile * W));
     gl.uniform4f(
       u("u_periods"),
-      Math.max(1, Math.round(NOISE_FREQUENCY.low * W)),
-      Math.max(1, Math.round(NOISE_FREQUENCY.jag * W)),
-      Math.max(1, Math.round(NOISE_FREQUENCY.warp * W)),
-      Math.max(1, Math.round(NOISE_FREQUENCY.mottle * W)),
+      cells(NOISE_FREQUENCY.low),
+      cells(NOISE_FREQUENCY.jag),
+      cells(NOISE_FREQUENCY.rust),
+      cells(NOISE_FREQUENCY.mottle),
     );
+    gl.uniform4f(
+      u("u_course"),
+      cells(NOISE_FREQUENCY.wave),
+      cells(NOISE_FREQUENCY.ripple),
+      cells(NOISE_FREQUENCY.nodes),
+      // The zig-zag alternates sign: an even count closes across x = 0.
+      2 * Math.max(1, Math.round((NOISE_FREQUENCY.zigzag * W) / 2)),
+    );
+    gl.uniform4f(u("u_kind"), ...f.kinds);
+    gl.uniform4f(u("u_rustBand"), ...f.rust);
     gl.uniform4f(u("u_darkU"), ...f.darkU);
     gl.uniform4f(u("u_darkV"), ...f.darkV);
-    for (const [name, hex] of [
-      ["u_unknown", FIELD_PALETTE.unknown],
-      ["u_lit", FIELD_PALETTE.lit],
-      ["u_lip", FIELD_PALETTE.lip],
-      ["u_crack", FIELD_PALETTE.crack],
-      ["u_interior", FIELD_PALETTE.interior],
-      ["u_caveAir", FIELD_PALETTE.caveAir],
-      ["u_rust", FIELD_PALETTE.rust],
-    ] as const)
-      gl.uniform3f(u(name), ...hexToVec3(hex));
+    for (const name in f.roles) gl.uniform3fv(u(name), f.roles[name]!);
     gl.uniform1f(u("u_highContrast"), f.highContrast ? 1 : 0);
     gl.uniform4fv(u("u_slots"), this.slotValues);
     // The ring: its height in texels, the repeated row above it, and the

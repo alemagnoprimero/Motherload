@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import card from "../scripts/swatch-cards.py?raw";
 import {
   CODE,
   FIELD_K,
@@ -24,9 +25,14 @@ import {
   REVEAL_SECONDS,
 } from "../src/campaign/render/field/transitions";
 import { DiscoveredWorldView } from "../src/campaign/render/field/known-world";
-import { FIELD_PALETTE } from "../src/campaign/render/field/palette";
 import {
+  FIELD_PALETTES,
+  hexToVec3,
+} from "../src/campaign/render/field/palette";
+import {
+  FIELD_COURSES,
   FIELD_FRAGMENT,
+  FIELD_SHAPE,
   FIELD_TAPS,
   FIELD_WORLEY_SEEDS,
 } from "../src/campaign/render/field/shader";
@@ -437,20 +443,108 @@ describe("T2 field shader and flag", () => {
     // Five literal taps in main, one in cellAt (called five times).
     expect(taps).toBe(6);
     expect(FIELD_FRAGMENT.match(/cellAt\(/g)!.length - 1).toBe(5);
-    expect(FIELD_FRAGMENT).toContain("vec2 seeds[9]");
+    expect(FIELD_TAPS).toBe(taps - 1 + 5);
+    // Courses, not a seed search: no loop longer than the three joints.
+    expect(FIELD_WORLEY_SEEDS).toBe(0);
+    for (const loop of FIELD_FRAGMENT.matchAll(
+      /for \(int \w+ = 0; \w+ < (\d+)/g,
+    ))
+      expect(Number(loop[1])).toBeLessThanOrEqual(4);
     expect(FIELD_FRAGMENT).not.toMatch(/texelFetch|#version 300/);
+    // GLSL ES 1.00 reserves these; a driver that enforces it fails to compile.
+    expect(FIELD_FRAGMENT).not.toMatch(
+      /\b(float|vec[234]|bool|int)\s+(flat|packed|input|output|filter|fixed|half|sample|common|partition|active|superp|inline|noinline|volatile|public|static|extern|external|interface|long|short|double|unsigned|template|this|class|union|enum|typedef|goto|switch|default|asm|cast|namespace|using|sizeof)\b/,
+    );
   });
 
-  it("uses the W01 swatch values (A1, D6 ladder)", () => {
-    const a = swatches.bands.A.roles,
-      c = swatches.bands.C.roles;
-    expect(FIELD_PALETTE.unknown).toBe(a.unknown.hex);
-    expect(FIELD_PALETTE.lit).toBe(a.lit.hex);
-    expect(FIELD_PALETTE.lip).toBe(a.lip.hex);
-    expect(FIELD_PALETTE.crack).toBe(a.crack.hex);
-    expect(FIELD_PALETTE.interior).toBe(a["back wall"].hex);
-    expect(FIELD_PALETTE.caveAir).toBe(a["cave air"].hex);
-    expect(FIELD_PALETTE.rust).toBe(c.rust.hex);
+  it("uses the W01 swatch cards in every band (A1, D6 ladder)", () => {
+    const bands = { a: "A", b: "B", c: "C", d: "D" } as const;
+    for (const [id, card] of Object.entries(bands)) {
+      const roles = swatches.bands[card].roles as Record<
+          string,
+          { hex: string; L: number }
+        >,
+        band = FIELD_PALETTES.W01[id as keyof typeof bands];
+      expect(band.unknown).toBe(roles.unknown!.hex);
+      expect(band.lit).toBe(roles.lit!.hex);
+      expect(band.lip).toBe(roles.lip!.hex);
+      expect(band.crack).toBe(roles.crack!.hex);
+      expect(band.backWall).toBe(roles["back wall"]!.hex);
+      expect(band.caveAir).toBe(roles["cave air"]!.hex);
+      expect(band.rust).toBe(roles.rust?.hex);
+      // The D6 ladder holds in every band.
+      expect(roles.unknown!.L).toBeGreaterThan(21);
+      expect(roles.unknown!.L).toBeLessThan(27);
+      expect(roles.lit!.L - roles.unknown!.L).toBeGreaterThan(13);
+    }
+    expect(FIELD_PALETTES.W01.a.kind).toBe("strata");
+    expect(FIELD_PALETTES.W01.b.kind).toBe("strata");
+    expect(FIELD_PALETTES.W01.c.kind).toBe("blocks");
+    expect(FIELD_PALETTES.W01.d.kind).toBe("rubble");
+  });
+
+  it("keeps W02 on the audit's provisional key", () => {
+    // Rec. 709 luma on sRGB bytes, as scripts/art_metrics.py measures it.
+    const luma = (hex: string) => {
+      const [r, g, b] = hexToVec3(hex);
+      return 255 * (0.2126 * r + 0.7152 * g + 0.0722 * b);
+    };
+    for (const band of Object.values(FIELD_PALETTES.W02)) {
+      // Unexplored ice-rock at luma 64 to 75 on screen: the base colour sits
+      // at the bottom of that range, and the courses' tones, facets and
+      // pebbles lift the frame's mean by about 8 % (scripts/t2-field.mjs
+      // "look" holds the frame). Lit walls and hard rock (the lit colour at
+      // 0.79) at least 15 above it; cave air at least 10 below.
+      expect(luma(band.unknown)).toBeGreaterThanOrEqual(64);
+      expect(luma(band.unknown) * 1.08).toBeLessThanOrEqual(75);
+      expect(0.79 * luma(band.lit) - luma(band.unknown)).toBeGreaterThanOrEqual(
+        15,
+      );
+      expect(luma(band.unknown) - luma(band.caveAir)).toBeGreaterThanOrEqual(
+        10,
+      );
+      expect(band.rust).toBeUndefined();
+    }
+  });
+
+  it("draws the swatch cards' edges and courses (scripts/swatch-cards.py)", () => {
+    const value = (name: string) =>
+      Number(card.match(new RegExp(`^${name} = ([0-9.]+)`, "m"))![1]);
+    expect(FIELD_SHAPE.gap).toBe(value("GAP"));
+    expect(FIELD_SHAPE.bevel).toBe(value("BEVEL"));
+    expect(FIELD_SHAPE.bevelBottom).toBe(value("BEVEL_BOTTOM"));
+    expect(FIELD_SHAPE.lip).toBe(value("LIP"));
+    expect(FIELD_SHAPE.lipShade).toBe(value("LIP_SHADE"));
+    expect(FIELD_SHAPE.ceilingEdge).toBe(value("CEIL_EDGE"));
+    expect(FIELD_SHAPE.undercut).toBe(value("UNDERCUT"));
+    expect(FIELD_SHAPE.occlusion).toBe(value("AO"));
+    // §6.1: lips 0.085 to 0.1 tile, undercut 0.03, occlusion 0.3 to 0.4.
+    expect(FIELD_SHAPE.lip).toBeGreaterThanOrEqual(0.085);
+    expect(FIELD_SHAPE.lip).toBeLessThanOrEqual(0.1);
+    // Course heights and slab lengths, from pitch and jitter: strata 0.7 to
+    // 1.2 tiles tall in slabs 2 to 4 long, blocks about 1 by 1 to 2.
+    const range = (pitch: number, jitter: number) => [
+      pitch * (1 - 2 * jitter),
+      pitch * (1 + 2 * jitter),
+    ];
+    const { strata, blocks } = FIELD_COURSES;
+    const [low, high] = range(strata.pitch, strata.jitter);
+    expect(low).toBeGreaterThanOrEqual(0.7);
+    expect(high).toBeLessThanOrEqual(1.2);
+    const [short, long] = range(strata.joint, strata.spread);
+    expect(short).toBeGreaterThanOrEqual(2);
+    expect(long).toBeLessThanOrEqual(4);
+    const [narrow, wide] = range(blocks.joint, blocks.spread);
+    expect(narrow).toBeGreaterThanOrEqual(1);
+    expect(wide).toBeLessThanOrEqual(2);
+    // A joint never leaves its half pitch, so three joints find every slab:
+    // its jitter, plus its slant over half a course (the tallest, with the
+    // 0.12-tile wave of a block's top).
+    for (const kind of Object.values(FIELD_COURSES))
+      expect(
+        kind.spread * kind.joint +
+          kind.slant * (kind.pitch * (0.5 + kind.jitter) + 0.12),
+      ).toBeLessThan(kind.joint / 2);
   });
 
   it("is the default, pinned by ?field=1 and off with ?field=0", () => {
