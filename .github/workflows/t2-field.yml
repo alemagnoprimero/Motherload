@@ -15,6 +15,19 @@ name: T2 field renderer checks
 # the README.
 on:
   workflow_dispatch:
+    inputs:
+      frametime_only:
+        description: "Only the frame-time readout, on the macOS leg"
+        type: boolean
+        default: false
+      variants:
+        description: "?fielddebug= values to read the field with, separated by ; (empty is the default field)"
+        type: string
+        default: ""
+      passes:
+        description: "Passes of the frame-time readout"
+        type: string
+        default: "3"
   pull_request:
     paths:
       - "src/campaign/**"
@@ -25,6 +38,7 @@ on:
       - "scripts/improvement-smoke.mjs"
       - "scripts/render-probe.mjs"
       - "scripts/browser-launch.mjs"
+      - "docs/qa/t13b-asset-pipeline/emissive-runtime.mjs"
       - ".github/workflows/t2-field.yml"
       - "package*.json"
 
@@ -83,18 +97,33 @@ jobs:
           PREVIEW_URL: http://127.0.0.1:5173/
           T2_DIGCOST_ASSERT: "0"
           T2_DIG_FRAMES: "300"
+          # While condition 2 is being split: every upload strategy and both
+          # switches, three passes each (docs/qa/t2/README.md).
+          T2_FRAMETIME_VARIANTS: ${{ inputs.variants || 'single;twotex;copy;noupload;notransitions' }}
+          T2_FRAMETIME_PASSES: ${{ inputs.passes || '3' }}
+          FRAMETIME_ONLY: ${{ inputs.frametime_only }}
         run: |
+          # A dispatched reading: the macOS leg reads the frame time, parked
+          # and digging, and the other legs have nothing to do.
+          if [ "$FRAMETIME_ONLY" = true ]; then
+            if [ "$RUNNER_OS" = macOS ]; then T2_CHECKS=frametime npm run test:t2; fi
+            exit 0
+          fi
           case "$BROWSER" in
             chromium)
               export CHROMIUM_PATH="$(node --input-type=module -e 'import { chromium } from "playwright-core"; process.stdout.write(chromium.executablePath());')"
               npm run test:t2
+              # The frame with the most draws: the masked beacon in the
+              # gallery, on the field (audit §7: 10 on a phone).
+              EMISSIVE_SEARCH=field=1 EMISSIVE_MAX_DRAWS=10 RENDERERS=webgl CONTRAST=off \
+                node docs/qa/t13b-asset-pipeline/emissive-runtime.mjs artifacts/t2/emissive
               ;;
             firefox)
-              export T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context FIREFOX_HEADED=1
+              export T2_CHECKS=tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context FIREFOX_HEADED=1
               xvfb-run -a -s "-screen 0 1920x1200x24" npm run test:t2
               ;;
             webkit)
-              export T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context
+              export T2_CHECKS=tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context
               # macOS draws on a GPU through Metal: the frame-time readout,
               # parked and digging, is worth reading there (not asserted).
               if [ "$RUNNER_OS" = macOS ]; then export T2_CHECKS="$T2_CHECKS,frametime"; fi

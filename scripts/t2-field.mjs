@@ -60,14 +60,23 @@
  *              @2 and phone @3).
  *   context    WEBGL_lose_context: lose and restore the context; the field
  *              must draw the same frame again.
- *   frametime  F1's readout after real-clock play at a pinned backing
- *              scale. Under SwiftShader (no GPU) this measures the software
- *              rasteriser, not the technique (audit §7, "CI time").
+ *   modes      the upload strategies behind ?fielddebug= (twotex, copy)
+ *              against the single texture: the same dig draws the same
+ *              field, 0 px, and nothing is sent once parked.
+ *   frametime  condition 1's procedure on the real clock: the 60 m fixture
+ *              parked and then digging, main's renderer and the field (and
+ *              each T2_FRAMETIME_VARIANTS value as ?fielddebug=), reading
+ *              F1's readout and a frame log that separates the frames that
+ *              sent a terrain upload. Not in the default list. Under
+ *              SwiftShader (no GPU) this measures the software rasteriser,
+ *              not the technique (audit §7, "CI time").
  *
  * Environment: PREVIEW_URL; T2_DIR (artifacts/t2); T2_CHECKS, a comma list
- * (default tier,scramble,poi,dig,digcost,motion,look,ring,seam,draws,
+ * (default tier,scramble,poi,dig,digcost,motion,look,modes,ring,seam,draws,
  * context); T2_FIELDS (1,0);
  * T2_PLAY_SECONDS (12); T2_THROTTLE (1); T2_DIG_FRAMES (600);
+ * T2_FRAMETIME_VARIANTS (a ; list, "" is the default field),
+ * T2_FRAMETIME_PASSES (1), T2_FRAMETIME_FORMS (desktop,phone);
  * T2_DIGCOST_ASSERT=0 reports the dig cost without asserting the 2 ms limit.
  */
 import assert from "node:assert/strict";
@@ -94,7 +103,7 @@ const out = process.env.T2_DIR || "artifacts/t2";
 const checks = new Set(
   (
     process.env.T2_CHECKS ||
-    "tier,scramble,poi,dig,digcost,motion,look,ring,seam,draws,context"
+    "tier,scramble,poi,dig,digcost,motion,look,modes,ring,seam,draws,context"
   ).split(","),
 );
 /** Pixels of a 1440 × 900 frame the ring may differ at by more than 2 levels. */
@@ -103,6 +112,12 @@ const throttle = Number(process.env.T2_THROTTLE || 1);
 const digFrames = Number(process.env.T2_DIG_FRAMES || 600);
 const fields = (process.env.T2_FIELDS || "1,0").split(",");
 const playSeconds = Number(process.env.T2_PLAY_SECONDS || 12);
+/** ?fielddebug= values the frametime check reads the field with ("" is the default). */
+const frametimeVariants = (process.env.T2_FRAMETIME_VARIANTS ?? "").split(";");
+const frametimePasses = Number(process.env.T2_FRAMETIME_PASSES || 1);
+const frametimeForms = (
+  process.env.T2_FRAMETIME_FORMS || "desktop,phone"
+).split(",");
 const fixtures = Object.fromEntries(
   ["a04-dive-60m@2", "c-site-W01-SITE-4-wreck@2"].map((name) => [
     name,
@@ -122,9 +137,27 @@ async function open(browser, form, search, clock = true) {
     geometry: false,
     fog: false,
   });
-  // The page's real clock, kept before the test clock replaces it.
+  // The page's real clock, kept before the test clock replaces it, and a
+  // log of animation frames for the frametime check (off until asked).
   await context.addInitScript(() => {
     window.__realNow = performance.now.bind(performance);
+    const now = window.__realNow,
+      raf = window.requestAnimationFrame.bind(window),
+      log = (window.__frameLog = { on: false, frames: [] });
+    window.requestAnimationFrame = (callback) =>
+      raf((time) => {
+        const start = now();
+        callback(time);
+        if (log.on)
+          log.frames.push([
+            start,
+            now() - start,
+            Number(
+              document.querySelector("#campaign-game")?.dataset
+                .terrainUploads ?? 0,
+            ),
+          ]);
+      });
   });
   await context.addInitScript(() =>
     localStorage.setItem(
@@ -174,6 +207,16 @@ async function hudFree(page, file) {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   assert.equal(open, "", "no dialog is open over the frame");
+  // The camera fades in for 180 ms after an import, on the test clock. In
+  // Firefox a frame was twice captured with the whole image dimmed towards
+  // the fade's colour, once here and once in CI: step until the fade ends.
+  let fade = { running: false, progress: 1 };
+  for (let attempt = 0; attempt < 40; attempt++) {
+    fade = await page.evaluate(() => window.__campaignDebug.fade());
+    if (!fade.running) break;
+    await advance(page, 50);
+  }
+  assert.equal(fade.running, false, "the camera fade has ended");
   await page.screenshot({ path: file });
   await page.evaluate(() => window.__campaignDebug.overlays(true));
 }
@@ -864,6 +907,106 @@ try {
       for (const { context } of pages) await context.close();
     }
   }
+  if (checks.has("modes")) {
+    // The upload strategies behind ?fielddebug= (flag.ts) against the plain
+    // single texture: the same dig on each page must draw the same field,
+    // pixel for pixel, and leave nothing to send once parked.
+    const modes = ["", "twotex", "copy"],
+      pages = [];
+    for (const fielddebug of modes)
+      pages.push(
+        await open(browser, FORMS.desktop, {
+          field: 1,
+          backing: 1,
+          fielddebug: fielddebug || undefined,
+        }),
+      );
+    try {
+      const differing = async (label) => {
+        const files = [];
+        for (const [n, { page }] of pages.entries()) {
+          const file = `${out}/modes-${label}-${modes[n] || "single"}.png`;
+          await writeFile(
+            file,
+            Buffer.from(
+              (
+                await page.evaluate(() => window.__campaignField.colour())
+              ).split(",")[1],
+              "base64",
+            ),
+          );
+          files.push(file);
+        }
+        return JSON.parse(
+          execFileSync("python3", [
+            "-c",
+            "import sys,json;import numpy as np;from PIL import Image;a=[np.asarray(Image.open(f).convert('RGB')).astype(int) for f in sys.argv[1:]];print(json.dumps([int((np.abs(a[0]-b).max(2)>0).sum()) for b in a[1:]]))",
+            ...files,
+          ]).toString(),
+        );
+      };
+      const a04 = fixtures["a04-dive-60m@2"].checkpoint();
+      results.modes = { differingPixels: {}, uploads: {} };
+      for (const { page } of pages) {
+        await restore(page, a04);
+        await settledView(page, a04);
+        await page.evaluate(() => (window.__renderProbe.frames.length = 0));
+      }
+      results.modes.differingPixels["60m"] = await differing("60m");
+      for (const { page } of pages) {
+        await keys(page, ["ArrowDown"]);
+        for (let step = 0; step < 120; step++) await advance(page, 50);
+        await keys(page, []);
+        for (let step = 0; step < 30; step++) await advance(page, 50);
+      }
+      results.modes.differingPixels.dug = await differing("dug");
+      // Parked: the light map and the transitions have had time to settle.
+      for (const { page } of pages)
+        for (let step = 0; step < 40; step++) await advance(page, 50);
+      for (const [n, { page }] of pages.entries()) {
+        const frames = await page.evaluate(() =>
+          window.__renderProbe.frames.map((f) => [f.subUploads, f.uploads]),
+        );
+        results.modes.uploads[modes[n] || "single"] = {
+          frames: frames.length,
+          framesWithUploads: frames.filter(([sub, full]) => sub + full > 0)
+            .length,
+          // Patches are sub-uploads (the light map's are whole uploads);
+          // "copy" sends its patch as a whole upload of a small texture.
+          mostPerFrame: Math.max(0, ...frames.map(([sub]) => sub)),
+          parked: frames
+            .slice(-20)
+            .reduce((sum, [sub, full]) => sum + sub + full, 0),
+        };
+      }
+      const site = fixtures["c-site-W01-SITE-4-wreck@2"].checkpoint();
+      for (const { page } of pages) {
+        await restore(page, site);
+        await settledView(page, site);
+      }
+      results.modes.differingPixels.site4 = await differing("site4");
+      console.log("modes " + JSON.stringify(results.modes));
+      for (const [label, counts] of Object.entries(
+        results.modes.differingPixels,
+      ))
+        assert.deepEqual(
+          counts,
+          [0, 0],
+          `modes ${label}: twotex and copy draw the single texture's field`,
+        );
+      for (const [mode, sent] of Object.entries(results.modes.uploads)) {
+        assert.ok(
+          sent.mostPerFrame <=
+            (mode === "twotex" ? 2 : mode === "copy" ? 0 : 1),
+          `modes ${mode}: ${sent.mostPerFrame} patch uploads in a frame`,
+        );
+        assert.equal(sent.parked, 0, `modes ${mode}: nothing sent once parked`);
+      }
+      for (const { faults } of pages) assert.deepEqual(faults, []);
+    } finally {
+      for (const { context } of pages) await context.close();
+    }
+  }
   if (checks.has("seam")) {
     // A shaft 2.5 tiles right of x = 0, so the seam crosses the frame.
     const { context, page, faults } = await open(browser, FORMS.desktop, {
@@ -996,6 +1139,18 @@ print(json.dumps({"seam": step(0), "others": {str(c): round(step(c), 2) for c in
           console.log(
             `scramble field=${field} ${name}: ${cells} cells, ${deposits} deposits moved, ${pixels} differing pixels (${info.terrainRenderer})`,
           );
+          // A whole-frame difference is the capture, not a leak: say what
+          // the page was doing.
+          if (pixels > 0)
+            console.log(
+              `scramble ${name} state: ${JSON.stringify(
+                await page.evaluate(() => ({
+                  fade: window.__campaignDebug.fade(),
+                  paused: document.body.dataset.campaignPaused,
+                  overlay: document.body.dataset.campaignOverlay ?? "",
+                })),
+              )}`,
+            );
           assert.equal(pixels, 0, `full-frame scramble ${name}: 0 px`);
         }
         assert.deepEqual(faults, []);
@@ -1239,73 +1394,172 @@ print(json.dumps({"seam": step(0), "others": {str(c): round(step(c), 2) for c in
         }
       }
     }
-    if (checks.has("frametime")) {
-      run.frametime = {};
-      for (const [form, backing] of [
-        ["desktop", 2],
-        ["phone", 1.5],
-      ]) {
-        const { context, page, faults } = await open(
-          browser,
-          FORMS[form],
-          { field, backing, debug: "frametime" },
-          false,
-        );
-        try {
-          // Condition 1's procedure: the 60 m fixture, parked, then digging.
-          const checkpoint = fixtures["a04-dive-60m@2"].checkpoint();
-          await page.evaluate(() => window.__campaignDebug.sceneClock.resume());
-          await importCheckpoint(page, checkpoint);
-          for (
-            let n = 0;
-            n < 3 &&
-            (await page.evaluate(() => document.body.dataset.campaignOverlay));
-            n++
-          ) {
-            await closeOverlay(page);
-            await new Promise((resolve) => setTimeout(resolve, 500));
-          }
-          // The readout's p95 covers the last 10 s of real time.
-          await new Promise((resolve) =>
-            setTimeout(resolve, playSeconds * 1000),
-          );
-          const readout = await page.evaluate(
-            () => document.querySelector("#campaign-frametime")?.textContent,
-          );
-          const info = await dataset(page);
-          // The field quad alone against a one-tap copy, off screen.
-          const benchmark = await page.evaluate(
-            () => window.__campaignField?.benchmark(3) ?? null,
-          );
-          await keys(page, ["ArrowDown"]);
-          await new Promise((resolve) =>
-            setTimeout(resolve, playSeconds * 1000),
-          );
-          const digging = await page.evaluate(
-            () => document.querySelector("#campaign-frametime")?.textContent,
-          );
-          await keys(page, []);
-          run.frametime[form] = {
-            backing,
-            terrainRenderer: info.terrainRenderer,
-            readout,
-            digging,
-            benchmark,
-            frameP95: Number(info.frameP95),
-            drawCalls: Number(info.drawCalls),
-          };
-          console.log(
-            `frametime field=${field} ${form} @${backing} parked: ${JSON.stringify(readout)} ${JSON.stringify(benchmark)}`,
-          );
-          console.log(
-            `frametime field=${field} ${form} @${backing} digging: ${JSON.stringify(digging)}`,
-          );
-          assert.deepEqual(faults, []);
-        } finally {
-          await context.close();
-        }
+  }
+  if (checks.has("frametime")) {
+    // Condition 1's procedure on the real clock: the 60 m fixture, parked,
+    // then digging, main's renderer and the field (and each ?fielddebug=
+    // variant asked for), as many passes as asked. Besides the readout, a
+    // frame log splits the digging frames into those that sent a terrain
+    // upload and those that did not.
+    results.frametime = [];
+    const variants = [
+      { name: "main", search: { field: 0 } },
+      ...frametimeVariants.map((variant) => ({
+        name: variant ? `field (${variant})` : "field",
+        search: { field: 1, fielddebug: variant || undefined },
+      })),
+    ];
+    const summary = (values) => {
+      if (!values.length) return null;
+      const sorted = [...values].sort((a, b) => a - b),
+        at = (q) =>
+          sorted[Math.min(sorted.length - 1, Math.floor(q * sorted.length))];
+      return {
+        n: values.length,
+        mean: +(values.reduce((a, b) => a + b, 0) / values.length).toFixed(1),
+        p50: +at(0.5).toFixed(1),
+        p95: +at(0.95).toFixed(1),
+        max: +sorted[sorted.length - 1].toFixed(1),
+      };
+    };
+    /** [start, callback ms, terrain uploads so far] per animation frame. */
+    const frames = async (page, on) =>
+      page.evaluate((state) => {
+        const log = window.__frameLog;
+        const taken = log.frames;
+        log.frames = [];
+        log.on = state;
+        return taken;
+      }, on);
+    const split = (log) => {
+      // One entry per frame: callbacks that start within 3 ms are one frame.
+      const merged = [];
+      for (const [start, cost, uploads] of log) {
+        const last = merged[merged.length - 1];
+        if (last && start - last.start < 3) {
+          last.cost += cost;
+          last.uploads = uploads;
+        } else merged.push({ start, cost, uploads });
       }
-    }
+      // The dataset shows the upload count as of the frame before.
+      const rows = [];
+      for (let n = 1; n + 1 < merged.length; n++)
+        rows.push({
+          cost: merged[n].cost,
+          interval: merged[n].start - merged[n - 1].start,
+          next: merged[n + 1].start - merged[n].start,
+          sent: merged[n + 1].uploads !== merged[n].uploads,
+        });
+      const sent = rows.filter((row) => row.sent),
+        plain = rows.filter((row) => !row.sent);
+      return {
+        interval: summary(rows.map((row) => row.interval)),
+        cost: summary(rows.map((row) => row.cost)),
+        uploadFrames: {
+          cost: summary(sent.map((row) => row.cost)),
+          nextInterval: summary(sent.map((row) => row.next)),
+        },
+        otherFrames: {
+          cost: summary(plain.map((row) => row.cost)),
+          nextInterval: summary(plain.map((row) => row.next)),
+        },
+      };
+    };
+    const line = (text, label) =>
+      Number(new RegExp(`^${label} ([\\d.]+) ms`, "m").exec(text ?? "")?.[1]);
+    const forms = [
+      ["desktop", 2],
+      ["phone", 1.5],
+    ].filter(([form]) => frametimeForms.includes(form));
+    for (let pass = 1; pass <= frametimePasses; pass++)
+      for (const [form, backing] of forms)
+        for (const variant of variants) {
+          const { context, page, faults } = await open(
+            browser,
+            FORMS[form],
+            { ...variant.search, backing, debug: "frametime" },
+            false,
+          );
+          try {
+            const checkpoint = fixtures["a04-dive-60m@2"].checkpoint();
+            await page.evaluate(() =>
+              window.__campaignDebug.sceneClock.resume(),
+            );
+            await importCheckpoint(page, checkpoint);
+            for (
+              let n = 0;
+              n < 3 &&
+              (await page.evaluate(
+                () => document.body.dataset.campaignOverlay,
+              ));
+              n++
+            ) {
+              await closeOverlay(page);
+              await new Promise((resolve) => setTimeout(resolve, 500));
+            }
+            const wait = () =>
+              new Promise((resolve) => setTimeout(resolve, playSeconds * 1000));
+            const readout = () =>
+              page.evaluate(
+                () =>
+                  document.querySelector("#campaign-frametime")?.textContent,
+              );
+            // The readout's p95 covers the last 10 s of real time.
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await frames(page, true);
+            await wait();
+            const parkedLog = split(await frames(page, false)),
+              parked = await readout();
+            const info = await dataset(page);
+            await keys(page, ["ArrowDown"]);
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await frames(page, true);
+            await wait();
+            const diggingLog = split(await frames(page, false)),
+              digging = await readout();
+            await keys(page, []);
+            const row = {
+              pass,
+              form,
+              backing,
+              variant: variant.name,
+              terrainRenderer: info.terrainRenderer,
+              parked: {
+                cpuP95: line(parked, "p95"),
+                intervalP95: line(parked, "interval p95"),
+                frames: parkedLog,
+              },
+              digging: {
+                cpuP95: line(digging, "p95"),
+                intervalP95: line(digging, "interval p95"),
+                fieldLine: /^field scan.*$/m.exec(digging ?? "")?.[0] ?? null,
+                frames: diggingLog,
+              },
+            };
+            results.frametime.push(row);
+            console.log(
+              `frametime pass ${pass} ${form} @${backing} ${variant.name}: parked ${row.parked.cpuP95} / ${row.parked.intervalP95} ms, digging ${row.digging.cpuP95} / ${row.digging.intervalP95} ms (CPU p95 / interval p95)${row.digging.fieldLine ? `; ${row.digging.fieldLine}` : ""}`,
+            );
+            console.log(
+              `frametime pass ${pass} ${form} @${backing} ${variant.name} digging frames: ${JSON.stringify(diggingLog)}`,
+            );
+            assert.deepEqual(faults, []);
+          } finally {
+            await context.close();
+          }
+        }
+    // Per form and variant, the median of the passes.
+    const median = (values) =>
+      [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+    for (const [form] of forms)
+      for (const variant of variants) {
+        const rows = results.frametime.filter(
+          (row) => row.form === form && row.variant === variant.name,
+        );
+        console.log(
+          `frametime ${form} ${variant.name}, median of ${rows.length}: parked interval p95 ${median(rows.map((row) => row.parked.intervalP95))} ms, digging interval p95 ${median(rows.map((row) => row.digging.intervalP95))} ms (${rows.map((row) => row.digging.intervalP95).join(", ")}), digging CPU p95 ${median(rows.map((row) => row.digging.cpuP95))} ms`,
+        );
+      }
   }
   // Against main's renderer: the field's quad is one draw more, and where
   // the sky is in the frame it also splits the sprite batch (the sky below

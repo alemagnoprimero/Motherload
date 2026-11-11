@@ -36,6 +36,7 @@ import {
 import {
   FIELD_ENV,
   fieldRequest,
+  fieldDebug,
   fieldTextureLimit,
 } from "./render/field/flag";
 import { FrameIntervals } from "./render/field/frame-interval";
@@ -457,6 +458,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this,
         fieldRequest(location.search, FIELD_ENV),
         fieldTextureLimit(location.search),
+        fieldDebug(location.search),
       );
       this.lightingLayer = new CampaignLighting(this);
       // T1-lite: additive headlamp core above the darkness, below the rig.
@@ -1186,6 +1188,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           .setScroll(0, 0);
       }
       const campaign = bindings.getCampaign();
+      // T2: the field shader does not sample the band material pages.
+      this.art.bandPages = !(
+        this.terrainLayer instanceof FieldTerrain && this.terrainLayer.field
+      );
       // T13b (D1): zone pages by device px per tile, never by pointer type.
       this.art.update(campaign, this.artLayout(cssWidth, cssHeight));
       this.artQuality = this.art.state()?.densities.hero ?? 2;

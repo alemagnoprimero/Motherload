@@ -14,6 +14,7 @@ import {
 } from "../src/campaign/render/field/field-data";
 import {
   fieldRequest,
+  fieldDebug,
   fieldTextureLimit,
 } from "../src/campaign/render/field/flag";
 import {
@@ -594,5 +595,11 @@ describe("T2 field shader and flag", () => {
     expect(fieldRequest("?field=yes")).toBe("auto");
     expect(fieldTextureLimit("?fieldmax=512")).toBe(512);
     expect(fieldTextureLimit("")).toBeUndefined();
+    // Debug switches for readings: only the known names, in any order.
+    expect([...fieldDebug("?fielddebug=copy,nonsense,noupload")]).toEqual([
+      "noupload",
+      "copy",
+    ]);
+    expect(fieldDebug("?field=1").size).toBe(0);
   });
 });

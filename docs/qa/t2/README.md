@@ -2,6 +2,8 @@
 
 The field renderer (`src/campaign/render/field/`) is the terrain renderer wherever it can run; main's `RetainedTerrain` is the Low tier and Canvas path. This folder exists because checks changed: `scripts/t2-field.mjs` is new, three scripts pin the field, and D4's three conditions are measured here. The spike's write-up, which decided D4, stays in [`../t2-spike/`](../t2-spike/README.md).
 
+**Director's decisions, 2026-11-11.** The lip keeps the swatch's colour (it matches D6's L\* ladder; reviewed on the sheets). Rock sd on frames where the rock in reach is all unknown, and edge density on the phone frames, stay as they are: props and decals carry those. The 330 m plate frame is T14's. No reduced shader for the Medium tier, and CI on the Low path, are accepted.
+
 Everything below was measured in this container (4 shared x86 CPUs, no GPU, Chromium's WebGL on SwiftShader) unless it says otherwise. Software rasteriser frame times are not a GPU's.
 
 ## Which renderer a page gets
@@ -166,11 +168,11 @@ Still frames, desktop 1440 × 900 @2 and phone 393 × 851 @3 alike, on main with
 |---|---|---|---|
 | 60 m, sky in the frame | 5 | 3 | **5** |
 | SITE-4, the beacon lit | 8 | 8 | **9** |
-| Masked beacon (phone limit 10) | 10 | 9, by the draw list | **10, by the draw list** |
+| Masked beacon in the gallery (phone limit 10) | 10 at its old cell | 9 | **10** |
 | Texture uploads in a still frame | 0 | 0 | 0 |
 
 - The headlamp's merge takes two draws off any frame without another ADD sprite beside it (60 m: 5 to 3), and the field puts them back there; with the lit beacon, whose sibling keeps the ADD run alive, the field is one draw over #19.
-- **The masked-beacon frame is not measured.** The T13b script that stages it (`docs/qa/t13b-asset-pipeline/emissive-runtime.mjs`) expects the beacon at row 9, where it stood before D14, and stops at "the beacon is on screen" on main with or without this branch. Its draw list on #19's own branch is: sprites below the mask; the mask's stencil write; the masked beacon; the light map; **the headlamp's ADD**; the stencil write again; the masked ADD sibling; the rig; the rig's ADD sibling; the top layer. On this branch the headlamp batches with the light map before it (one fewer) and the field's quad is one more, with nothing under it underground: 10. If that script is updated for D14, `T2_CHECKS=draws` should gain its frame.
+- **The masked-beacon frame is measured.** #19's script (`docs/qa/t13b-asset-pipeline/emissive-runtime.mjs`) staged the beacon at row 9, where it stood before D14; it now stages the lit and masked scenes at the beacon's cell in the SITE-4 crew gallery (column 17, row 45), in a block of solid ground laid over the gallery so the cells around it are the same every run, and takes `EMISSIVE_SEARCH` (to pin a renderer) and `EMISSIVE_MAX_DRAWS`. WebGL draws, desktop 1440 × 900 @2 and phone 393 × 851 @3 alike: bases alone 4, lit beacon 8, masked beacon 9 with `RetainedTerrain`; **5, 9 and 10 with the field**. The T2 workflow's Chromium leg runs it on the field and holds 10.
 
 The check asserts at most 12 draws on desktop and 10 on a phone, and no more than `?field=0` plus two in any measured frame.
 
@@ -283,14 +285,14 @@ Rows of that table that are under target, and whose they are:
 
 | Budget (§7) | Limit | Measured with the field | |
 |---|---|---|---|
-| Draw calls | ≤ 12 desktop, ≤ 10 phone | 5 at 60 m, 9 at SITE-4 with the beacon lit, on desktop and phone, in Chromium, Firefox and WebKit (main: 3 and 8). Masked beacon: 10 by its draw list (above) | pass; one frame by reasoning |
+| Draw calls | ≤ 12 desktop, ≤ 10 phone | 5 at 60 m, 9 at SITE-4 with the beacon lit, 10 with the beacon masked, on desktop and phone (main: 3, 8 and 9) | pass |
 | Texture uploads while parked | 0 | 0 in every still frame (`draws`) and 0 across the parked frames after a dig (`dig`); while digging at most one of at most 160 × 144 texels per frame | pass |
-| Resident textures, desktop | ≤ 64 MiB | boot 18.05, W01 shaft 28.72, W01 cave 21.93, W02 30.58 MiB (main: 35.05, 45.72, 38.92, 45.19) | pass |
-| Resident textures, phone | ≤ 20 MiB boot, ≤ 40 active | boot 14.32; W01 shaft 24.68, cave 19.59, W02 26.88 MiB (main: 16.84; 27.19, 22.10, 27.01) | pass |
+| Resident textures, desktop | ≤ 64 MiB | boot 12.99, W01 shaft 13.54, W01 cave 6.74, W02 15.39 MiB (main: 35.05, 45.72, 38.92, 45.19) | pass |
+| Resident textures, phone | ≤ 20 MiB boot, ≤ 40 active | boot 9.26; W01 shaft 9.49, cave 4.40, W02 11.69 MiB (main: 16.84; 27.19, 22.10, 27.01) | pass |
 | Field texture | §7 projected 2.3 MiB for W01 | W01 2.49 MiB (648 × 1,008 with the wrap columns and the rows above the surface), W02 4.88, any deeper world at most 5.95 | stated |
 
 - Resident bytes are `scripts/render-memory.mjs` against a build with the field forced on (`VITE_T2_FIELD=1`); main's column is the same script on the default path here (`RetainedTerrain`). The readout's total now counts the field's raw GL texture in its `layers` group (§7 asked for raw textures to be counted); `RetainedTerrain`'s 19.5 MiB canvas at desktop backing 2 is not allocated while the field draws.
-- **Not taken: the band material pages (15.19 MiB in a shaft or cave) still load.** The field does not sample them; §7's projection drops them on the High tier. They are also what `RetainedTerrain` needs if the measured step falls back mid-session, so dropping them needs a load-on-fallback path. Proposed as its own item.
+- **The band material pages no longer load while the field draws** (15.19 MiB in a shaft or cave, 5.06 at the surface). Only `RetainedTerrain` draws from them, so the scene tells the art loader not to want them while the field shader draws the terrain (`CampaignArt.bandPages`), and the resident ones are released. If the terrain falls back in mid-session (the measured step, a failed shader, a view taller than the ring) they are wanted again from the next frame: they stream in as after a jump, and until they arrive `RetainedTerrain` draws its flat base colours, then repaints. With stage 4's commit they still loaded, and the same table read 18.05 to 30.58 MiB on desktop and 14.32 to 26.88 on the phone.
 
 ### The readout on a desktop
 

@@ -16,7 +16,7 @@ import {
   fieldRingRows,
   type FieldRect,
 } from "./field-data";
-import type { FieldRequest } from "./flag";
+import type { FieldDebug as FieldSwitch, FieldRequest } from "./flag";
 import { DiscoveredWorldView, pristineTiles } from "./known-world";
 import {
   FIELD_BANDS,
@@ -222,6 +222,19 @@ export class FieldTerrain {
   private world: CampaignWorld | undefined;
   private worldKey = "";
   private texture: TextureWrapper | undefined;
+  /** "twotex": the second copy, and which of the two the last frame drew. */
+  private texture2: TextureWrapper | undefined;
+  private front = 0;
+  /** Patches one copy has and the other is still owed, with their bytes. */
+  private owed: { rect: FieldRect; bytes: Uint8Array }[][] = [[], []];
+  private pool: Uint8Array[] = [];
+  private idleFrames = 0;
+  /** "copy": the staging texture a patch is uploaded to, and its framebuffer. */
+  private stagingTexture: WebGLTexture | undefined;
+  private stagingFramebuffer: WebGLFramebuffer | undefined;
+  private mode: "single" | "twotex" | "copy" = "single";
+  private skipUpload = false;
+  private noTransitions = false;
   private program: WebGLProgram | undefined;
   private buffer: WebGLBuffer | undefined;
   private bufferSize = "";
@@ -266,6 +279,9 @@ export class FieldTerrain {
     this.bufferSize = "";
     this.locations.clear();
     this.patch = undefined;
+    this.stagingTexture = undefined;
+    this.stagingFramebuffer = undefined;
+    this.releaseOwed();
   };
   /**
    * `request` is "full" for a pinned field (`?field=1`: no measured step
@@ -276,7 +292,16 @@ export class FieldTerrain {
     request: Exclude<FieldRequest, "off"> = "auto",
     /** Debug: a lower limit on the texture's height, to exercise the ring (`?fieldmax=`). */
     textureLimit?: number,
+    /** Debug: switches for readings (`?fielddebug=`, flag.ts). */
+    debug: ReadonlySet<FieldSwitch> = new Set(),
   ) {
+    this.mode = debug.has("twotex")
+      ? "twotex"
+      : debug.has("copy")
+        ? "copy"
+        : "single";
+    this.skipUpload = debug.has("noupload");
+    this.noTransitions = debug.has("notransitions");
     this.extern = scene.add.extern().setDepth(10);
     (
       this.extern as unknown as {
@@ -358,7 +383,7 @@ export class FieldTerrain {
    */
   get rawTextureBytes() {
     return this.texture && this.data
-      ? this.data.texWidth * this.data.texHeight * 4
+      ? this.data.texWidth * this.data.texHeight * 4 * (this.texture2 ? 2 : 1)
       : 0;
   }
 
@@ -402,8 +427,7 @@ export class FieldTerrain {
     this.extern.setVisible(false);
     this.ready = false;
     // The field's texture and CPU copy are not needed again this session.
-    if (this.texture) this.renderer?.deleteTexture(this.texture);
-    this.texture = undefined;
+    this.deleteTextures();
     this.data = undefined;
     this.world = undefined;
     this.worldKey = "";
@@ -466,26 +490,27 @@ export class FieldTerrain {
         this.data = new FieldData(world.width, world.rows, this.maxHeight);
       this.data!.load(known, campaign.renderY);
       transitions.reset();
-      if (this.texture && !reuse) {
-        renderer.deleteTexture(this.texture);
-        this.texture = undefined;
-      }
+      if (this.texture && !reuse) this.deleteTextures();
+      this.releaseOwed();
       if (!this.texture) {
         const gl = this.gl!;
-        this.texture = renderer.createTexture2D(
-          0,
-          gl.LINEAR,
-          gl.LINEAR,
-          gl.CLAMP_TO_EDGE,
-          gl.CLAMP_TO_EDGE,
-          gl.RGBA,
-          this.data!.pixels as unknown as object,
-          this.data!.texWidth,
-          this.data!.texHeight,
-          false,
-          true,
-          false,
-        );
+        const create = () =>
+          renderer.createTexture2D(
+            0,
+            gl.LINEAR,
+            gl.LINEAR,
+            gl.CLAMP_TO_EDGE,
+            gl.CLAMP_TO_EDGE,
+            gl.RGBA,
+            this.data!.pixels as unknown as object,
+            this.data!.texWidth,
+            this.data!.texHeight,
+            false,
+            true,
+            false,
+          );
+        this.texture = create();
+        if (this.mode === "twotex") this.texture2 = create();
       } else {
         // Same size: re-upload the whole texture once.
         this.patch = {
@@ -512,7 +537,7 @@ export class FieldTerrain {
         );
       this.dirtyCells = data.sync(
         known,
-        clock.animate
+        clock.animate && !this.noTransitions
           ? (kind) => transitions.open(kind, clock.seconds)
           : undefined,
       );
@@ -608,6 +633,88 @@ export class FieldTerrain {
   }
 
   /** Inside the Extern render: Phaser has flushed and will rebind afterwards. */
+  private deleteTextures() {
+    for (const texture of [this.texture, this.texture2])
+      if (texture) this.renderer?.deleteTexture(texture);
+    this.texture = undefined;
+    this.texture2 = undefined;
+    this.releaseOwed();
+  }
+
+  /** A kept patch's buffer, whole again, back in the pool. */
+  private recycle(bytes: Uint8Array) {
+    this.pool.push(new Uint8Array(bytes.buffer));
+  }
+
+  /** Forget what the copies owe each other (a reload sends everything). */
+  private releaseOwed() {
+    for (const list of this.owed) {
+      for (const { bytes } of list) this.recycle(bytes);
+      list.length = 0;
+    }
+    this.front = 0;
+    this.idleFrames = 0;
+  }
+
+  /**
+   * "copy": the patch goes to a staging texture that is given new storage
+   * each time, so the upload never writes into storage a frame still reads,
+   * and the GPU copies it into the field texture in command order.
+   */
+  private copyUpload(
+    gl: WebGLRenderingContext,
+    rect: FieldRect,
+    bytes: Uint8Array,
+  ) {
+    if (!this.stagingTexture) {
+      this.stagingTexture = gl.createTexture()!;
+      gl.bindTexture(gl.TEXTURE_2D, this.stagingTexture);
+      for (const [name, value] of [
+        [gl.TEXTURE_MIN_FILTER, gl.NEAREST],
+        [gl.TEXTURE_MAG_FILTER, gl.NEAREST],
+        [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE],
+        [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE],
+      ] as const)
+        gl.texParameteri(gl.TEXTURE_2D, name, value);
+      this.stagingFramebuffer = gl.createFramebuffer()!;
+    }
+    gl.bindTexture(gl.TEXTURE_2D, this.stagingTexture);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      rect.width,
+      rect.height,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      bytes,
+    );
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.stagingFramebuffer!);
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      this.stagingTexture,
+      0,
+    );
+    gl.bindTexture(gl.TEXTURE_2D, this.texture!.webGLTexture);
+    gl.copyTexSubImage2D(
+      gl.TEXTURE_2D,
+      0,
+      rect.x,
+      rect.y,
+      0,
+      0,
+      rect.width,
+      rect.height,
+    );
+    gl.bindFramebuffer(
+      gl.FRAMEBUFFER,
+      this.renderer!.currentFramebuffer?.webGLFramebuffer ?? null,
+    );
+  }
+
   private draw(renderer: WebGLRenderer, debugAir = false, harness = false) {
     const gl = this.gl;
     if (!gl || this.lost || !this.texture || !this.ready || !this.data) return;
@@ -624,16 +731,12 @@ export class FieldTerrain {
       height = gl.drawingBufferHeight;
     let drawStarted = realNow();
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, this.texture.webGLTexture);
-    if (this.patch && !debugAir && !harness) {
-      const rect = this.patch,
-        started = realNow();
-      const full =
-        rect.width === this.data.texWidth &&
-        rect.height === this.data.texHeight;
-      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    const copies = this.texture2
+      ? [this.texture, this.texture2]
+      : [this.texture];
+    const bind = (n: number) =>
+      gl.bindTexture(gl.TEXTURE_2D, copies[n]!.webGLTexture);
+    const send = (rect: FieldRect, bytes: Uint8Array) =>
       gl.texSubImage2D(
         gl.TEXTURE_2D,
         0,
@@ -643,14 +746,80 @@ export class FieldTerrain {
         rect.height,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        full ? this.data.pixels : this.data.extract(rect, this.staging),
+        bytes,
       );
+    /** The other copy catches up on the patches it is owed. */
+    const settle = (n: number) => {
+      bind(n);
+      for (const { rect, bytes } of this.owed[n]!) {
+        send(rect, bytes);
+        this.recycle(bytes);
+      }
+      this.owed[n]!.length = 0;
+    };
+    if (copies.length === 1) this.front = 0;
+    if (this.patch && !debugAir && !harness) {
+      const rect = this.patch,
+        started = realNow();
+      const full =
+        rect.width === this.data.texWidth &&
+        rect.height === this.data.texHeight;
+      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      if (full) {
+        // A loading frame: every copy takes the whole texture.
+        this.releaseOwed();
+        for (let n = 0; n < copies.length; n++) {
+          bind(n);
+          send(rect, this.data.pixels);
+        }
+      } else {
+        const bytes = this.data.extract(rect, this.staging);
+        if (this.skipUpload) {
+          // Debug: built, not sent.
+        } else if (copies.length === 2) {
+          // The copy the last frame drew may still be in flight: patch the
+          // other one, draw it, and leave this patch owed to the first.
+          const back = 1 - this.front;
+          settle(back);
+          send(rect, bytes);
+          const kept = this.pool.pop() ?? new Uint8Array(this.staging.length);
+          kept.set(bytes);
+          this.owed[this.front]!.push({
+            rect,
+            bytes: kept.subarray(0, bytes.length),
+          });
+          this.front = back;
+        } else if (this.mode === "copy") {
+          this.copyUpload(gl, rect, bytes);
+        } else {
+          bind(0);
+          send(rect, bytes);
+        }
+      }
       drawStarted = realNow();
       if (!full) this.costUpload.add(drawStarted - started, drawStarted);
       this.lastUpload = rect;
       this.patch = undefined;
       this.draws++;
+      this.idleFrames = 0;
+    } else if (
+      copies.length === 2 &&
+      !debugAir &&
+      !harness &&
+      this.owed[1 - this.front]!.length &&
+      ++this.idleFrames >= 2
+    ) {
+      // Two frames after the last patch the other copy is idle: it catches
+      // up, so a parked rig owes nothing.
+      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      settle(1 - this.front);
+      this.draws++;
     }
+    bind(this.front);
     gl.useProgram(this.program!);
     const size = `${width}x${height}`;
     if (!this.buffer || size !== this.bufferSize) {
@@ -889,7 +1058,10 @@ export class FieldTerrain {
     this.renderer?.off(Phaser.Renderer.Events.RESTORE_WEBGL, this.onRestore);
     this.extern.destroy();
     this.fallback?.destroy();
-    if (this.texture) this.renderer?.deleteTexture(this.texture);
+    this.deleteTextures();
+    if (this.stagingTexture) this.gl?.deleteTexture(this.stagingTexture);
+    if (this.stagingFramebuffer)
+      this.gl?.deleteFramebuffer(this.stagingFramebuffer);
     if (this.program) this.gl?.deleteProgram(this.program);
     if (this.buffer) this.gl?.deleteBuffer(this.buffer);
     if (window.__campaignField) delete window.__campaignField;
@@ -905,8 +1077,9 @@ export function createTerrainLayer(
   scene: Phaser.Scene,
   request: FieldRequest,
   textureLimit?: number,
+  debug?: ReadonlySet<FieldSwitch>,
 ) {
   return request === "off"
     ? new RetainedTerrain(scene)
-    : new FieldTerrain(scene, request, textureLimit);
+    : new FieldTerrain(scene, request, textureLimit, debug);
 }

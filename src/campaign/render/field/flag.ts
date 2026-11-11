@@ -26,6 +26,34 @@ export function fieldTextureLimit(search: string) {
   return Number.isFinite(value) && value >= 256 ? Math.floor(value) : undefined;
 }
 
+/**
+ * `?fielddebug=a,b`: switches for readings (docs/qa/t2/README.md, condition
+ * 2). They change what a dig costs, never what play is by default:
+ *
+ *   noupload       patches are built but not sent to the GPU
+ *   notransitions  cells change at once, as under the frozen clock
+ *   single         one field texture, patched in place (the spike's way)
+ *   twotex         two copies; a patch goes to the one the last frame did
+ *                  not draw, and to the other a frame later
+ *   copy           a patch goes to a small staging texture and is copied
+ *                  into the field texture on the GPU
+ */
+export const FIELD_DEBUG = [
+  "noupload",
+  "notransitions",
+  "single",
+  "twotex",
+  "copy",
+] as const;
+export type FieldDebug = (typeof FIELD_DEBUG)[number];
+
+export function fieldDebug(search: string): ReadonlySet<FieldDebug> {
+  const asked = (new URLSearchParams(search).get("fielddebug") ?? "").split(
+    ",",
+  );
+  return new Set(FIELD_DEBUG.filter((name) => asked.includes(name)));
+}
+
 /** The build-time default (Vite env), read once. */
 export const FIELD_ENV: string | undefined =
   typeof import.meta.env !== "undefined"
