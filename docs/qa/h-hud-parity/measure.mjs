@@ -118,6 +118,15 @@ async function hud(page) {
         })(),
       },
       pips: shown("#campaign-cargo-pips"),
+      // H4: the phone tray's rest state, plate and icons.
+      tray: (() => {
+        const bar = document.querySelector(".campaign-toolbar");
+        return {
+          rests: document.body.dataset.campaignTrayRest === "true",
+          plate: getComputedStyle(bar).backgroundColor,
+          icons: getComputedStyle(bar.querySelector(".hud-icon")).opacity,
+        };
+      })(),
       // H3: the ENERGY and HULL labels.
       labels: [...document.querySelectorAll(".instrument-row > span")]
         .filter(
@@ -183,7 +192,7 @@ try {
           entry.objective = entry.objective && box(entry.objective);
           cases.push(entry);
           console.log(
-            `${name}: objective ${entry.objective?.width}×${entry.objective?.height} "${entry.objectiveText}"; details ${entry.detailsShown}→${entry.detailsOnHover ?? entry.detailsOnTap}; haul ${entry.haul.shown ? entry.haul.text : "hidden"}${entry.haul.cut ? " (cut)" : ""}, pips ${entry.pips}, row overflow ${entry.rowOverflow}; labels ${entry.labels.join("/") || "none"}`,
+            `${name}: objective ${entry.objective?.width}×${entry.objective?.height} "${entry.objectiveText}"; details ${entry.detailsShown}→${entry.detailsOnHover ?? entry.detailsOnTap}; haul ${entry.haul.shown ? entry.haul.text : "hidden"}${entry.haul.cut ? " (cut)" : ""}, pips ${entry.pips}, row overflow ${entry.rowOverflow}; labels ${entry.labels.join("/") || "none"}; tray ${entry.tray.rests ? "resting" : "awake"} ${entry.tray.plate} icons ${entry.tray.icons}`,
           );
         }
       } finally {
