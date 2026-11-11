@@ -389,6 +389,21 @@ type ReturnReason =
   | "relic";
 
 /** Current-stage bearings are mission broadcasts, not a scanner for hidden ore. */
+/**
+ * H1 (D3): the target's distance and bearing as the objective pill shows
+ * them ("398 m ↑"), with words for assistive technology.
+ */
+export function objectiveDistance(
+  signal: Pick<MissionSignal, "direction" | "distanceMeters" | "arrow">,
+) {
+  return signal.direction === "here"
+    ? { text: "here", label: "At the target" }
+    : {
+        text: `${signal.distanceMeters} m ${signal.arrow}`,
+        label: `${signal.distanceMeters} metres, ${signal.direction.replace("-", " and ")}`,
+      };
+}
+
 export function campaignSignal(campaign: Campaign): MissionSignal | undefined {
   const state = campaign.state;
   const comet = state.currentWorld === "W02";

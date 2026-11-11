@@ -1802,8 +1802,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         const reserve = campaign.returnReserve.state;
         this.annotate({
           id: "home",
-          // The distance as the HOME beacon measured it, from the vehicle.
-          text: `HOME · ${Math.round(Math.hypot(delta(vehicle.x, dockX, world.width), -1 - vehicle.y) * 10)} m`,
+          // H1: the distance the mission signal (and so the objective pill)
+          // gives for the lander: to the docked rig's height.
+          text: `HOME · ${Math.round(Math.hypot(delta(vehicle.x, dockX, world.width), -campaign.activeWorldDefinition.bodyHalfY - vehicle.y) * 10)} m`,
           x: (this.unwrappedX + homeOffset) * tile - cx,
           // The chevron points at the lander's roof, about 2.2 tiles up.
           y: -2.2 * tile - cy,
