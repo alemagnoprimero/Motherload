@@ -7,10 +7,13 @@ import { fogDarkness } from "../bands";
 import { RetainedTerrain } from "../terrain";
 import {
   FIELD_K,
+  FIELD_MAX_HEIGHT,
   FIELD_PAD,
+  FIELD_REACH,
   FIELD_TOP,
   FIELD_UPLOAD_MAX,
   FieldData,
+  fieldRingRows,
   type FieldRect,
 } from "./field-data";
 import type { FieldRequest } from "./flag";
@@ -298,8 +301,12 @@ export class FieldTerrain {
       if (info)
         rendererName = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL));
       this.maxTexture = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
-      // The debug limit applies to the texture's height, where the ring is.
-      this.maxHeight = Math.min(this.maxTexture, textureLimit ?? Infinity);
+      // The height limit is where the ring is: FIELD_MAX_HEIGHT, or the
+      // debug limit (?fieldmax), and never more than the GPU's.
+      this.maxHeight = Math.min(
+        this.maxTexture,
+        textureLimit ?? FIELD_MAX_HEIGHT,
+      );
       this.renderer.on(Phaser.Renderer.Events.LOSE_WEBGL, this.onLose);
       this.renderer.on(Phaser.Renderer.Events.RESTORE_WEBGL, this.onRestore);
     }
@@ -342,6 +349,17 @@ export class FieldTerrain {
   /** True while the field shader is the terrain renderer. */
   get field() {
     return !this.fallbackReason;
+  }
+
+  /**
+   * Bytes of the field's own GL texture, which the TextureManager does not
+   * list (audit §7: the resident total must count raw textures). 0 when
+   * RetainedTerrain draws: its canvas texture is listed.
+   */
+  get rawTextureBytes() {
+    return this.texture && this.data
+      ? this.data.texWidth * this.data.texHeight * 4
+      : 0;
   }
 
   /** The readout's line: the field's CPU cost per frame (p95 over 10 s). */
@@ -406,6 +424,16 @@ export class FieldTerrain {
       campaign.world.width * FIELD_K + 2 * FIELD_PAD > this.maxTexture
     )
       this.useFallback(`world wider than ${this.maxTexture} texels`);
+    // A ring must hold every row on screen and the blur's reach around
+    // them. A view taller than that (57 rows of a 63-row ring: a desktop
+    // window more than 2.6 times taller than wide) keeps RetainedTerrain.
+    const ringRows = fieldRingRows(campaign.world.rows, this.maxHeight);
+    if (
+      !this.fallbackReason &&
+      ringRows > 0 &&
+      Math.ceil(view.height / view.tile) + 2 + 2 * FIELD_REACH > ringRows
+    )
+      this.useFallback(`view taller than the field's ${ringRows} rows`);
     if (this.fallbackReason) {
       if (!this.fallback) this.useFallback(this.fallbackReason);
       this.fallback!.render(campaign, view, highContrast, baseTile);

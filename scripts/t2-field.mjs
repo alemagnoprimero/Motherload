@@ -97,6 +97,8 @@ const checks = new Set(
     "tier,scramble,poi,dig,digcost,motion,look,ring,seam,draws,context"
   ).split(","),
 );
+/** Pixels of a 1440 × 900 frame the ring may differ at by more than 2 levels. */
+const RING_ROUNDING_PIXELS = 64;
 const throttle = Number(process.env.T2_THROTTLE || 1);
 const digFrames = Number(process.env.T2_DIG_FRAMES || 600);
 const fields = (process.env.T2_FIELDS || "1,0").split(",");
@@ -110,7 +112,11 @@ const fixtures = Object.fromEntries(
 await mkdir(out, { recursive: true });
 
 /** A page with the render probe, the scene clock frozen at 0 and Start pressed. */
-async function open(browser, settings, search, clock = true) {
+async function open(browser, form, search, clock = true) {
+  // Firefox has no isMobile emulation; the touch pointer is what the tier
+  // check is about, and hasTouch stays.
+  const { isMobile, ...plain } = form,
+    settings = process.env.BROWSER === "firefox" ? plain : form;
   const context = await browser.newContext(settings);
   await context.addInitScript(installRenderProbe, {
     geometry: false,
@@ -156,6 +162,18 @@ const dataset = (page) =>
 async function hudFree(page, file) {
   await page.evaluate(() => window.__campaignDebug.overlays(false));
   await advance(page, 50);
+  // A dialog that is still closing dims the whole frame with its backdrop
+  // (seen once in Firefox). Its close is not on the test clock: wait for it.
+  let open = "";
+  for (let attempt = 0; attempt < 30; attempt++) {
+    open = await page.evaluate(() => {
+      const dialog = document.querySelector("dialog[open]");
+      return dialog ? dialog.id || dialog.className || "dialog" : "";
+    });
+    if (!open) break;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  assert.equal(open, "", "no dialog is open over the frame");
   await page.screenshot({ path: file });
   await page.evaluate(() => window.__campaignDebug.overlays(true));
 }
@@ -553,7 +571,23 @@ try {
       shaft("w02-band-D-850m", "W02", 85),
     ];
     const directory = `${out}/look`;
-    await runArtCaptures(browser, base, directory, {
+    // The capture harness starts the game with sound on, and WebKit rejects
+    // AudioContext.resume() on a machine without an audio device ("Failed
+    // to start the audio device"), which the harness counts as a page
+    // error. These frames are about the rock: sound off.
+    const quiet = {
+      newContext: async (settings) => {
+        const context = await browser.newContext(settings);
+        await context.addInitScript(() =>
+          localStorage.setItem(
+            "motherload.campaign.preferences.v1",
+            JSON.stringify({ sound: false }),
+          ),
+        );
+        return context;
+      },
+    };
+    await runArtCaptures(quiet, base, directory, {
       captures: frames,
       backing: 1,
       search: "field=1",
@@ -662,7 +696,8 @@ try {
   }
   if (checks.has("ring")) {
     // The same play on two pages: the whole texture, and a 512-texel limit
-    // that makes the field a ring of 31 rows.
+    // that makes the field a ring of 31 rows. Then W02 against the 63-row
+    // ring deep worlds use.
     const pages = [];
     for (const search of [
       { field: 1, backing: 1 },
@@ -687,9 +722,9 @@ try {
       };
       const frames = {},
         rounding = {};
-      const compare = async (label) => {
+      const compare = async (label, pair = pages) => {
         const files = [];
-        for (const [n, { page }] of pages.entries())
+        for (const [n, { page }] of pair.entries())
           files.push(await shot(page, `${out}/ring-${label}-${n}.png`));
         const [beyond, any] = JSON.parse(
           execFileSync("python3", [
@@ -747,7 +782,42 @@ try {
         window.__campaignField.info(),
       );
       await compare("site4");
+      // The ring a deep world gets by default, 63 rows (1,010 texels), on
+      // W02: its whole texture is 1,648 texels tall, so ?fieldmax=1024
+      // makes that ring at W02's width, which is W04's.
+      const third = await open(browser, FORMS.desktop, {
+        field: 1,
+        backing: 1,
+        fieldmax: 1024,
+      });
+      const pair = [pages[0], third];
+      pages.push(third);
+      const w02 = fixture("W02", 60);
+      for (const { page } of pair) {
+        await restore(page, w02);
+        await settledView(page, w02);
+      }
+      const w02Info = await third.page.evaluate(() =>
+        window.__campaignField.info(),
+      );
+      await compare("w02", pair);
+      for (const { page } of pair) {
+        await keys(page, ["ArrowDown"]);
+        for (let step = 0; step < 120; step++) await advance(page, 50);
+        await keys(page, []);
+        for (let step = 0; step < 30; step++) await advance(page, 50);
+      }
+      const w02After = await third.page.evaluate(() =>
+        window.__campaignField.info(),
+      );
+      await compare("w02dug", pair);
       results.ring = {
+        w02: {
+          texture: w02Info.texture,
+          ring: w02Info.ring,
+          windowAfterDig: w02After.ring,
+          pendingAfterDig: w02After.pendingGroups,
+        },
         whole: { texture: info[0].texture, ring: info[0].ring },
         ringed: { texture: info[1].texture, ring: info[1].ring },
         rigY: after.map((a) => a.rigY),
@@ -770,7 +840,25 @@ try {
       );
       assert.ok(uploads <= 1, "one upload per frame while the window moves");
       assert.equal(after[1].field.pendingGroups, 0, "the window is built");
-      assert.deepEqual(frames, { "60m": 0, dug: 0, site4: 0 });
+      assert.deepEqual(
+        [w02Info.texture, w02Info.ring.rows],
+        [[776, 1010], 63],
+        "W02 under 1,024 texels is the default ring of 63 rows",
+      );
+      assert.ok(
+        w02Info.ring.window > 0,
+        "W02's window is at the rig, 600 m down",
+      );
+      assert.equal(w02After.pendingGroups, 0, "W02's window is built");
+      // A ring that mapped a row wrongly would differ over whole cells (a
+      // cell is 4,225 px here). SwiftShader differs nowhere; llvmpipe's
+      // fixed-point texture coordinates flip a threshold at a few pixels of
+      // one row (12 at most in Firefox).
+      for (const [label, count] of Object.entries(frames))
+        assert.ok(
+          count <= RING_ROUNDING_PIXELS,
+          `ring ${label}: ${count} pixels differ by more than 2 levels`,
+        );
       for (const { faults } of pages) assert.deepEqual(faults, []);
     } finally {
       for (const { context } of pages) await context.close();

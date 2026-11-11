@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
 import card from "../scripts/swatch-cards.py?raw";
+import { WORLD_CATALOG } from "../src/campaign/config";
 import {
   CODE,
   FIELD_K,
+  FIELD_MAX_HEIGHT,
   FIELD_PAD,
   FIELD_TOP,
   FIELD_UPLOAD_MAX,
   FieldData,
+  fieldRingRows,
   type KnownWorldView,
 } from "../src/campaign/render/field/field-data";
 import {
@@ -293,6 +296,39 @@ describe("T2 field ring (worlds taller than one texture)", () => {
     while (ring.nextPatch());
     expect(same(row(0), row(ring.texHeight - 2))).toBe(true);
     expect(same(row(ring.texHeight - 1), row(1))).toBe(true);
+  });
+});
+
+describe("T2 field texture size per world (audit §7)", () => {
+  it("holds W01 to W03 whole and deeper worlds as a ring of 63 rows, under 6 MiB", () => {
+    const sizes = Object.fromEntries(
+      WORLD_CATALOG.map((world) => {
+        const ring = fieldRingRows(world.rows, FIELD_MAX_HEIGHT),
+          rows = ring || world.rows + 3,
+          height = rows * FIELD_K + (ring ? 2 : 0),
+          width = world.width * FIELD_K + 2 * FIELD_PAD;
+        expect(height).toBeLessThanOrEqual(FIELD_MAX_HEIGHT);
+        expect(width).toBeLessThanOrEqual(2048);
+        expect(width * height * 4).toBeLessThanOrEqual(6 * 2 ** 20);
+        return [world.id, { ring, width, height }];
+      }),
+    );
+    expect(sizes.W01).toEqual({ ring: 0, width: 648, height: 1008 });
+    expect(sizes.W02).toEqual({ ring: 0, width: 776, height: 1648 });
+    expect(sizes.W03.ring).toBe(0);
+    // 600 rows whole would be 9,648 texels tall: 28.6 MiB.
+    expect(sizes.W04).toEqual({ ring: 63, width: 776, height: 1010 });
+    for (const world of WORLD_CATALOG)
+      if (world.rows > 125) expect(sizes[world.id].ring).toBe(63);
+    // The class agrees with the helper, and a debug limit under the ring's
+    // height still applies.
+    const deep = new FieldData(48, 600, FIELD_MAX_HEIGHT);
+    expect([deep.ring, deep.ringRows, deep.texHeight]).toEqual([
+      true,
+      63,
+      1010,
+    ]);
+    expect(fieldRingRows(60, 512)).toBe(31);
   });
 });
 

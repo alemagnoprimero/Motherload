@@ -99,7 +99,7 @@ The shader draws the rock as the swatch cards do (`scripts/swatch-cards.py`): co
 | Bands C and D: chunky angular blocks with a lighter top facet | C: blocks 0.78 to 1.0 by 1.0 to 1.6 tiles with angular tops; D: rubble 0.62 to 0.84 by 0.75 to 1.2; top facet × 1.22 |
 | Hard rock: square, cracked, chamfered 0.03 tile | drawn on the cell grid from the cell codes: square blocks, two cracks each, a 0.03-tile chamfer (lighter above, darker below); fill 0.79 of the lit rock, bedrock 0.70 |
 | Plate fill at L\* −8 | plate cells: fill 0.86 of the lit rock with a rust tint. The plate layer's own look is T14's; this is a holding value |
-| Lips 0.085 to 0.1 tile at about rock +80 luma | 0.09 tile in the swatch's lip colour, with a 0.065-tile shade under it. **Read from the frame the lip is rock +143 at 60 m (93 → 236), above the guide's "about +80"**: the lip colour is the swatch's (`#dfe8ea`), not rekeyed here. The check's limit is lip ≥ rock +55 |
+| Lips 0.085 to 0.1 tile at about rock +80 luma | 0.09 tile in the swatch's lip colour, with a 0.065-tile shade under it. **Read from the frame the lip is rock +143 at 60 m (93 → 236), above the guide's "about +80"**: the lip colour is the swatch's (`#f0e6d2` in band A), not rekeyed here. The check's limit is lip ≥ rock +55 |
 | Dark ceiling edge, undercut 0.03 tile, 0.3 to 0.4 tile occlusion | ceiling edge 0.05 tile; undercut a 0.03-tile line, 15 luma down (5 on floors); occlusion from the wide blur, gone by 0.35 tile |
 | Rust-seam inclusion along band-C ceiling joints (A1 rider) | band C: rust (`#89532b`) in the joints above a cave ceiling and on the ceiling edge, gated by a slow noise; band D the same at 0.6 with `#7e5924`; none in A and B |
 | Hue turns for B and D | the swatch JSON's per-band colours (B and D turn from A and C) |
@@ -183,6 +183,56 @@ The check asserts at most 12 draws on desktop and 10 on a phone, and no more tha
 
 `improvement-smoke`'s fog check and §9 harness captures, and `render-acceptance`'s WebGL runs, pin `?field=1` and assert the field drew (`T2_FIELD=0` runs them on `RetainedTerrain`). With the field forced on everywhere (`VITE_T2_FIELD=1`, stage 2's code), `campaign-smoke` passes all 15 of its steps, and `improvement-smoke`'s visual, fog and harness sections and `render-acceptance` pass; on SwiftShader that campaign run took 69 minutes here against 14 to 25 on the default path (a shared machine, other runs alongside), which is why it is not CI's default. `art-captures.mjs` pins it by default (`ART_SEARCH=field=0` for main's renderer).
 
+## Tall worlds, the x = 0 seam, context loss and other browsers (stage 3)
+
+**Worlds taller than one texture.** The field texture is 16 texels per tile, so a world's whole texture is (rows + 3) × 16 texels tall. W01 to W03 fit whole. A world whose whole texture would be taller than 2,048 texels (`FIELD_MAX_HEIGHT`), or than the GPU's largest texture, is held as a ring of 63 cell rows around the camera (`FIELD_RING_HEIGHT`, 1,010 texels): a row lives at `row mod 63`, the shader wraps its row coordinate, rows that enter the window are built patch by patch under the same one-upload-per-frame limit, and one repeated texel row above and below keeps bilinear taps continuous across the join.
+
+| World | Tiles × rows | Field texture | Bytes |
+|---|---|---|---|
+| W01 | 40 × 60 | 648 × 1,008, whole | 2.49 MiB |
+| W02, W03 | 48 × 100 | 776 × 1,648, whole | 4.88 MiB |
+| W04 | 48 × 600 | 776 × 1,010, ring (whole: 9,648 texels tall, 28.6 MiB) | 2.99 MiB |
+| the widest (96 × 180) | 96 × 180 | 1,544 × 1,010, ring | 5.95 MiB |
+
+- A unit test holds every world in `WORLD_CATALOG` to these rules (at most 2,048 texels each way, at most 6 MiB) and compares a ring with the whole texture texel for texel, after a window move and after a dig.
+- `T2_CHECKS=ring` plays the same inputs on two pages, the whole texture and `?fieldmax=512` (a ring of 31 rows), and compares the field quad at 60 m, after 240 frames of digging down, and at SITE-4: 0 pixels differ by more than 2 levels in Chromium (1, 39 and 190 differ by a level or two, where the two textures' heights round a coordinate differently). The window follows the camera (first row 0, then 6, then 32) with at most one upload per frame and nothing left to build.
+- The same check then runs W02 600 m down against `?fieldmax=1024`, which is the 63-row ring a deep world gets, at W04's width: 0 pixels beyond 2 levels, before and after a dig, with the window at row 30.
+- A ring must hold every row on screen plus the blur's reach. A view taller than 57 rows (a desktop window more than about 2.6 times taller than wide) keeps `RetainedTerrain` for that world: `retained (view taller than the field's 63 rows)`.
+- Not run in a browser: a world that is a ring without `?fieldmax`. The fixtures are W01 and W02, which fit whole; the code path is the same one.
+
+**The x = 0 seam.** The texture carries four wrapped columns at each side, so a tap near the seam reads the other edge's texels. `T2_CHECKS=seam` parks the rig in a shaft 2.5 tiles right of x = 0 so the seam crosses the frame: the luma step across the seam column is 0.35 against a median of 0.71 across the frame's other cell boundaries, and the same view one world width around differs at 0 pixels by more than 4 levels.
+
+**Context loss.** `T2_CHECKS=context` runs in CI in all three browsers (the "T2 field renderer checks" workflow): `WEBGL_lose_context` loses and restores the context at 60 m, the field rebuilds its program and texture from the cell data it keeps, and the frame after is the frame before, 0 px.
+
+**Other browsers.** The workflow now runs three legs. Chromium runs everything. Firefox and Playwright's WebKit run everything but the dig cost (its CPU slowdown is a Chromium protocol call): the same GLSL through their own shader translators, on Mesa's llvmpipe.
+
+| Check | Chromium (SwiftShader) | Firefox (llvmpipe) | WebKit (llvmpipe) |
+|---|---|---|---|
+| `tier` | software rasteriser: `RetainedTerrain` by default, the field when pinned | the same | the field by default: WebKit reports its renderer as "Apple GPU", so the software check cannot name llvmpipe |
+| `scramble`, 60 m and SITE-4 | 0 px | 0 px | 0 px |
+| `poi` | 0 px | 0 px | 0 px |
+| `dig` | 7 uploads in 90 frames, largest 160 × 144, one per frame at most, 0 parked | the same | the same |
+| `motion` | dig done at 117 ms, reveal at 267 ms; far pixels ≤ 1 luma | the same; ≤ 0.72 | the same; ≤ 0.72 |
+| `look` | every row holds | every row holds (boundary 26.6 % and 28.1 %) | every row holds (23.4 % and 26.6 %) |
+| `ring`, pixels beyond 2 levels | 0, 0, 0 | 0, 5, 12 | 0, 5, 12 |
+| `seam` | 0.35; 0 px | 0.36; 0 px | 0.36; 0 px |
+| `draws`, 60 m and SITE-4 | 5 and 9 | 5 and 9 | 5 and 9 |
+| `context` | 0 px | 0 px | 0 px |
+
+- **The ring's limit is 64 pixels of a 1,440 × 900 frame, not 0.** On llvmpipe the ring and the whole texture differ by more than 2 levels at 5 and 12 pixels, each run on one pixel row: the two textures have different heights, llvmpipe's fixed-point texture coordinates round differently, and a threshold flips. A ring that mapped a row wrongly would differ over whole cells (4,225 px each).
+- **Firefox needs a window.** Headless Firefox on a machine without a GPU has no WebGL ("Exhausted GL driver options"), and with WebGL the default tier is `RetainedTerrain` on a software rasteriser, so the existing "Audit Firefox surface rendering" job never draws the field. The Firefox leg runs under `xvfb-run` with `FIREFOX_HEADED=1` (`scripts/browser-launch.mjs`) and pins `?field=1`.
+- **Found on the way, not T2's:** WebKit rejects `AudioContext.resume()` on a machine without an audio device ("Failed to start the audio device") and `audio.ts` does not catch it, so the capture harness saw a page error. The look check's pages run with sound off; the game code is untouched. In Firefox one capture was taken under a dialog's closing backdrop; `hudFree` now waits for the dialog.
+
+**iOS Safari: what it still needs.** Playwright's WebKit is Safari's engine and shader translator on this machine's OpenGL. It is not iOS: no Metal back end, no iOS memory limits, no tab eviction. Nothing in this container or on GitHub's Linux runners can run iOS Safari. It needs one reading on an iPhone (the oldest supported model, per §7's device gates), with the `t2-dist` build served over an https tunnel as in condition 1:
+
+1. `?debug=frametime&field=1`: the readout says `terrain field` (the shader compiled through Metal and fragment `highp` is there), and the 60 m fixture looks like the capture above.
+2. Without `field=1`: the readout still says `terrain field`, not `retained (…)`.
+3. Dig for 10 s, then park: note `interval p95` and the `field scan · patch · upload · draw` line.
+4. Context loss as iOS does it: switch to another app for a minute (or open several heavy tabs), come back, and check the terrain is drawn and the readout still says `terrain field`.
+5. Rotate the phone and back: the terrain follows the new frame.
+
+A macOS runner with Playwright's WebKit would put the Metal translation in CI (step 1 only); it is not added here because macOS runner minutes are billed at ten times Linux's on a private repository. Say if it should be.
+
 ## Reproduce
 
 ```bash
@@ -192,4 +242,7 @@ export PREVIEW_URL=http://127.0.0.1:5173/ CHROMIUM_PATH=/path/to/chromium
 npm run test:t2                                   # every check, field and main
 T2_CHECKS=digcost T2_THROTTLE=4 npm run test:t2   # the dig cost at a 4× CPU slowdown
 T2_CHECKS=frametime npm run test:t2               # the readout after real-clock play (SwiftShader here)
+# Firefox (a window under xvfb) and Playwright's WebKit: everything but the dig cost
+BROWSER=firefox FIREFOX_HEADED=1 T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context xvfb-run -a -s "-screen 0 1920x1200x24" npm run test:t2
+BROWSER=webkit T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context npm run test:t2
 ```

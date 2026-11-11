@@ -2,9 +2,17 @@ name: T2 field renderer checks
 
 # The field renderer's own checks (scripts/t2-field.mjs; docs/qa/t2/README.md):
 # which renderer a page gets, the full-frame scramble and the POI probe at
-# 0 px, patch uploads, the reveal and dig transitions, draw calls and WebGL
-# context loss. CI has no GPU: every check pins the field with ?field=1, and
-# the dig cost is reported but not asserted (shared runners time unevenly).
+# 0 px, patch uploads, the reveal and dig transitions, the material and
+# geometry rows, the row ring, the x = 0 seam, draw calls and WebGL context
+# loss. CI has no GPU: every check pins the field with ?field=1, and the dig
+# cost is reported but not asserted (shared runners time unevenly).
+#
+# Chromium runs all of it. Firefox and Playwright's WebKit run everything but
+# the dig cost (its CPU slowdown is a Chromium protocol call): the same
+# shader through their own GLSL translators, the same 0 px rows. WebKit runs
+# twice: on Linux (OpenGL) and on macOS, where WebGL goes through Metal as
+# it does in Safari. Neither is iOS Safari; what an iPhone still needs is in
+# the README.
 on:
   workflow_dispatch:
   pull_request:
@@ -29,8 +37,16 @@ concurrency:
 
 jobs:
   field:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { browser: chromium, os: ubuntu-latest }
+          - { browser: firefox, os: ubuntu-latest }
+          - { browser: webkit, os: ubuntu-latest }
+          - { browser: webkit, os: macos-latest }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -40,8 +56,18 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Install browser and pixel measurement tooling
         run: |
-          npx playwright-core install --with-deps chromium
+          npx playwright-core install --with-deps ${{ matrix.browser }}
+          # macOS's python3 refuses a system-wide pip install: a venv there.
+          if [ "${{ runner.os }}" = macOS ]; then
+            python3 -m venv "$RUNNER_TEMP/venv"
+            echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+            export PATH="$RUNNER_TEMP/venv/bin:$PATH"
+          fi
           python3 -m pip install Pillow==12.0.0 numpy==2.5.3
+          # Firefox draws WebGL on Mesa's llvmpipe, in a window on a display.
+          if [ "${{ matrix.browser }}" = firefox ]; then
+            sudo apt-get install -y --no-install-recommends xvfb libegl1 libgl1-mesa-dri
+          fi
       - name: Start isolated source preview
         run: |
           npm run dev -- --port 5173 --strictPort > /tmp/motherload-vite.log 2>&1 &
@@ -53,16 +79,29 @@ jobs:
           exit 1
       - name: Check the field renderer
         env:
+          BROWSER: ${{ matrix.browser }}
           PREVIEW_URL: http://127.0.0.1:5173/
           T2_DIGCOST_ASSERT: "0"
           T2_DIG_FRAMES: "300"
         run: |
-          export CHROMIUM_PATH="$(node --input-type=module -e 'import { chromium } from "playwright-core"; process.stdout.write(chromium.executablePath());')"
-          npm run test:t2
+          case "$BROWSER" in
+            chromium)
+              export CHROMIUM_PATH="$(node --input-type=module -e 'import { chromium } from "playwright-core"; process.stdout.write(chromium.executablePath());')"
+              npm run test:t2
+              ;;
+            firefox)
+              export T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context FIREFOX_HEADED=1
+              xvfb-run -a -s "-screen 0 1920x1200x24" npm run test:t2
+              ;;
+            webkit)
+              export T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context
+              npm run test:t2
+              ;;
+          esac
       - name: Retain the evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: t2-field-evidence
+          name: t2-field-evidence-${{ matrix.browser }}-${{ matrix.os }}
           path: artifacts/t2/
           if-no-files-found: ignore

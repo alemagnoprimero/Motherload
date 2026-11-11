@@ -39,6 +39,25 @@ export const FIELD_REACH = 2;
 export const FIELD_UPLOAD_MAX = 160;
 /** Transition slots a cell's A byte can name (1 to 15; 0 is settled). */
 export const FIELD_SLOTS = 15;
+/**
+ * The tallest field texture the game makes whole, in texels: W01 to W03
+ * (60 and 100 rows; 2.5 and 4.9 MiB) fit. A deeper world is a ring of rows
+ * around the camera, FIELD_RING_HEIGHT texels tall (63 rows), so its
+ * texture is at most 5.9 MiB (96 tiles wide) where the whole of W04's 600
+ * rows would be 28.6 MiB and taller than most phones' largest texture.
+ */
+export const FIELD_MAX_HEIGHT = 2048;
+export const FIELD_RING_HEIGHT = 1024;
+
+/**
+ * Cell rows of the ring a world of `rows` needs when its whole texture
+ * would be taller than `maxTexture`; 0 when it fits whole.
+ */
+export function fieldRingRows(rows: number, maxTexture: number) {
+  return (rows + FIELD_TOP + FIELD_BOTTOM) * FIELD_K > maxTexture
+    ? Math.floor((Math.min(maxTexture, FIELD_RING_HEIGHT) - 2) / FIELD_K)
+    : 0;
+}
 
 /** Cell codes in the A channel. Unknown is the only code a hidden cell gets. */
 export const CODE = {
@@ -197,12 +216,11 @@ export class FieldData {
   constructor(width: number, rows: number, maxTexture = Infinity) {
     this.width = width;
     this.rows = rows;
-    const virtual = rows + FIELD_TOP + FIELD_BOTTOM;
-    this.ring = virtual * FIELD_K > maxTexture;
+    const virtual = rows + FIELD_TOP + FIELD_BOTTOM,
+      ringRows = fieldRingRows(rows, maxTexture);
+    this.ring = ringRows > 0;
     this.padY = this.ring ? 1 : 0;
-    this.ringRows = this.ring
-      ? Math.floor((maxTexture - 2) / FIELD_K)
-      : virtual;
+    this.ringRows = this.ring ? ringRows : virtual;
     this.texWidth = width * FIELD_K + 2 * FIELD_PAD;
     this.texHeight = this.ringRows * FIELD_K + 2 * this.padY;
     this.pixels = new Uint8Array(this.texWidth * this.texHeight * 4);

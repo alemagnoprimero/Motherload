@@ -830,6 +830,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         total += bytes;
         if (group === "atlas") pages.push(key);
       }
+      // T2: the field's texture is a raw GL texture, not a TextureManager
+      // entry; it counts with the render layers it replaces.
+      if (this.terrainLayer instanceof FieldTerrain) {
+        const bytes = this.terrainLayer.rawTextureBytes;
+        groups.layers += bytes;
+        total += bytes;
+      }
       const art = this.art.state();
       const zone = art ? rigZone(art.band, art.row) : "surface";
       const plain = art?.densities.plain[zone] ?? 2,
