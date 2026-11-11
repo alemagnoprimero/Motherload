@@ -71,6 +71,30 @@ Probed by `fit.mjs` in this folder (the readouts' text set directly under the fr
 
 Captures by `scripts/art-captures.mjs` at backing 2 (a04, p-portrait-03), cropped to the HUD.
 
+## H3: the bar labels
+
+**What changed.** The ENERGY and HULL labels of the two vital bars, present but hidden, show at widths of 900 px and more, as on the board's wide panels ("ENERGY 9.0 / 10"). Short landscape phones (500 px tall or less) keep their compact row even when wider than 900 px. The labels are 12 px, letter-spaced, beside the value; nothing else in the plate moves.
+
+| Line | Result | |
+|---|---|---|
+| Bar labels shown at ≥ 900 px (§9.2) | Shown at 900, 1024 (a coarse-pointer tablet), 1280 and 1440; hidden at 899, at 393 × 851 and at 915 × 412 (landscape phone); never overlapping the value, which stays inside its row | met |
+
+Probed by `labels.mjs` in this folder; in `measure.mjs` the labels show in every desktop case and in no phone case.
+
+| Viewport | Labels | Size | Meets the value | Value inside its row |
+|---|---|---|---|---|
+| 899 × 700 | hidden | 12 px | no | yes |
+| 900 × 700 | shown | 12 px | no | yes |
+| 1024 × 768 touch | shown | 12 px | no | yes |
+| 1280 × 720 | shown | 12 px | no | yes |
+| 1440 × 900 | shown | 12 px | no | yes |
+| 915 × 412 touch | hidden | 12 px | no | yes |
+| 393 × 851 touch | hidden | 12 px | no | yes |
+
+![Desktop 60 m, the left plate: H2 and H3](h3-desktop-60m.jpg)
+
+Capture by `scripts/art-captures.mjs` at backing 2 (a04), cropped to the HUD. The 393 × 851 phone is unchanged (no labels below 900 px).
+
 ## Reproduce
 
 ```bash
@@ -79,6 +103,10 @@ node docs/qa/h-hud-parity/measure.mjs http://127.0.0.1:5173/ artifacts/hud
 
 ```bash
 node docs/qa/h-hud-parity/fit.mjs http://127.0.0.1:5173/
+```
+
+```bash
+node docs/qa/h-hud-parity/labels.mjs http://127.0.0.1:5173/
 ```
 
 ## Verification

@@ -4199,3 +4199,14 @@ body .campaign-mission-stack .campaign-objective {
     display: flex;
   }
 }
+
+/*
+ * H3 (D3): the ENERGY and HULL labels show at widths of 900 px and more, as
+ * on the board's wide panels ("ENERGY 9.0 / 10"); they were in the HUD,
+ * hidden. Short landscape phones keep their compact row.
+ */
+@media (min-width: 900px) and (min-height: 501px) {
+  .campaign-hud .instrument-row > span {
+    display: inline;
+  }
+}
