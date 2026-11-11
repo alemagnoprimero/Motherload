@@ -74,14 +74,51 @@ The first two rows are this commit on main with #17 to #19, the scene clock runn
   - The frame state is reused instead of rebuilt each frame.
 - **If the S25 still reads more than 2 ms over main,** the field line names the part: a high `patch` means the blur build (next step: move it to a fragment pass over the patch rectangle, so a dig uploads a few bytes of cell codes); a high `upload` or `draw` means the driver (next step: upload after the quad's draw instead of before it, or keep two copies of the texture and patch the one not in flight).
 
-**Stage 4: a GPU reading that does not meet it.** The macOS runner's WebKit (Metal; the readout table in the stage 4 section) reads the field at +7 ms CPU and +9 ms interval over main while digging on a desktop at backing 2, parity parked, and no gap at the phone viewport at backing 1.5. The cost grows with the frame's pixels and is outside the field's scan, patch, upload and draw timers, which rules out the patch build this container measured and points at the frame that follows a texture update: either the driver synchronising the update with the frame in flight, or the GPU's frame going over the refresh on dig frames and the next frame waiting for a drawable. That is not yet separated. Proposed, in order:
+**The macOS leg: split, and met without a change to the upload.** Stage 4's single reading on the macOS runner (WebKit through Metal) had the field digging at 20 ms CPU and 34 ms interval p95 against main's 13 and 25 at desktop backing 2, and about 15 ms of a dig frame unaccounted for. Read again three times, with a frame log and the switches below, that gap is not there.
 
-1. **Split it on the same runner** (two debug switches on the `frametime` check, no change to play): digging with the upload skipped, and digging with the transitions off, which takes the 42 patches of a 12 s dig down to about 8.
-2. **If the update is the cost:** keep two copies of the field texture and patch the one the last frame did not draw (one more upload of the same patch a frame later, 2.5 MiB more for W01), or build the blur in a fragment pass so a dig uploads a few bytes of cell codes.
-3. **If the dig frames' GPU time is the cost:** fewer frames in a transition (settle a slot's cells in one patch instead of per cell group) and the reveal's two looks drawn only inside the fading cells.
-4. Until then the measured step is the guard: a window whose interval p95 is over 25 ms counts against the field, resolution goes first, then the terrain goes to `RetainedTerrain`.
+`?fielddebug=` takes two switches and three upload strategies (`flag.ts`; none changes play unless asked for):
 
-**Condition 2 stays open**: met in this container and at the phone viewport on the macOS runner, not met at desktop backing 2 on that runner, and not re-read on the S25.
+| Value | What it does |
+|---|---|
+| `noupload` | patches are built but not sent to the GPU |
+| `notransitions` | cells change at once, which takes the 45 patches of a 12 s dig down to 23 |
+| `single` | one field texture, patched in place: the default, as before |
+| `twotex` | two copies of the field texture; a patch goes to the one the last frame did not draw, and to the other a frame later |
+| `copy` | a patch goes to a small staging texture given new storage each time, and the GPU copies it into the field texture |
+
+`T2_CHECKS=frametime` now follows condition 1's procedure for main and for each variant, any number of passes, and logs every animation frame while digging: its cost on the page's thread, the interval to the next frame, and whether it sent a terrain upload. `T2_CHECKS=modes` holds `twotex` and `copy` to the single texture's picture (0 differing pixels at 60 m, after a dig and at SITE-4, in every browser leg).
+
+**Digging interval p95, three runs of three passes on the macOS leg** (ms; the readout's number, the one conditions 1 and 2 are read on):
+
+| Run | View | main, passes | field, passes | field − main | parked: main / field (median) |
+|---|---|---|---|---|---|
+| A (PR run, `bd2a94c`) | desktop @2 | 48, 31, 32 | 39, 26, 23 | −9, −5, −9 | 30 / 31 |
+| | phone view @1.5 | 46, 23, 29 | 41, 24, 29 | −5, +1, 0 | 24 / 23 |
+| B (dispatched, `bd2a94c`) | desktop @2 | 45, 47, 43 | 42, 47, 36 | −3, 0, −7 | 35 / 38 |
+| | phone view @1.5 | 75, 42, 31 | 61, 30, 28 | −14, −12, −3 | 30 / 27 |
+| C (PR run, `9810070`) | desktop @2 | 34, 30, 28 | 28, 23, 22 | −6, −7, −6 | 20 / 20 |
+| | phone view @1.5 | 29, 23, 20 | 22, 21, 20 | −7, −2, 0 | 20 / 19 |
+
+In all eighteen pairs the field's digging interval p95 is at most 1 ms over main's: fourteen under, three level, one 1 ms over. Parked the two are level when the runner is quiet (run C: 20 and 20, 20 and 19); in the noisier runs single passes spread from 20 to 52 for main and 19 to 96 for the field, with no side consistently ahead.
+
+**Where a dig frame's time goes** (run A, desktop @2; mean cost of the frames that sent a terrain upload minus the others', and the same for the interval that follows; ms, three passes):
+
+| Variant | upload frames per 12 s | cost, upload frames − others | next interval, upload frames − others | digging interval p95, median |
+|---|---|---|---|---|
+| main (`RetainedTerrain`) | 26 to 28 | +16.1, +12.1, +7.1 | +19.8, +12.3, +8.2 | 32 |
+| field, `single` (default) | 43 to 46 | +5.9, +1.5, 0.0 | +5.1, −1.2, −0.1 | 26 |
+| field, `twotex` | 72 to 78 | +1.9, +1.0, +2.3 | +1.8, −0.1, +1.0 | 25 |
+| field, `copy` | 39 to 44 | +3.8, +1.7, +4.3 | +3.0, +1.6, +4.8 | 33 |
+| field, `noupload` | 43 to 44 | +3.7, +2.3, +2.3 | +4.0, +1.4, +1.9 | 30 |
+| field, `notransitions` | 23 | +3.1, +2.3, +5.7 | +1.6, +0.8, +5.3 | 33 |
+
+- **The upload is not the cost.** With the upload skipped a patch frame still costs 2 to 4 ms more than its neighbours, the same as with it; neither `twotex` nor `copy` is better than the single texture beyond the passes' spread. What a patch frame adds is the patch build on the page's thread, and in every pass it is less than half of what an upload frame of `RetainedTerrain` adds (its canvas redraw and upload).
+- **The transitions are not the cost either**: half the patches, the same cost per patch frame.
+- **Why stage 4's reading looked the way it did.** A p95 over ten seconds is the 95th percentile frame. The field sends an upload on about 6.5 % of digging frames (a dig, the reveals around it, and each transition's settle), so its p95 falls among its patch frames; `RetainedTerrain` uploads on 4 to 5 %, so its p95 falls just short of its upload frames, which are much the dearer. One pass on a noisy runner put the two on opposite sides of that line. The frame log compares like with like.
+- **No change to the renderer follows from this leg**: the default stays `single`. `twotex` and `copy` stay behind the switch, checked, because a phone's GLES driver may treat an update of a texture in flight differently from Metal: if the S25 Ultra's readout shows a high `upload` or a gap that `?fielddebug=twotex` or `copy` closes, that strategy becomes the default; if it does not, the two come out.
+- The runner is a shared virtual machine with a 1 ms clock in WebKit: single passes move by 15 ms from one to the next, which is why the row is read on three runs.
+
+**Condition 2 on the macOS leg: met** (digging interval p95 within 2 ms of main's at both views in every pass of three runs; parked level). **Still wanted: the S25 Ultra re-read** with the `field scan · patch · upload · draw` line.
 
 Limit in the check: digging p95, field minus main, at most +2 ms (`T2_DIGCOST_ASSERT=0` reports without asserting; CI runs it that way because shared runners time unevenly).
 
@@ -229,7 +266,7 @@ The check asserts at most 12 draws on desktop and 10 on a phone, and no more tha
 
 - **The ring's limit is 64 pixels of a 1,440 × 900 frame, not 0.** On llvmpipe the ring and the whole texture differ by more than 2 levels at 5 and 12 pixels, each run on one pixel row: the two textures have different heights, llvmpipe's fixed-point texture coordinates round differently, and a threshold flips. A ring that mapped a row wrongly would differ over whole cells (4,225 px each).
 - **Firefox needs a window.** Headless Firefox on a machine without a GPU has no WebGL ("Exhausted GL driver options"), and with WebGL the default tier is `RetainedTerrain` on a software rasteriser, so the existing "Audit Firefox surface rendering" job never draws the field. The Firefox leg runs under `xvfb-run` with `FIREFOX_HEADED=1` (`scripts/browser-launch.mjs`) and pins `?field=1`.
-- **Found on the way, not T2's:** WebKit rejects `AudioContext.resume()` on a machine without an audio device ("Failed to start the audio device") and `audio.ts` does not catch it, so the capture harness saw a page error. The look check's pages run with sound off; the game code is untouched. In Firefox one capture was taken under a dialog's closing backdrop; `hudFree` now waits for the dialog.
+- **Found on the way, not T2's:** WebKit rejects `AudioContext.resume()` on a machine without an audio device ("Failed to start the audio device") and `audio.ts` does not catch it, so the capture harness saw a page error. The look check's pages run with sound off; the game code is untouched. In Firefox a whole frame was captured dimmed three times (once locally, twice in CI) while the page reported no dialog, no camera fade and no pause; the cause is not found. `hudFree` now takes a frame as settled when two captures a step apart are the same bytes, and the Firefox leg has passed since.
 
 **iOS Safari: what it still needs.** Playwright's WebKit is Safari's engine and shader translator, on OpenGL on Linux and through Metal on the macOS runner. Neither is iOS: no iPhone GPU, no iOS memory limits, no tab eviction. Nothing in this container or on GitHub's runners can run iOS Safari. It needs one reading on an iPhone (the oldest supported model, per §7's device gates), with the `t2-dist` build served over an https tunnel as in condition 1:
 
@@ -304,20 +341,24 @@ Rows of that table that are under target, and whose they are:
 | | main (`field=0`) | 27.6 ms / 369 ms | 7.3 ms / 318 ms |
 | This container, phone viewport at backing 1.5 | field | 4.8 ms / 263 ms | 5.9 ms / 256 ms |
 | | main | 2.5 ms / 61 ms | 7.6 ms / 56 ms |
-| macOS runner (GitHub's Apple-silicon VM), WebKit through Metal, desktop 1440 × 900 at backing 2, in CI | field | 3 ms / 20 ms | **20 ms / 34 ms** |
+| macOS runner (GitHub's Apple-silicon VM), WebKit through Metal, desktop 1440 × 900 at backing 2, in CI: stage 4's single pass | field | 3 ms / 20 ms | 20 ms / 34 ms |
 | | main | 3 ms / 21 ms | 13 ms / 25 ms |
-| The same runner, phone viewport at backing 1.5 | field | 2 ms / 23 ms | 4 ms / 21 ms |
-| | main | 2 ms / 20 ms | 10 ms / 21 ms |
+| The same, median of three passes, quiet run (C in condition 2's table) | field | 2 ms / 20 ms | 14 ms / 23 ms |
+| | main | 2 ms / 20 ms | 18 ms / 30 ms |
+| The same runner, phone viewport at backing 1.5, run C | field | 2 ms / 19 ms | 14 ms / 21 ms |
+| | main | 2 ms / 20 ms | 15 ms / 23 ms |
 
 - The CPU column is the game's JavaScript and GL calls per frame, and it is what this container can measure: the field's digging p95 is at or under main's on both forms. Main's 27.6 ms parked on the desktop was not chased; its window is the first seconds after an import.
-- **The macOS runner is the first GPU this branch was read on, and at desktop backing 2 it does not meet condition 2.** Digging with the field reads 20 ms CPU p95 and 34 ms interval p95 against main's 13 and 25: +7 and +9, the S25 Ultra's pattern (18 and 20 against 12 and 16). Parked is at parity (20 against 21), and at the phone viewport at backing 1.5 on the same runner the field digs at 4 ms CPU against main's 10 with the interval level at 21. The field's own line while digging there reads `scan 1 · patch 4 · upload 0 · draw 0 ms (42 patches)`, so about 15 ms of a dig frame at 2880 × 1800 is outside the four parts the readout times, and is not there at 590 × 1277. WebKit's clock has 1 ms steps, the runner is a virtual machine with a 20 ms frame, and this is one run: a pointer, not a device reading. See condition 2 above for what follows from it.
+- **Stage 4's single pass on the macOS runner read the field 9 ms over main while digging at desktop backing 2. Three runs of three passes with a frame log do not reproduce it**: the field's digging interval p95 is at or under main's at both views (condition 2 above has the table and the reason the single pass misled).
 - The interval column in this container is SwiftShader rasterising ten taps per pixel on four shared CPU cores: 1.6 s a frame at 2880 × 1800. It says nothing about a GPU, which is why software rasterisers start on `RetainedTerrain` and why **condition 1 stays pending on a device reading**.
 
 ### For the director's reading
 
 - **`t2-dist`**: the "T2 static build" workflow uploads it on every push to this branch; the run's summary has the serving steps. Condition 1's procedure and its table are near the top of this file; the rows are empty until the reading.
-- **Condition 2** needs the same S25 Ultra re-read, digging, with the `field scan · patch · upload · draw` line noted. The macOS runner's desktop reading says to expect a gap that grows with backing scale.
+- **Condition 2** needs the same S25 Ultra re-read, digging, with the `field scan · patch · upload · draw` line noted. If the gap is still there, read it once more with `&fielddebug=twotex` and once with `&fielddebug=copy` added to the URL: whichever closes it becomes the default.
 - **iOS Safari**: the five steps in the section above.
+
+To read the macOS leg again without a push: run the "T2 field renderer checks" workflow by hand on this branch with `frametime_only` on (Actions, "Run workflow"); `variants` takes `?fielddebug=` values separated by `;` and `passes` the number of passes. The numbers are in the macOS job's log, in lines that start with `frametime`.
 
 ## Reproduce
 
@@ -328,7 +369,9 @@ export PREVIEW_URL=http://127.0.0.1:5173/ CHROMIUM_PATH=/path/to/chromium
 npm run test:t2                                   # every check, field and main
 T2_CHECKS=digcost T2_THROTTLE=4 npm run test:t2   # the dig cost at a 4× CPU slowdown
 T2_CHECKS=frametime npm run test:t2               # the readout after real-clock play (SwiftShader here)
+# the frame-time readout, parked and digging: main, the field, and any ?fielddebug= variants
+T2_CHECKS=frametime T2_FRAMETIME_PASSES=3 T2_FRAMETIME_VARIANTS=";twotex;copy" npm run test:t2
 # Firefox (a window under xvfb) and Playwright's WebKit: everything but the dig cost
-BROWSER=firefox FIREFOX_HEADED=1 T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context xvfb-run -a -s "-screen 0 1920x1200x24" npm run test:t2
-BROWSER=webkit T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context npm run test:t2
+BROWSER=firefox FIREFOX_HEADED=1 T2_CHECKS=tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context xvfb-run -a -s "-screen 0 1920x1200x24" npm run test:t2
+BROWSER=webkit T2_CHECKS=tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context npm run test:t2
 ```
