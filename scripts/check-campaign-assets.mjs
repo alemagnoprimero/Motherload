@@ -21,6 +21,27 @@ const MAX_PAGE = 2048;
 const GUTTER = 2;
 const range = (count, start = 0) =>
   Array.from({ length: count }, (_, index) => index + start);
+/**
+ * Audit T8: asset 28, the annotation glyphs (DOM icons only). Their icon
+ * sizes come from frames.json (`iconSizes`, written by
+ * assets/campaign/source/annotation-sources.mjs).
+ */
+const ANNOTATION_GLYPHS = [
+  "ui-chevron-home",
+  "ui-chevron-target",
+  "ui-pulse-ring",
+  "ui-scan",
+  "ui-leader-tick",
+];
+const SOURCE_FRAMES = JSON.parse(
+  await readFile(
+    new URL("../assets/campaign/source/frames.json", import.meta.url),
+    "utf8",
+  ),
+).frames;
+const iconSizesOf = (name) =>
+  SOURCE_FRAMES.find((frame) => frame.name === name)?.iconSizes ??
+  (name.startsWith("ui-") ? [24, 48] : [64, 128]);
 const REQUIRED_FRAMES = [
   ...range(8).map((index) => `soil-${index}`),
   ...range(16).map((index) => `soil-edge-${index}`),
@@ -71,23 +92,26 @@ const REQUIRED_FRAMES = [
     "warning",
     "cooldown",
   ].map((id) => `ui-${id}`),
+  ...ANNOTATION_GLYPHS,
   "world-w01",
 ];
 
 const expectedFrameSize = (name) =>
-  name === "sky-body"
-    ? { w: 256, h: 256 }
-    : name.startsWith("dock-stage-")
-      ? { w: 384, h: 288 }
-      : name.startsWith("refuge-stage-")
-        ? { w: 288, h: 192 }
-        : name.startsWith("relay-stage-")
-          ? { w: 192, h: 192 }
-          : name.startsWith("rig-") ||
-              name.startsWith("thrust-") ||
-              name.startsWith("icon-")
-            ? { w: 128, h: 128 }
-            : { w: 96, h: 96 };
+  name === "ui-pulse-ring"
+    ? { w: 192, h: 192 }
+    : name === "sky-body"
+      ? { w: 256, h: 256 }
+      : name.startsWith("dock-stage-")
+        ? { w: 384, h: 288 }
+        : name.startsWith("refuge-stage-")
+          ? { w: 288, h: 192 }
+          : name.startsWith("relay-stage-")
+            ? { w: 192, h: 192 }
+            : name.startsWith("rig-") ||
+                name.startsWith("thrust-") ||
+                name.startsWith("icon-")
+              ? { w: 128, h: 128 }
+              : { w: 96, h: 96 };
 
 export function decodeCampaignPixels(
   png,
@@ -773,7 +797,7 @@ if (
   };
   if (Object.hasOwn(atlas.frames, "world-w01")) iconFrames.push("world-w01");
   for (const name of iconFrames) {
-    for (const size of name.startsWith("ui-") ? [24, 48] : [64, 128]) {
+    for (const size of iconSizesOf(name)) {
       const filename = `icons/${name}-${size}.png`;
       await checkIcon(filename, size);
     }

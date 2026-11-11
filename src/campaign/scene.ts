@@ -35,6 +35,13 @@ import { T1LiteHeadlamp } from "./render/t1-lite-headlamp";
 import { T1LiteGroundLight } from "./render/t1-lite-ground-light";
 import { RenderDiagnostics } from "./render/diagnostics";
 import {
+  ANNOTATION_ART,
+  AnnotationLayer,
+  ObstacleReader,
+  solveAnnotations,
+  type AnnotationRequest,
+} from "./render/annotations";
+import {
   FIELD_LOG_FRAME,
   poiArtwork,
   poiSecondaryCaption,
@@ -88,6 +95,12 @@ export interface CampaignSceneBindings {
   onEvent?: (event: CampaignEvent) => void;
   reducedMotion?: () => boolean;
   highContrast?: () => boolean;
+  /** T8: Scan shows the labels while true (input.ts scanActive()). */
+  scanActive?: () => boolean;
+  /** T8: the Scan state the scene drew with, for the HUD (forced in tests). */
+  onScan?: (active: boolean) => void;
+  /** "Return guidance" (assists): HOME's chevron stays on without Scan. */
+  returnGuidance?: () => boolean;
   getInterfaceMode?: () => "welcome" | "menu" | "dock" | "map" | undefined;
   getDockBounds?: () =>
     { x: number; y: number; width: number; height: number } | undefined;
@@ -168,14 +181,19 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private images: Phaser.GameObjects.Image[] = [];
     /** T13b: `-emissive` siblings, ADD above the darkness, own pool. */
     private emissive!: EmissivePass;
-    private labels: Phaser.GameObjects.Text[] = [];
+    /** T8: the annotations requested this frame, placed in update(). */
+    private annotationRequests: AnnotationRequest[] = [];
+    private annotations!: AnnotationLayer;
+    /** T8 harness: Scan forced on or off (`?scan=`, `__campaignDebug.scan()`). */
+    private scanForced = harnessOptions(location.search).scan;
+    /** T8: the DOM boxes annotations keep clear of, read a few times a second. */
+    private obstacles = new ObstacleReader();
     private skyGradient!: Phaser.GameObjects.Image;
     private sky!: Phaser.GameObjects.TileSprite;
     private ridgeFar!: Phaser.GameObjects.TileSprite;
     private ridgeNear!: Phaser.GameObjects.TileSprite;
     private loading!: Phaser.GameObjects.Text;
     private imageIndex = 0;
-    private labelIndex = 0;
     private previousCampaign: Campaign | undefined;
     private previousWorld: CampaignWorld | undefined;
     private previousX = 0;
@@ -415,6 +433,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.contrastEdges = this.add.graphics().setDepth(12);
       this.effects = this.add.graphics().setDepth(24);
       this.screen = this.add.graphics().setDepth(40);
+      // T8: every annotation is DOM in the world-label layer (no canvas draw).
+      this.annotations = new AnnotationLayer(
+        document.getElementById("campaign-world-labels")!,
+        ANNOTATION_ART,
+        {
+          home: document.getElementById("campaign-home-beacon")!,
+          target: document.getElementById("campaign-target-beacon")!,
+        },
+      );
       this.installDebugHooks();
       this.wreckMaskShape = this.add.graphics().setVisible(false);
       this.wreckMask = this.wreckMaskShape.createGeometryMask();
@@ -637,26 +664,24 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           };
         },
         backing: () => this.resolutionBudget.state(),
-        worldLabels: () =>
-          this.labels
-            .filter((label) => label.visible)
-            .map((label) => {
-              const bounds = label.getBounds();
-              return {
-                text: label.text,
-                x: bounds.x,
-                y: bounds.y,
-                width: bounds.width,
-                height: bounds.height,
-              };
-            })
-            .filter(
-              (label) =>
-                label.x < this.view.width &&
-                label.x + label.width > 0 &&
-                label.y < this.view.height &&
-                label.y + label.height > 0,
-            ),
+        // T8: no canvas label is left; the annotations are DOM text, which the
+        // harness's playfield count reads with the rest of the DOM.
+        worldLabels: () => [],
+        scan: (forced) => {
+          if (forced !== undefined) this.scanForced = forced ?? undefined;
+          return this.scanForced ?? Boolean(bindings.scanActive?.());
+        },
+        annotations: () =>
+          this.annotations.placed.map(({ request, box, marker, leader }) => ({
+            id: request.id,
+            text: request.text,
+            priority: request.priority,
+            scan: request.scan,
+            tone: request.tone,
+            box,
+            marker: marker ?? null,
+            leader: leader ?? null,
+          })),
         textures: () =>
           Object.entries(this.textures.list)
             .map(([key, texture]) => {
@@ -995,50 +1020,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       return true;
     }
 
-    private label(
-      x: number,
-      y: number,
-      text: string,
-      color = "#F0F5F7",
-      centered: boolean | "right" = true,
-    ) {
-      let label = this.labels[this.labelIndex++];
-      if (!label) {
-        label = this.add
-          .text(0, 0, "", {
-            fontFamily: "Inter, system-ui, sans-serif",
-            fontSize: "13px",
-            resolution: this.view.dpr,
-            color,
-            stroke: "#071018",
-            strokeThickness: 3,
-            shadow: {
-              offsetX: 0,
-              offsetY: 1,
-              color: "#071018",
-              blur: 4,
-              fill: true,
-            },
-            padding: { x: 8, y: 5 },
-          })
-          .setDepth(42);
-        this.labels.push(label);
-      }
-      const align =
-        centered === "right" ? "right" : centered ? "center" : "left";
-      const wrapWidth = Math.max(120, this.view.width - 48);
-      // Phaser style setters rasterize and upload text even for equal values.
-      // Labels remain pooled, but stationary text now keeps its cached texture.
-      if (label.text !== text) label.setText(text);
-      if (label.style.color !== color) label.setColor(color);
-      if (label.style.align !== align) label.setAlign(align);
-      if (label.style.wordWrapWidth !== wrapWidth)
-        label.setWordWrapWidth(wrapWidth, true);
-      label
-        .setPosition(x, y)
-        .setOrigin(centered === "right" ? 1 : centered ? 0.5 : 0, 0)
-        .setVisible(true);
-      return label;
+    /**
+     * Audit T8 (D3): one annotation for this frame. render/annotations.ts
+     * places them all at the end of update(), clear of the rig and of each
+     * other; Scan labels show only while Scan is active.
+     */
+    private annotate(request: AnnotationRequest) {
+      this.annotationRequests.push(request);
     }
 
     /** Wrecks are scenery, not terrain: a shared known-cell mask hides buried pieces. */
@@ -1055,88 +1043,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.image(scenery, x, y, tile * 2.8, tile * 1.9, 14, alpha)
       )
         this.images[this.imageIndex - 1]!.setMask(this.wreckMask);
-    }
-
-    private missionLabel(
-      x: number,
-      y: number,
-      rigX: number,
-      rigY: number,
-      tile: number,
-      safe: { top: number; bottom: number },
-      text: string,
-      color: string,
-    ) {
-      const width = this.view.width,
-        height = this.view.height;
-      const beside =
-        height <= 420 ||
-        (Math.abs(x - rigX) < tile * 0.8 &&
-          Math.abs(y - tile * 1.5 - rigY) < tile);
-      const left = x <= rigX;
-      const anchorX = beside
-        ? Math.max(20, Math.min(width - 20, x + (left ? -1 : 1) * tile * 0.85))
-        : Math.max(135, Math.min(width - 135, x));
-      const label = this.label(
-        anchorX,
-        y - tile * (beside ? 0.25 : 1.5),
-        text,
-        color,
-        beside ? (left ? "right" : false) : true,
-      );
-      if (beside)
-        label.setWordWrapWidth(
-          Math.max(75, left ? anchorX - 14 : width - anchorX - 14),
-          true,
-        );
-      let labelY = Math.max(
-        safe.top + 5,
-        Math.min(height - safe.bottom - label.height - 8, label.y),
-      );
-      // The completed landmark label and a new survey toast can coexist.
-      for (const id of [
-        "campaign-danger",
-        "campaign-message",
-        "campaign-extraction",
-      ]) {
-        const overlay = document.getElementById(id);
-        if (
-          !overlay ||
-          overlay.hidden ||
-          (id === "campaign-message"
-            ? !overlay.classList.contains("visible")
-            : Number(getComputedStyle(overlay).opacity) <= 0)
-        )
-          continue;
-        const clientBox = overlay.getBoundingClientRect();
-        const canvasBox = this.game.canvas.getBoundingClientRect();
-        const corner = this.view.clientToScreen(
-          clientBox.left,
-          clientBox.top,
-          canvasBox,
-        );
-        const box = {
-          left: corner.x,
-          right: corner.x + clientBox.width,
-          top: corner.y,
-          bottom: corner.y + clientBox.height,
-        };
-        const bounds = label.getBounds();
-        if (
-          bounds.right > box.left &&
-          bounds.left < box.right &&
-          labelY < box.bottom &&
-          labelY + label.height > box.top
-        )
-          labelY =
-            box.top < height / 2
-              ? Math.min(
-                  height - safe.bottom - label.height - 8,
-                  box.bottom + 8,
-                )
-              : Math.max(safe.top + 5, box.top - label.height - 8);
-      }
-      label.setY(labelY);
     }
 
     private burst(x: number, y: number, color: number, count = 10) {
@@ -1236,7 +1142,6 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           .setOrigin(0, 0)
           .setZoom(renderDpr)
           .setScroll(0, 0);
-        for (const label of this.labels) label.setResolution(renderDpr);
       }
       const campaign = bindings.getCampaign();
       // T13b (D1): zone pages by device px per tile, never by pointer type.
@@ -1441,6 +1346,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       const interfaceMode = bindings.getInterfaceMode?.();
       const titleVisible = interfaceMode === "welcome";
       const highContrast = Boolean(bindings.highContrast?.());
+      // T8: Scan shows every label and, like high contrast, the light tier marks.
+      const scanning =
+        this.scanForced ?? Boolean(bindings.scanActive?.() && !interfaceMode);
+      bindings.onScan?.(scanning);
       const clientDock =
         interfaceMode === "dock" ? bindings.getDockBounds?.() : undefined;
       const dock = clientDock
@@ -1562,9 +1471,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       this.screen.clear();
       this.wreckMaskShape.clear().fillStyle(0xffffff);
       for (const image of this.images) image.setVisible(false);
-      for (const label of this.labels) label.setVisible(false);
+      this.annotationRequests = [];
       this.imageIndex = 0;
-      this.labelIndex = 0;
       this.rigCabin = undefined; // T1-lite
       this.emissive.begin(); // T13b
 
@@ -1692,9 +1600,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             this.image(frame, x, y + bob, tile * 0.9, tile * 0.9, 13, alpha);
             // T9's high-contrast variant: the light tier mark drawn over the
             // frame's own mark, same place and size; each world's atlas has
-            // its own, at its mark centres (one switch point; Scan, T8, can
-            // join it here).
-            if (number && highContrast)
+            // its own, at its mark centres. Scan (T8) shows it too.
+            if (number && (highContrast || scanning))
               this.image(
                 `tier-mark-hc-${number}`,
                 x,
@@ -1837,8 +1744,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
                 seamX + 4,
                 surfaceY - 5,
               );
+              // F6 keeps the letters for the coach; T8 places them.
               if (!titleVisible)
-                this.label(seamX, surfaceY - tile * 1.65, name, "#f5d89a");
+                this.annotate({
+                  id: `seam-${name}-${period}`,
+                  text: name,
+                  x: seamX,
+                  y: surfaceY - 14,
+                  priority: 1,
+                  scan: false,
+                  tone: "target",
+                });
             }
           edges.fillStyle(0xf0a43c, 0.13);
           edges.fillEllipse(x, surfaceY, tile * 4, tile * 0.22);
@@ -1878,19 +1794,24 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               1,
             );
         }
-        const dockOffset = delta(campaign.renderX, dockX, world.width);
-        if (
-          !bindings.onView &&
-          Math.abs(dockOffset * tile) > width / 2 - tile * 2
-        ) {
-          this.label(
-            dockOffset < 0 ? 18 : width - 18,
-            Math.max(safe.top + 8, surfaceY - tile * 1.6),
-            `${dockOffset < 0 ? "← " : ""}${icy ? "REFUGE" : "LANDER"} · ${Math.round(Math.abs(dockOffset) * 10)} m${dockOffset > 0 ? " →" : ""}`,
-            "#F6E1AF",
-            dockOffset > 0 ? "right" : false,
-          );
-        }
+      }
+      // T8 (D3): HOME stays on, an edge chevron with its distance, pointing at
+      // the nearest wrapped copy of the lander (formerly ui/world-labels.ts).
+      if (!campaign.atDock && !titleVisible) {
+        const homeOffset = delta(campaign.renderX, dockX, world.width);
+        const reserve = campaign.returnReserve.state;
+        this.annotate({
+          id: "home",
+          // The distance as the HOME beacon measured it, from the vehicle.
+          text: `HOME · ${Math.round(Math.hypot(delta(vehicle.x, dockX, world.width), -1 - vehicle.y) * 10)} m`,
+          x: (this.unwrappedX + homeOffset) * tile - cx,
+          // The chevron points at the lander's roof, about 2.2 tiles up.
+          y: -2.2 * tile - cy,
+          priority: 2,
+          scan: !(bindings.returnGuidance?.() ?? true),
+          tone: reserve === "turn" || reserve === "stranded" ? "warn" : "home",
+          marker: "chevron",
+        });
       }
 
       const pois = campaignPois(campaign);
@@ -1965,16 +1886,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             this.images[this.imageIndex - 1]!.setMask(this.wreckMask);
           if (poi.status === "source") sourceMarkers.push(poi.id);
         }
-        const distance = Math.hypot(
-          delta(campaign.renderX, poi.x, world.width),
-          poi.y - campaign.renderY,
-        );
+        // T8: a known mission object's caption, on Scan, wherever it is in
+        // view (it was within 3.8 tiles); the target has its own label.
         const clustered = poi.kind === "sample" || poi.kind === "cryo";
         const caption = poiSecondaryCaption(poi);
         if (
           caption &&
-          poi.visible &&
-          distance < 3.8 &&
+          poi.known &&
           poi.id !== signal?.targetId &&
           !(
             clustered &&
@@ -1982,99 +1900,46 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           )
         ) {
           if (clustered) labeledSites.add(poi.kind);
-          this.missionLabel(
+          this.annotate({
+            id: `poi-${poi.id}`,
+            text: caption,
             x,
-            y,
-            px,
-            py,
-            tile,
-            safe,
-            caption,
-            poi.status === "source" ? "#F6E1AF" : "#A7D8C5",
-          );
+            // Above the object: its marker's top (or a tile's for parts).
+            y: y - (tile * Math.max(1, artwork.height)) / 2,
+            priority: 3,
+            scan: true,
+            tone: poi.status === "source" ? "target" : "done",
+          });
         }
       }
-      // A local mission radio pin may cross fog; it never draws terrain or ore.
-      // The broad physical wreck underneath remains clipped to discovered cells.
+      // The mission radio target may cross fog (it never draws terrain or
+      // ore); the wreck under it stays clipped to discovered cells. T8: its
+      // label and pulse ring (an edge chevron off screen) show on Scan, at
+      // any range, as the DOM target beacon did; the HUD keeps its distance.
       let poiMarkerX = "",
         poiMarkerY = "",
         poiMarkerVisible = false;
       if (
         !titleVisible &&
         signal &&
-        signal.kind !== "lander" &&
-        signal.band !== "distant"
+        !signal.returning &&
+        signal.kind !== "lander"
       ) {
         const poi = signal.poi;
-        const x =
-          (this.unwrappedX + delta(campaign.renderX, poi.x, world.width)) *
-            tile -
-          cx;
-        const y = poi.y * tile - cy;
-        const minY = safe.top + 22,
-          maxY = Math.max(minY, height - safe.bottom - 22);
-        const markerX = Math.max(26, Math.min(width - 26, x));
-        const markerY = Math.max(minY, Math.min(maxY, y));
-        const onScreen = x >= 26 && x <= width - 26 && y >= minY && y <= maxY;
-        const pulse = bindings.reducedMotion?.()
-          ? 0
-          : Math.sin(this.elapsed * 3) * 2;
-        const radius = poi.known ? tile * 0.53 + pulse : 15 + pulse;
-        this.screen.lineStyle(1.6, 0xf6cb85, 0.9);
-        if (onScreen) {
-          this.screen.strokeCircle(markerX, markerY, radius);
-          for (const side of [-1, 1]) {
-            const a = markerX + side * (radius + 5);
-            this.screen.lineBetween(a, markerY - 5, a, markerY + 5);
-          }
-        } else {
-          const angle = Math.atan2(y - markerY, x - markerX);
-          this.screen.strokeCircle(markerX, markerY, 10);
-          this.screen.fillStyle(0xf6cb85, 0.95);
-          const ax = markerX + Math.cos(angle) * 17,
-            ay = markerY + Math.sin(angle) * 17;
-          this.screen.fillTriangle(
-            ax,
-            ay,
-            markerX + Math.cos(angle + 1.6) * 6,
-            markerY + Math.sin(angle + 1.6) * 6,
-            markerX + Math.cos(angle - 1.6) * 6,
-            markerY + Math.sin(angle - 1.6) * 6,
-          );
-        }
-        poiMarkerX = markerX.toFixed(2);
-        poiMarkerY = markerY.toFixed(2);
-        poiMarkerVisible = true;
-        if (onScreen && !bindings.onView) {
-          const text = poi.known
-            ? poi.title
-            : `${
-                {
-                  beacon: "Wreck",
-                  valve: "Valve",
-                  antenna: "Antenna",
-                  core: "Core",
-                  sample: "Sample",
-                  cryo: "Crystal",
-                  catalyst: "Catalyst",
-                  lander: "Refuge",
-                  seam: "Starter seam",
-                  cache: "Sealed cache",
-                  relic: "Relic",
-                  log: "Field log",
-                }[poi.kind]
-              } signal`;
-          this.missionLabel(
-            markerX,
-            markerY,
-            px,
-            py,
-            tile,
-            safe,
-            `${text} · ${signal.distanceMeters} m`,
-            "#F6D39B",
-          );
-        }
+        this.annotate({
+          id: "target",
+          text: `${signal.name} · ${signal.distanceMeters} m`,
+          x:
+            (this.unwrappedX + delta(campaign.renderX, poi.x, world.width)) *
+              tile -
+            cx,
+          y: poi.y * tile - cy,
+          priority: 2,
+          scan: true,
+          tone: "target",
+          marker: "ring",
+          radius: poi.known ? tile * 0.53 : 15,
+        });
       }
       if (icy) {
         const cold = campaign.coldStatus;
@@ -2123,17 +1988,29 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             16,
             0.85,
           );
-          if (warning)
-            this.missionLabel(
-              x,
-              y,
-              px,
-              py,
-              tile,
-              safe,
-              "Cold mist forming · move clear",
-              "#BDEFF0",
-            );
+          // T8: hazards stay on; one warning sentence at a time without Scan.
+          this.annotate(
+            warning
+              ? {
+                  id: `cold-${pocket.x}-${pocket.y}`,
+                  text: "Cold mist forming · move clear",
+                  x,
+                  y,
+                  priority: 0,
+                  scan: false,
+                  tone: "ice",
+                  group: "hazard",
+                }
+              : {
+                  id: `cold-${pocket.x}-${pocket.y}`,
+                  text: "Cold pocket",
+                  x,
+                  y,
+                  priority: 3,
+                  scan: true,
+                  tone: "ice",
+                },
+          );
         }
         for (const vent of (world.hazards ?? W02_HAZARDS).vents) {
           if (!campaign.isKnown(vent.x, vent.y)) continue;
@@ -2159,22 +2036,21 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             16,
             0.75,
           );
-          if (
+          const close =
             Math.hypot(
               delta(vehicle.x, vent.x, world.width),
               vehicle.y - vent.y,
-            ) < 2.8
-          )
-            this.missionLabel(
-              x,
-              y,
-              px,
-              py,
-              tile,
-              safe,
-              "Ice vent · keep clear",
-              "#F7D796",
-            );
+            ) < 2.8;
+          this.annotate({
+            id: `vent-${vent.x}-${vent.y}`,
+            text: close ? "Ice vent · keep clear" : "Ice vent",
+            x,
+            y,
+            priority: close ? 0 : 3,
+            scan: !close,
+            tone: "warn",
+            group: close ? "hazard" : undefined,
+          });
         }
       }
       for (const site of world.sites ?? []) {
@@ -2203,21 +2079,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           )
         )
           this.images[this.imageIndex - 1]!.setMask(this.wreckMask);
-        if (
-          campaign.isVisible(Math.floor(site.x), Math.floor(site.y)) &&
-          Math.hypot(x - px, y - py) < tile * 2.5 &&
-          !titleVisible
-        )
-          this.missionLabel(
+        // T8: a known site's name, on Scan (it showed within 2.5 tiles).
+        if (!titleVisible)
+          this.annotate({
+            id: `site-${site.id}`,
+            text: site.name,
             x,
-            y,
-            px,
-            py,
-            tile,
-            safe,
-            site.name,
-            site.opened ? "#afc6c3" : "#f2d6a5",
-          );
+            y: y - tile * 0.875,
+            priority: 3,
+            scan: true,
+            tone: site.opened ? "done" : "target",
+          });
       }
       for (const log of world.fieldLogs ?? []) {
         if (log.read || !campaign.isKnown(Math.floor(log.x), Math.floor(log.y)))
@@ -2268,20 +2140,21 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           )
         )
           this.images[this.imageIndex - 1]!.setMask(this.wreckMask);
+        if (!titleVisible && inView)
+          this.annotate({
+            id: `pressure-${seam.x}-${seam.y}`,
+            text:
+              seam.warning === null ? "Pressure seam" : "Pressure · move away",
+            x,
+            y,
+            priority: seam.warning === null ? 3 : 0,
+            scan: seam.warning === null,
+            tone: "warn",
+            group: seam.warning === null ? undefined : "hazard",
+          });
         if (seam.warning !== null) {
           this.screen.lineStyle(2, 0xf7d088, 1);
           this.screen.strokeCircle(x, y, tile * 0.52);
-          if (!titleVisible)
-            this.missionLabel(
-              x,
-              y,
-              px,
-              py,
-              tile,
-              safe,
-              "Pressure · move away",
-              "#ffe0a2",
-            );
           if (!paused && !bindings.reducedMotion?.() && this.debrisTimer <= 0) {
             this.burst(
               this.unwrappedX + delta(campaign.renderX, seam.x, world.width),
@@ -2316,7 +2189,16 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             );
           }
           if (Math.abs(x - px) < tile * 4 && !paused)
-            this.label(x, y - tile * 0.85, "UNSTABLE SHELF", "#FFCA6A");
+            this.annotate({
+              id: `shelf-${shelf.x}-${shelf.y}`,
+              text: "UNSTABLE SHELF",
+              x,
+              y: y - tile * 0.25,
+              priority: 0,
+              scan: false,
+              tone: "warn",
+              group: "hazard",
+            });
         }
       }
 
@@ -2458,13 +2340,17 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           Math.max(3, tile * 0.045),
         );
       }
+      // T8: the pickup name is a Scan label now (the cargo pips stay on).
       if (this.popup && !paused)
-        this.label(
-          this.popup.x * tile - cx,
-          this.popup.y * tile - cy - tile * 0.9 - (1.2 - this.popup.life) * 12,
-          this.popup.text,
-          "#F6E1AF",
-        );
+        this.annotate({
+          id: "pickup",
+          text: this.popup.text,
+          x: this.popup.x * tile - cx,
+          y: this.popup.y * tile - cy,
+          priority: 3,
+          scan: true,
+          tone: "info",
+        });
 
       let callout = "";
       if (
@@ -2483,18 +2369,71 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         else if (mission?.status === "source")
           callout = `${mission.name} · Mission item · Return to bank`;
       }
-      if (callout) {
-        let labelY = Math.max(safe.top + 12, height - safe.bottom - 44);
-        const danger = document.getElementById("campaign-danger");
-        if (danger && !danger.hidden) {
-          const bounds = danger.getBoundingClientRect();
-          if (bounds.top < labelY + 28 && bounds.bottom > labelY)
-            labelY = Math.max(safe.top + 12, bounds.top - 36);
-        }
-        this.label(width / 2, labelY, callout, "#F6E1AF");
+      // The player asked for it (a tap or click): it shows without Scan,
+      // above the toolbar, lifted clear of a danger notice (an obstacle).
+      if (callout)
+        this.annotate({
+          id: "callout",
+          text: callout,
+          x: width / 2,
+          y: height - safe.bottom - 32,
+          priority: 1,
+          scan: false,
+          tone: "target",
+          fixed: true,
+        });
+      // The rig cue ("Move clear", "Release drilling"): its text and timing
+      // stay with the interface; T8 places it clear of the rig, with a tick.
+      const cue = document.getElementById("campaign-rig-cue");
+      if (cue && !cue.hidden && cue.textContent)
+        this.annotate({
+          id: "rig-cue",
+          text: cue.textContent,
+          x: px,
+          y: py - tile * 0.5,
+          priority: 0,
+          scan: false,
+          tone: "warn",
+        });
+      // T8: place this frame's annotations and draw them (render/annotations.ts).
+      const placedAnnotations =
+        this.overlaysVisible && !interfaceMode
+          ? solveAnnotations(
+              this.annotationRequests.map((request) => ({
+                ...request,
+                ...this.annotations.measure(request),
+              })),
+              {
+                width,
+                height,
+                safe,
+                rig: { x: px, y: py },
+                tile,
+                scanning,
+                obstacles: this.obstacles.read(performance.now(), (x, y) =>
+                  this.view.clientToScreen(
+                    x,
+                    y,
+                    this.game.canvas.getBoundingClientRect(),
+                  ),
+                ),
+                limits: scanning ? {} : { hazard: 1 },
+              },
+            )
+          : [];
+      this.annotations.render(
+        placedAnnotations,
+        this.view.dpr,
+        reduced ? 1 : 1 + 0.06 * Math.sin(this.elapsed * Math.PI * 1.6),
+      );
+      const targetMarker = placedAnnotations.find(
+        (entry) => entry.request.id === "target",
+      )?.marker;
+      if (targetMarker) {
+        poiMarkerX = targetMarker.x.toFixed(2);
+        poiMarkerY = targetMarker.y.toFixed(2);
+        poiMarkerVisible = true;
       }
-      if (titleVisible || !this.overlaysVisible)
-        for (const label of this.labels) label.setVisible(false);
       // The screen layer holds only UI: rings, arrows, alarm border, bars.
       this.screen.setVisible(this.overlaysVisible);
       // Twice a second of scene time: the 10 s p95 and the readout.
@@ -2593,9 +2532,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           skyBodyVisible: String(skyBodyVisible),
           skyBodyBounds: skyBodyBounds ? JSON.stringify(skyBodyBounds) : "",
           highContrast: String(highContrast),
-          worldLabels: String(
-            this.labels.filter((label) => label.visible).length,
-          ),
+          // T8: the annotation labels drawn this frame, and the Scan state.
+          worldLabels: String(placedAnnotations.length),
+          scan: String(scanning),
           volatileCue: String(Boolean(campaign.volatileWindow)),
           volatileRemaining:
             campaign.volatileWindow?.remaining.toFixed(3) ?? "",

@@ -54,7 +54,9 @@ for f in m['frames']:
   for size in (64,128):im.resize((size,size),Image.Resampling.LANCZOS).save(icons/(name+f'-{size}.png'),compress_level=1)
  if f.get('category')=='glyph':
   im=Image.open(renders/(name+'.png')).convert('RGBA')
-  for size in (24,48):im.resize((size,size),Image.Resampling.LANCZOS).save(icons/(name+f'-{size}.png'),compress_level=1)
+  # Audit T8: a glyph may list the sizes the DOM loads (asset 28's chevrons
+  # at 72 px stay sharp at 24 CSS px on DPR 3); the default is 24 and 48.
+  for size in f.get('iconSizes',(24,48)):im.resize((size,size),Image.Resampling.LANCZOS).save(icons/(name+f'-{size}.png'),compress_level=1)
 assetmap=json.loads((source/'asset-map.json').read_text())
 for assetid,record in assetmap['assets'].items():
  icon=record.get('icon')

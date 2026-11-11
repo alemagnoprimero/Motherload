@@ -481,13 +481,26 @@ async function layout(page, viewport, full = false) {
     ".campaign-objective",
   ])
     await inViewport(page, selector, viewport);
-  await inViewport(
-    page,
-    (await page.locator("#campaign-target-beacon").isVisible())
-      ? "#campaign-target-beacon"
-      : "#campaign-home-beacon",
-    viewport,
-  );
+  // T8 (D3): HOME's label shows unless the rig is docked and the target's
+  // is a Scan label (?scan=1 runs hold Scan on); whichever shows fits.
+  for (const selector of ["#campaign-target-beacon", "#campaign-home-beacon"])
+    if (await page.locator(selector).isVisible())
+      await inViewport(page, selector, viewport);
+  const target =
+    (await page
+      .locator("#campaign-mission-signal")
+      .getAttribute("data-target")) ?? "";
+  if (
+    (await page.locator("#campaign-game").getAttribute("data-scan")) ===
+      "true" &&
+    target &&
+    !target.endsWith("-LANDER")
+  )
+    assert.equal(
+      await page.locator("#campaign-target-beacon").isVisible(),
+      true,
+      "Scan shows the target's label",
+    );
   await inViewport(page, "#campaign-menu-toggle", viewport, 44);
   assert.equal(
     await page.locator(".campaign-touch").isVisible(),

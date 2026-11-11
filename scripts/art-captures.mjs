@@ -415,11 +415,32 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             },
             // The HUD row, objective card and toolbar in CSS px: the overlay
             // edge share masks them (docs/art-audit/04-overlays.md §6.1).
+            // T8: a plate drawn as a box-shadow spread (the toolbar's 5 px)
+            // is HUD too, so the box grows by the spread.
             hud: hudSelectors.flatMap((selector) =>
-              [...document.querySelectorAll(selector)]
-                .map((node) => node.getBoundingClientRect())
-                .filter((box) => box.width > 0 && box.height > 0)
-                .map((box) => [box.left, box.top, box.right, box.bottom]),
+              [...document.querySelectorAll(selector)].flatMap((node) => {
+                const box = node.getBoundingClientRect();
+                if (!(box.width > 0 && box.height > 0)) return [];
+                const spread = Math.max(
+                  0,
+                  ...[
+                    ...getComputedStyle(node).boxShadow.matchAll(
+                      /(-?[\d.]+)px (-?[\d.]+)px (-?[\d.]+)px (-?[\d.]+)px/g,
+                    ),
+                  ].map(
+                    ([, x, y, , grow]) =>
+                      Number(grow) + Math.max(Math.abs(x), Math.abs(y)),
+                  ),
+                );
+                return [
+                  [
+                    box.left - spread,
+                    box.top - spread,
+                    box.right + spread,
+                    box.bottom + spread,
+                  ],
+                ];
+              }),
             ),
           }),
           HUD_SELECTORS,

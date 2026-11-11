@@ -8,7 +8,7 @@
     "build": "npm run campaign:check && tsc --noEmit && vite build",
     "assets:build": "npm run campaign:assets",
     "assets:check": "node scripts/check-campaign-assets.mjs && node scripts/check-frontier-assets.mjs && node scripts/check-render-assets.mjs",
-    "assets:rebuild": "node assets/campaign/source/create-w01-sources.mjs && node assets/campaign/w02/create-sources.mjs && node scripts/build-campaign-assets.mjs && node scripts/build-frontier-assets.mjs && node scripts/build-band-assets.mjs",
+    "assets:rebuild": "node assets/campaign/source/create-w01-sources.mjs && node assets/campaign/source/annotation-sources.mjs && node assets/campaign/w02/create-sources.mjs && node scripts/build-campaign-assets.mjs && node scripts/build-frontier-assets.mjs && node scripts/build-band-assets.mjs",
     "campaign:check": "node scripts/check-campaign-data.mjs && npm run assets:check",
     "campaign:assets": "node scripts/build-campaign-assets.mjs",
     "frontier:assets": "node scripts/build-frontier-assets.mjs",

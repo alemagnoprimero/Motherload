@@ -9,6 +9,7 @@ export type PilotAction =
   | "primary"
   | "secondary"
   | "interact"
+  | "scan"
   | "map"
   | "pause";
 export type MenuAction =
@@ -22,6 +23,7 @@ export const ACTION_LABELS: Record<PilotAction, string> = {
   primary: "Primary utility",
   secondary: "Secondary utility",
   interact: "Interact",
+  scan: "Scan",
   map: "Star map",
   pause: "Pause menu",
 };
@@ -34,6 +36,9 @@ export const DEFAULT_KEYS: Record<PilotAction, string[]> = {
   primary: ["q"],
   secondary: ["r"],
   interact: ["e", "Enter"],
+  // Audit T8 (D3): labels on demand. Shift and F are free; Q and R are the
+  // utilities, Tab the map.
+  scan: ["Shift", "f"],
   map: ["Tab"],
   pause: ["Escape", "p"],
 };
@@ -41,6 +46,8 @@ export interface PilotPreferences {
   keys: Record<PilotAction, string[]>;
   drillToggle: boolean;
   braceToggle: boolean;
+  /** T8: a Scan press toggles the labels instead of showing them while held. */
+  scanToggle: boolean;
   reducedMotion: boolean;
   highContrast: boolean;
   largeText: boolean;
@@ -68,15 +75,24 @@ export const DEFAULT_GAMEPAD: Record<PilotAction, number> = {
   primary: 1,
   secondary: 3,
   interact: 4,
+  // T8: L2 (LT). L1 is interact, R1 the map.
+  scan: 6,
   map: 5,
   pause: 9,
 };
+/**
+ * T8 added Scan after players may have bound Shift, F or L2 elsewhere: a
+ * saved set of bindings without a Scan entry keeps every key and button it
+ * already uses, and Scan takes only what is still free.
+ */
+const SCAN_PAD_FALLBACKS = [6, 7, 10, 11];
 const KEY = "motherload.campaign.preferences.v1";
 export function loadPilotPreferences(): PilotPreferences {
   const defaults: PilotPreferences = {
     keys: structuredClone(DEFAULT_KEYS),
     drillToggle: false,
     braceToggle: false,
+    scanToggle: false,
     reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
     highContrast: false,
     largeText: false,
@@ -101,6 +117,7 @@ export function loadPilotPreferences(): PilotPreferences {
     for (const k of [
       "drillToggle",
       "braceToggle",
+      "scanToggle",
       "reducedMotion",
       "highContrast",
       "largeText",
@@ -141,6 +158,26 @@ export function loadPilotPreferences(): PilotPreferences {
           )
         )
           defaults.keys[action] = raw.keys[action];
+    if (raw.keys && !Array.isArray(raw.keys.scan)) {
+      const taken = (Object.keys(DEFAULT_KEYS) as PilotAction[])
+        .filter((action) => action !== "scan")
+        .flatMap((action) => defaults.keys[action]);
+      defaults.keys.scan = DEFAULT_KEYS.scan.filter(
+        (key) => !taken.includes(key),
+      );
+    }
+    if (
+      raw.gamepad &&
+      typeof raw.gamepad === "object" &&
+      !Number.isInteger(raw.gamepad.scan)
+    ) {
+      const taken = (Object.keys(DEFAULT_GAMEPAD) as PilotAction[])
+        .filter((action) => action !== "scan")
+        .map((action) => defaults.gamepad[action]);
+      defaults.gamepad.scan =
+        SCAN_PAD_FALLBACKS.find((index) => !taken.includes(index)) ??
+        DEFAULT_GAMEPAD.scan;
+    }
   } catch {
     /* Preferences never block an expedition. */
   }
@@ -345,7 +382,8 @@ export class CampaignInput {
   private press(source: string, action: PilotAction) {
     if (
       (action === "down" && this.preferences.drillToggle) ||
-      (action === "mobility" && this.preferences.braceToggle)
+      (action === "mobility" && this.preferences.braceToggle) ||
+      (action === "scan" && this.preferences.scanToggle)
     ) {
       if (this.latched.has(action)) this.latched.delete(action);
       else this.latched.set(action, source);
@@ -449,6 +487,13 @@ export class CampaignInput {
       this.gamepadButtons = pressed;
       return;
     }
+    // T8: with the toggle preference, a fresh Scan press flips the labels.
+    if (
+      this.preferences.scanToggle &&
+      !this.callbacks.blocked() &&
+      fresh(this.preferences.gamepad.scan)
+    )
+      this.press("pad:" + this.preferences.gamepad.scan, "scan");
     // Record every button before callbacks can change the interface. Holding
     // thrust while docking cannot confirm a transaction on the next frame.
     const menu = this.callbacks.blocked() && this.callbacks.menu;
@@ -483,7 +528,7 @@ export class CampaignInput {
     for (const action of [...this.held.values(), ...this.latched.keys()])
       if (
         action in DEFAULT_KEYS &&
-        !["interact", "map", "pause"].includes(action)
+        !["interact", "scan", "map", "pause"].includes(action)
       )
         controls[
           action as Exclude<keyof CampaignControls, "throttleX" | "throttleY">
@@ -520,6 +565,22 @@ export class CampaignInput {
       if (controls.up) controls.throttleY = digitalY ? 1 : throttle(axis(1));
     }
     return controls;
+  }
+  /**
+   * Audit T8 (D3): whether Scan shows the labels now. Held: a Scan key, the
+   * tool-tray button or L2 while pressed; with the toggle preference, a press
+   * latches it until the next press. Never while a menu or dialog blocks play.
+   */
+  scanActive() {
+    if (this.callbacks.blocked()) return false;
+    if (this.latched.has("scan")) return true;
+    for (const action of this.held.values()) if (action === "scan") return true;
+    if (this.preferences.scanToggle) return false;
+    const pad = navigator.getGamepads?.().find((entry) => entry?.connected);
+    const index = this.preferences.gamepad.scan;
+    return Boolean(
+      pad?.buttons[index]?.pressed && !this.suppressedGamepadButtons.has(index),
+    );
   }
 }
 

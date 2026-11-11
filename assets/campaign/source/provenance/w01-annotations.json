@@ -1,0 +1,53 @@
+{
+  "asset": 28,
+  "item": "T8",
+  "method": "hand-written layered SVG through the art kit (pipeline B, decision D5)",
+  "source": {
+    "generator": "assets/campaign/source/annotation-sources.mjs: chevron(), pulseRing(), scanGlyph(), leaderTick(), ANNOTATION_TONES",
+    "kit": "assets/campaign/kit/ (palette, svg, records)",
+    "palette": {
+      "rule": "style guide §6.1: emitters are the brightest and warmest pixels, never UI; two flat tiers per glyph and the #14232b prop outline",
+      "lightness": {
+        "home": {
+          "lit": 82.1,
+          "body": 66
+        },
+        "target": {
+          "lit": 82.9,
+          "body": 70
+        },
+        "mark": {
+          "lit": 90.1,
+          "body": 77
+        }
+      },
+      "derived": "teal from the HUD's HOME beacon (#80b7ae, #b9efe3), amber from the HUD's signal (#f0bb69), grey-teal from the HUD glyphs (#c3d5d6)"
+    },
+    "frames": [
+      "ui-chevron-home",
+      "ui-chevron-target",
+      "ui-pulse-ring",
+      "ui-scan",
+      "ui-leader-tick"
+    ]
+  },
+  "reference": {
+    "file": "docs/ART_QUALITY_AUDIT.md",
+    "use": "§5.6 row 28 (edge chevron, pulse ring, Scan glyph, leader tick; 22 px SVG), docs/art-audit/04-overlays.md R1 and R3 (teal HOME chevron, amber target chevron, leader tick); the board shows no annotation, so no board crop is a reference",
+    "audit": "docs/ART_QUALITY_AUDIT.md §5.3 T8, D3; docs/art-direction/decisions.md D3"
+  },
+  "reviewer": {
+    "name": "Alejandro (art director)",
+    "signed": null,
+    "state": "in review (T8 pull request)",
+    "fixtures": [
+      "a04-dive-60m@2",
+      "a04p-dive-60m-phone@3"
+    ]
+  },
+  "redrawnShare": 0,
+  "underlays": [],
+  "boardPixelsCopied": false,
+  "recorded": "2026-11-10",
+  "notes": "DOM-only glyphs (generated/icons at each frame's iconSizes); no runtime atlas page holds them."
+}

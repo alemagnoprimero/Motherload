@@ -55,8 +55,16 @@ export interface CampaignDebug {
   /**
    * The canvas world labels drawn this frame that fall inside the view, in
    * CSS px: the harness counts them with the DOM's playfield text (F6).
+   * Since T8 every annotation is DOM text, so this lists none.
    */
   worldLabels(): WorldLabelSnapshot[];
+  /**
+   * T8: forces Scan on (`true`) or off (`false`), or hands it back to the
+   * player's input (`null`); returns whether Scan shows the labels now.
+   */
+  scan(forced?: boolean | null): boolean;
+  /** T8: the annotations placed this frame, in CSS px, most important first. */
+  annotations(): AnnotationSnapshot[];
   /**
    * Every resident texture with its decoded bytes (width × height × 4, the
    * `data-resident-texture-bytes` metric) and its F1 readout group; zone
@@ -109,6 +117,25 @@ export interface TextureSnapshot {
   density: number | null;
   /** The atlas a zone page belongs to. */
   world: string | null;
+}
+
+/** A placed annotation (render/annotations.ts), in CSS px. */
+export interface AnnotationSnapshot {
+  id: string;
+  text: string;
+  priority: number;
+  scan: boolean;
+  tone: string;
+  box: { left: number; top: number; right: number; bottom: number };
+  marker: {
+    kind: "chevron" | "ring";
+    x: number;
+    y: number;
+    angle: number;
+    edge: boolean;
+    radius: number;
+  } | null;
+  leader: { x: number; y: number; angle: number } | null;
 }
 
 /** A canvas world label as last drawn, in CSS px. */

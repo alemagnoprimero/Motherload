@@ -527,6 +527,12 @@ describe("render scale budget (F1)", () => {
     for (const search of ["", "?overlays=1", "?overlays=", "?overlays=off"])
       expect(harnessOptions(search)).toEqual({ overlays: true });
   });
+  it("parses the Scan switch from the URL (T8)", () => {
+    expect(harnessOptions("?scan=1").scan).toBe(true);
+    expect(harnessOptions("?mode=campaign&scan=0").scan).toBe(false);
+    for (const search of ["", "?scan=", "?scan=on", "?scan=true"])
+      expect(harnessOptions(search).scan).toBeUndefined();
+  });
   it("reports its state for the readout's back-off line (F3)", () => {
     const desktop = budgetFor("high");
     frames(desktop, 5, 2);

@@ -91,6 +91,22 @@ async function signal(page) {
       markerY: Number(host.dataset.poiMarkerY),
       targetKnown: host.dataset.poiTargetKnown === "true",
       targetVisible: host.dataset.poiTargetVisible === "true",
+      // T8 (D3): the radio pin and the target's label are Scan marks, and no
+      // mark is drawn within 1.2 tiles of the rig (the target is right there).
+      scanning: host.dataset.scan === "true",
+      targetAtRig: (() => {
+        const target = JSON.parse(host.dataset.poiScreenTargets || "[]").find(
+          (poi) => poi.id === element.dataset.target,
+        );
+        if (!target) return false;
+        const tile = Number(host.dataset.viewTile),
+          radius = host.dataset.poiTargetKnown === "true" ? tile * 0.53 : 15,
+          reach = 1.2 * tile + radius;
+        return (
+          Math.abs(target.x - Number(host.dataset.rigScreenX)) < reach &&
+          Math.abs(target.y - Number(host.dataset.rigScreenY)) < reach
+        );
+      })(),
     };
   });
 }
@@ -169,7 +185,14 @@ async function geometry(page, viewport) {
           };
         }),
     );
-  assert.ok(boxes.length >= 2, "Objective and a world guidance label show");
+  // T8 (D3): with Scan off the objective may be the only guidance (HOME is
+  // hidden while docked, the target's label is a Scan label).
+  const scanning =
+    (await page.locator("#campaign-game").getAttribute("data-scan")) === "true";
+  assert.ok(
+    boxes.length >= (scanning ? 2 : 1),
+    "Objective and a world guidance label show",
+  );
   for (const box of boxes)
     assert.ok(
       box.width > 0 &&
@@ -366,8 +389,8 @@ export async function runPoiSmoke(
         assert.equal(approaching.id, "W01-SEAM-A");
         assert.equal(
           approaching.markerVisible,
-          true,
-          "Nearby mission radio pin is visible",
+          approaching.scanning && !approaching.targetAtRig,
+          "The nearby mission radio pin shows on Scan (T8)",
         );
         assert.match(approaching.action, /seam A|mine/i);
         await screenshot(page, `${path}-${label}-seam-approach.png`);
@@ -797,14 +820,19 @@ export async function runPoiSmoke(
       assert.match(warning, /low energy/i);
       assert.match(warning, /critical hull/i);
       const stationary = await signal(page);
-      assert.equal(stationary.markerVisible, true);
+      assert.equal(
+        stationary.markerVisible,
+        stationary.scanning && !stationary.targetAtRig,
+      );
       const markerClip = {
         x: Math.round(stationary.markerX - 29),
         y: Math.round(stationary.markerY - 6),
         width: 12,
         height: 12,
       };
-      const stationaryMarker = await page.screenshot({ clip: markerClip });
+      const stationaryMarker = stationary.markerVisible
+        ? await page.screenshot({ clip: markerClip })
+        : null;
       await page.evaluate(() => {
         window.__poiMutations = 0;
         window.__poiTexts = [];
@@ -820,11 +848,12 @@ export async function runPoiSmoke(
         );
       });
       await advance(page, 1100);
-      assert.deepEqual(
-        await page.screenshot({ clip: markerClip }),
-        stationaryMarker,
-        "Reduced-motion guidance retains a visible static local marker",
-      );
+      if (stationary.markerVisible)
+        assert.deepEqual(
+          await page.screenshot({ clip: markerClip }),
+          stationaryMarker,
+          "Reduced-motion guidance retains a visible static local marker",
+        );
       assert.equal(
         await page.evaluate(() => window.__poiMutations),
         0,

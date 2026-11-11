@@ -1,0 +1,23 @@
+{
+  "checks": [
+    {
+      "reduced": false,
+      "marker": "ring",
+      "first": "translate(705px, 763.5px) scale(1.0289)",
+      "second": "translate(705px, 763.5px) scale(1.0543)",
+      "moved": true
+    },
+    {
+      "reduced": true,
+      "marker": "ring",
+      "first": "translate(705px, 763.5px)",
+      "second": "translate(705px, 763.5px)",
+      "moved": false
+    }
+  ],
+  "highContrast": {
+    "background": "rgb(6, 21, 30)",
+    "border": "2px",
+    "color": "rgb(255, 255, 255)"
+  }
+}

@@ -272,9 +272,10 @@ describe("campaign controller menus", () => {
     expect(h.preferences.gamepad.mobility).toBe(2);
     h.pad([]);
     h.input.pollCommands();
-    h.pad([6]);
+    // T8: L2 (6) is Scan's by default, so take a free button.
+    h.pad([7]);
     h.input.pollCommands();
-    expect(h.preferences.gamepad.mobility).toBe(6);
+    expect(h.preferences.gamepad.mobility).toBe(7);
     h.pad([], [0.5, 0]);
     expect(h.input.getControls().throttleX).toBeCloseTo(
       0.35 + (0.25 / 0.75) * 0.65,
@@ -367,5 +368,98 @@ describe("campaign controller menus", () => {
     h.pad([13]);
     h.input.pollCommands();
     expect(h.input.getControls().down).toBe(true);
+  });
+});
+
+describe("T8: Scan shows the labels on demand", () => {
+  it("is held by Shift or F, is never a campaign control, and stops while play is blocked", () => {
+    const h = inputHarness();
+    h.focus(h.game);
+    expect(h.input.scanActive()).toBe(false);
+    expect(h.key("Shift").preventDefault).toHaveBeenCalledOnce();
+    expect(h.input.scanActive()).toBe(true);
+    expect(h.input.getControls()).toEqual({});
+    h.key("Shift", {}, "keyup");
+    expect(h.input.scanActive()).toBe(false);
+    h.key("f");
+    h.key("s");
+    expect(h.input.scanActive()).toBe(true);
+    expect(h.input.getControls()).toEqual({ down: true });
+    h.block();
+    expect(h.input.scanActive()).toBe(false);
+    h.unblock();
+    h.key("f", {}, "keyup");
+    expect(h.input.scanActive()).toBe(false);
+    // Shift with a letter still steers: the letter keeps its own action.
+    h.key("Shift");
+    h.key("A", { shiftKey: true } as Partial<KeyboardEvent>);
+    expect(h.input.getControls()).toEqual({ down: true, left: true });
+    expect(h.input.scanActive()).toBe(true);
+  });
+
+  it("latches with the toggle preference, from a key, the tray button or L2", () => {
+    const h = inputHarness({ scanToggle: true });
+    h.focus(h.game);
+    h.key("f");
+    h.key("f", {}, "keyup");
+    expect(h.input.scanActive()).toBe(true);
+    h.key("f");
+    expect(h.input.scanActive()).toBe(false);
+    h.direction.dataset.dir = "scan";
+    h.direction.onpointerdown!(h.pointer);
+    h.direction.onpointerup!(h.pointer);
+    expect(h.input.scanActive()).toBe(true);
+    h.direction.onpointerdown!(h.pointer);
+    h.direction.onpointerup!(h.pointer);
+    expect(h.input.scanActive()).toBe(false);
+    h.pad([6]);
+    h.input.pollCommands();
+    expect(h.input.scanActive()).toBe(true);
+    h.input.pollCommands();
+    expect(h.input.scanActive()).toBe(true);
+    h.pad([]);
+    h.input.pollCommands();
+    h.pad([6]);
+    h.input.pollCommands();
+    expect(h.input.scanActive()).toBe(false);
+  });
+
+  it("is held by L2 or the tray button without the toggle", () => {
+    const h = inputHarness();
+    h.pad([6]);
+    expect(h.input.scanActive()).toBe(true);
+    // A connected pad reports every axis as false; none may be true.
+    expect(Object.values(h.input.getControls()).some(Boolean)).toBe(false);
+    h.pad([]);
+    expect(h.input.scanActive()).toBe(false);
+    h.direction.dataset.dir = "scan";
+    h.direction.onpointerdown!(h.pointer);
+    expect(h.input.scanActive()).toBe(true);
+    expect(Object.values(h.input.getControls()).some(Boolean)).toBe(false);
+    h.direction.onpointerup!(h.pointer);
+    expect(h.input.scanActive()).toBe(false);
+  });
+
+  it("leaves keys and buttons a saved layout already uses to their actions", () => {
+    const stored = {
+      keys: { interact: ["f"], map: ["Shift"] },
+      gamepad: { map: 6 },
+    };
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    vi.stubGlobal("localStorage", {
+      getItem: () => JSON.stringify(stored),
+      setItem: vi.fn(),
+    });
+    const preferences = loadPilotPreferences();
+    expect(preferences.keys.interact).toEqual(["f"]);
+    expect(preferences.keys.scan).toEqual([]);
+    expect(preferences.gamepad.map).toBe(6);
+    expect(preferences.gamepad.scan).toBe(7);
+    vi.stubGlobal("localStorage", {
+      getItem: () => JSON.stringify({ keys: { down: ["x"] } }),
+      setItem: vi.fn(),
+    });
+    expect(loadPilotPreferences().keys.scan).toEqual(["Shift", "f"]);
+    expect(loadPilotPreferences().gamepad.scan).toBe(6);
   });
 });

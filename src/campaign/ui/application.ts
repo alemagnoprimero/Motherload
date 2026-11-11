@@ -15,7 +15,7 @@ import { renderDockView } from "./terminal";
 import { renderNavigation } from "./navigation";
 import { journalMarkup, claimMapMarkup, contractMarkup } from "./journal";
 import { moveFocus } from "./focus";
-import { cameraSafeArea, updateWorldLabels } from "./world-labels";
+import { cameraSafeArea } from "./world-labels";
 import { RewardPresentation } from "./rewards";
 import type { CampaignEvent } from "../events";
 import { tradeMarkup } from "./terminal/trade";
@@ -86,6 +86,8 @@ let pauseTab = "expedition";
 let settingsFromTitle = false;
 let hasCheckpoint = false;
 let rigCueUntil = 0;
+/** T8: whether the scene's last frame showed the Scan labels. */
+let scanning = false;
 let mapTab = "stars";
 type Overlay = "welcome" | "menu" | "dock" | "map" | undefined;
 let overlay: Overlay = "welcome";
@@ -284,7 +286,14 @@ function renderPauseTabs() {
   renderPauseTabsView(campaign, pauseTab, notices);
 }
 function syncGuideAndReserve() {
-  renderGuidance(campaign, preferences, overlay, rigCueUntil, showMessage);
+  renderGuidance(
+    campaign,
+    preferences,
+    overlay,
+    rigCueUntil,
+    showMessage,
+    scanning,
+  );
 }
 function handleGameEvent(event: CampaignEvent) {
   audio.handleEvent(event);
@@ -1049,6 +1058,17 @@ function syncHUD() {
     !s.equipped.utilities.includes("W02-R2");
   setHidden("campaign-dock-navigation", !s.progress.completed.includes(2));
   $<HTMLButtonElement>("campaign-map-toggle").disabled = Boolean(overlay);
+  // T8: the Scan button shows the state the scene drew with; the body's
+  // data-campaign-scan shows the depth rail on Scan.
+  $("campaign-scan-button").setAttribute("aria-pressed", String(scanning));
+  $("campaign-scan-button").setAttribute(
+    "aria-label",
+    preferences.scanToggle
+      ? "Toggle Scan: show labels"
+      : "Hold to scan: show labels",
+  );
+  $<HTMLButtonElement>("campaign-scan-button").disabled = Boolean(overlay);
+  setBodyData("campaignScan", String(scanning));
   document.body.dataset.campaignPaused = String(paused());
   document.body.dataset.campaignBusy = String(busy);
   if (campaign.message !== previousMessage) {
@@ -1931,13 +1951,13 @@ async function boot() {
       },
       reducedMotion: () => preferences.reducedMotion,
       highContrast: () => preferences.highContrast,
+      // T8 (D3): annotations are placed by the scene; Scan shows the labels.
+      scanActive: () => input.scanActive(),
+      onScan: (active) => {
+        scanning = active;
+      },
+      returnGuidance: () => preferences.assists,
       getSafeArea: cameraSafeArea,
-      onView: (view) =>
-        updateWorldLabels(
-          view,
-          campaign,
-          Boolean(overlay) || !preferences.assists,
-        ),
       renderScale: () => preferences.renderScale,
       cameraShake: () => preferences.shake,
       onEvent: handleGameEvent,

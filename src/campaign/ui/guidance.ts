@@ -14,6 +14,7 @@ export function renderGuidance(
   overlay: string | undefined,
   rigCueUntil: number,
   showMessage: (message: string, priority?: number) => void,
+  scanning = false,
 ) {
   const reserveButton = $<HTMLButtonElement>("campaign-use-reserve");
   const s = campaign.state,
@@ -38,9 +39,15 @@ export function renderGuidance(
     `Home ${reserve.estimate.toFixed(1)}L · ${labels[reserve.state]}`,
   );
   $("campaign-return").dataset.state = reserve.state;
+  // T8 (D3): a safe reserve is a Scan label; "Plan return", "Turn back" and
+  // "Cannot reach home" are warnings and stay on. The energy bar's notch
+  // shows the reserve at all times.
   setHidden(
     "campaign-return",
-    !preferences.assists || campaign.atDock || Boolean(overlay),
+    !preferences.assists ||
+      campaign.atDock ||
+      Boolean(overlay) ||
+      (reserve.state === "ok" && !scanning),
   );
   $("campaign-return-notch").style.left =
     Math.min(100, (reserve.estimate / campaign.maxEnergy) * 100) + "%";
