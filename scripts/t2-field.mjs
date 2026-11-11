@@ -1252,7 +1252,8 @@ print(json.dumps({"seam": step(0), "others": {str(c): round(step(c), 2) for c in
           false,
         );
         try {
-          const checkpoint = fixtures["c-site-W01-SITE-4-wreck@2"].checkpoint();
+          // Condition 1's procedure: the 60 m fixture, parked, then digging.
+          const checkpoint = fixtures["a04-dive-60m@2"].checkpoint();
           await page.evaluate(() => window.__campaignDebug.sceneClock.resume());
           await importCheckpoint(page, checkpoint);
           for (
@@ -1276,16 +1277,28 @@ print(json.dumps({"seam": step(0), "others": {str(c): round(step(c), 2) for c in
           const benchmark = await page.evaluate(
             () => window.__campaignField?.benchmark(3) ?? null,
           );
+          await keys(page, ["ArrowDown"]);
+          await new Promise((resolve) =>
+            setTimeout(resolve, playSeconds * 1000),
+          );
+          const digging = await page.evaluate(
+            () => document.querySelector("#campaign-frametime")?.textContent,
+          );
+          await keys(page, []);
           run.frametime[form] = {
             backing,
             terrainRenderer: info.terrainRenderer,
             readout,
+            digging,
             benchmark,
             frameP95: Number(info.frameP95),
             drawCalls: Number(info.drawCalls),
           };
           console.log(
-            `frametime field=${field} ${form} @${backing}: ${JSON.stringify(readout)} ${JSON.stringify(benchmark)}`,
+            `frametime field=${field} ${form} @${backing} parked: ${JSON.stringify(readout)} ${JSON.stringify(benchmark)}`,
+          );
+          console.log(
+            `frametime field=${field} ${form} @${backing} digging: ${JSON.stringify(digging)}`,
           );
           assert.deepEqual(faults, []);
         } finally {

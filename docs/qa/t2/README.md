@@ -145,10 +145,7 @@ At backing 2 (2880 × 1800, where §9.2's gradient is defined) the 60 m frame re
 ![60 m, 1440 × 900 at backing 2](frame-60m.jpg)
 ![SITE-4, 1440 × 900 at backing 2](frame-site4.jpg)
 
-Beside the board crops (concept, game at the panel's scale, both in L\*, histogram); stage 4 brings the full set:
-
-![60 m beside the board crop](sheet-60m.jpg)
-![SITE-4 beside the board crop](sheet-site4.jpg)
+The sheets beside the board crops are in the F3 section below.
 
 ## Draw calls
 
@@ -202,28 +199,28 @@ The check asserts at most 12 draws on desktop and 10 on a phone, and no more tha
 
 **The x = 0 seam.** The texture carries four wrapped columns at each side, so a tap near the seam reads the other edge's texels. `T2_CHECKS=seam` parks the rig in a shaft 2.5 tiles right of x = 0 so the seam crosses the frame: the luma step across the seam column is 0.35 against a median of 0.71 across the frame's other cell boundaries, and the same view one world width around differs at 0 pixels by more than 4 levels.
 
-**Context loss.** `T2_CHECKS=context` runs in CI in all three browsers (the "T2 field renderer checks" workflow): `WEBGL_lose_context` loses and restores the context at 60 m, the field rebuilds its program and texture from the cell data it keeps, and the frame after is the frame before, 0 px.
+**Context loss.** `T2_CHECKS=context` runs in CI in every leg (the "T2 field renderer checks" workflow): `WEBGL_lose_context` loses and restores the context at 60 m, the field rebuilds its program and texture from the cell data it keeps, and the frame after is the frame before, 0 px.
 
-**Other browsers.** The workflow now runs three legs. Chromium runs everything. Firefox and Playwright's WebKit run everything but the dig cost (its CPU slowdown is a Chromium protocol call): the same GLSL through their own shader translators, on Mesa's llvmpipe.
+**Other browsers.** The workflow now runs four legs. Chromium runs everything. Firefox and Playwright's WebKit run everything but the dig cost (its CPU slowdown is a Chromium protocol call): the same GLSL through their own shader translators, on Mesa's llvmpipe on Linux. WebKit also runs on a macOS runner, where WebGL goes through Metal on the runner's GPU, as it does in Safari.
 
-| Check | Chromium (SwiftShader) | Firefox (llvmpipe) | WebKit (llvmpipe) |
-|---|---|---|---|
-| `tier` | software rasteriser: `RetainedTerrain` by default, the field when pinned | the same | the field by default: WebKit reports its renderer as "Apple GPU", so the software check cannot name llvmpipe |
-| `scramble`, 60 m and SITE-4 | 0 px | 0 px | 0 px |
-| `poi` | 0 px | 0 px | 0 px |
-| `dig` | 7 uploads in 90 frames, largest 160 × 144, one per frame at most, 0 parked | the same | the same |
-| `motion` | dig done at 117 ms, reveal at 267 ms; far pixels ≤ 1 luma | the same; ≤ 0.72 | the same; ≤ 0.72 |
-| `look` | every row holds | every row holds (boundary 26.6 % and 28.1 %) | every row holds (23.4 % and 26.6 %) |
-| `ring`, pixels beyond 2 levels | 0, 0, 0 | 0, 5, 12 | 0, 5, 12 |
-| `seam` | 0.35; 0 px | 0.36; 0 px | 0.36; 0 px |
-| `draws`, 60 m and SITE-4 | 5 and 9 | 5 and 9 | 5 and 9 |
-| `context` | 0 px | 0 px | 0 px |
+| Check | Chromium (SwiftShader) | Firefox (llvmpipe) | WebKit (llvmpipe) | WebKit on macOS (Metal), in CI |
+|---|---|---|---|---|
+| `tier` | software rasteriser: `RetainedTerrain` by default, the field when pinned | the same | the field by default: WebKit reports its renderer as "Apple GPU", so the software check cannot name llvmpipe | pass |
+| `scramble`, 60 m and SITE-4 | 0 px | 0 px | 0 px | 0 px |
+| `poi` | 0 px | 0 px | 0 px | 0 px |
+| `dig` | 7 uploads in 90 frames, largest 160 × 144, one per frame at most, 0 parked | the same | the same | the same |
+| `motion` | dig done at 117 ms, reveal at 267 ms; far pixels ≤ 1 luma | the same; ≤ 0.72 | the same; ≤ 0.72 | pass |
+| `look` | every row holds | every row holds (boundary 26.6 % and 28.1 %) | every row holds (23.4 % and 26.6 %) | every row holds |
+| `ring`, pixels beyond 2 levels (60 m, dug, SITE-4) | 0, 0, 0 (W02: 0, 0) | 0, 5, 12 | 0, 5, 12 | 0, 0, 6 (W02: 0, 2) |
+| `seam` | 0.35; 0 px | 0.36; 0 px | 0.36; 0 px | 0.36; 0 px |
+| `draws`, 60 m and SITE-4 | 5 and 9 | 5 and 9 | 5 and 9 | 5 and 9 |
+| `context` | 0 px | 0 px | 0 px | 0 px |
 
 - **The ring's limit is 64 pixels of a 1,440 × 900 frame, not 0.** On llvmpipe the ring and the whole texture differ by more than 2 levels at 5 and 12 pixels, each run on one pixel row: the two textures have different heights, llvmpipe's fixed-point texture coordinates round differently, and a threshold flips. A ring that mapped a row wrongly would differ over whole cells (4,225 px each).
 - **Firefox needs a window.** Headless Firefox on a machine without a GPU has no WebGL ("Exhausted GL driver options"), and with WebGL the default tier is `RetainedTerrain` on a software rasteriser, so the existing "Audit Firefox surface rendering" job never draws the field. The Firefox leg runs under `xvfb-run` with `FIREFOX_HEADED=1` (`scripts/browser-launch.mjs`) and pins `?field=1`.
 - **Found on the way, not T2's:** WebKit rejects `AudioContext.resume()` on a machine without an audio device ("Failed to start the audio device") and `audio.ts` does not catch it, so the capture harness saw a page error. The look check's pages run with sound off; the game code is untouched. In Firefox one capture was taken under a dialog's closing backdrop; `hudFree` now waits for the dialog.
 
-**iOS Safari: what it still needs.** Playwright's WebKit is Safari's engine and shader translator on this machine's OpenGL. It is not iOS: no Metal back end, no iOS memory limits, no tab eviction. Nothing in this container or on GitHub's Linux runners can run iOS Safari. It needs one reading on an iPhone (the oldest supported model, per §7's device gates), with the `t2-dist` build served over an https tunnel as in condition 1:
+**iOS Safari: what it still needs.** Playwright's WebKit is Safari's engine and shader translator, on OpenGL on Linux and through Metal on the macOS runner. Neither is iOS: no iPhone GPU, no iOS memory limits, no tab eviction. Nothing in this container or on GitHub's runners can run iOS Safari. It needs one reading on an iPhone (the oldest supported model, per §7's device gates), with the `t2-dist` build served over an https tunnel as in condition 1:
 
 1. `?debug=frametime&field=1`: the readout says `terrain field` (the shader compiled through Metal and fragment `highp` is there), and the 60 m fixture looks like the capture above.
 2. Without `field=1`: the readout still says `terrain field`, not `retained (…)`.
@@ -231,7 +228,81 @@ The check asserts at most 12 draws on desktop and 10 on a phone, and no more tha
 4. Context loss as iOS does it: switch to another app for a minute (or open several heavy tabs), come back, and check the terrain is drawn and the readout still says `terrain field`.
 5. Rotate the phone and back: the terrain follows the new frame.
 
-A macOS runner with Playwright's WebKit would put the Metal translation in CI (step 1 only); it is not added here because macOS runner minutes are billed at ten times Linux's on a private repository. Say if it should be.
+The macOS leg above covers step 1's shader translation through Metal on a Mac's GPU, in CI on every push that touches the renderer. It does not cover an iPhone's GPU, memory limits or tab eviction.
+
+## F3 table, sheets and budgets (stage 4)
+
+The nightly visual-sheets procedure, run here with the field on: `ART_BACKING=2 node scripts/art-captures.mjs` (the field is its default), then `scripts/art-sheets.py`. The full §9.2 table is [`f3/table.md`](f3/table.md) (data: `f3/table.json`; the same frames with `ART_SEARCH=field=0`: `f3/table-main.json`). Each sheet is the board crop, the game at the panel's scale, both in L\*, and the histogram.
+
+| Frame | Sheet |
+|---|---|
+| Surface | [desktop](f3/a02-spawn-1440x900.jpg), [phone](f3/p-portrait-02-spawn.jpg) |
+| 60 m | [desktop](f3/a04-dive-60m.jpg), [phone](f3/a04p-dive-60m-phone.jpg); 70 m [phone](f3/p-portrait-03-dive-70m.jpg) |
+| 150 m | [desktop](f3/a05-dive-150m.jpg) |
+| 330 m, the plate band | [desktop](f3/b-330m-plate-band-C.jpg) |
+| SITE-4 | [desktop](f3/c-site-W01-SITE-4-wreck.jpg), [phone](f3/p-portrait-cavern-site4.jpg) |
+
+![60 m beside the board crop](f3/a04-dive-60m.jpg)
+![SITE-4 beside the board crop](f3/c-site-W01-SITE-4-wreck.jpg)
+![SITE-4 on the phone beside the board crop](f3/p-portrait-cavern-site4.jpg)
+
+**The rows T2 moves, main's renderer → the field**, same fixtures, backing 2:
+
+| Frame | Unknown rock sd (≥ 7) | Rock sd near a light (≥ 15) | Edge density (≥ 0.06) | Gradient (≥ 2.5) | Frame L\* (concept, ± 4) |
+|---|---|---|---|---|---|
+| Surface, desktop | 3.3 → **13.3** | 8.3 → **10.3** | 0.026 → **0.045** | 1.18 → **1.92** | 25.4 → **24.9** (26.3) |
+| 60 m, desktop | 3.3 → **11.9** | 9.7 → **19.9** | 0.020 → **0.068** | 1.03 → **2.61** | 26.8 → **25.7** (25.9) |
+| 150 m, desktop | 3.6 → **12.4** | 39.4 → **45.4** | 0.015 → **0.068** | 0.95 → **2.60** | 25.5 → **25.5** (25.9) |
+| 330 m, desktop | 4.1 → **11.9** | 15.2 → **14.8** | 0.023 → **0.082** | 1.19 → **3.16** | 23.9 → **26.2** (cavern crop 21.0) |
+| SITE-4, desktop | 3.0 → **11.6** | 5.3 → **32.7** | 0.031 → **0.084** | 1.42 → **3.41** | 20.3 → **22.7** (21.0) |
+| 60 m, phone | 3.5 → **11.9** | 9.7 → **18.9** | 0.022 → **0.040** | — | 27.6 → **26.6** (30.1) |
+| Surface, phone | 4.1 → **14.4** | 8.3 → **9.8** | 0.014 → **0.022** | — | 27.7 → **27.2** (27.1) |
+| 70 m, phone | 3.3 → **11.3** | 4.8 → **11.3** | 0.023 → **0.043** | — | 27.7 → **26.8** (30.1) |
+| SITE-4, phone | 4.0 → **12.7** | 5.3 → **30.8** | 0.032 → **0.055** | — | 19.8 → **21.4** (21.0) |
+
+Also on the field's frames: boundary axis-aligned share 23.6 % (SITE-4 desktop) and 25.1 % (phone); floors at most 1.2 px off the collision line, walls at most 0.22 tile and 2.2 %, pillars 0.98 to 1.00 tile.
+
+Rows of that table that are under target, and whose they are:
+
+- **Rock sd near a light on three frames besides the plate frame: surface desktop 10.3, surface phone 9.8, 70 m phone 11.3.** In each, the rock within 3 tiles of the lamp is unknown rock (one known solid cell in reach or none; the table's "lit cells" column), so the row reads unknown rock's own sd, which the D6 ladder keeps low so that lit rock stands out. Where known rock is in reach it reads 18.9 to 45.4. T2's line is held on those frames (the `look` check); raising it on all-unknown frames means more contrast in unknown rock, which is the art direction's call, not a renderer fix. The plate frame (14.8) is T14's.
+- **Edge density on the phone frames: 0.040 to 0.055 against 0.06** (main: 0.022 to 0.032). The measure counts edges per pixel at a fixed 690 px width, and a phone frame is 8.5 to 10 tiles across against the desktop's 21 to 25, so the same rock gives fewer edges per pixel. The board's phone crops read 0.13 to 0.15 with their props and decals. Fallback proposed, not built: leave the rock at the swatch cards' scale and let T5's decals and the A-items' props carry the phone's density; a finer pebble and crack layer on phone-sized tiles is the alternative if T5 does not reach it.
+- **Surface frames: gradient 1.92 and edge density 0.045 on desktop.** Half the frame is sky; the targets are set for shaft and cavern.
+- **The 330 m frame's L\* (26.2)** is scored against the cavern crop for want of a plate-band panel.
+- Not T2's rows and unchanged by it: p2 to p98 range and warm accents (T1), playfield within 10 luma (G2), overlay edge share and text items (T8, PR #20).
+
+### Budgets
+
+| Budget (§7) | Limit | Measured with the field | |
+|---|---|---|---|
+| Draw calls | ≤ 12 desktop, ≤ 10 phone | 5 at 60 m, 9 at SITE-4 with the beacon lit, on desktop and phone, in Chromium, Firefox and WebKit (main: 3 and 8). Masked beacon: 10 by its draw list (above) | pass; one frame by reasoning |
+| Texture uploads while parked | 0 | 0 in every still frame (`draws`) and 0 across the parked frames after a dig (`dig`); while digging at most one of at most 160 × 144 texels per frame | pass |
+| Resident textures, desktop | ≤ 64 MiB | boot 18.05, W01 shaft 28.72, W01 cave 21.93, W02 30.58 MiB (main: 35.05, 45.72, 38.92, 45.19) | pass |
+| Resident textures, phone | ≤ 20 MiB boot, ≤ 40 active | boot 14.32; W01 shaft 24.68, cave 19.59, W02 26.88 MiB (main: 16.84; 27.19, 22.10, 27.01) | pass |
+| Field texture | §7 projected 2.3 MiB for W01 | W01 2.49 MiB (648 × 1,008 with the wrap columns and the rows above the surface), W02 4.88, any deeper world at most 5.95 | stated |
+
+- Resident bytes are `scripts/render-memory.mjs` against a build with the field forced on (`VITE_T2_FIELD=1`); main's column is the same script on the default path here (`RetainedTerrain`). The readout's total now counts the field's raw GL texture in its `layers` group (§7 asked for raw textures to be counted); `RetainedTerrain`'s 19.5 MiB canvas at desktop backing 2 is not allocated while the field draws.
+- **Not taken: the band material pages (15.19 MiB in a shaft or cave) still load.** The field does not sample them; §7's projection drops them on the High tier. They are also what `RetainedTerrain` needs if the measured step falls back mid-session, so dropping them needs a load-on-fallback path. Proposed as its own item.
+
+### The readout on a desktop
+
+`T2_CHECKS=frametime` follows condition 1's procedure: the 60 m fixture, 12 s parked and 12 s holding Down on the real clock, reading the `?debug=frametime` readout.
+
+| Machine | Renderer | Parked: CPU p95 / interval p95 | Digging: CPU p95 / interval p95 |
+|---|---|---|---|
+| This container, desktop 1440 × 900 at backing 2 (SwiftShader, no GPU) | field | 6.7 ms / 1,605 ms | 7.1 ms / 11,815 ms |
+| | main (`field=0`) | 27.6 ms / 369 ms | 7.3 ms / 318 ms |
+| This container, phone viewport at backing 1.5 | field | 4.8 ms / 263 ms | 5.9 ms / 256 ms |
+| | main | 2.5 ms / 61 ms | 7.6 ms / 56 ms |
+| macOS runner, WebKit, Metal (CI) | field and main | read by this push's CI run; in the PR note | |
+
+- The CPU column is the game's JavaScript and GL calls per frame, and it is what this container can measure: the field's digging p95 is at or under main's on both forms. Main's 27.6 ms parked on the desktop was not chased; its window is the first seconds after an import.
+- The interval column here is SwiftShader rasterising ten taps per pixel on four shared CPU cores: 1.6 s a frame at 2880 × 1800. It says nothing about a GPU, which is why software rasterisers start on `RetainedTerrain` and why **condition 1 stays pending on a device reading**.
+
+### For the director's reading
+
+- **`t2-dist`**: the "T2 static build" workflow uploads it on every push to this branch; the run's summary has the serving steps. Condition 1's procedure and its table are near the top of this file; the rows are empty until the reading.
+- **Condition 2** needs the same S25 Ultra re-read, digging, with the `field scan · patch · upload · draw` line noted.
+- **iOS Safari**: the five steps in the section above.
 
 ## Reproduce
 

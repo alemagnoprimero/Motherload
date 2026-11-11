@@ -38,7 +38,7 @@ concurrency:
 jobs:
   field:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -95,6 +95,9 @@ jobs:
               ;;
             webkit)
               export T2_CHECKS=tier,scramble,poi,dig,motion,look,ring,seam,draws,context
+              # macOS draws on a GPU through Metal: the frame-time readout,
+              # parked and digging, is worth reading there (not asserted).
+              if [ "$RUNNER_OS" = macOS ]; then export T2_CHECKS="$T2_CHECKS,frametime"; fi
               npm run test:t2
               ;;
           esac
