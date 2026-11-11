@@ -188,7 +188,7 @@ PYTHON=python3 npm run assets:rebuild
 ## Verification
 
 The whole `verify` job of `checks.yml` passed locally before the push, every step exiting 0, in 917 s (Node 22.23.4, Chromium 153; CI runs Node 24 and Chromium 156):
-- `npm test` (434 passed, 5 skipped: 17 new cases in `campaign-annotations.test.ts`, `campaign-input.test.ts` and `campaign-view.test.ts`), `format:check` and `build`;
+- `npm test` (418 passed, 5 skipped; `main` 402: 16 new cases in `campaign-annotations.test.ts`, `campaign-input.test.ts` and `campaign-view.test.ts`), `format:check` and `build`;
 - `assets:rebuild` with Pillow 12.0.0, then no change under `assets/campaign` (the rebuild CI runs);
 - `test:improvements` with `behavior,visual,fog,harness`: the harness now asserts T8's rig clearance and collisions in every §9 frame, the 60 m steady-play budget and the Shift and tray paths, and the fog check runs with Scan on as well;
 - `test:campaign:storage`, `test:feel`, `test:audio`, `test:plan-ui`, `test:render` (its hidden-geology crops with Scan on as well), `test:render:memory`, `test:camera`, `test:hud:surface`, and `test:opening:browser` on desktop and portrait.
