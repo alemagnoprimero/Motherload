@@ -105,6 +105,23 @@ async function hud(page) {
         .map((node) => node.textContent.trim())
         .join(" "),
       detailsShown: shown(".objective-more"),
+      // H2: the HAUL readout, and the cargo pips it replaces on phones.
+      haul: {
+        shown: shown(".haul-readout"),
+        text: [...document.querySelector(".haul-readout").children]
+          .map((node) => node.textContent.trim())
+          .join(" "),
+        box: rect(".haul-readout"),
+        cut: (() => {
+          const value = document.getElementById("campaign-haul");
+          return value.scrollWidth > value.clientWidth + 1;
+        })(),
+      },
+      pips: shown("#campaign-cargo-pips"),
+      rowOverflow: (() => {
+        const row = document.querySelector(".instrument-right");
+        return row.scrollWidth - row.clientWidth;
+      })(),
     };
   });
 }
@@ -158,7 +175,7 @@ try {
           entry.objective = entry.objective && box(entry.objective);
           cases.push(entry);
           console.log(
-            `${name}: objective ${entry.objective?.width}×${entry.objective?.height} "${entry.objectiveText}"; details ${entry.detailsShown}→${entry.detailsOnHover ?? entry.detailsOnTap}`,
+            `${name}: objective ${entry.objective?.width}×${entry.objective?.height} "${entry.objectiveText}"; details ${entry.detailsShown}→${entry.detailsOnHover ?? entry.detailsOnTap}; haul ${entry.haul.shown ? entry.haul.text : "hidden"}${entry.haul.cut ? " (cut)" : ""}, pips ${entry.pips}, row overflow ${entry.rowOverflow}`,
           );
         }
       } finally {

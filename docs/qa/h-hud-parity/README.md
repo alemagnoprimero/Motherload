@@ -43,10 +43,42 @@ The distance comes from the mission signal (`objectiveDistance()` in `poi.ts`, u
 Captures by `scripts/art-captures.mjs` at backing 2 (a04, SITE-4, p-portrait-03), cropped to the HUD; the details from `measure.mjs`.
 
 
+## H2: the HAUL value
+
+**What changed.** The HUD's HAUL readout ("HAUL 60 CR", the value of the cargo on board), present but hidden, shows beside depth and cargo, as on the board. On phones the right row has no room for four readouts and the seven cargo pips, so HAUL takes the pips' place, as on the board's tall panels (the count stays: "2/7"); depth, cargo and credits never shorten, and a HAUL value too long for the row ends in an ellipsis rather than slide under the menu button. Below 381 px wide or 340 px tall four readouts do not fit at all, and `main`'s row stays (no HAUL, the pips back).
+
+| Line | Result | |
+|---|---|---|
+| HAUL shown (§9.2) | Shown at 1440 × 900 and 393 × 851 in every case, and at every width probed from 381 px up (portrait) and on landscape phones taller than 340 px | met |
+| Nothing overflows the row or slides under the menu button | 0 px overflow at 393 × 851, 844 × 390, 1024, 1280 and 1440, with 0 CR / 20 CR and with 12,480 CR / 123,456 CR, and no value shortened. At 320 × 640 and 568 × 320 HAUL stays hidden and only 123,456 credits overflow (20 and 4 px; `main` 28 and 12) | met |
+
+Probed by `fit.mjs` in this folder (the readouts' text set directly under the frozen clock; `main`'s row overflows 28 and 12 px at 320 × 640 and 568 × 320 with the large values):
+
+| Viewport | HAUL | Pips | Overflow, 0 CR / 20 CR | Overflow, 12,480 CR / 123,456 CR | Values shortened (980/2,140; 3,000/20,000; 12,480/123,456) |
+|---|---|---|---|---|---|
+| 320x640 | hidden | shown | 0 px | 20 px | none |
+| 360x740 | hidden | shown | 0 px | 0 px | none |
+| 393x851 | shown | hidden | 0 px | 0 px | none |
+| 568x320 | hidden | shown | 0 px | 4 px | none |
+| 844x390 | shown | hidden | 0 px | 0 px | none |
+| 1024x768 | shown | shown | 0 px | 0 px | — |
+| 1280x720 | shown | shown | 0 px | 0 px | — |
+| 1440x900 | shown | shown | 0 px | 0 px | — |
+
+![Desktop 60 m, the right plate: H1 and H2](h2-desktop-60m.jpg)
+
+![Phone 70 m: H1 and H2](h2-phone-70m.jpg)
+
+Captures by `scripts/art-captures.mjs` at backing 2 (a04, p-portrait-03), cropped to the HUD.
+
 ## Reproduce
 
 ```bash
 node docs/qa/h-hud-parity/measure.mjs http://127.0.0.1:5173/ artifacts/hud
+```
+
+```bash
+node docs/qa/h-hud-parity/fit.mjs http://127.0.0.1:5173/
 ```
 
 ## Verification
