@@ -72,6 +72,15 @@ The first two rows are this commit on main with #17 to #19, the scene clock runn
   - The frame state is reused instead of rebuilt each frame.
 - **If the S25 still reads more than 2 ms over main,** the field line names the part: a high `patch` means the blur build (next step: move it to a fragment pass over the patch rectangle, so a dig uploads a few bytes of cell codes); a high `upload` or `draw` means the driver (next step: upload after the quad's draw instead of before it, or keep two copies of the texture and patch the one not in flight).
 
+**Stage 4: a GPU reading that does not meet it.** The macOS runner's WebKit (Metal; the readout table in the stage 4 section) reads the field at +7 ms CPU and +9 ms interval over main while digging on a desktop at backing 2, parity parked, and no gap at the phone viewport at backing 1.5. The cost grows with the frame's pixels and is outside the field's scan, patch, upload and draw timers, which rules out the patch build this container measured and points at the frame that follows a texture update: either the driver synchronising the update with the frame in flight, or the GPU's frame going over the refresh on dig frames and the next frame waiting for a drawable. That is not yet separated. Proposed, in order:
+
+1. **Split it on the same runner** (two debug switches on the `frametime` check, no change to play): digging with the upload skipped, and digging with the transitions off, which takes the 42 patches of a 12 s dig down to about 8.
+2. **If the update is the cost:** keep two copies of the field texture and patch the one the last frame did not draw (one more upload of the same patch a frame later, 2.5 MiB more for W01), or build the blur in a fragment pass so a dig uploads a few bytes of cell codes.
+3. **If the dig frames' GPU time is the cost:** fewer frames in a transition (settle a slot's cells in one patch instead of per cell group) and the reveal's two looks drawn only inside the fading cells.
+4. Until then the measured step is the guard: a window whose interval p95 is over 25 ms counts against the field, resolution goes first, then the terrain goes to `RetainedTerrain`.
+
+**Condition 2 stays open**: met in this container and at the phone viewport on the macOS runner, not met at desktop backing 2 on that runner, and not re-read on the S25.
+
 Limit in the check: digging p95, field minus main, at most +2 ms (`T2_DIGCOST_ASSERT=0` reports without asserting; CI runs it that way because shared runners time unevenly).
 
 ## Motion (audit §9.3)
@@ -293,15 +302,19 @@ Rows of that table that are under target, and whose they are:
 | | main (`field=0`) | 27.6 ms / 369 ms | 7.3 ms / 318 ms |
 | This container, phone viewport at backing 1.5 | field | 4.8 ms / 263 ms | 5.9 ms / 256 ms |
 | | main | 2.5 ms / 61 ms | 7.6 ms / 56 ms |
-| macOS runner, WebKit, Metal (CI) | field and main | read by this push's CI run; in the PR note | |
+| macOS runner (GitHub's Apple-silicon VM), WebKit through Metal, desktop 1440 × 900 at backing 2, in CI | field | 3 ms / 20 ms | **20 ms / 34 ms** |
+| | main | 3 ms / 21 ms | 13 ms / 25 ms |
+| The same runner, phone viewport at backing 1.5 | field | 2 ms / 23 ms | 4 ms / 21 ms |
+| | main | 2 ms / 20 ms | 10 ms / 21 ms |
 
 - The CPU column is the game's JavaScript and GL calls per frame, and it is what this container can measure: the field's digging p95 is at or under main's on both forms. Main's 27.6 ms parked on the desktop was not chased; its window is the first seconds after an import.
-- The interval column here is SwiftShader rasterising ten taps per pixel on four shared CPU cores: 1.6 s a frame at 2880 × 1800. It says nothing about a GPU, which is why software rasterisers start on `RetainedTerrain` and why **condition 1 stays pending on a device reading**.
+- **The macOS runner is the first GPU this branch was read on, and at desktop backing 2 it does not meet condition 2.** Digging with the field reads 20 ms CPU p95 and 34 ms interval p95 against main's 13 and 25: +7 and +9, the S25 Ultra's pattern (18 and 20 against 12 and 16). Parked is at parity (20 against 21), and at the phone viewport at backing 1.5 on the same runner the field digs at 4 ms CPU against main's 10 with the interval level at 21. The field's own line while digging there reads `scan 1 · patch 4 · upload 0 · draw 0 ms (42 patches)`, so about 15 ms of a dig frame at 2880 × 1800 is outside the four parts the readout times, and is not there at 590 × 1277. WebKit's clock has 1 ms steps, the runner is a virtual machine with a 20 ms frame, and this is one run: a pointer, not a device reading. See condition 2 above for what follows from it.
+- The interval column in this container is SwiftShader rasterising ten taps per pixel on four shared CPU cores: 1.6 s a frame at 2880 × 1800. It says nothing about a GPU, which is why software rasterisers start on `RetainedTerrain` and why **condition 1 stays pending on a device reading**.
 
 ### For the director's reading
 
 - **`t2-dist`**: the "T2 static build" workflow uploads it on every push to this branch; the run's summary has the serving steps. Condition 1's procedure and its table are near the top of this file; the rows are empty until the reading.
-- **Condition 2** needs the same S25 Ultra re-read, digging, with the `field scan · patch · upload · draw` line noted.
+- **Condition 2** needs the same S25 Ultra re-read, digging, with the `field scan · patch · upload · draw` line noted. The macOS runner's desktop reading says to expect a gap that grows with backing scale.
 - **iOS Safari**: the five steps in the section above.
 
 ## Reproduce
