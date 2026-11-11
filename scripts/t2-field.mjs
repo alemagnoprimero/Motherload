@@ -195,8 +195,8 @@ const dataset = (page) =>
 async function hudFree(page, file) {
   await page.evaluate(() => window.__campaignDebug.overlays(false));
   await advance(page, 50);
-  // A dialog that is still closing dims the whole frame with its backdrop
-  // (seen once in Firefox). Its close is not on the test clock: wait for it.
+  // A dialog that is still closing would dim the whole frame with its
+  // backdrop, and its close is not on the test clock: wait for it.
   let open = "";
   for (let attempt = 0; attempt < 30; attempt++) {
     open = await page.evaluate(() => {
@@ -207,17 +207,21 @@ async function hudFree(page, file) {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   assert.equal(open, "", "no dialog is open over the frame");
-  // The camera fades in for 180 ms after an import, on the test clock. In
-  // Firefox a frame was twice captured with the whole image dimmed towards
-  // the fade's colour, once here and once in CI: step until the fade ends.
-  let fade = { running: false, progress: 1 };
-  for (let attempt = 0; attempt < 40; attempt++) {
-    fade = await page.evaluate(() => window.__campaignDebug.fade());
-    if (!fade.running) break;
+  // In Firefox a whole frame was captured dimmed three times (once here,
+  // twice in CI) while the page reported no dialog, no camera fade and no
+  // pause, and the same run passed at other times. Whatever the transient
+  // is, a frame counts as settled when two captures a step apart are the
+  // same bytes; until then, step and look again.
+  let frame = await page.screenshot();
+  for (let attempt = 0; ; attempt++) {
     await advance(page, 50);
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    const next = await page.screenshot();
+    if (next.equals(frame)) break;
+    assert.ok(attempt < 12, "the frame settles before it is captured");
+    frame = next;
   }
-  assert.equal(fade.running, false, "the camera fade has ended");
-  await page.screenshot({ path: file });
+  await writeFile(file, frame);
   await page.evaluate(() => window.__campaignDebug.overlays(true));
 }
 

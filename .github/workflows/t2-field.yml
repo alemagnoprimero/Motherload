@@ -97,9 +97,9 @@ jobs:
           PREVIEW_URL: http://127.0.0.1:5173/
           T2_DIGCOST_ASSERT: "0"
           T2_DIG_FRAMES: "300"
-          # While condition 2 is being split: every upload strategy and both
-          # switches, three passes each (docs/qa/t2/README.md).
-          T2_FRAMETIME_VARIANTS: ${{ inputs.variants || 'single;twotex;copy;noupload;notransitions' }}
+          # A dispatched reading may name ?fielddebug= variants (the split of
+          # condition 2 read single;twotex;copy;noupload;notransitions).
+          T2_FRAMETIME_VARIANTS: ${{ inputs.variants }}
           T2_FRAMETIME_PASSES: ${{ inputs.passes || '3' }}
           FRAMETIME_ONLY: ${{ inputs.frametime_only }}
         run: |
