@@ -87,7 +87,14 @@ try {
     const page = await context.newPage(),
       faults = [];
     page.on("pageerror", (e) => faults.push(e.message));
-    await page.goto(base + "?renderer=" + renderer);
+    // T2: the WebGL run is about the field renderer, so it pins it; CI's
+    // software rasteriser would otherwise start on RetainedTerrain.
+    await page.goto(
+      base +
+        "?renderer=" +
+        renderer +
+        (process.env.T2_FIELD === "0" ? "&field=0" : "&field=1"),
+    );
     await page.waitForFunction(
       () =>
         document.querySelector("#campaign-game")?.dataset.campaignArt ===
@@ -140,6 +147,7 @@ try {
           drawCalls: Number(el.dataset.drawCalls) || null,
           textureBytes: Number(el.dataset.residentTextureBytes),
           dirtyCells: Number(el.dataset.terrainDirtyCells),
+          terrainRenderer: el.dataset.terrainRenderer,
           particles: Number(el.dataset.activeParticles),
         }));
         const probe = await page.evaluate(readRenderProbe);
@@ -152,6 +160,16 @@ try {
           `__campaignDebug.lightTexture() matches the drawn light map: ${JSON.stringify(info.lightTexture)}`,
         );
         assert.equal(info.renderer, renderer);
+        // T2: WebGL runs on the field renderer, Canvas on RetainedTerrain
+        // (with T2_FIELD=0, both on RetainedTerrain).
+        assert.equal(
+          info.terrainRenderer,
+          process.env.T2_FIELD === "0"
+            ? "retained (?field=0)"
+            : renderer === "webgl"
+              ? "field"
+              : "retained (Canvas renderer)",
+        );
         if (renderer === "webgl") {
           assert.ok(
             info.drawCalls > 0 && info.drawCalls <= results.limits.drawCalls,

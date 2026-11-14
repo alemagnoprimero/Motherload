@@ -1,6 +1,9 @@
 /**
  * Audit T13b, runtime evidence for `-emissive` siblings: the survey beacon's
- * lamp (mission-beacon-emissive), W01 row 9.
+ * lamp (mission-beacon-emissive). Since D14 the beacon stands in the SITE-4
+ * crew gallery, W01 column 17, row 45 (config.ts: beaconX 17.5, beaconRow
+ * 45); the scenes below are staged there, in a block of solid ground laid
+ * over the gallery so the cells around the beacon are the same in every run.
  *
  * For each renderer (WebGL, Canvas), form (desktop 1440×900@2, phone
  * 393×851@3) and high contrast off/on, the same frame twice: with the ADD
@@ -18,14 +21,19 @@
  *
  * Since art item A13 the rig's headlamp sibling (rig-cabin-emissive, ADD at
  * 23.9 over rig-cabin at 22) is drawn too, in its own ADD run after the rig:
- * WebGL draws read 6 with the bases alone, 8 with the lit beacon and 10 with
- * the masked beacon, desktop and phone (item 2 measured 6 / 6 / 8 before the
- * rig had a sibling; docs/qa/a13-rig-shading/README.md).
+ * at the old row-9 cell WebGL draws read 6 with the bases alone, 8 with the
+ * lit beacon and 10 with the masked beacon, desktop and phone (item 2
+ * measured 6 / 6 / 8 before the rig had a sibling;
+ * docs/qa/a13-rig-shading/README.md). In the gallery, with T1-lite's lights
+ * batched (T2, docs/qa/t2/README.md), they read 4 / 8 / 9 with
+ * RetainedTerrain and 5 / 9 / 10 with the T2 field renderer.
  *
  *   PREVIEW_URL=http://127.0.0.1:5173/ CHROMIUM_PATH=… \
  *     node docs/qa/t13b-asset-pipeline/emissive-runtime.mjs OUT_DIR
  *
  * RENDERERS=webgl|canvas, FORMS=desktop|phone and CONTRAST=off|on narrow it.
+ * EMISSIVE_SEARCH adds URL parameters (field=1 pins the T2 field renderer,
+ * field=0 RetainedTerrain) and EMISSIVE_MAX_DRAWS asserts a draw budget.
  */
 import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -42,13 +50,17 @@ import {
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:5173/";
 const output = process.argv[2] || "artifacts/t13b-emissive";
 await mkdir(output, { recursive: true });
-const BEACON = { x: 20, row: 9 };
+const BEACON = { x: 17, row: 45 };
+/** Extra URL parameters, e.g. EMISSIVE_SEARCH=field=1 for the T2 field renderer. */
+const SEARCH = process.env.EMISSIVE_SEARCH
+  ? `&${process.env.EMISSIVE_SEARCH}`
+  : "";
 const FORMS = {
   desktop: { viewport: { width: 1440, height: 900 }, dpr: 2 },
   phone: { viewport: { width: 393, height: 851 }, dpr: 3, touch: true },
 };
 
-/** The W01 fixture with the rig two cells right of the beacon, row 9. */
+/** The W01 fixture with the rig two cells right of the beacon, on its row. */
 async function scene(kind) {
   const checkpoint = JSON.parse(
     await readFile(
@@ -64,6 +76,11 @@ async function scene(kind) {
   const x = BEACON.x + 2;
   state.vehicle = { x: x + 0.5, y: BEACON.row + 0.64, energy: 9, hull: 10 };
   mine.discovered.fill(0);
+  // Solid ground over the gallery, three rows above the beacon to two below
+  // and six columns either side: only the cells opened below are air.
+  for (let cy = BEACON.row - 3; cy <= BEACON.row + 2; cy++)
+    for (let cx = BEACON.x - 6; cx <= BEACON.x + 8; cx++)
+      mine.tiles[at(cx, cy)] = 1;
   for (let y = 0; y <= BEACON.row; y++) mine.tiles[at(x, y)] = 0;
   // The tunnel to the beacon; in the lit scene the beacon's cell is open.
   mine.tiles[at(x - 1, BEACON.row)] = 0;
@@ -75,11 +92,11 @@ async function scene(kind) {
     [BEACON.x - 1, BEACON.row],
   ])
     mine.tiles[at(cx, cy)] = 1;
+  // A deposit in a cell opened above is exposed, as a dug one would be.
   for (const item of mine.packages)
     if (
       item.status === "deposit" &&
-      Math.abs(item.x - BEACON.x) < 4 &&
-      Math.abs(item.y - BEACON.row) < 4
+      mine.tiles[at(Math.floor(item.x), Math.floor(item.y))] === 0
     )
       item.status = "exposed";
   return checkpoint;
@@ -112,7 +129,7 @@ async function open(browser, form, renderer, highContrast, emissive) {
   page.on("pageerror", (error) => faults.push(error.message));
   await freeze(page);
   await page.goto(
-    `${base}?renderer=${renderer}&debug=frametime${emissive ? "" : ",no-emissive"}`,
+    `${base}?renderer=${renderer}&debug=frametime${emissive ? "" : ",no-emissive"}${SEARCH}`,
   );
   for (let n = 0; n < 200; n++) {
     await advance(page, 50);
@@ -161,6 +178,7 @@ async function read(page) {
     const targets = JSON.parse(data.poiScreenTargets || "[]");
     return {
       drawCalls: Number(data.drawCalls) || null,
+      terrainRenderer: data.terrainRenderer ?? null,
       bytes: Number(data.residentTextureBytes),
       atlasPages: data.atlasPages,
       emissiveSprites: Number(data.emissiveSprites),
@@ -179,7 +197,8 @@ async function read(page) {
 /** A HUD-free crop of the canvas around the beacon, in CSS px. */
 async function crop(page, sample, path) {
   const tile = sample.tile;
-  // Cell (20, 8)'s box on screen: the cell the masked scene keeps unknown.
+  // The box on screen of the cell above the beacon, which the masked scene
+  // keeps unknown.
   const cell = {
     x: BEACON.x * tile - sample.cameraX,
     y: (BEACON.row - 1) * tile - sample.cameraY,
@@ -307,6 +326,12 @@ try {
               assert.ok(sample.beacon, `${kind}: the beacon is on screen`);
               assert.equal(sample.contrastShown, String(highContrast));
               if (sample.emissives) check(sample);
+              // EMISSIVE_MAX_DRAWS: the audit's §7 phone budget is 10 draws.
+              if (process.env.EMISSIVE_MAX_DRAWS && sample.drawCalls !== null)
+                assert.ok(
+                  sample.drawCalls <= Number(process.env.EMISSIVE_MAX_DRAWS),
+                  `${kind} ${form}: ${sample.drawCalls} draws, over ${process.env.EMISSIVE_MAX_DRAWS}`,
+                );
               const name = `${kind}-${renderer}-${form}${highContrast ? "-hc" : ""}-${emissive ? "lit" : "base"}`;
               sample.crop = await crop(page, sample, `${output}/${name}.png`);
               sample.faults = [...faults];
@@ -318,7 +343,7 @@ try {
                 )
                 .join(", ");
               console.log(
-                `${name}: draws ${sample.drawCalls ?? "—"} · ${(sample.bytes / 2 ** 20).toFixed(2)} MiB · emissives [${drawn}] · misses ${JSON.stringify(sample.misses)}`,
+                `${name}: draws ${sample.drawCalls ?? "—"} · terrain ${sample.terrainRenderer ?? "—"} · ${(sample.bytes / 2 ** 20).toFixed(2)} MiB · emissives [${drawn}] · misses ${JSON.stringify(sample.misses)}`,
               );
             }
           } finally {

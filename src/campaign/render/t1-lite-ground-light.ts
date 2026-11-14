@@ -1,4 +1,5 @@
 import type Phaser from "phaser";
+import { createAdditiveTexture } from "./additive-texture";
 
 /*
  * T1-lite: an interim soft ground light on the surface (docs/ART_QUALITY_AUDIT.md
@@ -58,9 +59,9 @@ export function groundLightStrength(rigY: number): number {
 }
 
 /**
- * The texture's RGBA bytes: opaque, so the additive amount is the RGB itself
- * on both renderers (as for the headlamp core). Levels are 8-bit, so the dither
- * is left to the sprite's bilinear filtering.
+ * The light's RGBA bytes: opaque, so the additive amount is the RGB itself
+ * on both renderers (as for the headlamp core; additive-texture.ts). Levels
+ * are 8-bit, so the dither is left to the sprite's bilinear filtering.
  */
 export function groundLightPixels(size = TEXTURE_SIZE) {
   const { radius } = GROUND_LIGHT;
@@ -84,20 +85,16 @@ export function groundLightPixels(size = TEXTURE_SIZE) {
 export class T1LiteGroundLight {
   private image: Phaser.GameObjects.Image;
   constructor(private scene: Phaser.Scene) {
-    if (!scene.textures.exists(T1_LITE_GROUND_LIGHT_TEXTURE)) {
-      const texture = scene.textures.createCanvas(
-        T1_LITE_GROUND_LIGHT_TEXTURE,
-        TEXTURE_SIZE,
-        TEXTURE_SIZE,
-      )!;
-      const data = texture.context.createImageData(TEXTURE_SIZE, TEXTURE_SIZE);
-      data.data.set(groundLightPixels());
-      texture.context.putImageData(data, 0, 0);
-      texture.refresh();
-    }
+    // T2: inside the sprite batch on WebGL (additive-texture.ts).
+    const blend = createAdditiveTexture(
+      scene,
+      T1_LITE_GROUND_LIGHT_TEXTURE,
+      groundLightPixels(),
+      TEXTURE_SIZE,
+    );
     this.image = scene.add
       .image(0, 0, T1_LITE_GROUND_LIGHT_TEXTURE)
-      .setBlendMode("ADD")
+      .setBlendMode(blend)
       .setDepth(17.4)
       .setCrop(0, TEXTURE_SIZE / 2, TEXTURE_SIZE, TEXTURE_SIZE / 2)
       .setVisible(false);

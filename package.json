@@ -37,7 +37,8 @@
     "test:camera": "node scripts/camera-smoke.mjs",
     "test:hud:surface": "node scripts/hud-surface-smoke.mjs",
     "test:opening:browser": "node scripts/audit-opening.mjs",
-    "test:surface:render": "node scripts/surface-render-smoke.mjs"
+    "test:surface:render": "node scripts/surface-render-smoke.mjs",
+    "test:t2": "node scripts/t2-field.mjs"
   },
   "engines": {
     "node": ">=22.18"

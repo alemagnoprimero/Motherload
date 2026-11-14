@@ -868,12 +868,21 @@ export async function runImprovementSmoke(browser, base, path) {
     }
   }
   if (selected.has("fog")) {
+    // T2: the fog check is about the field renderer, so it pins it (CI's
+    // software rasteriser would otherwise start on RetainedTerrain).
+    // T2_FIELD=0 runs it on RetainedTerrain instead.
+    const fieldUrl = new URL(base);
+    fieldUrl.searchParams.set(
+      "field",
+      process.env.T2_FIELD === "0" ? "0" : "1",
+    );
+    const fieldBase = fieldUrl.href;
     for (const worldId of ["W01", "W02"]) {
       // A frozen scene clock keeps glints and rig frames identical between
       // the captures each check compares. A baseline build predates the hook.
       const { context, page } = await ready(
         browser,
-        base,
+        fieldBase,
         {},
         { freezeSceneClock: !baseline },
       );
@@ -892,6 +901,14 @@ export async function runImprovementSmoke(browser, base, path) {
           }
         await restore(page, solid);
         const view = await settledView(page, solid);
+        // T2: on the field renderer, or RetainedTerrain with T2_FIELD=0.
+        assert.equal(
+          await page
+            .locator("#campaign-game")
+            .getAttribute("data-terrain-renderer"),
+          process.env.T2_FIELD === "0" ? "retained (?field=0)" : "field",
+          "the expected terrain renderer drew the fog fixture",
+        );
         const clip = {
           x: column * view.tile - view.cx + 3,
           y: 17 * view.tile - view.cy + 3,
@@ -1241,7 +1258,13 @@ export async function runImprovementSmoke(browser, base, path) {
       base,
       `${harness}/captures`,
       // T13a: also the 60 m fixture with the placeholder raster frame.
-      { only: [...SHEET_CAPTURES, TEST_RASTER_CAPTURE], backing: 1 },
+      // T2: the §9 fixtures are captured on the field renderer, pinned
+      // (RetainedTerrain with T2_FIELD=0).
+      {
+        only: [...SHEET_CAPTURES, TEST_RASTER_CAPTURE],
+        backing: 1,
+        search: process.env.T2_FIELD === "0" ? "field=0" : "field=1",
+      },
     );
     assert.equal(
       manifest.captures[TEST_RASTER_CAPTURE]?.testRaster,

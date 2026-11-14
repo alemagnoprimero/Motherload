@@ -28,6 +28,18 @@ import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
 import { W02_HAZARDS } from "./frontier";
 import { RetainedTerrain } from "./render/terrain";
 import { EmissivePass, cellsUnder, spriteBounds } from "./render/emissive";
+// T2: the field renderer, the default where it can run (render/field/tier.ts).
+import {
+  FieldTerrain,
+  createTerrainLayer,
+} from "./render/field/field-renderer";
+import {
+  FIELD_ENV,
+  fieldRequest,
+  fieldDebug,
+  fieldTextureLimit,
+} from "./render/field/flag";
+import { FrameIntervals } from "./render/field/frame-interval";
 import { CampaignLighting } from "./render/lighting";
 import { CampaignArt } from "./render/art";
 import { renderRig } from "./render/rig";
@@ -163,7 +175,9 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private presentation:
       | { type: "install" | "construction"; started: number; id?: string }
       | undefined;
-    private terrainLayer!: RetainedTerrain;
+    private terrainLayer!: RetainedTerrain | FieldTerrain;
+    /** T2: frame intervals, for the terrain tier and the readout. */
+    private frameIntervals = new FrameIntervals();
     private lightingLayer!: CampaignLighting;
     /** T1-lite: the interim headlamp core, until T1's light stack. */
     private headlamp!: T1LiteHeadlamp;
@@ -387,6 +401,23 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         .setVisible(this.artFailed);
 
       this.diagnostics = new RenderDiagnostics(this, (milliseconds, dt) => {
+        // T2: the terrain tier reads the frame interval and the backing
+        // policy's state as it was for this frame (render/field/tier.ts).
+        const interval = this.frameIntervals.tick();
+        if (
+          interval !== undefined &&
+          this.terrainLayer instanceof FieldTerrain
+        ) {
+          const backing = this.resolutionBudget.state();
+          this.terrainLayer.sample({
+            interval,
+            cost: milliseconds,
+            frameSeconds: dt,
+            held: backing.held > 0,
+            backing: backing.level,
+            backingFloor: backing.floor ?? backing.level,
+          });
+        }
         this.resolutionBudget.sample(milliseconds, dt);
       });
       // Quality tier is chosen once, from the renderer and the device (§7).
@@ -422,7 +453,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         document.body.append(this.frameReadout);
       }
       this.setOverlays(this.overlaysVisible);
-      this.terrainLayer = new RetainedTerrain(this);
+      // T2: the field renderer unless ?field=0 asks for main's.
+      this.terrainLayer = createTerrainLayer(
+        this,
+        fieldRequest(location.search, FIELD_ENV),
+        fieldTextureLimit(location.search),
+        fieldDebug(location.search),
+      );
       this.lightingLayer = new CampaignLighting(this);
       // T1-lite: additive headlamp core above the darkness, below the rig.
       this.headlamp = new T1LiteHeadlamp(this);
@@ -795,6 +832,13 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         total += bytes;
         if (group === "atlas") pages.push(key);
       }
+      // T2: the field's texture is a raw GL texture, not a TextureManager
+      // entry; it counts with the render layers it replaces.
+      if (this.terrainLayer instanceof FieldTerrain) {
+        const bytes = this.terrainLayer.rawTextureBytes;
+        groups.layers += bytes;
+        total += bytes;
+      }
       const art = this.art.state();
       const zone = art ? rigZone(art.band, art.row) : "surface";
       const plain = art?.densities.plain[zone] ?? 2,
@@ -1144,6 +1188,10 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           .setScroll(0, 0);
       }
       const campaign = bindings.getCampaign();
+      // T2: the field shader does not sample the band material pages.
+      this.art.bandPages = !(
+        this.terrainLayer instanceof FieldTerrain && this.terrainLayer.field
+      );
       // T13b (D1): zone pages by device px per tile, never by pointer type.
       this.art.update(campaign, this.artLayout(cssWidth, cssHeight));
       this.artQuality = this.art.state()?.densities.hero ?? 2;
@@ -1530,7 +1578,14 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.ridgeNear.tilePositionX = (cx * 0.6) / scale;
       }
 
-      this.terrainLayer.render(campaign, this.view, highContrast, baseTile);
+      if (this.terrainLayer instanceof FieldTerrain)
+        // T2: reveals and digs ease on the scene clock (§5.1 principle 6).
+        this.terrainLayer.render(campaign, this.view, highContrast, baseTile, {
+          seconds: this.elapsed,
+          animate: !this.sceneClockFrozen && !reduced,
+        });
+      else
+        this.terrainLayer.render(campaign, this.view, highContrast, baseTile);
       this.lightingLayer.render(
         campaign,
         this.view,
@@ -2460,7 +2515,15 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
               : "") +
             (resident.over ? " · over §7" : "") +
             // One line per policy segment: next step, probation, back-off.
-            `\n${backoffLine(this.resolutionBudget.state()).replaceAll(" · ", "\n")}`;
+            `\n${backoffLine(this.resolutionBudget.state()).replaceAll(" · ", "\n")}` +
+            // T2: the frame interval (GPU-bound frames show here), which
+            // terrain renderer drew and what the field costs on the CPU.
+            `\ninterval p95 ${this.frameIntervals.p95()?.toFixed(1) ?? "—"} ms` +
+            `\nterrain ${this.terrainLayer instanceof FieldTerrain ? this.terrainLayer.status : "retained (?field=0)"}` +
+            (this.terrainLayer instanceof FieldTerrain &&
+            this.terrainLayer.field
+              ? `\n${this.terrainLayer.costLine()}\n${this.terrainLayer.tierLine()}`
+              : "");
       }
       const host = document.getElementById("campaign-game");
       if (host) {
@@ -2518,6 +2581,11 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           atlasGuard: resident.guard.join(","),
           atlasPages: resident.pages.join(","),
           terrainDirtyCells: String(this.terrainLayer.dirtyCells),
+          // T2: "field", or "retained" and why the field is not drawing.
+          terrainRenderer:
+            this.terrainLayer instanceof FieldTerrain
+              ? this.terrainLayer.status
+              : "retained (?field=0)",
           terrainUploads: String(this.terrainLayer.draws),
           renderLayerBytes: String(
             this.terrainLayer.bytes + this.lightingLayer.bytes,

@@ -338,15 +338,143 @@ def region_stats(rgb, state, view, dpr, rig, keep=None):
     return out
 
 
-def cave_air_mask(state, view, dpr, shape, scale_to=42.0):
+def cave_air_mask(state, view, dpr, shape, scale_to=42.0, visual=None):
     """The known-air mask and a hard-rock mask, resampled as metrics.py
     resamples the prototype's air mask (42 px per tile, bilinear, > 127).
-    Every known air cell counts as natural: the SITE-4 fixture digs nothing."""
+    Every known air cell counts as natural: the SITE-4 fixture digs nothing.
+    With `visual` (a device-pixel bool mask, the T2 field's own air mask) the
+    air is what the renderer drew rather than the cell grid; hard rock still
+    comes from the cells."""
     r = cell_regions(state, view, dpr, shape)
     s = scale_to / (view['tile'] * dpr)
-    air = rescale((r['known_air'] * 255).astype(np.uint8), s, Image.BILINEAR) > 127
+    source = r['known_air'] if visual is None else visual
+    air = rescale((source * 255).astype(np.uint8), s, Image.BILINEAR) > 127
     hard = rescale(((r['known_solid'] & (r['kind'] == 2)) * 255).astype(np.uint8), s, Image.BILINEAR) > 127
     return air, hard
+
+
+def visual_air(path, shape=None):
+    """A T2 field air mask (white = air) as a device-pixel bool mask. The
+    mask is as large as the game's drawing buffer: at a backing scale below
+    the screenshot's it is scaled to `shape`, the screenshot's (rows, columns)."""
+    image = Image.open(path).convert('L')
+    if shape is not None and image.size != (shape[1], shape[0]):
+        image = image.resize((shape[1], shape[0]), Image.NEAREST)
+    return np.asarray(image) > 127
+
+
+def visual_vs_collision(visual, state, view, dpr):
+    """§9.2 walls and ceilings: the share of frame pixels where the drawn air
+    and the known air cells disagree (unknown cells draw as rock by design)."""
+    r = cell_regions(state, view, dpr, visual.shape)
+    return float((visual ^ r['known_air']).mean())
+
+
+def field_geometry(path, state, view):
+    """T2's geometry rows (§5.3 T2, §9.2) on the field's own air mask, read
+    at the mask's own size (the game's drawing buffer), so a "device px" here
+    is a pixel the game drew.
+
+    Floors: for every pixel column of a floor (a known air cell over a known
+    solid cell), the drawn floor's error is how far the rock rises above the
+    collision line there (negative) or the air sinks below it (positive),
+    following the pixels from the line. Columns within 0.1 tile of a floor's
+    outer corner (the cell beside the solid one is air) are left out of
+    `floor_max_px`: the corner is rounded, and the audit asks a 1-cell pillar
+    for a flat top of 0.8 tile, not 1. `pillar_min_flat` is the narrowest
+    such top, in tiles (flat: within 0.02 tile of the line).
+
+    Walls and ceilings: `wall_max_tiles` is how far the farthest pixel drawn
+    as the other kind (air over a solid cell, or rock over a known air cell)
+    lies from that cell's boundary, and `mismatch_share` the share of the
+    frame's pixels drawn as the other kind. Unknown cells are solid here, as
+    they are drawn."""
+    visual = np.asarray(Image.open(path).convert('L')) > 127
+    H, W = visual.shape
+    dpr = W / view['width']
+    world = campaign_world(state)
+    width, rows = world['width'], world['rows']
+    tiles = np.array(world['tiles']); disc = np.array(world['discovered'])
+    tile = view['tile'] * dpr
+    ox, oy = view['scrollX'] * dpr, view['scrollY'] * dpr
+
+    def cell(x, y):
+        """(known, solid): unknown cells and the bedrock below are solid."""
+        if y < 0:
+            return True, False
+        if y >= rows:
+            return True, True
+        i = y * width + x % width
+        return bool(disc[i] == 1), bool(disc[i] != 1 or tiles[i] != 0)
+
+    x_first, x_last = int(np.floor(ox / tile)), int(np.floor((ox + W) / tile))
+    y_first, y_last = int(np.floor(oy / tile)), int(np.floor((oy + H) / tile))
+    reach = int(round(0.45 * tile))
+    errors, pillars, floors = [], [], 0
+    for cy in range(max(0, y_first), min(rows - 1, y_last) + 1):
+        for cx in range(x_first, x_last + 1):
+            known_a, solid_a = cell(cx, cy)
+            known_b, solid_b = cell(cx, cy + 1)
+            if not (known_a and not solid_a and known_b and solid_b):
+                continue
+            line = (cy + 1) * tile - oy
+            edge = int(round(line))                        # first pixel row below the line
+            top, bottom = edge - reach, edge + reach
+            x0, x1 = int(np.ceil(cx * tile - ox)), int(np.floor((cx + 1) * tile - ox))
+            if top < 0 or bottom >= H or x0 < 0 or x1 > W:
+                continue
+            floors += 1
+            above = visual[top:edge, x0:x1][::-1]          # air, going up from the line
+            below = ~visual[edge:bottom, x0:x1]            # rock, going down from it
+            # Rock standing on the line, or air sunk below it, in pixels.
+            rise = np.where(above.any(axis=0), above.argmax(axis=0), reach)
+            sink = np.where(below.any(axis=0), below.argmax(axis=0), reach)
+            error = (sink - rise).astype(float) + (edge - line)
+            frac = (np.arange(x0, x1) + 0.5 + ox) / tile - cx
+            open_left = not cell(cx - 1, cy + 1)[1]
+            open_right = not cell(cx + 1, cy + 1)[1]
+            keep = np.ones(frac.shape, bool)
+            if open_left:
+                keep &= frac >= 0.1
+            if open_right:
+                keep &= frac <= 0.9
+            errors.append(error[keep])
+            if open_left and open_right and not cell(cx - 1, cy)[1] and not cell(cx + 1, cy)[1]:
+                pillars.append(float((np.abs(error) <= 0.02 * tile).sum() / tile))
+    # Walls and ceilings: pixels drawn as the other kind, and how far each is
+    # from a cell of that kind (the nearest of the eight around its own).
+    (CX, CY), (FX, FY) = cell_grid(view, dpr, (H, W))
+    inside = (CY >= 0) & (CY < rows)
+    index = np.clip(CY, 0, rows - 1) * width + np.mod(CX, width)
+    solid = np.where(CY < 0, False, np.where(CY >= rows, True, (disc[index] != 1) | (tiles[index] != 0)))
+    wrong = (visual == solid) & inside                      # air drawn on solid, or rock on air
+    worst = 0.0
+    if wrong.any():
+        best = np.full((H, W), 9.0)
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if not dx and not dy:
+                    continue
+                ny = CY + dy
+                nindex = np.clip(ny, 0, rows - 1) * width + np.mod(CX + dx, width)
+                nsolid = np.where(ny < 0, False, np.where(ny >= rows, True, (disc[nindex] != 1) | (tiles[nindex] != 0)))
+                gx = np.where(dx < 0, FX, np.where(dx > 0, 1 - FX, 0.0))
+                gy = np.where(dy < 0, FY, np.where(dy > 0, 1 - FY, 0.0))
+                best = np.where(nsolid != solid, np.minimum(best, np.hypot(gx, gy)), best)
+        worst = float(best[wrong].max())
+    errors = np.concatenate(errors) if errors else np.zeros(0)
+    return {
+        'tile_px': round(float(tile), 2),
+        'floors': floors,
+        'floor_columns': int(errors.size),
+        'floor_max_px': round(float(np.abs(errors).max()), 2) if errors.size else None,
+        'floor_within_2px': round(float((np.abs(errors) <= 2).mean()), 4) if errors.size else None,
+        'floor_jag_tiles': round(float(np.abs(errors).max() / tile), 4) if errors.size else None,
+        'pillars': len(pillars),
+        'pillar_min_flat': round(min(pillars), 3) if pillars else None,
+        'wall_max_tiles': round(worst, 3),
+        'mismatch_share': round(float(wrong.mean()), 4),
+    }
 
 
 def axis_share_excluding(air, exclude, tol=5):

@@ -1,4 +1,5 @@
 import type Phaser from "phaser";
+import { createAdditiveTexture } from "./additive-texture";
 
 /*
  * T1-lite: an interim headlamp core (docs/ART_QUALITY_AUDIT.md §5.3, T1).
@@ -58,10 +59,11 @@ export function t1LiteHeadlampAdd(r: number): [number, number, number] {
 }
 
 /**
- * The texture's RGBA bytes: opaque, so the additive amount is the RGB itself
- * on both renderers (WebGL's ADD is ONE, DST_ALPHA over an opaque frame;
- * Canvas uses "lighter"), black outside the radius. Red clamps at 255 within
- * about 0.1 tile of the lens, under the cabin.
+ * The light's RGBA bytes: opaque, so the additive amount is the RGB itself
+ * on both renderers (additive-texture.ts: Canvas composites them with
+ * "lighter"; WebGL adds the same RGB inside the sprite batch), black outside
+ * the radius. Red clamps at 255 within about 0.1 tile of the lens, under the
+ * cabin.
  */
 export function t1LiteHeadlampPixels(size = TEXTURE_SIZE) {
   const { radius } = T1_LITE_HEADLAMP_CORE;
@@ -85,20 +87,16 @@ export function t1LiteHeadlampPixels(size = TEXTURE_SIZE) {
 export class T1LiteHeadlamp {
   private image: Phaser.GameObjects.Image;
   constructor(private scene: Phaser.Scene) {
-    if (!scene.textures.exists(T1_LITE_HEADLAMP_TEXTURE)) {
-      const texture = scene.textures.createCanvas(
-        T1_LITE_HEADLAMP_TEXTURE,
-        TEXTURE_SIZE,
-        TEXTURE_SIZE,
-      )!;
-      const data = texture.context.createImageData(TEXTURE_SIZE, TEXTURE_SIZE);
-      data.data.set(t1LiteHeadlampPixels());
-      texture.context.putImageData(data, 0, 0);
-      texture.refresh();
-    }
+    // T2: inside the sprite batch on WebGL (additive-texture.ts).
+    const blend = createAdditiveTexture(
+      scene,
+      T1_LITE_HEADLAMP_TEXTURE,
+      t1LiteHeadlampPixels(),
+      TEXTURE_SIZE,
+    );
     this.image = scene.add
       .image(0, 0, T1_LITE_HEADLAMP_TEXTURE)
-      .setBlendMode("ADD")
+      .setBlendMode(blend)
       .setDepth(17.5)
       .setVisible(false);
   }

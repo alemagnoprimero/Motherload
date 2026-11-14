@@ -47,7 +47,13 @@
  *
  * Environment: PREVIEW_URL; ART_CAPTURES_DIR (artifacts/art-captures);
  * ART_CAPTURES, a comma list of names or name prefixes; ART_PLAY_SECONDS (0);
- * ART_BACKING, a backing-scale pin of 1, 1.5 or 2.
+ * ART_BACKING, a backing-scale pin of 1, 1.5 or 2; ART_SEARCH, extra URL
+ * parameters for every page (by default field=1, which pins the T2 field
+ * renderer; field=0 captures main's RetainedTerrain).
+ *
+ * T2: when the field renderer draws (window.__campaignField), each capture
+ * also gets <name>-fieldair.png, the shader's visual air mask, which
+ * art-sheets.py uses for the natural-cave boundary instead of the cell grid.
  *
  * manifest.json records, per capture, the scene and panel, the backing scale
  * and quality tier the game reported, the camera (tile, scroll, rig position in
@@ -73,6 +79,12 @@ const freshW01 = JSON.parse(
       "../docs/art-audit/prototype/assets/fresh-w01.json",
       import.meta.url,
     ),
+    "utf8",
+  ),
+);
+const seed2W01 = JSON.parse(
+  await readFile(
+    new URL("../docs/qa/t2/fresh-w01-seed2.json", import.meta.url),
     "utf8",
   ),
 );
@@ -188,6 +200,16 @@ export const CAPTURES = [
     scene: "SITE-4",
     panel: "cavern-wide",
     checkpoint: () => siteCheckpoint(freshW01, "W01-SITE-4"),
+  },
+  {
+    // T2: the same cavern on a second seed, for the boundary and geometry
+    // rows (§9.2: two seeds; scripts/t2-field.mjs "look"). It has no panel:
+    // the board shows one cavern. docs/qa/t2/fresh-w01-seed2.json is
+    // createCampaign(20261110) in the audit fixture's envelope.
+    name: "c-site-W01-SITE-4-seed2@2",
+    form: "desktop",
+    scene: "SITE-4 (seed 2)",
+    checkpoint: () => siteCheckpoint(seed2W01, "W01-SITE-4"),
   },
   {
     name: "p-portrait-02-spawn@3",
@@ -323,11 +345,21 @@ async function rigBox(page, dpr) {
 }
 
 export async function runArtCaptures(browser, base, path, options = {}) {
-  const { only, playSeconds = 0, backing } = options;
+  // `captures`: a list to draw from in place of CAPTURES (T2's look check
+  // adds per-band frames of both worlds without growing the nightly sheets).
+  const {
+    only,
+    playSeconds = 0,
+    backing,
+    search: extra,
+    captures: source = CAPTURES,
+  } = options;
   await mkdir(path, { recursive: true });
   const url = new URL(base);
   if (backing !== undefined) url.searchParams.set("backing", String(backing));
-  const selected = CAPTURES.filter(
+  for (const [key, value] of new URLSearchParams(extra ?? ""))
+    url.searchParams.set(key, value);
+  const selected = source.filter(
     (capture) =>
       !only?.length || only.some((name) => capture.name.startsWith(name)),
   );
@@ -400,6 +432,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
             backingPinned: element.dataset.backingPinned ?? null,
             frameP95: Number(element.dataset.frameP95) || null,
             renderer: element.dataset.renderer,
+            terrainRenderer: element.dataset.terrainRenderer ?? null,
             // T13a's placeholder: "true" when drawn, absent without its flag.
             testRaster: element.dataset.testRaster ?? null,
             devicePixelRatio: window.devicePixelRatio,
@@ -484,6 +517,23 @@ export async function runArtCaptures(browser, base, path, options = {}) {
         const hudFree = `${path}/${capture.name}-hudfree.png`;
         await page.screenshot({ path: hudFree });
         await page.evaluate(() => window.__campaignDebug.overlays(true));
+        // T2: the field shader's visual air mask, when it draws.
+        let fieldAir = null;
+        const field = await page.evaluate(() =>
+          window.__campaignField?.info().active
+            ? {
+                info: window.__campaignField.info(),
+                mask: window.__campaignField.airMask(),
+              }
+            : null,
+        );
+        if (field?.mask) {
+          fieldAir = `${path}/${capture.name}-fieldair.png`;
+          await writeFile(
+            fieldAir,
+            Buffer.from(field.mask.split(",")[1], "base64"),
+          );
+        }
         // The known-cell grid for the region, boundary and wall measures.
         const exported = await exportCheckpoint(page);
         const stateFile = `${path}/${capture.name}-state.json`;
@@ -504,6 +554,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           rigBox: box,
           rigKeep2: keep2 === null ? null : Number(keep2.toFixed(3)),
           light: { file: lightFile, ...light },
+          ...(fieldAir ? { fieldAir, field: field.info } : {}),
           sceneClock: before.sceneClock,
           backing: before.backing,
         };
@@ -539,6 +590,8 @@ if (
         backing: process.env.ART_BACKING
           ? Number(process.env.ART_BACKING)
           : undefined,
+        // T2: the sheets are of the field renderer unless asked otherwise.
+        search: process.env.ART_SEARCH ?? "field=1",
       },
     );
   } finally {

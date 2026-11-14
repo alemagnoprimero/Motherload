@@ -81,6 +81,14 @@ const JUMP_ROWS = 8;
 export class CampaignArt {
   private pending = new Set<string>();
   private materialKeys = new Set<string>();
+  /**
+   * Whether the band material pages (soil, rock and wall per band, about
+   * 15 MiB resident in a shaft or cave) are wanted. Only RetainedTerrain
+   * draws from them: the scene turns this off while the T2 field shader
+   * draws the terrain, and on again if the terrain falls back, when the
+   * pages stream in and RetainedTerrain repaints as it does after a jump.
+   */
+  bandPages = true;
   private required = new Set<string>();
   /** Harness holds (hold()): pages kept resident whatever the plan says. */
   private held = new Map<string, ZonePage>();
@@ -218,6 +226,8 @@ export class CampaignArt {
       current = renderBand(id, row),
       index = bands.findIndex((b) => b.id === current.id);
     this.required.clear();
+    // Not wanted: nothing is required, and update() lets the resident go.
+    if (!this.bandPages) return;
     for (
       let n = Math.max(0, index - (neighbours ? 1 : 0));
       n <= Math.min(3, index + (neighbours ? 1 : 0));

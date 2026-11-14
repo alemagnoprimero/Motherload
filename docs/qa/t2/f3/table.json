@@ -1,0 +1,1250 @@
+{
+ "base": "http://127.0.0.1:5173/?backing=2&field=1",
+ "backingPin": 2,
+ "frames": {
+  "a02-spawn-1440x900@2": {
+   "scene": "surface",
+   "panel": "surface-wide",
+   "backing": 2,
+   "form": "desktop",
+   "window": [
+    0,
+    39.3,
+    1440,
+    782.3
+   ],
+   "rig_anchor": [
+    0.74,
+    0.689
+   ],
+   "target_anchor": [
+    0.532,
+    0.689
+   ],
+   "frame": {
+    "L_mean": 24.9,
+    "L_sd": 8.6,
+    "L_p2": 15.8,
+    "L_p98": 46.0,
+    "L_range_p2_p98": 30.2,
+    "within3_of_mode": 0.4,
+    "warm_pct": 0.29,
+    "cyan_pct": 0.03,
+    "edge_density": 0.045,
+    "luma_mean": 58.8,
+    "luma_sd": 20.5
+   },
+   "regions": {
+    "unknown": {
+     "luma": 58.8,
+     "sd": 13.3,
+     "n": 406362
+    },
+    "known_lit": {
+     "luma": 105.2,
+     "sd": 10.3,
+     "n": 14157
+    },
+    "lit_cells": 3,
+    "cave_air": null,
+    "rock_near_light": {
+     "luma": 105.2,
+     "sd": 10.3,
+     "n": 14157
+    },
+    "known_solid": {
+     "luma": 97.9,
+     "sd": 12.0,
+     "n": 33201
+    },
+    "known_lit_minus_unknown": 46.4,
+    "known_solid_minus_unknown": 39.1,
+    "unknown_minus_cave_air": null,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": null
+   },
+   "tiles_across": 25.0,
+   "overlay": {
+    "edges_full": 53570,
+    "edges_hudfree": 46939,
+    "playfield_px": 1177994,
+    "overlay_share": 0.124,
+    "art_edge_density": 0.0398
+   },
+   "text_items": [
+    "Hold Down to drill.",
+    "Skip",
+    "Home 0.4L \u00b7 Safe",
+    "HOME \u00b7 150 m",
+    "\u2193 Marked seam A \u00b7 69 m",
+    "A",
+    "B"
+   ],
+   "mean_gradient": 1.92,
+   "flat_share": 0.696,
+   "geometry": {
+    "tile_px": 115.22,
+    "floors": 0,
+    "floor_columns": 0,
+    "floor_max_px": null,
+    "floor_within_2px": null,
+    "floor_jag_tiles": null,
+    "pillars": 0,
+    "pillar_min_flat": null,
+    "wall_max_tiles": 0.0,
+    "mismatch_share": 0.0
+   }
+  },
+  "a04-dive-60m@2": {
+   "scene": "60 m",
+   "panel": "shaft-wide",
+   "backing": 2,
+   "form": "desktop",
+   "window": [
+    0,
+    0,
+    1440,
+    743
+   ],
+   "rig_anchor": [
+    0.5,
+    0.598
+   ],
+   "target_anchor": [
+    0.536,
+    0.76
+   ],
+   "frame": {
+    "L_mean": 25.7,
+    "L_sd": 8.8,
+    "L_p2": 14.9,
+    "L_p98": 45.9,
+    "L_range_p2_p98": 31.0,
+    "within3_of_mode": 0.269,
+    "warm_pct": 0.11,
+    "cyan_pct": 0.01,
+    "edge_density": 0.068,
+    "luma_mean": 61.0,
+    "luma_sd": 21.2
+   },
+   "regions": {
+    "unknown": {
+     "luma": 58.5,
+     "sd": 11.9,
+     "n": 1222338
+    },
+    "known_lit": {
+     "luma": 99.5,
+     "sd": 17.4,
+     "n": 22674
+    },
+    "lit_cells": 4,
+    "cave_air": {
+     "luma": 39.5,
+     "sd": 7.1,
+     "n": 61222
+    },
+    "rock_near_light": {
+     "luma": 100.6,
+     "sd": 19.9,
+     "n": 28758
+    },
+    "known_solid": {
+     "luma": 97.5,
+     "sd": 21.6,
+     "n": 41240
+    },
+    "known_lit_minus_unknown": 41.0,
+    "known_solid_minus_unknown": 39.0,
+    "unknown_minus_cave_air": 19.0,
+    "lit_minus_cave_air": 60.0,
+    "solid_minus_cave_air": 58.0
+   },
+   "tiles_across": 22.0,
+   "overlay": {
+    "edges_full": 74630,
+    "edges_hudfree": 68897,
+    "playfield_px": 1177994,
+    "overlay_share": 0.077,
+    "art_edge_density": 0.0585
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 0.6L \u00b7 Safe",
+    "\u2191 HOME \u00b7 155 m"
+   ],
+   "mean_gradient": 2.61,
+   "flat_share": 0.434,
+   "wall": {
+    "row4.5": {
+     "rock_-0.4tile": 93.0,
+     "lip_peak": 236.0,
+     "undercut_min": 14.0,
+     "air_+0.2tile": 31.0,
+     "samples": [
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      75.0,
+      76.0,
+      236.0,
+      236.0,
+      236.0,
+      74.0,
+      14.0,
+      30.0,
+      31.0,
+      33.0,
+      34.0,
+      35.0,
+      36.0,
+      37.0,
+      31.0,
+      38.0
+     ]
+    }
+   },
+   "geometry": {
+    "tile_px": 130.91,
+    "floors": 1,
+    "floor_columns": 118,
+    "floor_max_px": 0.45,
+    "floor_within_2px": 1.0,
+    "floor_jag_tiles": 0.0035,
+    "pillars": 0,
+    "pillar_min_flat": null,
+    "wall_max_tiles": 0.018,
+    "mismatch_share": 0.0
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 85.7,
+     "b": 19.6
+    },
+    "0.8tile": {
+     "L": 41.9,
+     "b": 1.3
+    },
+    "1.5tile": {
+     "L": 24.4,
+     "b": -6.2
+    }
+   }
+  },
+  "a05-dive-150m@2": {
+   "scene": "150 m",
+   "panel": "shaft-wide",
+   "backing": 2,
+   "form": "desktop",
+   "window": [
+    0,
+    0,
+    1440,
+    743
+   ],
+   "rig_anchor": [
+    0.5,
+    0.598
+   ],
+   "target_anchor": [
+    0.536,
+    0.76
+   ],
+   "frame": {
+    "L_mean": 25.5,
+    "L_sd": 9.2,
+    "L_p2": 13.1,
+    "L_p98": 47.2,
+    "L_range_p2_p98": 34.1,
+    "within3_of_mode": 0.242,
+    "warm_pct": 0.05,
+    "cyan_pct": 0.01,
+    "edge_density": 0.068,
+    "luma_mean": 60.7,
+    "luma_sd": 22.1
+   },
+   "regions": {
+    "unknown": {
+     "luma": 59.0,
+     "sd": 12.4,
+     "n": 1375423
+    },
+    "known_lit": {
+     "luma": 101.6,
+     "sd": 45.4,
+     "n": 31282
+    },
+    "lit_cells": 5,
+    "cave_air": {
+     "luma": 35.7,
+     "sd": 7.0,
+     "n": 108575
+    },
+    "rock_near_light": {
+     "luma": 101.6,
+     "sd": 45.4,
+     "n": 31282
+    },
+    "known_solid": {
+     "luma": 101.1,
+     "sd": 35.4,
+     "n": 72201
+    },
+    "known_lit_minus_unknown": 42.6,
+    "known_solid_minus_unknown": 42.1,
+    "unknown_minus_cave_air": 23.3,
+    "lit_minus_cave_air": 65.9,
+    "solid_minus_cave_air": 65.4
+   },
+   "tiles_across": 21.0,
+   "overlay": {
+    "edges_full": 73336,
+    "edges_hudfree": 65708,
+    "playfield_px": 1177994,
+    "overlay_share": 0.104,
+    "art_edge_density": 0.0558
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 0.9L \u00b7 Safe",
+    "\u2191 HOME \u00b7 203 m",
+    "\u2191 Marked seam A \u00b7 145 m"
+   ],
+   "mean_gradient": 2.6,
+   "flat_share": 0.495,
+   "wall": {
+    "row11.5": {
+     "rock_-0.4tile": 127.0,
+     "lip_peak": 231.0,
+     "undercut_min": 22.0,
+     "air_+0.2tile": 45.0,
+     "samples": [
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      127.0,
+      102.0,
+      102.0,
+      231.0,
+      231.0,
+      231.0,
+      136.0,
+      22.0,
+      39.0,
+      40.0,
+      41.0,
+      42.0,
+      43.0,
+      44.0,
+      44.0,
+      45.0,
+      45.0
+     ]
+    }
+   },
+   "geometry": {
+    "tile_px": 137.45,
+    "floors": 4,
+    "floor_columns": 506,
+    "floor_max_px": 1.0,
+    "floor_within_2px": 1.0,
+    "floor_jag_tiles": 0.0073,
+    "pillars": 0,
+    "pillar_min_flat": null,
+    "wall_max_tiles": 0.207,
+    "mismatch_share": 0.0036
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 97.6,
+     "b": 19.4
+    },
+    "0.8tile": {
+     "L": 59.1,
+     "b": -0.0
+    },
+    "1.5tile": {
+     "L": 27.9,
+     "b": -6.6
+    }
+   }
+  },
+  "b-330m-plate-band-C@2": {
+   "scene": "330 m",
+   "panel": "cavern-wide",
+   "backing": 2,
+   "form": "desktop",
+   "window": [
+    0,
+    0,
+    1440,
+    792
+   ],
+   "rig_anchor": [
+    0.5,
+    0.56
+   ],
+   "target_anchor": [
+    0.273,
+    0.68
+   ],
+   "frame": {
+    "L_mean": 26.2,
+    "L_sd": 9.3,
+    "L_p2": 13.2,
+    "L_p98": 47.9,
+    "L_range_p2_p98": 34.7,
+    "within3_of_mode": 0.386,
+    "warm_pct": 0.05,
+    "cyan_pct": 0.01,
+    "edge_density": 0.082,
+    "luma_mean": 62.2,
+    "luma_sd": 22.4
+   },
+   "regions": {
+    "unknown": {
+     "luma": 59.8,
+     "sd": 11.9,
+     "n": 1450084
+    },
+    "known_lit": {
+     "luma": 83.8,
+     "sd": 12.7,
+     "n": 58999
+    },
+    "lit_cells": 9,
+    "cave_air": {
+     "luma": 42.0,
+     "sd": 20.5,
+     "n": 94383
+    },
+    "rock_near_light": {
+     "luma": 86.3,
+     "sd": 14.8,
+     "n": 65723
+    },
+    "known_solid": {
+     "luma": 90.6,
+     "sd": 17.7,
+     "n": 140921
+    },
+    "known_lit_minus_unknown": 24.0,
+    "known_solid_minus_unknown": 30.8,
+    "unknown_minus_cave_air": 17.8,
+    "lit_minus_cave_air": 41.8,
+    "solid_minus_cave_air": 48.6
+   },
+   "tiles_across": 21.0,
+   "overlay": {
+    "edges_full": 82654,
+    "edges_hudfree": 75472,
+    "playfield_px": 1177994,
+    "overlay_share": 0.087,
+    "art_edge_density": 0.0641
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 1.5L \u00b7 Safe",
+    "\u2191 HOME \u00b7 373 m",
+    "\u2191 Marked seam A \u00b7 276 m"
+   ],
+   "mean_gradient": 3.16,
+   "flat_share": 0.538,
+   "wall": {
+    "row29.5": {
+     "rock_-0.4tile": 99.0,
+     "lip_peak": 232.0,
+     "undercut_min": 13.0,
+     "air_+0.2tile": 37.0,
+     "samples": [
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      99.0,
+      79.0,
+      79.0,
+      232.0,
+      232.0,
+      232.0,
+      56.0,
+      13.0,
+      30.0,
+      32.0,
+      32.0,
+      34.0,
+      35.0,
+      36.0,
+      36.0,
+      37.0,
+      38.0
+     ]
+    },
+    "row31.5": {
+     "rock_-0.4tile": 91.0,
+     "lip_peak": 246.0,
+     "undercut_min": 19.0,
+     "air_+0.2tile": 45.0,
+     "samples": [
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      91.0,
+      74.0,
+      73.0,
+      73.0,
+      246.0,
+      246.0,
+      246.0,
+      63.0,
+      19.0,
+      38.0,
+      39.0,
+      40.0,
+      41.0,
+      42.0,
+      43.0,
+      43.0,
+      45.0,
+      45.0
+     ]
+    }
+   },
+   "geometry": {
+    "tile_px": 137.45,
+    "floors": 7,
+    "floor_columns": 929,
+    "floor_max_px": 1.0,
+    "floor_within_2px": 1.0,
+    "floor_jag_tiles": 0.0073,
+    "pillars": 0,
+    "pillar_min_flat": null,
+    "wall_max_tiles": 0.188,
+    "mismatch_share": 0.0008
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 73.0,
+     "b": 19.2
+    },
+    "0.8tile": {
+     "L": 27.2,
+     "b": -3.1
+    },
+    "1.5tile": {
+     "L": 15.6,
+     "b": -9.3
+    }
+   }
+  },
+  "c-site-W01-SITE-4-wreck@2": {
+   "scene": "SITE-4",
+   "panel": "cavern-wide",
+   "backing": 2,
+   "form": "desktop",
+   "window": [
+    0,
+    0,
+    1440,
+    792
+   ],
+   "rig_anchor": [
+    0.5,
+    0.56
+   ],
+   "target_anchor": [
+    0.273,
+    0.68
+   ],
+   "frame": {
+    "L_mean": 22.7,
+    "L_sd": 11.5,
+    "L_p2": 8.8,
+    "L_p98": 53.8,
+    "L_range_p2_p98": 45.0,
+    "within3_of_mode": 0.311,
+    "warm_pct": 0.49,
+    "cyan_pct": 0.01,
+    "edge_density": 0.084,
+    "luma_mean": 54.8,
+    "luma_sd": 27.0
+   },
+   "regions": {
+    "unknown": {
+     "luma": 59.0,
+     "sd": 11.6,
+     "n": 932580
+    },
+    "known_lit": null,
+    "lit_cells": 1,
+    "cave_air": {
+     "luma": 34.9,
+     "sd": 11.1,
+     "n": 576874
+    },
+    "rock_near_light": {
+     "luma": 110.2,
+     "sd": 32.7,
+     "n": 25232
+    },
+    "known_solid": {
+     "luma": 93.3,
+     "sd": 25.0,
+     "n": 120602
+    },
+    "known_lit_minus_unknown": null,
+    "known_solid_minus_unknown": 34.3,
+    "unknown_minus_cave_air": 24.1,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": 58.4
+   },
+   "tiles_across": 21.0,
+   "overlay": {
+    "edges_full": 81525,
+    "edges_hudfree": 74182,
+    "playfield_px": 1177994,
+    "overlay_share": 0.09,
+    "art_edge_density": 0.063
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 1.7L \u00b7 Safe",
+    "\u2191 HOME \u00b7 473 m",
+    "\u2191 Marked seam A \u00b7 398 m"
+   ],
+   "mean_gradient": 3.41,
+   "flat_share": 0.369,
+   "geometry": {
+    "tile_px": 137.45,
+    "floors": 12,
+    "floor_columns": 1504,
+    "floor_max_px": 1.09,
+    "floor_within_2px": 1.0,
+    "floor_jag_tiles": 0.0079,
+    "pillars": 2,
+    "pillar_min_flat": 0.997,
+    "wall_max_tiles": 0.217,
+    "mismatch_share": 0.0156
+   },
+   "boundary_source": "field air mask",
+   "visual_vs_collision": 0.0156,
+   "boundary_axis_share": 0.236,
+   "boundary_axis_share_all": 0.29,
+   "headlamp": {
+    "0.35tile": {
+     "L": 72.7,
+     "b": 19.4
+    },
+    "0.8tile": {
+     "L": 27.1,
+     "b": -2.7
+    },
+    "1.5tile": {
+     "L": 14.5,
+     "b": -8.7
+    }
+   }
+  },
+  "a04p-dive-60m-phone@3": {
+   "scene": "60 m",
+   "panel": "shaft-tall",
+   "backing": 2,
+   "form": "phone",
+   "window": [
+    0,
+    0,
+    393,
+    572
+   ],
+   "rig_anchor": [
+    0.5,
+    0.736
+   ],
+   "target_anchor": [
+    0.575,
+    0.758
+   ],
+   "frame": {
+    "L_mean": 26.6,
+    "L_sd": 11.6,
+    "L_p2": 13.2,
+    "L_p98": 60.7,
+    "L_range_p2_p98": 47.5,
+    "within3_of_mode": 0.313,
+    "warm_pct": 0.39,
+    "cyan_pct": 0.03,
+    "edge_density": 0.04,
+    "luma_mean": 63.2,
+    "luma_sd": 28.1
+   },
+   "regions": {
+    "unknown": {
+     "luma": 59.3,
+     "sd": 11.9,
+     "n": 372730
+    },
+    "known_lit": {
+     "luma": 99.4,
+     "sd": 16.4,
+     "n": 23305
+    },
+    "lit_cells": 4,
+    "cave_air": {
+     "luma": 39.5,
+     "sd": 6.9,
+     "n": 62465
+    },
+    "rock_near_light": {
+     "luma": 100.6,
+     "sd": 18.9,
+     "n": 29625
+    },
+    "known_solid": {
+     "luma": 97.5,
+     "sd": 20.5,
+     "n": 42265
+    },
+    "known_lit_minus_unknown": 40.1,
+    "known_solid_minus_unknown": 38.2,
+    "unknown_minus_cave_air": 19.8,
+    "lit_minus_cave_air": 59.9,
+    "solid_minus_cave_air": 58.0
+   },
+   "tiles_across": 8.9,
+   "overlay": {
+    "edges_full": 28682,
+    "edges_hudfree": 24967,
+    "playfield_px": 276625,
+    "overlay_share": 0.13,
+    "art_edge_density": 0.0903
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 0.6L \u00b7 Safe",
+    "\u2191 HOME \u00b7 155 m"
+   ],
+   "wall": {
+    "row4.5": {
+     "rock_-0.4tile": 93.0,
+     "lip_peak": 236.0,
+     "undercut_min": 17.0,
+     "air_+0.2tile": 32.0,
+     "samples": [
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      93.0,
+      90.0,
+      75.0,
+      93.0,
+      231.0,
+      236.0,
+      236.0,
+      124.0,
+      17.0,
+      30.0,
+      32.0,
+      33.0,
+      34.0,
+      35.0,
+      36.0,
+      37.0,
+      32.0,
+      38.0
+     ]
+    }
+   },
+   "geometry": {
+    "tile_px": 88.0,
+    "floors": 1,
+    "floor_columns": 79,
+    "floor_max_px": 0.0,
+    "floor_within_2px": 1.0,
+    "floor_jag_tiles": 0.0,
+    "pillars": 0,
+    "pillar_min_flat": null,
+    "wall_max_tiles": 0.017,
+    "mismatch_share": 0.0
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 86.6,
+     "b": 19.7
+    },
+    "0.8tile": {
+     "L": 41.2,
+     "b": 1.4
+    },
+    "1.5tile": {
+     "L": 24.4,
+     "b": -6.2
+    }
+   }
+  },
+  "p-portrait-02-spawn@3": {
+   "scene": "surface",
+   "panel": "surface-tall",
+   "backing": 2,
+   "form": "phone",
+   "window": [
+    0,
+    132.4,
+    393,
+    704.4
+   ],
+   "rig_anchor": [
+    0.5,
+    0.69
+   ],
+   "target_anchor": [
+    0.502,
+    0.69
+   ],
+   "frame": {
+    "L_mean": 27.2,
+    "L_sd": 9.5,
+    "L_p2": 18.2,
+    "L_p98": 53.6,
+    "L_range_p2_p98": 35.4,
+    "within3_of_mode": 0.415,
+    "warm_pct": 0.36,
+    "cyan_pct": 0.07,
+    "edge_density": 0.022,
+    "luma_mean": 64.0,
+    "luma_sd": 23.3
+   },
+   "regions": {
+    "unknown": {
+     "luma": 61.4,
+     "sd": 14.4,
+     "n": 156030
+    },
+    "known_lit": {
+     "luma": 105.1,
+     "sd": 9.8,
+     "n": 14498
+    },
+    "lit_cells": 3,
+    "cave_air": null,
+    "rock_near_light": {
+     "luma": 105.1,
+     "sd": 9.8,
+     "n": 14498
+    },
+    "known_solid": {
+     "luma": 97.7,
+     "sd": 11.6,
+     "n": 33958
+    },
+    "known_lit_minus_unknown": 43.7,
+    "known_solid_minus_unknown": 36.3,
+    "unknown_minus_cave_air": null,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": null
+   },
+   "tiles_across": 10.1,
+   "overlay": {
+    "edges_full": 21883,
+    "edges_hudfree": 14947,
+    "playfield_px": 276625,
+    "overlay_share": 0.317,
+    "art_edge_density": 0.054
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 0.4L \u00b7 Safe",
+    "HOME \u00b7 150 m",
+    "\u2193 Marked seam A \u00b7 69 m"
+   ],
+   "geometry": {
+    "tile_px": 77.45,
+    "floors": 0,
+    "floor_columns": 0,
+    "floor_max_px": null,
+    "floor_within_2px": null,
+    "floor_jag_tiles": null,
+    "pillars": 0,
+    "pillar_min_flat": null,
+    "wall_max_tiles": 0.0,
+    "mismatch_share": 0.0
+   }
+  },
+  "p-portrait-03-dive-70m@3": {
+   "scene": "70 m",
+   "panel": "shaft-tall",
+   "backing": 2,
+   "form": "phone",
+   "window": [
+    0,
+    0,
+    393,
+    572
+   ],
+   "rig_anchor": [
+    0.5,
+    0.736
+   ],
+   "target_anchor": [
+    0.575,
+    0.758
+   ],
+   "frame": {
+    "L_mean": 26.8,
+    "L_sd": 11.5,
+    "L_p2": 12.6,
+    "L_p98": 59.8,
+    "L_range_p2_p98": 47.2,
+    "within3_of_mode": 0.324,
+    "warm_pct": 0.15,
+    "cyan_pct": 0.03,
+    "edge_density": 0.043,
+    "luma_mean": 63.7,
+    "luma_sd": 27.9
+   },
+   "regions": {
+    "unknown": {
+     "luma": 59.8,
+     "sd": 11.3,
+     "n": 429610
+    },
+    "known_lit": null,
+    "lit_cells": 1,
+    "cave_air": {
+     "luma": 38.6,
+     "sd": 7.4,
+     "n": 62465
+    },
+    "rock_near_light": {
+     "luma": 90.8,
+     "sd": 11.3,
+     "n": 12640
+    },
+    "known_solid": {
+     "luma": 94.5,
+     "sd": 22.2,
+     "n": 31600
+    },
+    "known_lit_minus_unknown": null,
+    "known_solid_minus_unknown": 34.7,
+    "unknown_minus_cave_air": 21.2,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": 55.9
+   },
+   "tiles_across": 8.9,
+   "overlay": {
+    "edges_full": 30531,
+    "edges_hudfree": 26144,
+    "playfield_px": 276625,
+    "overlay_share": 0.144,
+    "art_edge_density": 0.0945
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 0.7L \u00b7 Safe",
+    "\u2191 HOME \u00b7 159 m"
+   ],
+   "wall": {
+    "row3.5": {
+     "rock_-0.4tile": 158.0,
+     "lip_peak": 231.0,
+     "undercut_min": 14.0,
+     "air_+0.2tile": 34.0,
+     "samples": [
+      158.0,
+      158.0,
+      158.0,
+      159.0,
+      159.0,
+      159.0,
+      159.0,
+      159.0,
+      159.0,
+      159.0,
+      153.0,
+      142.0,
+      123.0,
+      83.0,
+      85.0,
+      225.0,
+      230.0,
+      231.0,
+      120.0,
+      14.0,
+      28.0,
+      29.0,
+      30.0,
+      31.0,
+      32.0,
+      33.0,
+      33.0,
+      34.0,
+      35.0
+     ]
+    }
+   },
+   "geometry": {
+    "tile_px": 88.0,
+    "floors": 1,
+    "floor_columns": 79,
+    "floor_max_px": 0.0,
+    "floor_within_2px": 1.0,
+    "floor_jag_tiles": 0.0,
+    "pillars": 0,
+    "pillar_min_flat": null,
+    "wall_max_tiles": 0.017,
+    "mismatch_share": 0.0
+   },
+   "headlamp": {
+    "0.35tile": {
+     "L": 85.1,
+     "b": 20.0
+    },
+    "0.8tile": {
+     "L": 41.2,
+     "b": 1.4
+    },
+    "1.5tile": {
+     "L": 24.4,
+     "b": -6.2
+    }
+   }
+  },
+  "p-portrait-cavern-site4@3": {
+   "scene": "SITE-4",
+   "panel": "cavern-tall",
+   "backing": 2,
+   "form": "phone",
+   "window": [
+    0,
+    13.0,
+    393,
+    621.0
+   ],
+   "rig_anchor": [
+    0.501,
+    0.672
+   ],
+   "target_anchor": [
+    0.226,
+    0.672
+   ],
+   "frame": {
+    "L_mean": 21.4,
+    "L_sd": 14.5,
+    "L_p2": 7.9,
+    "L_p98": 70.4,
+    "L_range_p2_p98": 62.5,
+    "within3_of_mode": 0.555,
+    "warm_pct": 0.97,
+    "cyan_pct": 0.03,
+    "edge_density": 0.055,
+    "luma_mean": 52.3,
+    "luma_sd": 34.5
+   },
+   "regions": {
+    "unknown": {
+     "luma": 62.7,
+     "sd": 12.7,
+     "n": 140353
+    },
+    "known_lit": null,
+    "lit_cells": 1,
+    "cave_air": {
+     "luma": 35.6,
+     "sd": 11.8,
+     "n": 494233
+    },
+    "rock_near_light": {
+     "luma": 109.5,
+     "sd": 30.8,
+     "n": 25398
+    },
+    "known_solid": {
+     "luma": 97.3,
+     "sd": 24.5,
+     "n": 92711
+    },
+    "known_lit_minus_unknown": null,
+    "known_solid_minus_unknown": 34.6,
+    "unknown_minus_cave_air": 27.1,
+    "lit_minus_cave_air": null,
+    "solid_minus_cave_air": 61.7
+   },
+   "tiles_across": 8.5,
+   "overlay": {
+    "edges_full": 35118,
+    "edges_hudfree": 27921,
+    "playfield_px": 276625,
+    "overlay_share": 0.205,
+    "art_edge_density": 0.1009
+   },
+   "text_items": [
+    "Collect the marked seam.",
+    "Skip",
+    "Home 1.7L \u00b7 Safe",
+    "\u2191 HOME \u00b7 473 m",
+    "\u2191 Marked seam A \u00b7 398 m"
+   ],
+   "geometry": {
+    "tile_px": 92.4,
+    "floors": 8,
+    "floor_columns": 645,
+    "floor_max_px": 1.2,
+    "floor_within_2px": 1.0,
+    "floor_jag_tiles": 0.013,
+    "pillars": 2,
+    "pillar_min_flat": 0.985,
+    "wall_max_tiles": 0.22,
+    "mismatch_share": 0.0219
+   },
+   "boundary_source": "field air mask",
+   "visual_vs_collision": 0.0223,
+   "boundary_axis_share": 0.251,
+   "boundary_axis_share_all": 0.286,
+   "headlamp": {
+    "0.35tile": {
+     "L": 73.1,
+     "b": 19.5
+    },
+    "0.8tile": {
+     "L": 27.1,
+     "b": -2.6
+    },
+    "1.5tile": {
+     "L": 14.6,
+     "b": -8.8
+    }
+   }
+  }
+ },
+ "concept": {
+  "cavern-tall": {
+   "L_mean": 21.0,
+   "L_sd": 12.3,
+   "L_p2": 8.2,
+   "L_p98": 59.3,
+   "L_range_p2_p98": 51.1,
+   "within3_of_mode": 0.313,
+   "warm_pct": 4.79,
+   "cyan_pct": 0.47,
+   "edge_density": 0.13,
+   "luma_mean": 50.9,
+   "luma_sd": 28.3
+  },
+  "cavern-wide": {
+   "L_mean": 21.0,
+   "L_sd": 11.4,
+   "L_p2": 8.7,
+   "L_p98": 54.2,
+   "L_range_p2_p98": 45.4,
+   "within3_of_mode": 0.335,
+   "warm_pct": 4.04,
+   "cyan_pct": 0.19,
+   "edge_density": 0.112,
+   "luma_mean": 50.9,
+   "luma_sd": 26.0
+  },
+  "shaft-tall": {
+   "L_mean": 30.1,
+   "L_sd": 15.7,
+   "L_p2": 9.7,
+   "L_p98": 79.5,
+   "L_range_p2_p98": 69.8,
+   "within3_of_mode": 0.222,
+   "warm_pct": 2.16,
+   "cyan_pct": 0.06,
+   "edge_density": 0.153,
+   "luma_mean": 72.0,
+   "luma_sd": 37.9
+  },
+  "shaft-wide": {
+   "L_mean": 25.9,
+   "L_sd": 10.7,
+   "L_p2": 11.1,
+   "L_p98": 58.1,
+   "L_range_p2_p98": 47.0,
+   "within3_of_mode": 0.359,
+   "warm_pct": 0.66,
+   "cyan_pct": 0.02,
+   "edge_density": 0.074,
+   "luma_mean": 61.8,
+   "luma_sd": 25.5
+  },
+  "surface-tall": {
+   "L_mean": 27.1,
+   "L_sd": 9.9,
+   "L_p2": 14.1,
+   "L_p98": 58.6,
+   "L_range_p2_p98": 44.5,
+   "within3_of_mode": 0.322,
+   "warm_pct": 1.38,
+   "cyan_pct": 0.38,
+   "edge_density": 0.084,
+   "luma_mean": 64.0,
+   "luma_sd": 23.5
+  },
+  "surface-wide": {
+   "L_mean": 26.3,
+   "L_sd": 10.9,
+   "L_p2": 13.7,
+   "L_p98": 65.4,
+   "L_range_p2_p98": 51.7,
+   "within3_of_mode": 0.358,
+   "warm_pct": 2.6,
+   "cyan_pct": 0.11,
+   "edge_density": 0.086,
+   "luma_mean": 62.3,
+   "luma_sd": 26.0
+  }
+ }
+}
