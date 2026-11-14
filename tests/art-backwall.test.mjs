@@ -42,7 +42,10 @@ describe("A8 native-density periodic back walls", () => {
         f.logicalHeight,
         f.maxDensity,
       ]).toEqual([1024, 384, 512, 192, 2]);
-      expect([f.verticalRepeat, f.periodY]).toEqual(["mirror", 384]);
+      expect([f.verticalRepeat, f.periodY]).toEqual(["alternate-sources", 384]);
+      expect(f.verticalPartner).toBe(
+        `cave-backwall-${f.layer === "far" ? "near" : "far"}`,
+      );
       expect(readFileSync(new URL(`${f.name}.svg`, source), "utf8")).toBe(
         f.svg + "\n",
       );
@@ -107,14 +110,24 @@ describe("A8 native-density periodic back walls", () => {
     }
   });
 
-  it("provides flat collars for seamless mirrored vertical world repeats", () => {
+  it("provides matching flat collars for paired upright vertical world repeats", () => {
     for (const variant of BACKWALL_VARIANTS) {
-      for (const frame of backwallFrames({ variant })) {
-        const image = rgba(frame),
+      const frames = backwallFrames({ variant });
+      const images = frames.map(rgba);
+      for (const [index, frame] of frames.entries()) {
+        const image = images[index],
           stride = image.width * 4;
         const row = (y) => image.data.subarray(y * stride, (y + 1) * stride);
-        // Alternating flipY means bottom/bottom then top/top at each join.
-        // Four flat source rows keep both colour and derivative continuous.
+        // Each layer alternates far/near upright. Four flat source rows
+        // keep colour and derivative continuous without reflected facets.
+        const partner = images[(index + 1) % 2];
+        expect(
+          Buffer.compare(
+            row(image.height - 1),
+            partner.data.subarray(0, stride),
+          ),
+          `${variant}/${frame.layer} vertical partner`,
+        ).toBe(0);
         for (let offset = 1; offset <= 4; offset++) {
           expect(
             Buffer.compare(row(0), row(offset)),

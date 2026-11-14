@@ -10,6 +10,8 @@ export const BACKWALL_VARIANTS = ["vaults", "needles", "shelves"];
 export const BACKWALL_DEFAULT = "vaults";
 export const BACKWALL_SEED = "DF-A8-2026-11-14";
 export const BACKWALL_BASE = "#17242e";
+// Matching opaque edge colours let T4 alternate these upright sources on
+// fixed world rows. The other join is transparent on both sources.
 export const BACKWALL_TONES = {
   far: {
     light: withL("#1b2933", 19),
@@ -19,7 +21,7 @@ export const BACKWALL_TONES = {
   near: {
     light: withL("#1b2933", 23),
     body: withL("#1b2933", 19),
-    dark: withL("#1b2933", 15),
+    dark: withL("#1b2933", 11),
   },
 };
 
@@ -259,7 +261,8 @@ export function backwallFrames({
       band: "C",
       anchor: "world",
       periodX: 512,
-      verticalRepeat: "mirror",
+      verticalRepeat: "alternate-sources",
+      verticalPartner: `cave-backwall-${side === "far" ? "near" : "far"}`,
       periodY: 384,
       body,
       svg: svgDocument(1024, 384, body, name),

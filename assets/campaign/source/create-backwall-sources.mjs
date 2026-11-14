@@ -60,7 +60,7 @@ await writeProvenance("w01-cave-backwall", {
   boardPixelsCopied: false,
   recorded: "2026-11-14",
   notes:
-    "Two native @2 layers; flat cool tiers, no outlines, horizontal period512 logical px. Vertical repeat mirrors alternate192px strips for a384px (8tile) period and continuous flat edge collars. T4 owns known-air clipping, parallax, reveal and recessed dug walls. Broad vaults are the provisional default; needles and shelves remain selectable.",
+    "Two native @2 layers; flat cool tiers, no outlines, horizontal period512 logical px. Vertical repeat alternates the two upright192px sources in opposite phase per parallax slot for a384px (8tile) period; shared L*11 dark edges and flat collars make both joins continuous without reversing authored facets. T4 owns known-air clipping, parallax, reveal and recessed dug walls. Broad vaults are the provisional default; needles and shelves remain selectable.",
 });
 console.log(
   "A8: two native @2 periodic back-wall strips and provenance record.",

@@ -2158,7 +2158,8 @@
       "band": "C",
       "anchor": "world",
       "periodX": 512,
-      "verticalRepeat": "mirror",
+      "verticalRepeat": "alternate-sources",
+      "verticalPartner": "cave-backwall-near",
       "periodY": 384
     },
     {
@@ -2176,7 +2177,8 @@
       "band": "C",
       "anchor": "world",
       "periodX": 512,
-      "verticalRepeat": "mirror",
+      "verticalRepeat": "alternate-sources",
+      "verticalPartner": "cave-backwall-far",
       "periodY": 384
     }
   ],
