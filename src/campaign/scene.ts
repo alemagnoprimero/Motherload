@@ -22,6 +22,7 @@ import {
   type CameraSafeArea,
 } from "./view";
 import type { CampaignDebug } from "./debug";
+import { CaveLayers } from "./render/cave-layers";
 import { CampaignPointer, TOUCH_JOYSTICK } from "./pointer";
 import { mergePilotControls } from "./input";
 import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
@@ -158,6 +159,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     private debugHooks: CampaignDebug | undefined;
     private dressingReviewFrames: DressingReviewFrame[] = [];
     private dressingReviewDrawn = 0;
+    private caveLayers = new CaveLayers();
     private frameReadout: HTMLElement | undefined;
     private frameReadoutTimer = 0;
     private frameP95: number | undefined;
@@ -687,6 +689,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
             drawn: this.dressingReviewDrawn,
           };
         },
+        caveLayers: (options) => this.caveLayers.debug(options),
         lightTexture: async () => this.lightingLayer.snapshot(),
         overlays: (visible) => {
           if (visible !== undefined) this.setOverlays(visible);
@@ -988,6 +991,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       }
       image
         .setTexture(texture, actualFrame)
+        .setCrop()
         .setPosition(x, y)
         .setOrigin(0.5, originY)
         .setDisplaySize(displayWidth, displayHeight)
@@ -1240,6 +1244,7 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         campaign !== this.previousCampaign ||
         campaign.world !== this.previousWorld;
       if (changed) {
+        this.caveLayers.reset();
         this.pointerPilot.clear();
         this.previousCampaign = campaign;
         this.previousWorld = campaign.world;
@@ -1607,6 +1612,19 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
         this.view,
         Boolean(bindings.reducedMotion?.()),
         highContrast,
+      );
+      this.caveLayers.render(
+        world,
+        this.view,
+        {
+          seconds: this.elapsed,
+          frozen: this.sceneClockFrozen,
+          reducedMotion: reduced,
+        },
+        (frame, x, y, w, h, depth, alpha, flip) => {
+          if (this.image(frame, x, y, w, h, depth, alpha, flip))
+            return this.images[this.imageIndex - 1];
+        },
       );
       const firstColumn = Math.floor(cx / tile) - 1;
       const lastColumn = Math.ceil((cx + width) / tile) + 1;
