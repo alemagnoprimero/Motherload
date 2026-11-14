@@ -192,6 +192,28 @@ const dataset = (page) =>
     ...element.dataset,
   }));
 
+/**
+ * A screenshot of a frame that has settled: the same bytes twice, a step
+ * apart. In Firefox a capture was taken four times (once locally, three
+ * times in CI) while the camera's fade-in after an import was still
+ * running: the picture mixed towards the fade's colour (12, 20, 27), by
+ * 17 % in the one measured, although the page reported the fade complete
+ * moments later and the next capture of the same scene was clean. The fade
+ * starts when the destination's art has loaded, which is not on the test
+ * clock, so no fixed number of steps is enough; two equal captures are.
+ */
+async function settledShot(page, options = {}) {
+  let frame = await page.screenshot(options);
+  for (let attempt = 0; ; attempt++) {
+    await advance(page, 50);
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    const next = await page.screenshot(options);
+    if (next.equals(frame)) return frame;
+    assert.ok(attempt < 12, "the frame settles before it is captured");
+    frame = next;
+  }
+}
+
 async function hudFree(page, file) {
   await page.evaluate(() => window.__campaignDebug.overlays(false));
   await advance(page, 50);
@@ -207,21 +229,7 @@ async function hudFree(page, file) {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   assert.equal(open, "", "no dialog is open over the frame");
-  // In Firefox a whole frame was captured dimmed three times (once here,
-  // twice in CI) while the page reported no dialog, no camera fade and no
-  // pause, and the same run passed at other times. Whatever the transient
-  // is, a frame counts as settled when two captures a step apart are the
-  // same bytes; until then, step and look again.
-  let frame = await page.screenshot();
-  for (let attempt = 0; ; attempt++) {
-    await advance(page, 50);
-    await new Promise((resolve) => setTimeout(resolve, 60));
-    const next = await page.screenshot();
-    if (next.equals(frame)) break;
-    assert.ok(attempt < 12, "the frame settles before it is captured");
-    frame = next;
-  }
-  await writeFile(file, frame);
+  await writeFile(file, await settledShot(page));
   await page.evaluate(() => window.__campaignDebug.overlays(true));
 }
 
@@ -1215,10 +1223,13 @@ print(json.dumps({"seam": step(0), "others": {str(c): round(step(c), 2) for c in
             height: view.tile * 5 - 6,
           };
           const file = `${out}/field${field}-poi-${cave ? "cave" : "solid"}.png`;
-          await page.screenshot({ path: file, clip });
-          await page.screenshot({
-            path: `${out}/field${field}-poi-${cave ? "cave" : "solid"}-frame.png`,
-          });
+          // Settled captures (settledShot): the run that failed in Firefox
+          // took this crop mid-fade and the whole frame, clean, right after.
+          await writeFile(file, await settledShot(page, { clip }));
+          await writeFile(
+            `${out}/field${field}-poi-${cave ? "cave" : "solid"}-frame.png`,
+            await settledShot(page),
+          );
           shots.push(file);
           markers = (await dataset(page)).poiSourceMarkers;
         }

@@ -266,7 +266,7 @@ The check asserts at most 12 draws on desktop and 10 on a phone, and no more tha
 
 - **The ring's limit is 64 pixels of a 1,440 × 900 frame, not 0.** On llvmpipe the ring and the whole texture differ by more than 2 levels at 5 and 12 pixels, each run on one pixel row: the two textures have different heights, llvmpipe's fixed-point texture coordinates round differently, and a threshold flips. A ring that mapped a row wrongly would differ over whole cells (4,225 px each).
 - **Firefox needs a window.** Headless Firefox on a machine without a GPU has no WebGL ("Exhausted GL driver options"), and with WebGL the default tier is `RetainedTerrain` on a software rasteriser, so the existing "Audit Firefox surface rendering" job never draws the field. The Firefox leg runs under `xvfb-run` with `FIREFOX_HEADED=1` (`scripts/browser-launch.mjs`) and pins `?field=1`.
-- **Found on the way, not T2's:** WebKit rejects `AudioContext.resume()` on a machine without an audio device ("Failed to start the audio device") and `audio.ts` does not catch it, so the capture harness saw a page error. The look check's pages run with sound off; the game code is untouched. In Firefox a whole frame was captured dimmed three times (once locally, twice in CI) while the page reported no dialog, no camera fade and no pause; the cause is not found. `hudFree` now takes a frame as settled when two captures a step apart are the same bytes, and the Firefox leg has passed since.
+- **Found on the way, not T2's:** WebKit rejects `AudioContext.resume()` on a machine without an audio device ("Failed to start the audio device") and `audio.ts` does not catch it, so the capture harness saw a page error. The look check's pages run with sound off; the game code is untouched. In Firefox a capture was taken dimmed four times (once locally, three times in CI). The fourth, in the POI probe with main's renderer, settles what it is: the crop is the other scene's crop mixed 17 % towards (12, 20, 27), the colour of the camera's fade-in after an import (residual under 0.7 of a level), and the whole-frame capture of the same scene taken straight after is identical to the other scene's at 0 of 5,184,000 px, the block's region included. The fade starts when the destination's art has loaded, which is not on the test clock, so a capture can land inside it. It is a capture transient, not a difference in what either renderer draws. Every screenshot the T2 checks compare (the scramble's, the POI probe's, the context check's) now goes through `settledShot`: a frame counts when two captures a step apart are the same bytes.
 
 **iOS Safari: what it still needs.** Playwright's WebKit is Safari's engine and shader translator, on OpenGL on Linux and through Metal on the macOS runner. Neither is iOS: no iPhone GPU, no iOS memory limits, no tab eviction. Nothing in this container or on GitHub's runners can run iOS Safari. It needs one reading on an iPhone (the oldest supported model, per §7's device gates), with the `t2-dist` build served over an https tunnel as in condition 1:
 
@@ -359,6 +359,30 @@ Rows of that table that are under target, and whose they are:
 - **iOS Safari**: the five steps in the section above.
 
 To read the macOS leg again without a push: run the "T2 field renderer checks" workflow by hand on this branch with `frametime_only` on (Actions, "Run workflow"); `variants` takes `?fielddebug=` values separated by `;` and `passes` the number of passes. The numbers are in the macOS job's log, in lines that start with `frametime`.
+
+### CI time: the verify job
+
+`verify`'s limit is 45 minutes (it was 30, and the run on `2226cf2` was cancelled at 30 while on its last command with nothing failed). Its browser step, per command, in three runs (seconds, from the job logs):
+
+| Command | this PR at stage 1 (`4b097b1`, before T8) | #24 (T8 and H1 to H4, no T2) | this PR on main with #20 to #24 (`2226cf2`) |
+|---|---|---|---|
+| `test:improvements` | 467 | 575 | 804 |
+| of which its first six checks | 207 | 344 | 343 |
+| of which the fog check | 79 | 52 | 168 |
+| of which the §9 harness captures | 141 | 119 | 231 |
+| `test:feel` | 65 | 101 | 103 |
+| `test:plan-ui` | 51 | 81 | 83 |
+| `test:render` | 70 | 46 | 141 |
+| `test:render:memory` | 24 | 33 | 34 |
+| `test:camera` | 145 | 230 | 233 |
+| `test:hud:surface` | 33 | 53 | 54 |
+| `test:opening:browser` | 124 | 210 | 211 |
+| the same, portrait | 43 | 63 | cancelled after 31 |
+| Total | 1,023 | 1,395 | about 1,730 |
+
+- **T8 and H1 to H4 added about 370 s** to the suites T2 does not touch (camera, the two opening runs, feel, plan-ui, hud-surface, and the first six checks of `test:improvements`).
+- **T2 adds about 325 s over #24**, all of it in the three places that pin the field, which SwiftShader rasterises slowly: the fog check (52 to 168 s, now also run with Scan on), the §9 harness captures (119 to 231 s) and render-acceptance's WebGL runs (46 to 141 s).
+- With two minutes of setup that is about 31 minutes. Candidates to trim later, largest first: the harness captures on the field (eight fixtures at 1440 × 900; a smaller window, or the field on half of them); the fog check's field run with Scan on as well as off; render-acceptance's field runs.
 
 ## Reproduce
 
