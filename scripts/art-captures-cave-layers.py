@@ -16,6 +16,7 @@ import json
 import math
 from pathlib import Path
 import sys
+from urllib.parse import parse_qs
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -130,6 +131,14 @@ def require(condition, message):
         raise ValueError(message)
 
 
+def expected_terrain_renderer(search):
+    require(isinstance(search, str), "Capture search must record an explicit field pin")
+    fields = parse_qs(search.removeprefix("?"), keep_blank_values=True).get("field", [])
+    require(len(fields) == 1 and fields[0] in ("1", "0"),
+            "Capture search must contain exactly one explicit field=1 or field=0 pin")
+    return "field" if fields[0] == "1" else "retained (?field=0)"
+
+
 def load_tools(repo):
     sys.path.insert(0, str(repo / "scripts"))
     import art_metrics
@@ -191,7 +200,7 @@ def verify_capture_hashes(label, capture, record):
         require(sha256(path) == expected, f"{label}: {key} bytes differ from the completed capture")
 
 
-def validate_record(name, phase, item, capture, record):
+def validate_record(name, phase, item, capture, record, expected_renderer):
     label = f"{phase}/{name}"
     require(record.get("completed") is True, f"{label}: capture is not recorded complete")
     settled = record.get("settled", {})
@@ -203,6 +212,10 @@ def validate_record(name, phase, item, capture, record):
             and len(record["postImportBaselineSha256"]) == 64,
             f"{label}: missing settled post-import baseline hash")
     report = record["report"]
+    require(report.get("terrainRenderer") == expected_renderer,
+            f"{label}: probe terrain renderer differs from the recorded explicit pin")
+    require(capture.get("terrainRenderer") == expected_renderer,
+            f"{label}: captured terrain renderer differs from the recorded explicit pin")
     snapshot = report["caveSnapshot"]
     require(snapshot["enabled"] == expected_options(item, phase),
             f"{label}: incorrect cave-layer switches")
@@ -279,6 +292,7 @@ def validate_record(name, phase, item, capture, record):
             and validation["dressingProps"] == len(props),
             f"{label}: validation counts differ from the actual snapshot")
     return {
+        "terrainRenderer": report["terrainRenderer"],
         "gates": gates, "residentTextureBytes": resident,
         "parkedFrames": frames, "frameMisses": report["frameMisses"],
         "backWallFragments": len(walls), "dressingProps": len(props),
@@ -371,6 +385,7 @@ def brief_measure(name, capture, sheets, metrics):
     full = sheets.measure(name, capture)
     frame, rock = full["frame"], full["regions"]["rock_near_light"]
     return {
+        "terrainRenderer": capture["terrainRenderer"],
         "edge_density": frame["edge_density"], "frame_L_mean": frame["L_mean"],
         "warm_pct": frame["warm_pct"],
         "rock_near_light_sd": None if rock is None else rock["sd"],
@@ -398,6 +413,7 @@ def main():
     before, after = [load_manifest(args.captures / phase) for phase in ("before", "after")]
     staged = json.loads((args.captures / "runtime-layers.json").read_text())
     require(staged["item"] == args.item, "runtime capture item differs from --item")
+    expected_renderer = expected_terrain_renderer(staged.get("search"))
     records = staged["captures"]
     names = [name for name in CANONICAL if name in before and name in after
              and all(records.get(f"{phase}/{name}", {}).get("completed") is True
@@ -415,7 +431,7 @@ def main():
         for phase, source in (("before", previous), ("after", capture)):
             key = f"{phase}/{name}"
             verify_capture_hashes(key, source, records[key])
-            runtime[key] = validate_record(name, phase, args.item, source, records[key])
+            runtime[key] = validate_record(name, phase, args.item, source, records[key], expected_renderer)
             baseline = baseline_parity(source)
             runtime[key]["independentBaselineComparison"] = baseline
             if baseline["available"]:
@@ -436,6 +452,7 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     result = {
         "item": args.item, "convention": CONVENTIONS[args.item],
+        "terrainRenderer": expected_renderer,
         "driverConvention": staged.get("convention"),
         "settled_rule": "Completed captures each passed two byte-identical screenshots one 50 ms scene step apart.",
         "metrics": "Existing art-sheets.py §9.2 scoring windows; board masks unchanged.",
@@ -455,6 +472,8 @@ def main():
         ),
     }
     lines = [f"# {args.item} before/after game fixtures", "", CONVENTIONS[args.item], "",
+             f"Explicit terrain path: `{expected_renderer}`. Both the parked probe and final captured "
+             "renderer labels must match the recorded field pin; automatic fallback is not accepted.", "",
              f"Completed canonical pairs: {len(names)}/{len(CANONICAL)}. "
              + ("Missing: " + ", ".join(missing) + "." if missing else "All eight are measured."), "",
              "Each completed screenshot passed two byte-identical captures one 50 ms scene step apart. "

@@ -89,6 +89,16 @@ export function layerOptions(item, phase) {
   };
 }
 
+/** Authoring evidence must identify the requested terrain path explicitly. */
+export function expectedTerrainRenderer(search) {
+  const fields = new URLSearchParams(search).getAll("field");
+  assert.ok(
+    fields.length === 1 && ["1", "0"].includes(fields[0]),
+    "ART_SEARCH must contain exactly one explicit field=1 or field=0 pin",
+  );
+  return fields[0] === "1" ? "field" : "retained (?field=0)";
+}
+
 /** Independent reading of actual snapshot bounds, never a replacement plan. */
 export function validateCaveSnapshot(snapshot, checkpoint, view) {
   const state = checkpoint.state ?? checkpoint;
@@ -284,6 +294,7 @@ async function probeCapture(
   checkpoint,
   item,
   phase,
+  expectedTerrain,
   saveReport,
 ) {
   const options = layerOptions(item, phase);
@@ -304,6 +315,7 @@ async function probeCapture(
       frameMisses: window.__campaignDebug.frameMisses(),
       parkedFrames: window.__renderProbe.frames.slice(-5),
       renderer: element.dataset.renderer,
+      terrainRenderer: element.dataset.terrainRenderer,
       residentTextureBytes: Number(element.dataset.residentTextureBytes),
       view: {
         tile: Number(element.dataset.viewTile),
@@ -324,6 +336,11 @@ async function probeCapture(
   });
   await saveReport(report);
   assert.equal(report.renderer, "webgl");
+  assert.equal(
+    report.terrainRenderer,
+    expectedTerrain,
+    `${capture.name}: probe terrain renderer differs from the explicit pin`,
+  );
   assert.equal(
     report.sceneClock.frozen,
     true,
@@ -433,6 +450,7 @@ export async function runCaveCaptures(browser, base, out, options = {}) {
   } = options;
   assert.ok(buildId, "CAVE_BUILD_ID must identify the immutable preview build");
   assert.ok(phases.every((phase) => ["before", "after"].includes(phase)));
+  const expectedTerrain = expectedTerrainRenderer(search);
   const identity = { item, buildId, base, backing, search };
   await mkdir(out, { recursive: true });
   const logPath = `${out}/runtime-layers.json`;
@@ -566,6 +584,7 @@ export async function runCaveCaptures(browser, base, out, options = {}) {
           settledCheckpoint,
           item,
           phase,
+          expectedTerrain,
           async (report) => {
             record.report = report;
             await atomicJson(logPath, log);
@@ -574,6 +593,11 @@ export async function runCaveCaptures(browser, base, out, options = {}) {
         await atomicJson(logPath, log);
       },
       afterCapture: async ({ capture, result }) => {
+        assert.equal(
+          result.terrainRenderer,
+          expectedTerrain,
+          `${capture.name}: captured terrain renderer differs from the explicit pin`,
+        );
         const {
           key,
           checkpoint,

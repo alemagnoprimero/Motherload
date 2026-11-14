@@ -50,7 +50,7 @@ intersections are skipped, and all source transforms stay upright.
 | 300 ms reveal and neighbour-margin fade | Behavioural tests cover new cells, new margins, reset, frozen and reduced-motion clocks. |
 | Hidden-cave scramble | New `T2_CHECKS=caves` compares full frames and the actual rendered plans in 12 cases: desktop/phone × pinned field/retained WebGL/Canvas × Scan off/on. It changes every hidden current/pristine input to the new cave adapter without changing simulation or discovery. Existing fog, POI and terrain scramble checks also run. |
 | Phone 10 draw calls, boot 20/active 40 MiB, desktop 64 MiB, parked 0 uploads | Existing render/memory/masked-beacon checks plus targeted cave captures; no new texture or stencil pass. A8 expanded residency peaks at 63.64 MiB desktop and 36.13 MiB phone. |
-| Back-wall luma 28–42 and sd ≥4; brightness ordering | Runtime frame measurements accompany before/after fixtures. A8's source-composite measurements are recorded in its own evidence and are not substituted for a lit runtime measurement. |
+| Back-wall luma 28–42 and sd ≥4; brightness ordering | Runtime frame measurements are pending the final before/after captures. A8's source-composite measurements are recorded in its own evidence and are not substituted for a lit runtime measurement. |
 
 The new caves check is part of the `verify` job, the default T2 suite and
 the Firefox/WebKit T2 workflow lists.
