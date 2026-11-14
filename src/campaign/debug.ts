@@ -1,4 +1,5 @@
 import type { BackingBudgetState } from "./view";
+import type { DressingReviewFrame } from "./render/dressing-review";
 
 /** The light map as last drawn: alpha is darkness, RGB is always (5, 9, 13). */
 export interface LightTextureSnapshot {
@@ -24,6 +25,11 @@ export interface LightTextureSnapshot {
  * reported `data-campaign-art` already has them, before Start.
  */
 export interface CampaignDebug {
+  /** A7/A8: explicit art-fixture poses; every source footprint is known-gated. */
+  dressingReview(frames?: readonly DressingReviewFrame[]): {
+    requested: number;
+    drawn: number;
+  };
   /** The light map. Async, so a GPU light pass can read back later. */
   lightTexture(): Promise<LightTextureSnapshot>;
   /**

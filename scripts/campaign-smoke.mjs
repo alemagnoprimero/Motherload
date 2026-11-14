@@ -365,6 +365,7 @@ async function ready(browser, base, options = {}, harness = {}) {
     )
       assets.set(path, response);
   });
+  await harness.beforeNavigate?.({ context, page });
   await page.goto(destination(base));
   await page.waitForFunction(
     () =>

@@ -28,6 +28,10 @@ import { campaignPois, campaignSignal, type MissionPoi } from "./poi";
 import { W02_HAZARDS } from "./frontier";
 import { RetainedTerrain } from "./render/terrain";
 import { EmissivePass, cellsUnder, spriteBounds } from "./render/emissive";
+import {
+  reviewFrameKnown,
+  type DressingReviewFrame,
+} from "./render/dressing-review";
 // T2: the field renderer, the default where it can run (render/field/tier.ts).
 import {
   FieldTerrain,
@@ -152,6 +156,8 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     /** Harness hook: hold `elapsed`, so the looping animation keeps its phase. */
     private sceneClockFrozen = false;
     private debugHooks: CampaignDebug | undefined;
+    private dressingReviewFrames: DressingReviewFrame[] = [];
+    private dressingReviewDrawn = 0;
     private frameReadout: HTMLElement | undefined;
     private frameReadoutTimer = 0;
     private frameP95: number | undefined;
@@ -671,6 +677,16 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
     /** `window.__campaignDebug` (debug.ts): read-only probes and harness switches. */
     private installDebugHooks() {
       const hooks: CampaignDebug = {
+        dressingReview: (frames) => {
+          if (frames)
+            this.dressingReviewFrames = frames
+              .slice(0, 40)
+              .map((frame) => ({ ...frame }));
+          return {
+            requested: this.dressingReviewFrames.length,
+            drawn: this.dressingReviewDrawn,
+          };
+        },
         lightTexture: async () => this.lightingLayer.snapshot(),
         overlays: (visible) => {
           if (visible !== undefined) this.setOverlays(visible);
@@ -2259,6 +2275,43 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
       }
 
       let testRasterDrawn = false;
+      // A7/A8 authoring fixture: explicit poses only, never automatic placement.
+      this.dressingReviewDrawn = 0;
+      if (this.dressingReviewFrames.length) {
+        const deposits = new Set(
+          world.packages
+            .filter(
+              (item) =>
+                campaign.isKnown(Math.floor(item.x), Math.floor(item.y)) &&
+                item.status === "deposit",
+            )
+            .map((item) => `${Math.floor(item.x)}:${Math.floor(item.y)}`),
+        );
+        const view = {
+          id: world.id,
+          width: world.width,
+          rows: world.rows,
+          known: (x: number, y: number) => campaign.isKnown(x, y),
+          deposit: (x: number, y: number) => deposits.has(`${x}:${y}`),
+        };
+        for (const pose of this.dressingReviewFrames) {
+          if (!reviewFrameKnown(pose, view, 2 / (tile * this.view.dpr)))
+            continue;
+          if (
+            this.image(
+              pose.frame,
+              (this.unwrappedX + delta(campaign.renderX, pose.x, world.width)) *
+                tile -
+                cx,
+              pose.y * tile - cy,
+              pose.width * tile,
+              pose.height * tile,
+              12.1,
+            )
+          )
+            this.dressingReviewDrawn++;
+        }
+      }
       if (this.renderDebug.testRaster && world.id === TEST_RASTER.world)
         testRasterDrawn = this.image(
           TEST_RASTER.frame,

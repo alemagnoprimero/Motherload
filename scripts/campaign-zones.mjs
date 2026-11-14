@@ -78,6 +78,9 @@ export const UNUSED = new Set([
 const CORE =
   /^(rig-.+|tool-.+|thrust-\d+|ore-o\d+|package-o\d+|relic|deposit-socket|tier-mark-hc-\d+|crack-\d+|mission-.+|ui-mission|warning-shelf|surface-salvage)$/;
 const SURFACE = /^(sky-body|dock-stage-\d+|refuge-stage-\d+|relay-stage-\d+)$/;
+/** A7's render-only W01 band-C/D family (T5 owns placement, not worldgen). */
+export const CAVE_DRESSING =
+  /^cave-(stalactite-[0-8]|rust-(drip-[0-3]|particle-[0-5])|rubble-[0-5]|boulder-[0-2]|crystal-(floor|wall)-[0-2](-hc)?)$/;
 /**
  * The hero set (D1, audit §5.6): the rig with its mounted tools and thrust,
  * ore, packages, relics, sockets and their marks, the beacon (asset 15), the
@@ -176,6 +179,7 @@ export function zoneOf(name) {
   if (excludedReason(base)) return null;
   if (CORE.test(base)) return "core";
   if (SURFACE.test(base)) return "surface";
+  if (CAVE_DRESSING.test(base)) return "cave";
   const spans = PLACEMENT[base];
   if (!spans)
     throw new Error(
@@ -272,9 +276,11 @@ export function zoneWorlds(world, zone, names) {
   if (zone === "core") return ["W01", "W02"];
   if (zone === "surface") return [world];
   const worlds = new Set();
-  for (const name of names)
+  for (const name of names) {
+    if (CAVE_DRESSING.test(emissiveOf(name) ?? name)) worlds.add("W01");
     for (const [drawn] of PLACEMENT[emissiveOf(name) ?? name] ?? [])
       worlds.add(drawn);
+  }
   return [...worlds].sort();
 }
 

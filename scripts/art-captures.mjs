@@ -344,6 +344,19 @@ async function rigBox(page, dpr) {
   };
 }
 
+/** T2's settled-frame rule: equal screenshots, one scene step apart. */
+export async function settledArtShot(page, options = {}) {
+  let frame = await page.screenshot(options);
+  for (let attempt = 0; attempt < 13; attempt++) {
+    await advance(page, 50);
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    const next = await page.screenshot(options);
+    if (next.equals(frame)) return next;
+    frame = next;
+  }
+  throw new Error("The art fixture did not settle to two identical captures");
+}
+
 export async function runArtCaptures(browser, base, path, options = {}) {
   // `captures`: a list to draw from in place of CAPTURES (T2's look check
   // adds per-band frames of both worlds without growing the nightly sheets).
@@ -353,6 +366,8 @@ export async function runArtCaptures(browser, base, path, options = {}) {
     backing,
     search: extra,
     captures: source = CAPTURES,
+    beforeCapture,
+    beforeNavigate,
   } = options;
   await mkdir(path, { recursive: true });
   const url = new URL(base);
@@ -389,7 +404,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
       pageUrl.href,
       settings,
       // Real-clock play lets the game run as shipped, scene clock included.
-      { freezeSceneClock: !(playSeconds > 0) },
+      { freezeSceneClock: !(playSeconds > 0), beforeNavigate },
     );
     try {
       await freeze(page);
@@ -412,11 +427,12 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           // the same frame.
           await page.evaluate(() => window.__campaignDebug.sceneClock.freeze());
         }
+        await beforeCapture?.({ page, capture, checkpoint });
         const before = await page.evaluate(readCampaignDebug);
         if (before.fade.running)
           throw new Error(`${capture.name}: captured during the import fade`);
         const file = `${path}/${capture.name}.png`;
-        await page.screenshot({ path: file });
+        await writeFile(file, await settledArtShot(page));
         const reported = await page.locator("#campaign-game").evaluate(
           (element, hudSelectors) => ({
             world: element.dataset.campaignWorld,
@@ -515,7 +531,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
         await page.evaluate(() => window.__campaignDebug.overlays(false));
         await advance(page, 50);
         const hudFree = `${path}/${capture.name}-hudfree.png`;
-        await page.screenshot({ path: hudFree });
+        await writeFile(hudFree, await settledArtShot(page));
         await page.evaluate(() => window.__campaignDebug.overlays(true));
         // T2: the field shader's visual air mask, when it draws.
         let fieldAir = null;
