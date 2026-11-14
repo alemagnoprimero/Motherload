@@ -64,8 +64,8 @@ captures a scene step apart.
   art choice within the same sprite cap.
 - Boulders stay below the rig pending T6. T1 still owns their eventual
   lighting, as well as the remaining scene-wide warmth and brightness work.
-- T4's mirrored back-wall rhythm and reflected facet-orientation shortfall
-  remain visible and unchanged by placement.
+- T4's two upright source profiles exchange parallax slots every four world
+  rows; placement preserves that repeat and its top-lit facet orientation.
 
 The scene change only passes the renderer tier, Canvas state and HC option
 to the existing cave coordinator. No T1-owned lighting/field file, foundation

@@ -34,10 +34,15 @@
  * RENDERERS=webgl|canvas, FORMS=desktop|phone and CONTRAST=off|on narrow it.
  * EMISSIVE_SEARCH adds URL parameters (field=1 pins the T2 field renderer,
  * field=0 RetainedTerrain) and EMISSIVE_MAX_DRAWS asserts a draw budget.
+ * EMISSIVE_CAVE_STRESS=1 adds a known-safe crystal beside the beacon, using
+ * the existing art-review hook, to exercise their shared scenery ADD band.
+ * Its masked scene also requires exactly 0 changed pixels in the hidden
+ * cell with emissives enabled versus disabled, including high contrast.
  */
 import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { launchBrowser } from "../../../scripts/browser-launch.mjs";
+import { decodePng } from "../../../scripts/png-canonical.mjs";
 import {
   advance,
   click,
@@ -51,6 +56,9 @@ const base = process.env.PREVIEW_URL || "http://127.0.0.1:5173/";
 const output = process.argv[2] || "artifacts/t13b-emissive";
 await mkdir(output, { recursive: true });
 const BEACON = { x: 17, row: 45 };
+const CAVE_STRESS = process.env.EMISSIVE_CAVE_STRESS === "1";
+const crystalFrame = (highContrast) =>
+  `cave-crystal-floor-0${highContrast ? "-hc" : ""}`;
 /** Extra URL parameters, e.g. EMISSIVE_SEARCH=field=1 for the T2 field renderer. */
 const SEARCH = process.env.EMISSIVE_SEARCH
   ? `&${process.env.EMISSIVE_SEARCH}`
@@ -173,7 +181,7 @@ async function settle(page) {
 }
 
 async function read(page) {
-  return page.evaluate(() => {
+  return page.evaluate((caveStress) => {
     const data = document.querySelector("#campaign-game").dataset;
     const targets = JSON.parse(data.poiScreenTargets || "[]");
     return {
@@ -190,8 +198,14 @@ async function read(page) {
       // Absent before this stage (the "before" tree has no ADD pass).
       emissives: window.__campaignDebug.emissives?.() ?? null,
       misses: window.__campaignDebug.frameMisses(true),
+      ...(caveStress
+        ? {
+            dressingReview: window.__campaignDebug.dressingReview(),
+            drawnFrames: window.__campaignDebug.drawnFrames(),
+          }
+        : {}),
     };
-  });
+  }, CAVE_STRESS);
 }
 
 /** A HUD-free crop of the canvas around the beacon, in CSS px. */
@@ -236,6 +250,42 @@ async function crop(page, sample, path) {
   return { clip, cell, cellPath };
 }
 
+/** Exact RGBA comparison of the existing masked scene's hidden-cell crop. */
+async function hiddenCellDifference(on, off) {
+  assert.deepEqual(
+    on.crop.cell,
+    off.crop.cell,
+    "hidden-cell crop geometry matches",
+  );
+  const [a, b] = await Promise.all(
+    [on.crop.cellPath, off.crop.cellPath].map(async (path) =>
+      decodePng(await readFile(path)),
+    ),
+  );
+  assert.deepEqual(
+    [a.width, a.height],
+    [b.width, b.height],
+    "hidden-cell crop dimensions match",
+  );
+  let differingPixels = 0;
+  for (let p = 0; p < a.data.length; p += 4)
+    if (
+      a.data
+        .subarray(p, p + 4)
+        .some((value, channel) => value !== b.data[p + channel])
+    )
+      differingPixels++;
+  return {
+    renderer: off.renderer,
+    form: off.form,
+    highContrast: off.highContrast,
+    on: on.crop.cellPath,
+    off: off.crop.cellPath,
+    pixels: a.width * a.height,
+    differingPixels,
+  };
+}
+
 const FOLLOWS = [
   "texture",
   "x",
@@ -257,6 +307,18 @@ const FOLLOWS = [
  * over rig-cabin at 22, unmasked. Nothing is drawn with ?debug=no-emissive.
  */
 function check(sample) {
+  const crystal = crystalFrame(sample.highContrast);
+  if (CAVE_STRESS) {
+    assert.ok(
+      Array.isArray(sample.emissives),
+      "stress requires the emissive readout",
+    );
+    assert.deepEqual(sample.dressingReview, { requested: 1, drawn: 1 });
+    assert.ok(
+      sample.drawnFrames.some(({ frame }) => frame === crystal),
+      "the known-safe stress crystal base is drawn",
+    );
+  }
   if (!sample.emissive) {
     assert.deepEqual(sample.emissives, [], "no-emissive draws no sibling");
     return;
@@ -264,10 +326,54 @@ function check(sample) {
   const byFrame = (frame) =>
     sample.emissives.filter((glow) => glow.frame === frame);
   assert.deepEqual(
-    sample.emissives.map((glow) => glow.frame).sort(),
+    sample.emissives
+      .filter(
+        (glow) =>
+          !CAVE_STRESS ||
+          !/^cave-crystal-(floor|wall)-[0-2](-hc)?-emissive$/.test(glow.frame),
+      )
+      .map((glow) => glow.frame)
+      .sort(),
     ["mission-beacon-emissive", "rig-cabin-emissive"],
-    "two siblings: the beacon's lamp and the rig's headlamp",
+    "one beacon and rig sibling; stress leaves automatic crystals enabled",
   );
+  if (CAVE_STRESS) {
+    // Automatic placement can use this same frame at 12 + ordinal/10000.
+    // Only the explicit art-review pose has base depth 12.1.
+    const review = byFrame(`${crystal}-emissive`).filter(
+      (glow) => glow.base.depth === 12.1,
+    );
+    assert.equal(
+      review.length,
+      1,
+      "exactly one explicit stress crystal sibling",
+    );
+    const [sparkle] = review;
+    assert.equal(sparkle.base.frame, crystal);
+    for (const key of FOLLOWS)
+      assert.equal(sparkle[key], sparkle.base[key], `crystal ${key} follows`);
+    assert.ok(
+      sparkle.visible &&
+        sparkle.alpha > 0 &&
+        sparkle.width > 0 &&
+        sparkle.height > 0,
+      "the stress crystal base and emissive have positive visible coverage",
+    );
+    assert.deepEqual(
+      [
+        sparkle.blendMode,
+        sparkle.depth,
+        sparkle.base.blendMode,
+        sparkle.base.depth,
+      ],
+      [1, 17.6, 0, 12.1],
+    );
+    assert.equal(
+      sparkle.masked,
+      false,
+      "the known crystal joins the unmasked ADD run",
+    );
+  }
   const [glow] = byFrame("mission-beacon-emissive");
   assert.equal(glow.base.frame, "mission-beacon");
   for (const key of FOLLOWS)
@@ -290,7 +396,12 @@ function check(sample) {
 }
 
 const browser = await launchBrowser();
-const results = { base, beacon: BEACON, samples: [] };
+const results = {
+  base,
+  beacon: BEACON,
+  ...(CAVE_STRESS ? { caveStress: true, hiddenCells: [] } : {}),
+  samples: [],
+};
 try {
   const list = (name, all) => (process.env[name] || all).split(",");
   for (const renderer of list("RENDERERS", "webgl,canvas"))
@@ -311,6 +422,19 @@ try {
               await importCheckpoint(page, await scene(kind));
               await closeOverlay(page);
               await settle(page);
+              if (CAVE_STRESS)
+                await page.evaluate((frame) => {
+                  window.__campaignDebug.dressingReview([
+                    {
+                      frame,
+                      world: "W01",
+                      x: 18.5,
+                      y: 45.5,
+                      width: 0.5,
+                      height: 0.5,
+                    },
+                  ]);
+                }, crystalFrame(highContrast));
               await page.evaluate(() =>
                 window.__campaignDebug.frameMisses(true),
               );
@@ -323,19 +447,45 @@ try {
                 kind,
                 ...(await read(page)),
               };
+              const name = `${kind}-${renderer}-${form}${highContrast ? "-hc" : ""}-${emissive ? "lit" : "base"}`;
+              if (CAVE_STRESS) {
+                sample.crop = await crop(page, sample, `${output}/${name}.png`);
+                sample.faults = [...faults];
+                await writeFile(
+                  `${output}/last-sample.json`,
+                  JSON.stringify(sample, null, 2) + "\n",
+                );
+              }
               assert.ok(sample.beacon, `${kind}: the beacon is on screen`);
               assert.equal(sample.contrastShown, String(highContrast));
-              if (sample.emissives) check(sample);
+              if (CAVE_STRESS || sample.emissives) check(sample);
               // EMISSIVE_MAX_DRAWS: the audit's §7 phone budget is 10 draws.
               if (process.env.EMISSIVE_MAX_DRAWS && sample.drawCalls !== null)
                 assert.ok(
                   sample.drawCalls <= Number(process.env.EMISSIVE_MAX_DRAWS),
                   `${kind} ${form}: ${sample.drawCalls} draws, over ${process.env.EMISSIVE_MAX_DRAWS}`,
                 );
-              const name = `${kind}-${renderer}-${form}${highContrast ? "-hc" : ""}-${emissive ? "lit" : "base"}`;
-              sample.crop = await crop(page, sample, `${output}/${name}.png`);
+              sample.crop ??= await crop(page, sample, `${output}/${name}.png`);
               sample.faults = [...faults];
               results.samples.push(sample);
+              if (CAVE_STRESS && kind === "masked" && !emissive) {
+                const on = results.samples.find(
+                  (item) =>
+                    item.kind === kind &&
+                    item.emissive &&
+                    item.renderer === renderer &&
+                    item.form === form &&
+                    item.highContrast === highContrast,
+                );
+                assert.ok(on, "matching emissive-on hidden-cell crop exists");
+                const comparison = await hiddenCellDifference(on, sample);
+                results.hiddenCells.push(comparison);
+                assert.equal(
+                  comparison.differingPixels,
+                  0,
+                  `${name}: emissives changed hidden-cell pixels`,
+                );
+              }
               const drawn = (sample.emissives ?? [])
                 .map(
                   (glow) =>

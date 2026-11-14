@@ -91,6 +91,7 @@ jobs:
           npm run test:opening:browser
           AUDIT_VIEWPORT=portrait OPENING_ARTIFACTS=artifacts/audit-opening-portrait npm run test:opening:browser
           T2_DIR=artifacts/render-caves T2_CHECKS=caves npm run test:t2
+          EMISSIVE_CAVE_STRESS=1 RENDERERS=webgl FORMS=phone CONTRAST=off,on EMISSIVE_SEARCH=field=1 EMISSIVE_MAX_DRAWS=10 node docs/qa/t13b-asset-pipeline/emissive-runtime.mjs artifacts/render-cave-emissive
       - name: Retain browser evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
