@@ -2142,6 +2142,42 @@
       "anchor": "wall",
       "highContrast": true,
       "baseline": 113.12
+    },
+    {
+      "name": "cave-backwall-far",
+      "width": 1024,
+      "height": 384,
+      "logicalWidth": 512,
+      "logicalHeight": 192,
+      "family": "backwall",
+      "category": "dressing",
+      "source": "raster",
+      "maxDensity": 2,
+      "variant": "vaults",
+      "layer": "far",
+      "band": "C",
+      "anchor": "world",
+      "periodX": 512,
+      "verticalRepeat": "mirror",
+      "periodY": 384
+    },
+    {
+      "name": "cave-backwall-near",
+      "width": 1024,
+      "height": 384,
+      "logicalWidth": 512,
+      "logicalHeight": 192,
+      "family": "backwall",
+      "category": "dressing",
+      "source": "raster",
+      "maxDensity": 2,
+      "variant": "vaults",
+      "layer": "near",
+      "band": "C",
+      "anchor": "world",
+      "periodX": 512,
+      "verticalRepeat": "mirror",
+      "periodY": 384
     }
   ],
   "backgrounds": [

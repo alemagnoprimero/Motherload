@@ -21,14 +21,24 @@ const lab = (rgb) => {
   return [116 * xyz[1] - 16, 500 * (xyz[0] - xyz[1]), 200 * (xyz[1] - xyz[2])];
 };
 // Audit T13a: raster-source frames reach the zone pages at @2x and @3x.
-const rasterFrames = JSON.parse(
+const rasterRecords = JSON.parse(
   await readFile(
     new URL("../assets/campaign/source/frames.json", import.meta.url),
     "utf8",
   ),
-)
-  .frames.filter((frame) => frame.source === "raster")
-  .map((frame) => frame.name);
+).frames.filter((frame) => frame.source === "raster");
+const rasterFrames = rasterRecords.map((frame) => frame.name);
+const densityCaps = new Map(
+  rasterRecords
+    .filter((frame) => frame.maxDensity !== undefined)
+    .map((frame) => {
+      assert.ok(
+        [2, 3, 4].includes(frame.maxDensity),
+        `${frame.name}: invalid raster density cap`,
+      );
+      return [frame.name, frame.maxDensity];
+    }),
+);
 let frames = 0;
 // Audit T13b: the zone pages at every density (decisions.md D1, D5). Each
 // page passes the atlas gates (gutters, trims, sizes, the rig's tread
@@ -50,8 +60,15 @@ for (const world of ["w01", "w02"]) {
       for (const [name, frame] of Object.entries(atlas.frames)) {
         assert.ok(!names.has(name), `${name} is on two @${density}x pages`);
         names.add(name);
-        assert.equal(frame.sourceSize.w / frame.logicalSize.w, density);
-        assert.equal(frame.sourceSize.h / frame.logicalSize.h, density);
+        const cap = world === "w01" ? densityCaps.get(name) : undefined;
+        assert.equal(
+          frame.maxDensity,
+          cap,
+          `${name}: density cap must match its source record`,
+        );
+        const nativeDensity = Math.min(density, cap ?? density);
+        assert.equal(frame.sourceSize.w / frame.logicalSize.w, nativeDensity);
+        assert.equal(frame.sourceSize.h / frame.logicalSize.h, nativeDensity);
         if (frame.source === "raster") raster.add(name);
         frames++;
       }
