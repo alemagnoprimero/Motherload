@@ -52,6 +52,27 @@ same-build before/after comparison while keeping T4 back walls enabled. The
 source fixtures remain unchanged, and saved images require two identical
 captures a scene step apart.
 
+The dedicated masked-beacon stress check passed on phone WebGL with
+`field=1`, HC off and on: **10/10 draw calls** in the masked scenes, 8 in
+the lit scenes, and 5 with emissives disabled. Both hidden-cell comparisons
+were **0 of 14,400 RGBA pixels changed**. Each sample held 7,989,200 resident
+texture bytes (7.619 MiB), with no missing frames or page errors. This
+synthetic specimen measures the masked ADD case; the full texture and
+upload budgets are checked separately by the acceptance suite.
+
+The explicit 0.5×0.5-tile crystal uses the shared known-safe centre
+`(18.5,44.5)` in both fixtures and both emissive states. The existing
+`reviewFrameKnown` accepted that complete footprint against both actual
+settled exports, including their different known-ore sets. The runtime
+check requires a drawn base at review depth 12.1 and a positive-alpha
+sibling while leaving automatic dressing enabled. The existing emissive
+pass needed no production change.
+
+CI repeats this check with `EMISSIVE_CAVE_STRESS=1`, phone WebGL, both HC
+states and `EMISSIVE_MAX_DRAWS=10`. Its samples, crops and exact pixel counts
+are retained in `artifacts/render-cave-emissive/` in the
+`improvement-evidence` artifact.
+
 ## Director decisions and limits
 
 - The A7 `facets` defaults remain selected. HC crystals use body L* 42 and

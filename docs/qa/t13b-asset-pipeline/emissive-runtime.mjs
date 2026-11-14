@@ -57,6 +57,15 @@ const output = process.argv[2] || "artifacts/t13b-emissive";
 await mkdir(output, { recursive: true });
 const BEACON = { x: 17, row: 45 };
 const CAVE_STRESS = process.env.EMISSIVE_CAVE_STRESS === "1";
+// Both settled fixtures know this cell, and its 3×3 neighbourhood excludes
+// their known ore: (20,44), plus (17,46) exposed by the lit gallery.
+const CRYSTAL_POSE = {
+  world: "W01",
+  x: 18.5,
+  y: 44.5,
+  width: 0.5,
+  height: 0.5,
+};
 const crystalFrame = (highContrast) =>
   `cave-crystal-floor-0${highContrast ? "-hc" : ""}`;
 /** Extra URL parameters, e.g. EMISSIVE_SEARCH=field=1 for the T2 field renderer. */
@@ -399,7 +408,9 @@ const browser = await launchBrowser();
 const results = {
   base,
   beacon: BEACON,
-  ...(CAVE_STRESS ? { caveStress: true, hiddenCells: [] } : {}),
+  ...(CAVE_STRESS
+    ? { caveStress: true, crystalPose: CRYSTAL_POSE, hiddenCells: [] }
+    : {}),
   samples: [],
 };
 try {
@@ -423,18 +434,12 @@ try {
               await closeOverlay(page);
               await settle(page);
               if (CAVE_STRESS)
-                await page.evaluate((frame) => {
-                  window.__campaignDebug.dressingReview([
-                    {
-                      frame,
-                      world: "W01",
-                      x: 18.5,
-                      y: 45.5,
-                      width: 0.5,
-                      height: 0.5,
-                    },
-                  ]);
-                }, crystalFrame(highContrast));
+                await page.evaluate(
+                  ({ frame, pose }) => {
+                    window.__campaignDebug.dressingReview([{ frame, ...pose }]);
+                  },
+                  { frame: crystalFrame(highContrast), pose: CRYSTAL_POSE },
+                );
               await page.evaluate(() =>
                 window.__campaignDebug.frameMisses(true),
               );
