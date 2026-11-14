@@ -1,0 +1,984 @@
+{
+  "convention": "Same build before/after two explicit A8 back-wall review poses in original known SITE-4 air. Transit frames have no poses. T4 owns automatic clipping, parallax and paired upright repeat.",
+  "settled_rule": "Two byte-identical screenshots one 50 ms scene step apart.",
+  "metrics": "Existing art-sheets.py \u00a79.2 scoring windows; board masks unchanged.",
+  "terrain_renderer": "field; every explicit manifest label checked, with the field debug hook also present",
+  "captures": {
+    "a04-dive-60m@2": {
+      "before": {
+        "edge_density": 0.067,
+        "frame_L_mean": 25.5,
+        "warm_pct": 0.11,
+        "rock_near_light_sd": 19.9,
+        "rock_near_light_pixels": 28758,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          743
+        ]
+      },
+      "after": {
+        "edge_density": 0.067,
+        "frame_L_mean": 25.5,
+        "warm_pct": 0.11,
+        "rock_near_light_sd": 19.9,
+        "rock_near_light_pixels": 28758,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          743
+        ]
+      },
+      "board": {
+        "edge_density": 0.074,
+        "frame_L_mean": 25.9,
+        "warm_pct": 0.66
+      },
+      "after_gates": {
+        "edge_density": true,
+        "frame_L_mean": true,
+        "warm_pct": null,
+        "rock_near_light_sd": true
+      },
+      "changed_hudfree_pixels": 0,
+      "sheet": "sheet-a04-dive-60m@2.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "view": {
+        "width": 1440,
+        "height": 900,
+        "tile": 65.4545,
+        "scrollX": 1342,
+        "scrollY": -64.5,
+        "rigScreenX": 719.82,
+        "rigScreenY": 433.66
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 2,
+      "sha256": {
+        "before": "3a7bc552de5a57baedfcce9440c4d27792f5c091a6a2f93242bc4e92d7cc7789",
+        "after": "3a7bc552de5a57baedfcce9440c4d27792f5c091a6a2f93242bc4e92d7cc7789"
+      }
+    },
+    "a05-dive-150m@2": {
+      "before": {
+        "edge_density": 0.068,
+        "frame_L_mean": 25.5,
+        "warm_pct": 0.05,
+        "rock_near_light_sd": 45.5,
+        "rock_near_light_pixels": 31282,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          743
+        ]
+      },
+      "after": {
+        "edge_density": 0.068,
+        "frame_L_mean": 25.5,
+        "warm_pct": 0.05,
+        "rock_near_light_sd": 45.5,
+        "rock_near_light_pixels": 31282,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          743
+        ]
+      },
+      "board": {
+        "edge_density": 0.074,
+        "frame_L_mean": 25.9,
+        "warm_pct": 0.66
+      },
+      "after_gates": {
+        "edge_density": true,
+        "frame_L_mean": true,
+        "warm_pct": null,
+        "rock_near_light_sd": true
+      },
+      "changed_hudfree_pixels": 0,
+      "sheet": "sheet-a05-dive-150m@2.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "view": {
+        "width": 1440,
+        "height": 900,
+        "tile": 68.7273,
+        "scrollX": 1513.5,
+        "scrollY": 572.5,
+        "rigScreenX": 720.14,
+        "rigScreenY": 433.67
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 2,
+      "sha256": {
+        "before": "6cafeec5a3d5acebfc4e67aeb55d799157955a078335dfea68ad7926062d0b2e",
+        "after": "6cafeec5a3d5acebfc4e67aeb55d799157955a078335dfea68ad7926062d0b2e"
+      }
+    },
+    "b-330m-plate-band-C@2": {
+      "before": {
+        "edge_density": 0.078,
+        "frame_L_mean": 26.2,
+        "warm_pct": 0.05,
+        "rock_near_light_sd": 14.8,
+        "rock_near_light_pixels": 65723,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          792
+        ]
+      },
+      "after": {
+        "edge_density": 0.078,
+        "frame_L_mean": 26.2,
+        "warm_pct": 0.05,
+        "rock_near_light_sd": 14.8,
+        "rock_near_light_pixels": 65723,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          792
+        ]
+      },
+      "board": {
+        "edge_density": 0.112,
+        "frame_L_mean": 21.0,
+        "warm_pct": 4.04
+      },
+      "after_gates": {
+        "edge_density": true,
+        "frame_L_mean": false,
+        "warm_pct": false,
+        "rock_near_light_sd": false
+      },
+      "changed_hudfree_pixels": 0,
+      "sheet": "sheet-b-330m-plate-band-C@2.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "view": {
+        "width": 1440,
+        "height": 900,
+        "tile": 68.7273,
+        "scrollX": 1307.5,
+        "scrollY": 1809.5,
+        "rigScreenX": 719.95,
+        "rigScreenY": 433.76
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 2,
+      "sha256": {
+        "before": "388758d468c04c575382009452b2565bd1d25a8c74918748af871bf3aa805b87",
+        "after": "388758d468c04c575382009452b2565bd1d25a8c74918748af871bf3aa805b87"
+      }
+    },
+    "c-site-W01-SITE-4-wreck@2": {
+      "before": {
+        "edge_density": 0.081,
+        "frame_L_mean": 22.7,
+        "warm_pct": 0.49,
+        "rock_near_light_sd": 32.7,
+        "rock_near_light_pixels": 25232,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          792
+        ]
+      },
+      "after": {
+        "edge_density": 0.081,
+        "frame_L_mean": 22.4,
+        "warm_pct": 0.49,
+        "rock_near_light_sd": 32.7,
+        "rock_near_light_pixels": 25232,
+        "scoring_window_css": [
+          0,
+          0,
+          1440,
+          792
+        ]
+      },
+      "board": {
+        "edge_density": 0.112,
+        "frame_L_mean": 21.0,
+        "warm_pct": 4.04
+      },
+      "after_gates": {
+        "edge_density": true,
+        "frame_L_mean": true,
+        "warm_pct": false,
+        "rock_near_light_sd": true
+      },
+      "changed_hudfree_pixels": 512568,
+      "sheet": "sheet-c-site-W01-SITE-4-wreck@2.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "view": {
+        "width": 1440,
+        "height": 900,
+        "tile": 68.7273,
+        "scrollX": 208,
+        "scrollY": 2703,
+        "rigScreenX": 719.82,
+        "rigScreenY": 433.71
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 2,
+      "sha256": {
+        "before": "64ecae88858b3806f595f64a484b226da1a6259061e1e142c3d1ba0eb4e173c8",
+        "after": "2cd8ffee69c92c42be6c9b522e15d1715825eb806f8acfc5d92e19675753a454"
+      }
+    },
+    "a04p-dive-60m-phone@3": {
+      "before": {
+        "edge_density": 0.04,
+        "frame_L_mean": 26.6,
+        "warm_pct": 0.38,
+        "rock_near_light_sd": 19.0,
+        "rock_near_light_pixels": 29309,
+        "scoring_window_css": [
+          0,
+          0,
+          393,
+          572
+        ]
+      },
+      "after": {
+        "edge_density": 0.04,
+        "frame_L_mean": 26.6,
+        "warm_pct": 0.38,
+        "rock_near_light_sd": 19.0,
+        "rock_near_light_pixels": 29309,
+        "scoring_window_css": [
+          0,
+          0,
+          393,
+          572
+        ]
+      },
+      "board": {
+        "edge_density": 0.153,
+        "frame_L_mean": 30.1,
+        "warm_pct": 2.16
+      },
+      "after_gates": {
+        "edge_density": false,
+        "frame_L_mean": true,
+        "warm_pct": null,
+        "rock_near_light_sd": true
+      },
+      "changed_hudfree_pixels": 0,
+      "sheet": "sheet-a04p-dive-60m-phone@3.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 393,
+        "height": 851
+      },
+      "view": {
+        "width": 393,
+        "height": 851,
+        "tile": 44,
+        "scrollX": 1189.5,
+        "scrollY": -169.5,
+        "rigScreenX": 196.5,
+        "rigScreenY": 417.66
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 3,
+      "sha256": {
+        "before": "55e815a871e60824689cad9a738da57a4725332324bbbb794e1ce400260766ca",
+        "after": "55e815a871e60824689cad9a738da57a4725332324bbbb794e1ce400260766ca"
+      }
+    },
+    "p-portrait-cavern-site4@3": {
+      "before": {
+        "edge_density": 0.055,
+        "frame_L_mean": 21.4,
+        "warm_pct": 0.97,
+        "rock_near_light_sd": 30.8,
+        "rock_near_light_pixels": 25564,
+        "scoring_window_css": [
+          0,
+          9.5,
+          393,
+          617.5
+        ]
+      },
+      "after": {
+        "edge_density": 0.055,
+        "frame_L_mean": 21.0,
+        "warm_pct": 0.97,
+        "rock_near_light_sd": 30.8,
+        "rock_near_light_pixels": 25564,
+        "scoring_window_css": [
+          0,
+          9.5,
+          393,
+          617.5
+        ]
+      },
+      "board": {
+        "edge_density": 0.13,
+        "frame_L_mean": 21.0,
+        "warm_pct": 4.79
+      },
+      "after_gates": {
+        "edge_density": false,
+        "frame_L_mean": true,
+        "warm_pct": false,
+        "rock_near_light_sd": true
+      },
+      "changed_hudfree_pixels": 440666,
+      "sheet": "sheet-p-portrait-cavern-site4@3.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 393,
+        "height": 851
+      },
+      "view": {
+        "width": 393,
+        "height": 851,
+        "tile": 46.2,
+        "scrollX": 427,
+        "scrollY": 1690.5,
+        "rigScreenX": 196.7,
+        "rigScreenY": 418.07
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 3,
+      "sha256": {
+        "before": "13c9a4413d10483abf8ebc03a04ce3cee9b22d4618e435ff8e956f284e7d76bb",
+        "after": "f8b6e3890cc28af9dc37db6429fa4e5c450dee7a21a331e60612d2584138846d"
+      }
+    },
+    "a05p-dive-150m-phone@3": {
+      "before": {
+        "edge_density": 0.042,
+        "frame_L_mean": 26.2,
+        "warm_pct": 0.1,
+        "rock_near_light_sd": 45.7,
+        "rock_near_light_pixels": 31690,
+        "scoring_window_css": [
+          0,
+          0,
+          393,
+          572
+        ]
+      },
+      "after": {
+        "edge_density": 0.042,
+        "frame_L_mean": 26.2,
+        "warm_pct": 0.1,
+        "rock_near_light_sd": 45.7,
+        "rock_near_light_pixels": 31690,
+        "scoring_window_css": [
+          0,
+          0,
+          393,
+          572
+        ]
+      },
+      "board": {
+        "edge_density": 0.153,
+        "frame_L_mean": 30.1,
+        "warm_pct": 2.16
+      },
+      "after_gates": {
+        "edge_density": false,
+        "frame_L_mean": true,
+        "warm_pct": null,
+        "rock_near_light_sd": true
+      },
+      "changed_hudfree_pixels": 0,
+      "sheet": "sheet-a05p-dive-150m-phone@3.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 393,
+        "height": 851
+      },
+      "view": {
+        "width": 393,
+        "height": 851,
+        "tile": 46.2,
+        "scrollX": 1305,
+        "scrollY": 258.5,
+        "rigScreenX": 196.5,
+        "rigScreenY": 417.87
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 3,
+      "sha256": {
+        "before": "291794e6e4af2d86a1031082decbbe717e006142b50ffcf4571bf23bbb3a0f83",
+        "after": "291794e6e4af2d86a1031082decbbe717e006142b50ffcf4571bf23bbb3a0f83"
+      }
+    },
+    "b-330mp-plate-band-C-phone@3": {
+      "before": {
+        "edge_density": 0.049,
+        "frame_L_mean": 27.9,
+        "warm_pct": 0.1,
+        "rock_near_light_sd": 14.3,
+        "rock_near_light_pixels": 66806,
+        "scoring_window_css": [
+          0,
+          9.4,
+          393,
+          617.4
+        ]
+      },
+      "after": {
+        "edge_density": 0.049,
+        "frame_L_mean": 27.9,
+        "warm_pct": 0.1,
+        "rock_near_light_sd": 14.3,
+        "rock_near_light_pixels": 66806,
+        "scoring_window_css": [
+          0,
+          9.4,
+          393,
+          617.4
+        ]
+      },
+      "board": {
+        "edge_density": 0.13,
+        "frame_L_mean": 21.0,
+        "warm_pct": 4.79
+      },
+      "after_gates": {
+        "edge_density": false,
+        "frame_L_mean": false,
+        "warm_pct": false,
+        "rock_near_light_sd": false
+      },
+      "changed_hudfree_pixels": 0,
+      "sheet": "sheet-b-330mp-plate-band-C-phone@3.png",
+      "settled_discovery_equal": true,
+      "viewport": {
+        "width": 393,
+        "height": 851
+      },
+      "view": {
+        "width": 393,
+        "height": 851,
+        "tile": 46.2,
+        "scrollX": 1166.5,
+        "scrollY": 1090,
+        "rigScreenX": 196.4,
+        "rigScreenY": 417.97
+      },
+      "backingScale": 2,
+      "deviceScaleFactor": 3,
+      "sha256": {
+        "before": "2665621211ed3976193c0832d073ec8f7798cf30b7ba9172a40d1f7958dc87bc",
+        "after": "2665621211ed3976193c0832d073ec8f7798cf30b7ba9172a40d1f7958dc87bc"
+      }
+    }
+  },
+  "staged_render": {
+    "after/a04-dive-60m@2": {
+      "maxDraws": 5,
+      "drawLimit": 12,
+      "maxUploads": 0,
+      "textureLimit": 67108864,
+      "residentTextureBytes": 13619188,
+      "field": true,
+      "requested": 0,
+      "drawn": 0,
+      "highContrast": "false",
+      "poses": [],
+      "parkedFrames": [
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    },
+    "after/a05-dive-150m@2": {
+      "maxDraws": 4,
+      "drawLimit": 12,
+      "maxUploads": 0,
+      "textureLimit": 67108864,
+      "residentTextureBytes": 19582964,
+      "field": true,
+      "requested": 0,
+      "drawn": 0,
+      "highContrast": "false",
+      "poses": [],
+      "parkedFrames": [
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    },
+    "after/b-330m-plate-band-C@2": {
+      "maxDraws": 4,
+      "drawLimit": 12,
+      "maxUploads": 0,
+      "textureLimit": 67108864,
+      "residentTextureBytes": 12455924,
+      "field": true,
+      "requested": 0,
+      "drawn": 0,
+      "highContrast": "false",
+      "poses": [],
+      "parkedFrames": [
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    },
+    "after/c-site-W01-SITE-4-wreck@2": {
+      "maxDraws": 9,
+      "drawLimit": 12,
+      "maxUploads": 0,
+      "textureLimit": 67108864,
+      "residentTextureBytes": 12455924,
+      "field": true,
+      "requested": 2,
+      "drawn": 2,
+      "highContrast": "false",
+      "poses": [
+        {
+          "frame": "cave-backwall-far",
+          "world": "W01",
+          "x": 13.5,
+          "y": 43.5,
+          "width": 10.666666666666666,
+          "height": 4
+        },
+        {
+          "frame": "cave-backwall-near",
+          "world": "W01",
+          "x": 13.5,
+          "y": 43.5,
+          "width": 10.666666666666666,
+          "height": 4
+        }
+      ],
+      "parkedFrames": [
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    },
+    "after/a04p-dive-60m-phone@3": {
+      "maxDraws": 5,
+      "drawLimit": 10,
+      "maxUploads": 0,
+      "textureLimit": 41943040,
+      "residentTextureBytes": 9709520,
+      "field": true,
+      "requested": 0,
+      "drawn": 0,
+      "highContrast": "false",
+      "poses": [],
+      "parkedFrames": [
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 5,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    },
+    "after/p-portrait-cavern-site4@3": {
+      "maxDraws": 9,
+      "drawLimit": 10,
+      "maxUploads": 0,
+      "textureLimit": 41943040,
+      "residentTextureBytes": 7989200,
+      "field": true,
+      "requested": 2,
+      "drawn": 2,
+      "highContrast": "false",
+      "poses": [
+        {
+          "frame": "cave-backwall-far",
+          "world": "W01",
+          "x": 13.5,
+          "y": 43.5,
+          "width": 10.666666666666666,
+          "height": 4
+        },
+        {
+          "frame": "cave-backwall-near",
+          "world": "W01",
+          "x": 13.5,
+          "y": 43.5,
+          "width": 10.666666666666666,
+          "height": 4
+        }
+      ],
+      "parkedFrames": [
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 9,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    },
+    "after/a05p-dive-150m-phone@3": {
+      "maxDraws": 4,
+      "drawLimit": 10,
+      "maxUploads": 0,
+      "textureLimit": 41943040,
+      "residentTextureBytes": 13330384,
+      "field": true,
+      "requested": 0,
+      "drawn": 0,
+      "highContrast": "false",
+      "poses": [],
+      "parkedFrames": [
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    },
+    "after/b-330mp-plate-band-C-phone@3": {
+      "maxDraws": 4,
+      "drawLimit": 10,
+      "maxUploads": 0,
+      "textureLimit": 41943040,
+      "residentTextureBytes": 7989200,
+      "field": true,
+      "requested": 0,
+      "drawn": 0,
+      "highContrast": "false",
+      "poses": [],
+      "parkedFrames": [
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        },
+        {
+          "draws": 4,
+          "clipped": 0,
+          "triangles": 0,
+          "unsupported": 0,
+          "uploads": 0,
+          "subUploads": 0
+        }
+      ]
+    }
+  },
+  "frame_coverage": {
+    "desktop": {
+      "expected": 2,
+      "drawn": 2,
+      "missing": [],
+      "frames": [
+        "cave-backwall-far",
+        "cave-backwall-near"
+      ]
+    },
+    "phone": {
+      "expected": 2,
+      "drawn": 2,
+      "missing": [],
+      "frames": [
+        "cave-backwall-far",
+        "cave-backwall-near"
+      ]
+    }
+  }
+}

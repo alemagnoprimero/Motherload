@@ -1,0 +1,739 @@
+{
+  "item": "A8",
+  "seed": "DF-A8-2026-11-14",
+  "tile": 44.140127388535035,
+  "defaultVariant": "vaults",
+  "method": {
+    "raster": "Native @2 resvg; Pillow premultiplied Lanczos to board scale",
+    "silhouettes": "art-review.py alpha_iou, alpha>127 at native @2, same canvas/phase; no fitting",
+    "tiers": "art_tiers.visible_svg_tiers, flat pixels only, >=2 pixels at @2, >=0.5 at board scale",
+    "board": "Full back-wall alpha is occluded. Compare only the annotated visible near-boundary window, fixed source phase x=0/y=103, no scaling/fitting beyond shared tile scale. This is not a full-silhouette acceptance score.",
+    "fixture": "Explicit art composites on settled A7 SITE4 before screenshots, clipped to the captured visual-air mask. Rectangles preserve source rig/wreck/beacon pixels. Fixed four-world-row parity alternates upright source profiles between .25/.5 parallax slots. Native authored strip width is retained here; T4 uses its world-seam width. Runtime clipping/parallax/safety are not tested here.",
+    "seams": "Maximum per-channel edge difference on native RGBA. X is directly periodic. Y alternates the two upright sources; each source bottom is compared with its partner top. Single-source direct-repeat differences remain explicitly reported."
+  },
+  "boardWindow": [
+    275,
+    190,
+    385,
+    258
+  ],
+  "boardPolygon": [
+    [
+      275,
+      226
+    ],
+    [
+      286,
+      228
+    ],
+    [
+      306,
+      241
+    ],
+    [
+      318,
+      218
+    ],
+    [
+      339,
+      195
+    ],
+    [
+      361,
+      213
+    ],
+    [
+      385,
+      208
+    ],
+    [
+      385,
+      258
+    ],
+    [
+      275,
+      258
+    ]
+  ],
+  "boardOccluderExcludedFromBothMasks": [
+    [
+      326,
+      258
+    ],
+    [
+      343,
+      238
+    ],
+    [
+      350,
+      238
+    ],
+    [
+      338,
+      258
+    ]
+  ],
+  "sourceContext": "manifest.json",
+  "variants": {
+    "vaults": {
+      "frames": {
+        "cave-backwall-far": {
+          "structural": {
+            "backwall": {
+              "fills": [
+                "#111f29",
+                "#192731",
+                "#22303a"
+              ],
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ]
+            }
+          },
+          "native2": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 66899,
+                "#192731": 35593,
+                "#22303a": 4881
+              },
+              "hidden": []
+            }
+          },
+          "board": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 13476,
+                "#192731": 6572,
+                "#22303a": 701
+              },
+              "hidden": []
+            }
+          },
+          "horizontalSeamMaxRGBA": 0,
+          "pairedVerticalSeamMaxRGBA": 0,
+          "verticalPartner": "cave-backwall-near",
+          "directVerticalRepeatMaxRGBA": 255
+        },
+        "cave-backwall-near": {
+          "structural": {
+            "backwall": {
+              "fills": [
+                "#111f29",
+                "#22303a",
+                "#2b3943"
+              ],
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ]
+            }
+          },
+          "native2": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 86989,
+                "#22303a": 35106,
+                "#2b3943": 4641
+              },
+              "hidden": []
+            }
+          },
+          "board": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 17654,
+                "#22303a": 6403,
+                "#2b3943": 656
+              },
+              "hidden": []
+            }
+          },
+          "horizontalSeamMaxRGBA": 0,
+          "pairedVerticalSeamMaxRGBA": 0,
+          "verticalPartner": "cave-backwall-far",
+          "directVerticalRepeatMaxRGBA": 255
+        }
+      },
+      "farNearIoU": 0.0,
+      "compositeLuma": {
+        "mean": 33.88674808247884,
+        "sd": 5.939551401033951
+      },
+      "boardVisibleWindowIoU": 0.599
+    },
+    "needles": {
+      "frames": {
+        "cave-backwall-far": {
+          "structural": {
+            "backwall": {
+              "fills": [
+                "#111f29",
+                "#192731",
+                "#22303a"
+              ],
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ]
+            }
+          },
+          "native2": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 64089,
+                "#192731": 35117,
+                "#22303a": 4555
+              },
+              "hidden": []
+            }
+          },
+          "board": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 12745,
+                "#192731": 6383,
+                "#22303a": 578
+              },
+              "hidden": []
+            }
+          },
+          "horizontalSeamMaxRGBA": 0,
+          "pairedVerticalSeamMaxRGBA": 0,
+          "verticalPartner": "cave-backwall-near",
+          "directVerticalRepeatMaxRGBA": 255
+        },
+        "cave-backwall-near": {
+          "structural": {
+            "backwall": {
+              "fills": [
+                "#111f29",
+                "#22303a",
+                "#2b3943"
+              ],
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ]
+            }
+          },
+          "native2": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 65428,
+                "#22303a": 33229,
+                "#2b3943": 5195
+              },
+              "hidden": []
+            }
+          },
+          "board": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 12957,
+                "#22303a": 5821,
+                "#2b3943": 691
+              },
+              "hidden": []
+            }
+          },
+          "horizontalSeamMaxRGBA": 0,
+          "pairedVerticalSeamMaxRGBA": 0,
+          "verticalPartner": "cave-backwall-far",
+          "directVerticalRepeatMaxRGBA": 255
+        }
+      },
+      "farNearIoU": 0.001,
+      "compositeLuma": {
+        "mean": 34.21256942749023,
+        "sd": 5.838087819698714
+      },
+      "boardVisibleWindowIoU": 0.593
+    },
+    "shelves": {
+      "frames": {
+        "cave-backwall-far": {
+          "structural": {
+            "backwall": {
+              "fills": [
+                "#111f29",
+                "#192731",
+                "#22303a"
+              ],
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ]
+            }
+          },
+          "native2": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 69423,
+                "#192731": 36998,
+                "#22303a": 4663
+              },
+              "hidden": []
+            }
+          },
+          "board": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  14.8,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 14074,
+                "#192731": 6930,
+                "#22303a": 681
+              },
+              "hidden": []
+            }
+          },
+          "horizontalSeamMaxRGBA": 0,
+          "pairedVerticalSeamMaxRGBA": 0,
+          "verticalPartner": "cave-backwall-near",
+          "directVerticalRepeatMaxRGBA": 255
+        },
+        "cave-backwall-near": {
+          "structural": {
+            "backwall": {
+              "fills": [
+                "#111f29",
+                "#22303a",
+                "#2b3943"
+              ],
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ]
+            }
+          },
+          "native2": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 102584,
+                "#22303a": 35834,
+                "#2b3943": 5099
+              },
+              "hidden": []
+            }
+          },
+          "board": {
+            "backwall": {
+              "tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "visible_tiers": [
+                [
+                  11.0,
+                  0.333
+                ],
+                [
+                  19.1,
+                  0.333
+                ],
+                [
+                  23.2,
+                  0.333
+                ]
+              ],
+              "fills": {
+                "#111f29": 21067,
+                "#22303a": 6599,
+                "#2b3943": 779
+              },
+              "hidden": []
+            }
+          },
+          "horizontalSeamMaxRGBA": 0,
+          "pairedVerticalSeamMaxRGBA": 0,
+          "verticalPartner": "cave-backwall-far",
+          "directVerticalRepeatMaxRGBA": 255
+        }
+      },
+      "farNearIoU": 0.0,
+      "compositeLuma": {
+        "mean": 33.6428648651123,
+        "sd": 6.029021897180317
+      },
+      "boardVisibleWindowIoU": 0.702
+    }
+  }
+}
