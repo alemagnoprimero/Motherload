@@ -1,9 +1,357 @@
 {
   "frames": {
-    "site-geode": {
+    "cave-rust-drip-2": {
       "frame": {
         "x": 2,
         "y": 2,
+        "w": 61,
+        "h": 274
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 35,
+        "y": 1,
+        "w": 61,
+        "h": 274
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 288
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 96
+      },
+      "source": "raster"
+    },
+    "cave-rust-drip-3": {
+      "frame": {
+        "x": 67,
+        "y": 2,
+        "w": 110,
+        "h": 203
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 1,
+        "w": 110,
+        "h": 203
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 288
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 96
+      },
+      "source": "raster"
+    },
+    "cave-boulder-2": {
+      "frame": {
+        "x": 181,
+        "y": 2,
+        "w": 430,
+        "h": 199
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 13,
+        "w": 430,
+        "h": 199
+      },
+      "sourceSize": {
+        "w": 432,
+        "h": 216
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 144,
+        "h": 72
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-6": {
+      "frame": {
+        "x": 615,
+        "y": 2,
+        "w": 203,
+        "h": 158
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 34,
+        "y": 0,
+        "w": 203,
+        "h": 158
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-2": {
+      "frame": {
+        "x": 2,
+        "y": 280,
+        "w": 138,
+        "h": 153
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 14,
+        "w": 138,
+        "h": 153
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-2-hc": {
+      "frame": {
+        "x": 144,
+        "y": 280,
+        "w": 138,
+        "h": 153
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 14,
+        "w": 138,
+        "h": 153
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-8": {
+      "frame": {
+        "x": 286,
+        "y": 280,
+        "w": 211,
+        "h": 149
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 53,
+        "y": 0,
+        "w": 211,
+        "h": 149
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-boulder-1": {
+      "frame": {
+        "x": 501,
+        "y": 280,
+        "w": 286,
+        "h": 143
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 9,
+        "w": 286,
+        "h": 143
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 156
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 52
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-7": {
+      "frame": {
+        "x": 2,
+        "y": 437,
+        "w": 254,
+        "h": 141
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 0,
+        "w": 254,
+        "h": 141
+      },
+      "sourceSize": {
+        "w": 288,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 96,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-2": {
+      "frame": {
+        "x": 260,
+        "y": 437,
+        "w": 52,
+        "h": 141
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 46,
+        "y": 0,
+        "w": 52,
+        "h": 141
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-2": {
+      "frame": {
+        "x": 316,
+        "y": 437,
+        "w": 154,
+        "h": 138
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 35,
+        "w": 154,
+        "h": 138
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-2-hc": {
+      "frame": {
+        "x": 474,
+        "y": 437,
+        "w": 154,
+        "h": 138
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 35,
+        "w": 154,
+        "h": 138
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "site-geode": {
+      "frame": {
+        "x": 2,
+        "y": 582,
         "w": 260,
         "h": 136
       },
@@ -28,10 +376,271 @@
         "h": 64
       }
     },
-    "pressure-seam": {
+    "cave-rust-drip-0": {
+      "frame": {
+        "x": 266,
+        "y": 582,
+        "w": 51,
+        "h": 125
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 40,
+        "y": 1,
+        "w": 51,
+        "h": 125
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-0": {
+      "frame": {
+        "x": 321,
+        "y": 582,
+        "w": 37,
+        "h": 115
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 52,
+        "y": 0,
+        "w": 37,
+        "h": 115
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-1": {
+      "frame": {
+        "x": 362,
+        "y": 582,
+        "w": 98,
+        "h": 109
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 9,
+        "w": 98,
+        "h": 109
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-1-hc": {
+      "frame": {
+        "x": 464,
+        "y": 582,
+        "w": 98,
+        "h": 109
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 9,
+        "w": 98,
+        "h": 109
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-rust-drip-1": {
+      "frame": {
+        "x": 566,
+        "y": 582,
+        "w": 98,
+        "h": 105
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 13,
+        "y": 1,
+        "w": 98,
+        "h": 105
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-1": {
+      "frame": {
+        "x": 668,
+        "y": 582,
+        "w": 108,
+        "h": 98
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 24,
+        "w": 108,
+        "h": 98
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-1-hc": {
       "frame": {
         "x": 2,
-        "y": 142,
+        "y": 722,
+        "w": 108,
+        "h": 98
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 24,
+        "w": 108,
+        "h": 98
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-5": {
+      "frame": {
+        "x": 114,
+        "y": 722,
+        "w": 88,
+        "h": 97
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 28,
+        "y": 0,
+        "w": 88,
+        "h": 97
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
+    "cave-boulder-0": {
+      "frame": {
+        "x": 206,
+        "y": 722,
+        "w": 142,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 8,
+        "w": 142,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 108
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 36
+      },
+      "source": "raster"
+    },
+    "pressure-seam": {
+      "frame": {
+        "x": 352,
+        "y": 722,
         "w": 140,
         "h": 96
       },
@@ -58,8 +667,8 @@
     },
     "site-core": {
       "frame": {
-        "x": 2,
-        "y": 242,
+        "x": 496,
+        "y": 722,
         "w": 260,
         "h": 94
       },
@@ -84,10 +693,39 @@
         "h": 64
       }
     },
+    "cave-stalactite-4": {
+      "frame": {
+        "x": 760,
+        "y": 722,
+        "w": 45,
+        "h": 77
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 49,
+        "y": 0,
+        "w": 45,
+        "h": 77
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
     "site-cache": {
       "frame": {
         "x": 2,
-        "y": 340,
+        "y": 824,
         "w": 260,
         "h": 75
       },
@@ -111,6 +749,876 @@
         "w": 96,
         "h": 64
       }
+    },
+    "cave-rubble-3": {
+      "frame": {
+        "x": 266,
+        "y": 824,
+        "w": 50,
+        "h": 74
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 48,
+        "y": 15,
+        "w": 50,
+        "h": 74
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 32
+      },
+      "source": "raster"
+    },
+    "cave-rubble-5": {
+      "frame": {
+        "x": 320,
+        "y": 824,
+        "w": 119,
+        "h": 69
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 20,
+        "w": 119,
+        "h": 69
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 32
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-1": {
+      "frame": {
+        "x": 443,
+        "y": 824,
+        "w": 69,
+        "h": 69
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 37,
+        "y": 0,
+        "w": 69,
+        "h": 69
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-0": {
+      "frame": {
+        "x": 516,
+        "y": 824,
+        "w": 62,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 6,
+        "w": 62,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-0-hc": {
+      "frame": {
+        "x": 582,
+        "y": 824,
+        "w": 62,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 6,
+        "w": 62,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-0": {
+      "frame": {
+        "x": 648,
+        "y": 824,
+        "w": 67,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 7,
+        "y": 15,
+        "w": 67,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-0-hc": {
+      "frame": {
+        "x": 719,
+        "y": 824,
+        "w": 67,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 7,
+        "y": 15,
+        "w": 67,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
+    },
+    "cave-rubble-2": {
+      "frame": {
+        "x": 2,
+        "y": 903,
+        "w": 134,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 37,
+        "w": 134,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 32
+      },
+      "source": "raster"
+    },
+    "cave-rubble-0": {
+      "frame": {
+        "x": 140,
+        "y": 903,
+        "w": 101,
+        "h": 49
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 19,
+        "y": 40,
+        "w": 101,
+        "h": 49
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 32
+      },
+      "source": "raster"
+    },
+    "cave-stalactite-3": {
+      "frame": {
+        "x": 245,
+        "y": 903,
+        "w": 95,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 21,
+        "y": 0,
+        "w": 95,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 144
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 48
+      },
+      "source": "raster"
+    },
+    "cave-rubble-1": {
+      "frame": {
+        "x": 344,
+        "y": 903,
+        "w": 129,
+        "h": 41
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 48,
+        "w": 129,
+        "h": 41
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 32
+      },
+      "source": "raster"
+    },
+    "cave-rubble-4": {
+      "frame": {
+        "x": 477,
+        "y": 903,
+        "w": 144,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 51,
+        "w": 144,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 144,
+        "h": 96
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 48,
+        "h": 32
+      },
+      "source": "raster"
+    },
+    "cave-rust-particle-2": {
+      "frame": {
+        "x": 625,
+        "y": 903,
+        "w": 20,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 4,
+        "w": 20,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 12,
+        "h": 12
+      },
+      "source": "raster"
+    },
+    "cave-rust-particle-1": {
+      "frame": {
+        "x": 649,
+        "y": 903,
+        "w": 18,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 9,
+        "y": 7,
+        "w": 18,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 12,
+        "h": 12
+      },
+      "source": "raster"
+    },
+    "cave-rust-particle-3": {
+      "frame": {
+        "x": 671,
+        "y": 903,
+        "w": 22,
+        "h": 25
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 7,
+        "y": 10,
+        "w": 22,
+        "h": 25
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 12,
+        "h": 12
+      },
+      "source": "raster"
+    },
+    "cave-rust-particle-0": {
+      "frame": {
+        "x": 697,
+        "y": 903,
+        "w": 16,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 13,
+        "w": 16,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 12,
+        "h": 12
+      },
+      "source": "raster"
+    },
+    "cave-rust-particle-4": {
+      "frame": {
+        "x": 717,
+        "y": 903,
+        "w": 28,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 16,
+        "w": 28,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 12,
+        "h": 12
+      },
+      "source": "raster"
+    },
+    "cave-rust-particle-5": {
+      "frame": {
+        "x": 749,
+        "y": 903,
+        "w": 32,
+        "h": 15
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 20,
+        "w": 32,
+        "h": 15
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 36
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 12,
+        "h": 12
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-2-emissive": {
+      "frame": {
+        "x": 785,
+        "y": 903,
+        "w": 14,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 75,
+        "y": 42,
+        "w": 14,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-2-hc-emissive": {
+      "frame": {
+        "x": 803,
+        "y": 903,
+        "w": 14,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 75,
+        "y": 42,
+        "w": 14,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-2-emissive": {
+      "frame": {
+        "x": 2,
+        "y": 959,
+        "w": 14,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 118,
+        "y": 75,
+        "w": 14,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-2-hc-emissive": {
+      "frame": {
+        "x": 20,
+        "y": 959,
+        "w": 14,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 118,
+        "y": 75,
+        "w": 14,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 174,
+        "h": 174
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 58,
+        "h": 58
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-1-emissive": {
+      "frame": {
+        "x": 38,
+        "y": 959,
+        "w": 11,
+        "h": 11
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 53,
+        "y": 30,
+        "w": 11,
+        "h": 11
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-1-hc-emissive": {
+      "frame": {
+        "x": 53,
+        "y": 959,
+        "w": 11,
+        "h": 11
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 53,
+        "y": 30,
+        "w": 11,
+        "h": 11
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-1-emissive": {
+      "frame": {
+        "x": 68,
+        "y": 959,
+        "w": 11,
+        "h": 11
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 82,
+        "y": 53,
+        "w": 11,
+        "h": 11
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-1-hc-emissive": {
+      "frame": {
+        "x": 83,
+        "y": 959,
+        "w": 11,
+        "h": 11
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 82,
+        "y": 53,
+        "w": 11,
+        "h": 11
+      },
+      "sourceSize": {
+        "w": 123,
+        "h": 123
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 41,
+        "h": 41
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-0-emissive": {
+      "frame": {
+        "x": 98,
+        "y": 959,
+        "w": 9,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 50,
+        "y": 33,
+        "w": 9,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
+    },
+    "cave-crystal-wall-0-hc-emissive": {
+      "frame": {
+        "x": 111,
+        "y": 959,
+        "w": 9,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 50,
+        "y": 33,
+        "w": 9,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-0-emissive": {
+      "frame": {
+        "x": 124,
+        "y": 959,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 33,
+        "y": 20,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
+    },
+    "cave-crystal-floor-0-hc-emissive": {
+      "frame": {
+        "x": 136,
+        "y": 959,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 33,
+        "y": 20,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "logicalSize": {
+        "w": 26,
+        "h": 26
+      },
+      "source": "raster"
     }
   },
   "meta": {
@@ -119,8 +1627,8 @@
     "image": "w01-cave-3x-0.png",
     "format": "RGBA8888",
     "size": {
-      "w": 320,
-      "h": 448
+      "w": 832,
+      "h": 1024
     },
     "scale": "3",
     "logicalTile": 48,

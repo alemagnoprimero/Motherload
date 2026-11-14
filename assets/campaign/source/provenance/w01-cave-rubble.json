@@ -1,0 +1,57 @@
+{
+  "asset": 18,
+  "item": "A7",
+  "method": "Seeded layered SVG from hand-drawn archetypes, rasterized to generated @4 PNG masters; source:raster zone pages",
+  "source": {
+    "generator": "assets/campaign/source/w01-dressing.mjs",
+    "writer": "assets/campaign/source/create-dressing-sources.mjs",
+    "kit": [
+      "random",
+      "palette",
+      "svg",
+      "records",
+      "emissive",
+      "rock-chunk",
+      "rust"
+    ],
+    "seed": "DF-A7-2026-11-14",
+    "variant": "facets",
+    "alternatives": [
+      "facets",
+      "splinter",
+      "shelf"
+    ],
+    "rasterizer": "resvg 2.6.2 (@resvg/resvg-js)",
+    "encoding": "every PNG re-encoded by scripts/png-canonical.mjs (pako 2.1.0: RGBA8, filter 0, deflate level 9, no ancillary chunks)",
+    "frames": [
+      "cave-rubble-0",
+      "cave-rubble-1",
+      "cave-rubble-2",
+      "cave-rubble-3",
+      "cave-rubble-4",
+      "cave-rubble-5"
+    ]
+  },
+  "reference": {
+    "file": "docs/art-direction/d0-target-cavern-wide.png",
+    "use": "Manually drawn ceiling needles, branching rust, angular rubble, low boulders and pointed crystal clusters at the board's tile scale; no reference pixels used by the generator",
+    "palette": "docs/art-direction/swatches/w01-swatches.json",
+    "audit": "docs/ART_QUALITY_AUDIT.md §5.6 row 18; §6.1"
+  },
+  "reviewer": {
+    "name": "Alejandro (art director)",
+    "signed": null,
+    "state": "in review",
+    "fixtures": [
+      "60m",
+      "150m",
+      "330m",
+      "SITE-4"
+    ]
+  },
+  "redrawnShare": 1,
+  "underlays": [],
+  "boardPixelsCopied": false,
+  "recorded": "2026-11-14",
+  "notes": "Three selectable styles; seeded changes move facet junctions without replacing the authored contours with noise."
+}
