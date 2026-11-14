@@ -35,6 +35,8 @@ jobs:
           node-version: "24"
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - name: Install pixel measurement tooling
+        run: python3 -m pip install Pillow==12.0.0 numpy==2.5.3
       - run: npm test
       - run: npm run build
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0

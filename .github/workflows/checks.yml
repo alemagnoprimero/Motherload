@@ -29,13 +29,13 @@ jobs:
           node-version: "24"
           cache: npm
       - run: npm ci --no-audit --no-fund
-      - run: npm test -- --maxWorkers=2
-      - run: npm run format:check
-      - run: npm run build
       - name: Install browser and pixel measurement tooling
         run: |
           npx playwright-core install --with-deps chromium
           python3 -m pip install Pillow==12.0.0 numpy==2.5.3
+      - run: npm test -- --maxWorkers=2
+      - run: npm run format:check
+      - run: npm run build
       - name: Rebuild the campaign assets from their sources, byte for byte
         # Audit T13b: resvg (@resvg/resvg-js, pinned) rasterizes the SVG
         # sources without a browser, Pillow 12.0.0 packs them, and
