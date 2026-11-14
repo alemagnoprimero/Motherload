@@ -490,6 +490,18 @@ try {
                 snapshot.layers.dressing.length <= limit,
                 `${name}: drawn dressing stays within its reported limit`,
               );
+              const positive = snapshot.layers.dressing.filter(
+                (item) => item.alpha > 0,
+              );
+              assert.ok(
+                positive.length > 0,
+                `${name}: dressing visibly contributes`,
+              );
+              for (const { frame } of positive)
+                assert.ok(
+                  snapshot.drawnFrames.some((item) => item.frame === frame),
+                  `${name}: ${frame} is drawn from a resident atlas`,
+                );
             }
             if (scan)
               assert.ok(
