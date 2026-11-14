@@ -119,11 +119,11 @@ jobs:
                 node docs/qa/t13b-asset-pipeline/emissive-runtime.mjs artifacts/t2/emissive
               ;;
             firefox)
-              export T2_CHECKS=tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context FIREFOX_HEADED=1
+              export T2_CHECKS=caves,tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context FIREFOX_HEADED=1
               xvfb-run -a -s "-screen 0 1920x1200x24" npm run test:t2
               ;;
             webkit)
-              export T2_CHECKS=tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context
+              export T2_CHECKS=caves,tier,scramble,poi,dig,motion,look,modes,ring,seam,draws,context
               # macOS draws on a GPU through Metal: the frame-time readout,
               # parked and digging, is worth reading there (not asserted).
               if [ "$RUNNER_OS" = macOS ]; then export T2_CHECKS="$T2_CHECKS,frametime"; fi

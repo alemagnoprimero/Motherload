@@ -50,7 +50,8 @@ intersections are skipped, and reflected rows use a signed vertical scale.
 | Phone 10 draw calls, boot 20/active 40 MiB, desktop 64 MiB, parked 0 uploads | Existing render/memory/masked-beacon checks plus targeted cave captures; no new texture or stencil pass. A8 expanded residency peaks at 63.64 MiB desktop and 36.13 MiB phone. |
 | Back-wall luma 28–42 and sd ≥4; brightness ordering | Runtime frame measurements accompany before/after fixtures. A8's unlit source composite is 35.724/sd 5.281; this is not substituted for a lit runtime measurement. |
 
-The new caves check is part of the `verify` job and the default T2 suite.
+The new caves check is part of the `verify` job, the default T2 suite and
+the Firefox/WebKit T2 workflow lists.
 Its artifacts use `artifacts/render-caves`, retained by the existing workflow
 upload. Ordinary HUD is hidden during its pixel comparison; Scan annotations
 remain visible. Positive layer counts prevent an empty renderer from passing.
