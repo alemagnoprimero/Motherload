@@ -57,6 +57,11 @@ the Firefox/WebKit T2 workflow lists.
 Its artifacts use `artifacts/render-caves`, retained by the existing workflow
 upload. Ordinary HUD is hidden during its pixel comparison; Scan annotations
 remain visible. Positive layer counts prevent an empty renderer from passing.
+The test keeps the annotation root on a consistent compositor layer: an
+unchanged-input control exposed one-level rounding changes in Chromium's
+rotated HOME arrow. Labels, geometry and Scan stay visible and unchanged.
+Every case now also requires an unchanged-input full-frame control to match
+at exactly 0 pixels before the hidden-input comparison.
 
 `__campaignDebug.caveLayers()` reports the last rendered fragments. Its
 `backWalls` switch supplies same-build before/after fixtures; its hidden-input

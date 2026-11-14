@@ -358,6 +358,9 @@ try {
               .campaign-shell > :not(#campaign-game):not(#campaign-world-labels),
               #campaign-frametime { filter: opacity(0) !important; }
               body.campaign-hit::after { display: none !important; }
+              /* Rotated images can drift by one RGB level with unchanged
+                 inputs. Stabilize compositing without moving or hiding them. */
+              #campaign-world-labels { will-change: transform; }
             `,
           });
           for (const scan of [false, true]) {
@@ -405,6 +408,15 @@ try {
                 snapshot.annotations.some((item) => item.scan),
                 `${name}: Scan annotations remain in the capture`,
               );
+            await advance(page, 100);
+            const control = `${out}/caves-${name}-control.png`;
+            await writeFile(control, await settledShot(page));
+            const controlDifferingPixels = differing(before, control);
+            assert.equal(
+              controlDifferingPixels,
+              0,
+              `${name}: unchanged-input full-frame control 0 px`,
+            );
             const seed = 0x4ca7e;
             await page.evaluate(
               (scrambleUnknown) =>
@@ -477,6 +489,7 @@ try {
               dressing: snapshot.layers.dressing?.length ?? 0,
               annotations: snapshot.annotations.length,
               differingPixels: pixels,
+              controlDifferingPixels,
               drawCalls: Number(parked.drawCalls),
               residentBytes,
               stillTextureUploads: probe.textureUploads,
