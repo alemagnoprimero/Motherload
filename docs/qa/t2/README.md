@@ -380,7 +380,7 @@ To read the macOS leg again without a push: run the "T2 field renderer checks" w
 | the same, portrait | 43 | 63 | cancelled after 31 |
 | Total | 1,023 | 1,395 | about 1,730 |
 
-- **T8 and H1 to H4 added about 370 s** to the suites T2 does not touch (camera, the two opening runs, feel, plan-ui, hud-surface, and the first six checks of `test:improvements`).
+- **T8 and H1 to H4 added about 420 s** to the suites T2 does not touch (camera +85, the two opening runs +86 and +20, feel +36, plan-ui +30, hud-surface +20, render-memory +9, and the first six checks of `test:improvements` +137).
 - **T2 adds about 325 s over #24**, all of it in the three places that pin the field, which SwiftShader rasterises slowly: the fog check (52 to 168 s, now also run with Scan on), the §9 harness captures (119 to 231 s) and render-acceptance's WebGL runs (46 to 141 s).
 - With two minutes of setup that is about 31 minutes. Candidates to trim later, largest first: the harness captures on the field (eight fixtures at 1440 × 900; a smaller window, or the field on half of them); the fog check's field run with Scan on as well as off; render-acceptance's field runs.
 
