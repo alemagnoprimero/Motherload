@@ -459,6 +459,8 @@ export async function runCaveCaptures(browser, base, out, options = {}) {
       backingPin: backing,
       captures: {},
     });
+    const pending = new Map();
+    const pendingByConfiguration = new Map();
     for (const capture of captures.filter(
       (entry) =>
         !only?.length || only.some((prefix) => entry.name.startsWith(prefix)),
@@ -505,84 +507,115 @@ export async function runCaveCaptures(browser, base, out, options = {}) {
         await atomicJson(`${folder}/manifest.json`, manifest);
         continue;
       }
-      let settledCheckpoint;
-      const baselineState = `${folder}/frames/${capture.name}/pre-layer-state.json`;
       const record = {
         checkpointSha256,
         configurationSha256,
         completed: false,
       };
       log.captures[key] = record;
-      await atomicJson(logPath, log);
-      // Per-capture directories let the existing helper finish and commit a
-      // manifest immediately; an interruption loses at most this one frame.
-      const one = await runArtCaptures(
-        browser,
-        base,
-        `${folder}/frames/${capture.name}`,
-        {
-          backing,
-          search,
-          captures: [
-            { ...capture, checkpoint: () => structuredClone(checkpoint) },
-          ],
-          beforeNavigate: async ({ context }) => {
-            context.setDefaultTimeout(120000);
-            context.setDefaultNavigationTimeout(120000);
-            await context.addInitScript(installRenderProbe, {
-              geometry: false,
-              fog: false,
-            });
-          },
-          beforeCapture: async ({ page }) => {
-            settledCheckpoint = await exportCheckpoint(page, true);
-            await settledView(page, settledCheckpoint);
-            record.postImportBaselineSha256 = hash(settledCheckpoint.state);
-            await atomicJson(baselineState, settledCheckpoint);
-            record.report = await probeCapture(
-              page,
-              capture,
-              settledCheckpoint,
-              item,
-              phase,
-              async (report) => {
-                record.report = report;
-                await atomicJson(logPath, log);
-              },
-            );
+      const matching =
+        resume && pendingByConfiguration.get(configurationSha256);
+      if (matching) {
+        // Reuse is committed only after the source capture's files and
+        // strict acceptance checks have passed in afterCapture below.
+        matching.aliases.push({ key, name: capture.name });
+        continue;
+      }
+      const entry = {
+        key,
+        capture,
+        checkpoint,
+        baselineState: `${folder}/frames/${capture.name}-pre-layer-state.json`,
+        record,
+        aliases: [],
+      };
+      pending.set(capture.name, entry);
+      pendingByConfiguration.set(configurationSha256, entry);
+    }
+    if (!pending.size) continue;
+    await atomicJson(logPath, log);
+    // The shared helper groups this phase by form/search, while the success
+    // hook commits each capture immediately. An interruption still loses
+    // at most the current fixture, without repeating page startup per frame.
+    await runArtCaptures(browser, base, `${folder}/frames`, {
+      backing,
+      search,
+      captures: [...pending.values()].map(({ capture, checkpoint }) => ({
+        ...capture,
+        checkpoint: () => structuredClone(checkpoint),
+      })),
+      beforeNavigate: async ({ context }) => {
+        context.setDefaultTimeout(120000);
+        context.setDefaultNavigationTimeout(120000);
+        await context.addInitScript(installRenderProbe, {
+          geometry: false,
+          fog: false,
+        });
+      },
+      beforeCapture: async ({ page, capture }) => {
+        const entry = pending.get(capture.name);
+        const { record, baselineState } = entry;
+        const settledCheckpoint = await exportCheckpoint(page, true);
+        entry.settledCheckpoint = settledCheckpoint;
+        await settledView(page, settledCheckpoint);
+        record.postImportBaselineSha256 = hash(settledCheckpoint.state);
+        await atomicJson(baselineState, settledCheckpoint);
+        record.report = await probeCapture(
+          page,
+          capture,
+          settledCheckpoint,
+          item,
+          phase,
+          async (report) => {
+            record.report = report;
             await atomicJson(logPath, log);
           },
-        },
-      );
-      record.capture = { ...one.captures[capture.name], baselineState };
-      const actual = JSON.parse(await readFile(record.capture.state, "utf8"));
-      for (const worldId of Object.keys(checkpoint.state.worlds))
-        for (const field of ["tiles", "discovered"])
-          assert.deepEqual(
-            actual.state.worlds[worldId][field],
-            (field === "discovered" ? settledCheckpoint : checkpoint).state
-              .worlds[worldId][field],
-            `${key}: ${worldId}.${field} changed`,
-          );
-      record.report.validation.comparisonBaseline =
-        "post-import settled state before layer switches";
-      record.report.validation.initialDiscoveredCells =
-        checkpoint.state.worlds.W01.discovered.filter(
-          (value) => value === 1,
-        ).length;
-      record.report.validation.postImportDiscoveredCells =
-        settledCheckpoint.state.worlds.W01.discovered.filter(
-          (value) => value === 1,
-        ).length;
-      record.report.validation.geometryUnchanged = true;
-      record.report.validation.discoveryUnchanged = true;
-      record.fileSha256 = await fileHashes(record.capture);
-      record.completed = true;
-      record.settled = { identical: true, stepMs: 50 };
-      manifest.captures[capture.name] = record.capture;
-      await atomicJson(logPath, log);
-      await atomicJson(`${folder}/manifest.json`, manifest);
-    }
+        );
+        await atomicJson(logPath, log);
+      },
+      afterCapture: async ({ capture, result }) => {
+        const {
+          key,
+          checkpoint,
+          settledCheckpoint,
+          baselineState,
+          record,
+          aliases,
+        } = pending.get(capture.name);
+        record.capture = { ...result, baselineState };
+        const actual = JSON.parse(await readFile(record.capture.state, "utf8"));
+        for (const worldId of Object.keys(checkpoint.state.worlds))
+          for (const field of ["tiles", "discovered"])
+            assert.deepEqual(
+              actual.state.worlds[worldId][field],
+              (field === "discovered" ? settledCheckpoint : checkpoint).state
+                .worlds[worldId][field],
+              `${key}: ${worldId}.${field} changed`,
+            );
+        record.report.validation.comparisonBaseline =
+          "post-import settled state before layer switches";
+        record.report.validation.initialDiscoveredCells =
+          checkpoint.state.worlds.W01.discovered.filter(
+            (value) => value === 1,
+          ).length;
+        record.report.validation.postImportDiscoveredCells =
+          settledCheckpoint.state.worlds.W01.discovered.filter(
+            (value) => value === 1,
+          ).length;
+        record.report.validation.geometryUnchanged = true;
+        record.report.validation.discoveryUnchanged = true;
+        record.fileSha256 = await fileHashes(record.capture);
+        record.completed = true;
+        record.settled = { identical: true, stepMs: 50 };
+        manifest.captures[capture.name] = record.capture;
+        for (const alias of aliases) {
+          log.captures[alias.key] = { ...record, reusedFrom: key };
+          manifest.captures[alias.name] = record.capture;
+        }
+        await atomicJson(logPath, log);
+        await atomicJson(`${folder}/manifest.json`, manifest);
+      },
+    });
   }
   return log;
 }
