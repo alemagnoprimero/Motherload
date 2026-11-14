@@ -526,11 +526,14 @@ export async function runCaveCaptures(browser, base, out, options = {}) {
           captures: [
             { ...capture, checkpoint: () => structuredClone(checkpoint) },
           ],
-          beforeNavigate: async ({ context }) =>
-            context.addInitScript(installRenderProbe, {
+          beforeNavigate: async ({ context }) => {
+            context.setDefaultTimeout(120000);
+            context.setDefaultNavigationTimeout(120000);
+            await context.addInitScript(installRenderProbe, {
               geometry: false,
               fog: false,
-            }),
+            });
+          },
           beforeCapture: async ({ page }) => {
             settledCheckpoint = await exportCheckpoint(page, true);
             await settledView(page, settledCheckpoint);

@@ -38,26 +38,66 @@ CONVENTIONS = {
 T4_BRIGHTNESS_TARGETS = {
     "cave_air_luma": "28–42 luma (0–255)",
     "cave_air_sd": "≥4 luma standard deviation",
-    "cooler_than_rock": "cave-air mean Lab b* lower than known-solid mean Lab b*",
+    "cooler_than_rock": "caveAirB < knownSolidB (mean Lab b*, blue–yellow axis)",
     "unknown_minus_cave_air": "≥10 luma",
     "solid_minus_cave_air": "≥18 luma; all known solid, per the existing audit measure",
 }
 
 
-def t4_brightness(regions):
+def region_b_stats(rgb, state, view, dpr, rig, keep, original, metrics):
+    """Read mean Lab b* through the existing region masks without copying their logic.
+
+    region_stats applies its linear luma function before selecting pixels.
+    Three equal channels make that scalar equal to b*, including negative
+    values. No clipping, RGB encoding or image conversion is applied to this
+    floating-point proxy. The region means retain stat()'s one-decimal rounding.
+    """
+    blue_yellow = metrics.lab(rgb)[2]
+    proxy = np.broadcast_to(blue_yellow[..., None], rgb.shape)
+    measured = metrics.region_stats(proxy, state, view, dpr, rig, keep)
+    counts = {}
+    for key in ("cave_air", "known_solid"):
+        expected, actual = original[key], measured[key]
+        require((expected is None) == (actual is None),
+                f"Lab b* {key}: usable-region status differs from the original luma mask")
+        if actual is not None:
+            require(actual["n"] == expected["n"],
+                    f"Lab b* {key}: pixel count differs from the original luma mask")
+        counts[key] = None if actual is None else actual["n"]
+    return {
+        "caveAirB": None if measured["cave_air"] is None else measured["cave_air"]["luma"],
+        "knownSolidB": None if measured["known_solid"] is None else measured["known_solid"]["luma"],
+        "region_pixels": counts, "maskPixelCountsMatch": True,
+    }
+
+
+def capture_region_b(capture, original, metrics):
+    rgb = metrics.load_rgb(capture["hudFree"])
+    state = json.loads(Path(capture["state"]).read_text())
+    dpr, view = capture["deviceScaleFactor"], capture["view"]
+    # The same unrounded scoring window and keep construction as measure().
+    window, _ = metrics.scoring_window(view, metrics.panels()[capture["panel"]])
+    keep = np.zeros(rgb.shape[:2], bool)
+    x0, y0, x1, y1 = (int(round(value * dpr)) for value in window)
+    keep[y0:y1, x0:x1] = True
+    return region_b_stats(rgb, state, view, dpr, capture["rig"], keep, original, metrics)
+
+
+def t4_brightness(regions, colour):
     """Diagnose T4 using existing region_stats outputs; never redraw a mask."""
     air = regions["cave_air"]
     values = {
         "cave_air_luma": None if air is None else air["luma"],
         "cave_air_sd": None if air is None else air["sd"],
-        "cooler_than_rock": None,
+        "caveAirB": colour["caveAirB"], "knownSolidB": colour["knownSolidB"],
         "unknown_minus_cave_air": regions["unknown_minus_cave_air"],
         "solid_minus_cave_air": regions["solid_minus_cave_air"],
     }
     gates = {
         "cave_air_luma": None if air is None else 28 <= air["luma"] <= 42,
         "cave_air_sd": None if air is None else air["sd"] >= 4,
-        "cooler_than_rock": None,
+        "cooler_than_rock": (None if colour["caveAirB"] is None or colour["knownSolidB"] is None
+                             else colour["caveAirB"] < colour["knownSolidB"]),
         "unknown_minus_cave_air": (None if values["unknown_minus_cave_air"] is None
                                    else values["unknown_minus_cave_air"] >= 10),
         "solid_minus_cave_air": (None if values["solid_minus_cave_air"] is None
@@ -65,23 +105,23 @@ def t4_brightness(regions):
     }
     unavailable = {
         key: "Required region unavailable: existing region_stats needs more than 500 sampled pixels per region."
-        for key, value in values.items() if value is None and key != "cooler_than_rock"
+        for key, passed in gates.items() if passed is None
     }
-    unavailable["cooler_than_rock"] = (
-        "Unmeasured: existing region_stats reports luma, standard deviation and count, "
-        "not mean Lab b* for the same cave-air and known-solid masks. No colour claim is inferred from luma."
-    )
     return {
         "values": values, "gates": gates, "unavailable": unavailable,
+        "colour_mask_check": colour,
         "region_pixels": {key: None if regions[key] is None else regions[key]["n"]
                           for key in ("cave_air", "unknown", "known_solid")},
     }
 
 
 def brightness_cell(measured, key):
-    value, passed = measured["values"][key], measured["gates"][key]
+    passed = measured["gates"][key]
     if key == "cooler_than_rock":
-        return "unmeasured"
+        values = measured["values"]
+        return ("unavailable" if passed is None else
+                f"{values['caveAirB']:.1f} / {values['knownSolidB']:.1f} {'✓' if passed else '✗'}")
+    value = measured["values"][key]
     return "unavailable" if value is None else f"{value:.1f} {'✓' if passed else '✗'}"
 
 
@@ -327,7 +367,7 @@ def comparison(name, before, after, output, item, metrics):
     return path.name
 
 
-def brief_measure(name, capture, sheets):
+def brief_measure(name, capture, sheets, metrics):
     full = sheets.measure(name, capture)
     frame, rock = full["frame"], full["regions"]["rock_near_light"]
     return {
@@ -337,7 +377,7 @@ def brief_measure(name, capture, sheets):
         "rock_near_light_pixels": None if rock is None else rock["n"],
         "scoring_window_css": full["window"],
         "regions": full["regions"],
-        "t4_brightness": t4_brightness(full["regions"]),
+        "t4_brightness": t4_brightness(full["regions"], capture_region_b(capture, full["regions"], metrics)),
     }
 
 
@@ -408,7 +448,10 @@ def main():
             "including dug air and any rendered content in those pixels. These are lit fixture measurements, "
             "not isolated strip/source measurements. Known-solid minus cave-air uses all known solid, "
             "as the existing prototype/audit row does. Each region requires more than 500 pixels. "
-            "Cooler-than-rock is explicitly unmeasured because these outputs do not contain Lab b*."
+            "For colour, per-pixel Lab b* is repeated into three scalar channels and passed through the "
+            "unchanged region_stats masks with the same scoring keep window; pixel counts must match the "
+            "original luma regions. caveAirB < knownSolidB measures cooler on the blue–yellow axis, "
+            "using the existing one-decimal region-mean precision."
         ),
     }
     lines = [f"# {args.item} before/after game fixtures", "", CONVENTIONS[args.item], "",
@@ -430,7 +473,7 @@ def main():
              "|---|---|---|---|---|---|"]
     for name in names:
         previous, capture = before[name], after[name]
-        bm, am = [brief_measure(name, source, sheets) for source in (previous, capture)]
+        bm, am = [brief_measure(name, source, sheets, metrics) for source in (previous, capture)]
         concept = sheets.concept(capture["panel"])
         bp, ap = [metrics.load_rgb(source["hudFree"]) for source in (previous, capture)]
         require(bp.shape == ap.shape, f"{name}: before/after image dimensions differ")
@@ -468,21 +511,27 @@ def main():
               "the new layer actually contributes.", "",
               "✓/✗ compares each phase with the stated visual target; failures are reported and never abort "
               "this builder. `unavailable` means an existing required region has at most 500 usable pixels. "
-              "Cooler-than-rock is `unmeasured`: the existing region results have no mean Lab b* for these "
-              "same cave/rock masks. Luma is not a substitute for colour temperature.", "",
+              "Cooler-than-rock compares mean Lab b* in those same cave-air and known-solid masks: "
+              "lower b* is bluer on the blue–yellow axis. The table gives air / rock b*; "
+              "it is a masked-region colour comparison, not a full colour-temperature estimate.", "",
+              "Per-pixel b* is supplied as three equal floating-point channels to the unchanged "
+              "`region_stats` function, using the same state, view, rig and scoring-window keep mask. "
+              "Its linear luma then equals b*, and both colour-region pixel counts must match the "
+              "original luma-region counts. Means retain the helper's one-decimal rounding; original "
+              "brightness measurements are untouched.", "",
               "The ≥18 row uses all known solid minus cave air, matching the existing audit/prototype measure; "
               "it does not substitute the smaller near-lamp subset. Per-region counts and unavailability "
               "reasons are recorded in `captures.json`.", "",
-              "| Fixture | Back-wall fragments before → after | Cave-air luma 28–42 | Cave-air sd ≥4 | Unknown − air ≥10 | All known solid − air ≥18 | Cooler than rock |",
+              "| Fixture | Back-wall fragments before → after | Cave-air luma 28–42 | Cave-air sd ≥4 | Unknown − air ≥10 | All known solid − air ≥18 | Mean b*: air / rock (air < rock) |",
               "|---|---|---|---|---|---|---|"]
     for name in names:
         pair = result["captures"][name]
         previous, current = [pair[phase]["t4_brightness"] for phase in ("before", "after")]
         values = [f"{brightness_cell(previous, key)} → {brightness_cell(current, key)}"
-                  for key in ("cave_air_luma", "cave_air_sd", "unknown_minus_cave_air", "solid_minus_cave_air")]
+                  for key in ("cave_air_luma", "cave_air_sd", "unknown_minus_cave_air", "solid_minus_cave_air", "cooler_than_rock")]
         fragments = [runtime[f"{phase}/{name}"]["backWallFragments"] for phase in ("before", "after")]
         lines.append(f"| {name} | {fragments[0]} → {fragments[1]} | "
-                     + " | ".join(values) + " | unmeasured → unmeasured |")
+                     + " | ".join(values) + " |")
     failed_visuals = {name: failed for name, failed in result["visualTargetsNotMet"].items() if failed}
     lines += ["", "After-capture visual targets not met:", ""]
     lines += ([f"- {name}: {', '.join(failed)}." for name, failed in failed_visuals.items()]
