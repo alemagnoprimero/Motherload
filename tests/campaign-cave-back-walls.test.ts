@@ -248,7 +248,7 @@ describe("safe back-wall fragments", () => {
     }
   });
 
-  it("shares source edges at vertical joins and repeats after eight world rows", () => {
+  it("joins opposite authored edges upright and repeats after eight world rows", () => {
     const { world, pristine } = fixture();
     for (let y = 30; y <= 47; y++)
       for (let x = 0; x < world.width; x++) {
@@ -262,31 +262,67 @@ describe("safe back-wall fragments", () => {
       { left: 0, right: 2, top: 31, bottom: 47 },
       0,
     );
-    const sourceAt = (y: number) => {
+    const sourceAt = (y: number, layer: number) => {
       const fragment = plan.find(
-        ({ layer, bounds }) =>
-          layer === 0 &&
-          bounds.left < 0.5 &&
-          bounds.right > 0.5 &&
-          bounds.top < y &&
-          bounds.bottom > y,
+        (item) =>
+          item.layer === layer &&
+          item.bounds.left < 0.5 &&
+          item.bounds.right > 0.5 &&
+          item.bounds.top < y &&
+          item.bounds.bottom > y,
       )!;
-      const local = ((y - fragment.image.top) / 4) * BACK_WALL_SOURCE.height;
-      return fragment.flipY ? BACK_WALL_SOURCE.height - local : local;
+      return {
+        frame: fragment.frame,
+        y: ((y - fragment.image.top) / 4) * BACK_WALL_SOURCE.height,
+      };
     };
-    for (const seam of [32, 36, 40, 44])
-      expect(sourceAt(seam - 1e-6)).toBeCloseTo(sourceAt(seam + 1e-6), 7);
-    expect(sourceAt(32.75)).toBe(sourceAt(40.75));
-    expect(sourceAt(32.75) + sourceAt(36.75)).toBe(BACK_WALL_SOURCE.height);
-    for (const { crop, flipY } of plan) {
-      const sourceY = flipY
-        ? BACK_WALL_SOURCE.height - crop.y - crop.height
-        : crop.y;
-      expect(sourceY).toBeGreaterThanOrEqual(-1e-8);
-      expect(sourceY + crop.height).toBeLessThanOrEqual(
-        BACK_WALL_SOURCE.height + 1e-8,
+    for (const layer of [0, 1]) {
+      for (const seam of [32, 36, 40, 44]) {
+        const before = sourceAt(seam - 1e-6, layer);
+        const after = sourceAt(seam + 1e-6, layer);
+        // A8 checks the actual RGBA equality at these authored edge pairs.
+        expect(before.frame).not.toBe(after.frame);
+        expect(before.y).toBeCloseTo(BACK_WALL_SOURCE.height, 3);
+        expect(after.y).toBeCloseTo(0, 3);
+      }
+      expect(sourceAt(32.75, layer)).toEqual(sourceAt(40.75, layer));
+      expect(sourceAt(32.75, layer).frame).not.toBe(
+        sourceAt(36.75, layer).frame,
       );
+      for (const row of [32, 36, 40, 44])
+        expect(sourceAt(row + 0.75, layer).y).toBeGreaterThan(
+          sourceAt(row + 0.25, layer).y,
+        );
     }
+    expect(sourceAt(32.75, 0).frame).toBe("cave-backwall-far");
+    expect(sourceAt(32.75, 1).frame).toBe("cave-backwall-near");
+    const first = planBackWalls(
+      view,
+      { left: 0, right: 2, top: 31.25, bottom: 38.75 },
+      0,
+    );
+    const next = planBackWalls(
+      view,
+      { left: 0, right: 2, top: 39.25, bottom: 46.75 },
+      0,
+    );
+    const relative = (fragments: BackWallFragment[], shift: number) =>
+      fragments.map(({ id: _id, bounds, image, ...fragment }) => ({
+        ...fragment,
+        bounds: {
+          ...bounds,
+          top: bounds.top - shift,
+          bottom: bounds.bottom - shift,
+        },
+        image: {
+          ...image,
+          top: image.top - shift,
+          bottom: image.bottom - shift,
+        },
+      }));
+    expect(cloneRounded(relative(next, 8))).toEqual(
+      cloneRounded(relative(first, 0)),
+    );
   });
 });
 

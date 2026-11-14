@@ -25,8 +25,10 @@ Horizontal phase depends on world position and camera position, with
 parallax factors .25/.5. W01 has four ten-tile repeats; returning a world
 width later preserves phase exactly. The authored 10⅔-tile width is therefore
 compressed 6.25%. Vertical position is fixed to world rows, four tiles per
-source with alternate rows reflected: an eight-tile vertical period. This
-matches source edges without adding another atlas page.
+source with the two upright sources alternating: far/near in layer 0 and
+near/far in layer 1, for an eight-tile vertical period. Each layer retains
+its own parallax factor. Matching source-edge colours make the vertical
+joins continuous without reflecting facets or adding another atlas page.
 
 Newly revealed cells fade for 300 ms on the scene clock. Newly permitted
 margins in already-known neighbours inherit that reveal's alpha, so they do
@@ -37,18 +39,18 @@ and crop/alpha state; they do not update textures.
 
 The common image pool resets its crop before reuse. Full-source crop
 coordinates account for atlas trimming and native density. Empty trim
-intersections are skipped, and reflected rows use a signed vertical scale.
+intersections are skipped, and all source transforms stay upright.
 
 ## Acceptance and evidence
 
 | Check | Result / method |
 | --- | --- |
 | Natural versus dug, known cells only | Detached adapter and adversarial unreadable-hidden-array tests. |
-| Seeded world-position phase, wrapped seam | Unit checks cover a complete world lap and mirrored vertical source-edge continuity. |
+| Seeded world-position phase, wrapped seam | Unit checks cover a complete world lap and alternating upright source-edge continuity. |
 | 300 ms reveal and neighbour-margin fade | Behavioural tests cover new cells, new margins, reset, frozen and reduced-motion clocks. |
 | Hidden-cave scramble | New `T2_CHECKS=caves` compares full frames and the actual rendered plans in 12 cases: desktop/phone × pinned field/retained WebGL/Canvas × Scan off/on. It changes every hidden current/pristine input to the new cave adapter without changing simulation or discovery. Existing fog, POI and terrain scramble checks also run. |
 | Phone 10 draw calls, boot 20/active 40 MiB, desktop 64 MiB, parked 0 uploads | Existing render/memory/masked-beacon checks plus targeted cave captures; no new texture or stencil pass. A8 expanded residency peaks at 63.64 MiB desktop and 36.13 MiB phone. |
-| Back-wall luma 28–42 and sd ≥4; brightness ordering | Runtime frame measurements accompany before/after fixtures. A8's unlit source composite is 35.724/sd 5.281; this is not substituted for a lit runtime measurement. |
+| Back-wall luma 28–42 and sd ≥4; brightness ordering | Runtime frame measurements accompany before/after fixtures. A8's source-composite measurements are recorded in its own evidence and are not substituted for a lit runtime measurement. |
 
 The new caves check is part of the `verify` job, the default T2 suite and
 the Firefox/WebKit T2 workflow lists.
@@ -67,10 +69,9 @@ campaign.
   chosen world-periodic phase.
 - Confirm the conservative 0.30-tile inset. It keeps field edges intact and
   can leave a plain-air collar beside narrow cave boundaries.
-- Confirm the reflected vertical rhythm. Reflection reverses the authored
-  facet orientation on alternate rows, so uniform top-lighting is not met
-  there. The fallback keeps the memory budget; a different vertical profile
-  or fixed vertical scale needs a further art review.
+- Confirm the eight-tile vertical rhythm from alternating upright source
+  pairs. It preserves authored facet orientation and the existing texture
+  budget; each layer keeps its own parallax factor as its source changes.
 - The new slots do not supply T1 lighting or T5 foreground dressing.
 
 Scene integration is one coordinator call plus its state/debug/reset and

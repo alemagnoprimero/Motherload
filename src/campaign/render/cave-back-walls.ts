@@ -6,8 +6,16 @@ export const BACK_WALL_INSET = 0.3;
 export const BACK_WALL_REVEAL_SECONDS = 0.3;
 export const BACK_WALL_SOURCE = { width: 1024, height: 384 } as const;
 export const BACK_WALL_LAYERS = [
-  { frame: "cave-backwall-far", parallax: 0.25 },
-  { frame: "cave-backwall-near", parallax: 0.5 },
+  {
+    frame: "cave-backwall-far",
+    alternateFrame: "cave-backwall-near",
+    parallax: 0.25,
+  },
+  {
+    frame: "cave-backwall-near",
+    alternateFrame: "cave-backwall-far",
+    parallax: 0.5,
+  },
 ] as const;
 
 export interface CaveRect {
@@ -23,6 +31,7 @@ export interface CaveClock {
 }
 export interface BackWallLayer {
   frame: string;
+  alternateFrame: string;
   parallax: number;
 }
 export interface BackWallFragment {
@@ -31,16 +40,11 @@ export interface BackWallFragment {
   layer: number;
   depth: number;
   alpha: number;
-  /** Alternate four-row strips mirror vertically; the complete period is eight rows. */
-  flipY: boolean;
   /** Known natural-air rectangle, in unwrapped world tiles. */
   bounds: CaveRect;
   /** Full uncropped sprite box, in world tiles; origin is its top left. */
   image: CaveRect;
-  /**
-   * Crop in the displayed full @2x strip, not the atlas's trimmed rectangle.
-   * When flipY is true, source y = sourceHeight - crop.y - crop.height.
-   */
+  /** Crop in the full authored @2x source, not the atlas's trimmed rectangle. */
   crop: { x: number; y: number; width: number; height: number };
 }
 
@@ -277,9 +281,9 @@ function fadingRegions(
  * repeats: 6.25% narrower than the authored 10 2/3 tiles. Quarter/half
  * parallax each advances an integer number of repeats on a world lap,
  * so crossing x=0 or returning a world width later never changes phase.
- * Four-tile vertical strips alternate direction, making an eight-row
- * mirrored repeat whose boundaries share the same source edge. Discovery
- * never chooses the strip's extent, phase, or direction.
+ * Four-tile vertical strips alternate the two authored sources. Their
+ * opposite edges match, making an eight-row repeat with upright facets.
+ * Discovery never chooses the strip's extent, phase, or source frame.
  */
 export function planBackWalls(
   view: KnownCaveView,
@@ -325,11 +329,13 @@ export function planBackWalls(
                 scaleY = BACK_WALL_SOURCE.height / height;
               fragments.push({
                 id: `${layer}:${canonicalCell(view, column, row)}:${part++}`,
-                frame: definition.frame,
+                frame:
+                  wrap(Math.floor(imageTop / height), 2) === 1
+                    ? definition.alternateFrame
+                    : definition.frame,
                 layer,
                 depth: BACK_WALL_DEPTH + layer * 0.01,
                 alpha,
-                flipY: wrap(Math.floor(imageTop / height), 2) === 1,
                 bounds: { left, top, right, bottom },
                 image: {
                   left: imageLeft,

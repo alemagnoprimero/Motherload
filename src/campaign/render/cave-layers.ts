@@ -122,15 +122,7 @@ export class CaveLayers {
         if (!image) continue;
         const crop = trimmedSourceCrop(
           image.frame,
-          fragment.flipY
-            ? {
-                ...fragment.crop,
-                y:
-                  BACK_WALL_SOURCE.height -
-                  fragment.crop.y -
-                  fragment.crop.height,
-              }
-            : fragment.crop,
+          fragment.crop,
           BACK_WALL_SOURCE,
         );
         if (!crop) {
@@ -141,10 +133,7 @@ export class CaveLayers {
         // ordinary props retain image()'s device-pixel snapping.
         image
           .setPosition(x, y)
-          .setScale(
-            w / image.frame.realWidth,
-            (fragment.flipY ? -h : h) / image.frame.realHeight,
-          )
+          .setScale(w / image.frame.realWidth, h / image.frame.realHeight)
           .setCrop(crop.x, crop.y, crop.width, crop.height);
         this.snapshot.backWalls.push(fragment);
       }
