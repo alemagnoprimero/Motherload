@@ -1620,6 +1620,18 @@ export function createCampaignScene(bindings: CampaignSceneBindings) {
           seconds: this.elapsed,
           frozen: this.sceneClockFrozen,
           reducedMotion: reduced,
+          // The retained terrain path has the Medium decal budget even
+          // when F1's independent backing policy still calls it High.
+          quality:
+            this.resolutionBudget.tier === "high" &&
+            !(
+              this.terrainLayer instanceof FieldTerrain &&
+              this.terrainLayer.field
+            )
+              ? "medium"
+              : this.resolutionBudget.tier,
+          canvas: this.game.renderer.type === Phaser.CANVAS,
+          highContrast,
         },
         (frame, x, y, w, h, depth, alpha, flip) => {
           if (this.image(frame, x, y, w, h, depth, alpha, flip))

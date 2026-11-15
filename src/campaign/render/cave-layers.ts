@@ -10,6 +10,13 @@ import {
   type CaveClock,
 } from "./cave-back-walls";
 import { trimmedSourceCrop } from "./cave-crop";
+import {
+  DressingTransitions,
+  planDressing,
+  type DressingOptions,
+  type FadedDressing,
+} from "./dressing";
+import dressingCatalog from "../../../assets/campaign/generated/w01-dressing.json";
 
 export interface CaveLayerOptions {
   scrambleUnknown?: number | null;
@@ -20,7 +27,12 @@ export interface CaveLayerSnapshot {
   enabled: { backWalls: boolean; dressing: boolean };
   input: { scrambleUnknown: number | null; unknownCells: number };
   backWalls: BackWallFragment[];
-  dressing: { frame: string; alpha: number }[];
+  dressing: FadedDressing[];
+  dressingStats: {
+    limit: number;
+    exposedCeilings: number;
+    decoratedCeilings: number;
+  };
 }
 
 type CaveImage = (
@@ -41,6 +53,7 @@ type CaveGeometry = Pick<
 /** Known-only cave layers share the scene's normal sprite and emissive pools. */
 export class CaveLayers {
   private reveals = new BackWallReveals();
+  private transitions = new DressingTransitions();
   private scramble: number | undefined;
   private enabled = { backWalls: true, dressing: true };
   private snapshot: CaveLayerSnapshot = {
@@ -48,10 +61,12 @@ export class CaveLayers {
     input: { scrambleUnknown: null, unknownCells: 0 },
     backWalls: [],
     dressing: [],
+    dressingStats: { limit: 0, exposedCeilings: 0, decoratedCeilings: 0 },
   };
 
   reset() {
     this.reveals.reset();
+    this.transitions.reset();
   }
 
   debug(options?: CaveLayerOptions): CaveLayerSnapshot {
@@ -67,7 +82,7 @@ export class CaveLayers {
   render(
     world: CampaignWorld,
     geometry: CaveGeometry,
-    clock: CaveClock,
+    clock: CaveClock & Omit<DressingOptions, "gutter">,
     draw: CaveImage,
   ) {
     const view = createKnownCaveView(world, {
@@ -96,6 +111,7 @@ export class CaveLayers {
       },
       backWalls: [],
       dressing: [],
+      dressingStats: { limit: 0, exposedCeilings: 0, decoratedCeilings: 0 },
     };
     if (this.enabled.backWalls)
       for (const fragment of planBackWalls(
@@ -137,5 +153,51 @@ export class CaveLayers {
           .setCrop(crop.x, crop.y, crop.width, crop.height);
         this.snapshot.backWalls.push(fragment);
       }
+    const plan = planDressing(
+      view,
+      viewport,
+      {
+        quality: clock.quality,
+        canvas: clock.canvas,
+        highContrast: clock.highContrast,
+        gutter: 2 / (tile * geometry.dpr),
+      },
+      dressingCatalog,
+    );
+    this.snapshot.dressingStats = {
+      limit: plan.limit,
+      exposedCeilings: plan.exposedCeilings,
+      decoratedCeilings: plan.decoratedCeilings,
+    };
+    if (this.enabled.dressing) {
+      const placements = this.transitions.update(
+        view,
+        plan,
+        viewport,
+        clock.seconds,
+        {
+          frozen: clock.frozen,
+          reducedMotion: clock.reducedMotion,
+        },
+      );
+      for (const [ordinal, placement] of placements.entries()) {
+        // Distinct depths preserve seeded overlap order when shared pooled
+        // sprites previously held other frames (the A13 layer-order rule).
+        const depth = placement.depth + ordinal * 0.0001;
+        if (
+          draw(
+            placement.frame,
+            placement.x * tile - cx,
+            placement.y * tile - cy,
+            placement.width * tile,
+            placement.height * tile,
+            depth,
+            placement.alpha,
+            placement.flipX,
+          )
+        )
+          this.snapshot.dressing.push({ ...placement, depth });
+      }
+    } else this.transitions.reset();
   }
 }

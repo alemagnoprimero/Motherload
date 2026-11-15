@@ -471,6 +471,38 @@ try {
                 `${name}: ${frame} is drawn from a resident atlas`,
               );
             }
+            // T5 supplies these statistics; T4 runs the same hook without
+            // dressing. Hold the actual terrain path to its decal budget,
+            // even if the independent backing-quality tier remains High.
+            if (snapshot.layers.dressingStats) {
+              const maximum =
+                renderer === "canvas"
+                  ? 20
+                  : info.terrainRenderer === "field"
+                    ? 40
+                    : 30;
+              const { limit } = snapshot.layers.dressingStats;
+              assert.ok(
+                Number.isInteger(limit) && limit > 0 && limit <= maximum,
+                `${name}: dressing limit ${limit} stays within ${maximum}`,
+              );
+              assert.ok(
+                snapshot.layers.dressing.length <= limit,
+                `${name}: drawn dressing stays within its reported limit`,
+              );
+              const positive = snapshot.layers.dressing.filter(
+                (item) => item.alpha > 0,
+              );
+              assert.ok(
+                positive.length > 0,
+                `${name}: dressing visibly contributes`,
+              );
+              for (const { frame } of positive)
+                assert.ok(
+                  snapshot.drawnFrames.some((item) => item.frame === frame),
+                  `${name}: ${frame} is drawn from a resident atlas`,
+                );
+            }
             if (scan)
               assert.ok(
                 snapshot.annotations.some((item) => item.scan),
@@ -555,6 +587,7 @@ try {
               unknownCells: snapshot.layers.input.unknownCells,
               backWallFragments: snapshot.layers.backWalls.length,
               dressing: snapshot.layers.dressing?.length ?? 0,
+              dressingLimit: snapshot.layers.dressingStats?.limit ?? null,
               annotations: snapshot.annotations.length,
               differingPixels: pixels,
               controlDifferingPixels,

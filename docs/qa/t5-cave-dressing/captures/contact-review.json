@@ -1,0 +1,206 @@
+{
+  "sourceCommit": "4b3893661d0e996e0ff3e70f66651541a81f514a",
+  "method": "Actual drawn snapshots: catalog source contact transformed into world coordinates; current support cells independently checked known solid and adjacent anchor strip known air. Pristine-natural classification remains a separate planner test. Field displacement and device-pixel snapping require visual review beyond this algebra.",
+  "captures": {
+    "after/a04-dive-60m@2": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "after/a04p-dive-60m-phone@3": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "after/a05-dive-150m@2": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "after/a05p-dive-150m-phone@3": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "after/b-330m-plate-band-C@2": {
+      "actualProps": 19,
+      "faces": {
+        "ceiling": 11,
+        "floor": 7,
+        "left": 1
+      },
+      "families": {
+        "stalactite": 7,
+        "crystal": 4,
+        "rust": 4,
+        "boulder": 1,
+        "rubble": 3
+      },
+      "knownSupportCellsChecked": 21,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 1,
+      "actualDecoratedCeilings": 7,
+      "exposedCeilings": 7
+    },
+    "after/b-330mp-plate-band-C-phone@3": {
+      "actualProps": 19,
+      "faces": {
+        "ceiling": 11,
+        "floor": 7,
+        "left": 1
+      },
+      "families": {
+        "stalactite": 7,
+        "crystal": 4,
+        "rust": 4,
+        "boulder": 1,
+        "rubble": 3
+      },
+      "knownSupportCellsChecked": 21,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 1,
+      "actualDecoratedCeilings": 7,
+      "exposedCeilings": 7
+    },
+    "after/c-site-W01-SITE-4-wreck@2": {
+      "actualProps": 28,
+      "faces": {
+        "ceiling": 15,
+        "right": 1,
+        "floor": 12
+      },
+      "families": {
+        "stalactite": 11,
+        "crystal": 1,
+        "rust": 4,
+        "boulder": 2,
+        "rubble": 10
+      },
+      "knownSupportCellsChecked": 28,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 1,
+      "actualDecoratedCeilings": 11,
+      "exposedCeilings": 11
+    },
+    "after/p-portrait-cavern-site4@3": {
+      "actualProps": 25,
+      "faces": {
+        "ceiling": 14,
+        "right": 1,
+        "floor": 10
+      },
+      "families": {
+        "stalactite": 10,
+        "crystal": 1,
+        "rust": 4,
+        "boulder": 1,
+        "rubble": 9
+      },
+      "knownSupportCellsChecked": 25,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 1,
+      "actualDecoratedCeilings": 10,
+      "exposedCeilings": 10
+    },
+    "before/a04-dive-60m@2": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "before/a04p-dive-60m-phone@3": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "before/a05-dive-150m@2": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "before/a05p-dive-150m-phone@3": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": null,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 0
+    },
+    "before/b-330m-plate-band-C@2": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 0,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 7
+    },
+    "before/b-330mp-plate-band-C-phone@3": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 0,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 7
+    },
+    "before/c-site-W01-SITE-4-wreck@2": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 0,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 11
+    },
+    "before/p-portrait-cavern-site4@3": {
+      "actualProps": 0,
+      "faces": {},
+      "families": {},
+      "knownSupportCellsChecked": 0,
+      "maxAuthoredContactErrorTiles": 0,
+      "actualCeilingCoverage": 0,
+      "actualDecoratedCeilings": 0,
+      "exposedCeilings": 10
+    }
+  }
+}
