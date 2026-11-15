@@ -80,7 +80,7 @@ const CORE =
 const SURFACE = /^(sky-body|dock-stage-\d+|refuge-stage-\d+|relay-stage-\d+)$/;
 /** A7's render-only W01 band-C/D family (T5 owns placement, not worldgen). */
 export const CAVE_DRESSING =
-  /^cave-(stalactite-[0-8]|rust-(drip-[0-3]|particle-[0-5])|rubble-[0-5]|boulder-[0-2]|crystal-(floor|wall)-[0-2](-hc)?)$/;
+  /^cave-(stalactite-[0-8]|rust-(drip-[0-3]|particle-[0-5])|rubble-[0-5]|boulder-[0-2]|crystal-(floor|wall)-[0-2](-hc)?|backwall-(far|near))$/;
 /**
  * The hero set (D1, audit §5.6): the rig with its mounted tools and thrust,
  * ore, packages, relics, sockets and their marks, the beacon (asset 15), the

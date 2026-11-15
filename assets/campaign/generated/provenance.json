@@ -7,7 +7,7 @@
   "packing": "Node.js orchestrates Pillow lossless RGBA packing; every PNG re-encoded by scripts/png-canonical.mjs (pako 2.1.0: RGBA8, filter 0, deflate level 9, no ancillary chunks)",
   "logicalTile": 48,
   "authorScale": 2,
-  "frameCount": 239,
+  "frameCount": 241,
   "rasterFrames": [
     "test-raster",
     "cave-stalactite-0",
@@ -61,6 +61,8 @@
     "cave-crystal-wall-2",
     "cave-crystal-wall-2-emissive",
     "cave-crystal-wall-2-hc",
-    "cave-crystal-wall-2-hc-emissive"
+    "cave-crystal-wall-2-hc-emissive",
+    "cave-backwall-far",
+    "cave-backwall-near"
   ]
 }

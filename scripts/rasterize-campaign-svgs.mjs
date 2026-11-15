@@ -25,6 +25,17 @@ const { version } = createRequire(import.meta.url)(
 /** Written into provenance records next to the frames it rendered. */
 export const RASTERIZER = `resvg ${version} (@resvg/resvg-js)`;
 
+/** A8 strips retain native @2 pixels inside the selected @3 cave page.
+ * Cap the frame's pixels, not the page group: all cave art still batches
+ * together and remains available at both device-density selections.
+ */
+export function frameRasterScale(frame, scale) {
+  if (frame.maxDensity === undefined) return scale;
+  if (frame.source !== "raster" || ![2, 3, 4].includes(frame.maxDensity))
+    throw new Error(`${frame.name}: invalid raster density cap`);
+  return Math.min(scale, frame.maxDensity / 2);
+}
+
 /**
  * Audit T13a: a frame listed with `"source": "raster"` is a PNG beside the
  * SVGs (`<name>.png`) instead of a drawing. Each page gets it at the frame's
@@ -76,7 +87,7 @@ export async function rasterizeCampaignSources(
 ) {
   for (const frame of [...manifest.frames, ...manifest.backgrounds]) {
     if (frame.source === "raster") {
-      resampleRaster(frame, source, output, scale);
+      resampleRaster(frame, source, output, frameRasterScale(frame, scale));
       continue;
     }
     const drawing = await readFile(new URL(`${frame.name}.svg`, source));

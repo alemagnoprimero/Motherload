@@ -77,7 +77,7 @@
         "W02"
       ],
       "note": "the cave bands",
-      "frames": 56
+      "frames": 58
     }
   },
   "frames": {
@@ -233,7 +233,9 @@
     "cave-crystal-wall-2": "cave",
     "cave-crystal-wall-2-emissive": "cave",
     "cave-crystal-wall-2-hc": "cave",
-    "cave-crystal-wall-2-hc-emissive": "cave"
+    "cave-crystal-wall-2-hc-emissive": "cave",
+    "cave-backwall-far": "cave",
+    "cave-backwall-near": "cave"
   },
   "hero": [
     "ore-o1",
@@ -976,10 +978,12 @@
       "density": 2,
       "image": "w01-cave-2x-0.png",
       "data": "w01-cave-2x-0.json",
-      "width": 512,
-      "height": 768,
-      "bytes": 1572864,
+      "width": 1088,
+      "height": 832,
+      "bytes": 3620864,
       "frames": [
+        "cave-backwall-near",
+        "cave-backwall-far",
         "cave-rust-drip-2",
         "cave-rust-drip-3",
         "cave-boulder-2",
@@ -1045,11 +1049,13 @@
       "density": 3,
       "image": "w01-cave-3x-0.png",
       "data": "w01-cave-3x-0.json",
-      "width": 832,
-      "height": 1024,
-      "bytes": 3407872,
+      "width": 1664,
+      "height": 896,
+      "bytes": 5963776,
       "frames": [
         "cave-rust-drip-2",
+        "cave-backwall-near",
+        "cave-backwall-far",
         "cave-rust-drip-3",
         "cave-boulder-2",
         "cave-stalactite-6",

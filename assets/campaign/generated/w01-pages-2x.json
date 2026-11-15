@@ -6,8 +6,10 @@
       "data": "w01-atlas.json",
       "frames": [
         "dock-stage-3",
+        "cave-backwall-near",
         "dock-stage-1",
         "dock-stage-2",
+        "cave-backwall-far",
         "dock-stage-0",
         "cave-rust-drip-2",
         "relay-stage-1",
@@ -246,8 +248,8 @@
         "cave-crystal-wall-0-hc-emissive"
       ],
       "width": 2048,
-      "height": 1088,
-      "bytes": 8912896
+      "height": 1344,
+      "bytes": 11010048
     }
   ]
 }

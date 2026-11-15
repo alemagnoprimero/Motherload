@@ -127,7 +127,7 @@ def write_page(name, placed, width, height, scale, extra_meta=None, version='0.2
     atlas = Image.new('RGBA', (width, height)); frames = {}
     for record, image, box, x, y in placed:
         w, h = box[2] - box[0], box[3] - box[1]; atlas.paste(image.crop(box), (x, y)); sw, sh = image.size
-        frames[record['name']] = {'frame': {'x': x, 'y': y, 'w': w, 'h': h}, 'rotated': False, 'trimmed': box != (0, 0, sw, sh), 'spriteSourceSize': {'x': box[0], 'y': box[1], 'w': w, 'h': h}, 'sourceSize': {'w': sw, 'h': sh}, 'pivot': record.get('pivot', {'x': .5, 'y': .5}), 'logicalSize': {'w': record['logicalWidth'], 'h': record['logicalHeight']}, **({'source': 'raster'} if record.get('source') == 'raster' else {})}
+        frames[record['name']] = {'frame': {'x': x, 'y': y, 'w': w, 'h': h}, 'rotated': False, 'trimmed': box != (0, 0, sw, sh), 'spriteSourceSize': {'x': box[0], 'y': box[1], 'w': w, 'h': h}, 'sourceSize': {'w': sw, 'h': sh}, 'pivot': record.get('pivot', {'x': .5, 'y': .5}), 'logicalSize': {'w': record['logicalWidth'], 'h': record['logicalHeight']}, **({'source': 'raster'} if record.get('source') == 'raster' else {}), **({'maxDensity': record['maxDensity']} if 'maxDensity' in record else {})}
     atlas.save(out / (name + '.png'), compress_level=1)
     meta = {'app': 'Deep Frontier original layered SVG artwork', 'version': version, 'image': name + '.png', 'format': 'RGBA8888', 'size': {'w': width, 'h': height}, 'scale': str(scale), 'logicalTile': 48, 'rigPivot': [v * scale / 2 for v in manifest['rigPivot']], 'rigTreadBaseline': manifest['rigTreadBaseline'] * scale / 2, 'framePadding': PADDING, **(extra_meta or {})}
     (out / (name + '.json')).write_text(json.dumps({'frames': frames, 'meta': meta}, indent=2) + '\n')
