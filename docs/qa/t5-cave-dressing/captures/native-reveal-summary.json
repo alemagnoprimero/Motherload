@@ -1,0 +1,59 @@
+{
+  "sourceCommit": "4b3893661d0e996e0ff3e70f66651541a81f514a",
+  "method": "Focused native phone field=1/backing=2 SITE4 run. Clear distant discovery before restore, let ordinary visibility establish the initial region, resume the scene clock and move up. Stop when actual discovery decreases and new prop trajectories complete a measurable fade; this run stopped after 39 clock steps at 1000/60 ms. Invert smoothstep a=t*t*(3-2*t) for completed monotonic new 0-to-1 trajectories, then infer duration from scene-time delta / normalized-phase delta. Incomplete tracks are recorded and do not count as complete-duration proof. This is not a physical-phone FPS measurement.",
+  "assertions": {
+    "positiveNativeDiscovery": true,
+    "positiveCompletedPropFades": true,
+    "fadeDurationSeconds": 0.3,
+    "durationNumericToleranceSeconds": 1e-06,
+    "dressingWithinActualTierCapEverySample": true,
+    "phoneMaxDraws": 10,
+    "phoneMaxActiveTextureBytes": 41943040,
+    "pageErrors": 0
+  },
+  "fullEvidenceSha256": "cc443205b547fb88e63a3ba9cd80647bbc80efa65836793efd4f486577939afd",
+  "fullEvidenceRetention": "Full per-frame samples remain in the local acceptance artifacts; this review file contains their asserted summary.",
+  "results": [
+    {
+      "sourceCommit": "4b3893661d0e996e0ff3e70f66651541a81f514a",
+      "previewURL": "http://127.0.0.1:5188/",
+      "field": 1,
+      "sampleCount": 39,
+      "earlyStop": true,
+      "maxDraws": 9,
+      "maxObservedDraws": 9,
+      "maxBytes": 7989200,
+      "maxQuads": 155,
+      "maxDressing": 15,
+      "measuredIds": [
+        "W01:1152857004:15:48:ceiling:cave-stalactite-2",
+        "W01:1152857004:11:48:ceiling:cave-stalactite-4"
+      ],
+      "skippedTracks": [
+        "W01:1152857004:10:41:ceiling:cave-stalactite-2",
+        "W01:1152857004:16:41:ceiling:cave-stalactite-2",
+        "W01:1152857004:14:40:ceiling:cave-stalactite-1",
+        "W01:1152857004:14:40:ceiling:cave-rust-drip-2",
+        "W01:1152857004:15:40:ceiling:cave-stalactite-1",
+        "W01:1152857004:15:40:ceiling:cave-rust-drip-3"
+      ],
+      "fadeFrames": 19,
+      "maxFading": 8,
+      "measuredFadeDurationSeconds": {
+        "samples": 34,
+        "min": 0.2999999999999996,
+        "max": 0.3000000000000008
+      },
+      "unknownBefore": 2355,
+      "unknownAfter": 2322,
+      "faults": [],
+      "observedTierCaps": [
+        30
+      ],
+      "observedBackingScales": [
+        2
+      ],
+      "trackedPartialPropSamples": 90
+    }
+  ]
+}
