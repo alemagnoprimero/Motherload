@@ -1,5 +1,6 @@
 import type { BackingBudgetState } from "./view";
 import type { DressingReviewFrame } from "./render/dressing-review";
+import type { CaveLayerOptions, CaveLayerSnapshot } from "./render/cave-layers";
 
 /** The light map as last drawn: alpha is darkness, RGB is always (5, 9, 13). */
 export interface LightTextureSnapshot {
@@ -30,6 +31,11 @@ export interface CampaignDebug {
     requested: number;
     drawn: number;
   };
+  /**
+   * T4/T5: last rendered cave layers. Overrides affect only their known-world
+   * input, never simulation, discovery, collision or the terrain field.
+   */
+  caveLayers(options?: CaveLayerOptions): CaveLayerSnapshot;
   /** The light map. Async, so a GPU light pass can read back later. */
   lightTexture(): Promise<LightTextureSnapshot>;
   /**

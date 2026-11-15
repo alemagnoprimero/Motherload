@@ -367,6 +367,7 @@ export async function runArtCaptures(browser, base, path, options = {}) {
     search: extra,
     captures: source = CAPTURES,
     beforeCapture,
+    afterCapture,
     beforeNavigate,
   } = options;
   await mkdir(path, { recursive: true });
@@ -574,6 +575,21 @@ export async function runArtCaptures(browser, base, path, options = {}) {
           sceneClock: before.sceneClock,
           backing: before.backing,
         };
+        if (afterCapture) {
+          // A caller may checkpoint each success before the next fixture.
+          // Include this page's errors in that decision, as the group-end
+          // check does for callers without a per-capture hook.
+          noErrors(page);
+          await writeFile(
+            `${path}/manifest.json`,
+            JSON.stringify(manifest, null, 2) + "\n",
+          );
+          await afterCapture({
+            page,
+            capture,
+            result: manifest.captures[capture.name],
+          });
+        }
         console.log(
           `${capture.name}: backing ${reported.backingScale} (${reported.qualityTier ?? "no tier"}), rig keep@2 ${keep2?.toFixed(3)}`,
         );

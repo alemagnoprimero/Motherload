@@ -90,6 +90,7 @@ jobs:
           npm run test:hud:surface
           npm run test:opening:browser
           AUDIT_VIEWPORT=portrait OPENING_ARTIFACTS=artifacts/audit-opening-portrait npm run test:opening:browser
+          T2_DIR=artifacts/render-caves T2_CHECKS=caves npm run test:t2
       - name: Retain browser evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

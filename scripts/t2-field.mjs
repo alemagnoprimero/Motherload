@@ -14,6 +14,11 @@
  *              unknown cells are left alone: the visibility test casts rays
  *              through them, so scrambling them changes what the game itself
  *              reveals, not what the renderer draws.
+ *   caves      every hidden current/pristine cave input re-rolled through
+ *              the render-only cave adapter, including cells near the rig:
+ *              identical layer placements and full frames (0 px), with
+ *              Scan off/on, on desktop/phone, field/fallback/Canvas. Keeps
+ *              Scan annotations visible while hiding ordinary HUD pixels.
  *   poi        the fog check's inset crop with PR #3's POI probe: the
  *              antenna mission stands in a known column beside a hidden
  *              block, its artwork reaching over the block; the block's
@@ -72,7 +77,7 @@
  *              not the technique (audit §7, "CI time").
  *
  * Environment: PREVIEW_URL; T2_DIR (artifacts/t2); T2_CHECKS, a comma list
- * (default tier,scramble,poi,dig,digcost,motion,look,modes,ring,seam,draws,
+ * (default tier,scramble,caves,poi,dig,digcost,motion,look,modes,ring,seam,draws,
  * context); T2_FIELDS (1,0);
  * T2_PLAY_SECONDS (12); T2_THROTTLE (1); T2_DIG_FRAMES (600);
  * T2_FRAMETIME_VARIANTS (a ; list, "" is the default field),
@@ -103,7 +108,7 @@ const out = process.env.T2_DIR || "artifacts/t2";
 const checks = new Set(
   (
     process.env.T2_CHECKS ||
-    "tier,scramble,poi,dig,digcost,motion,look,modes,ring,seam,draws,context"
+    "tier,scramble,caves,poi,dig,digcost,motion,look,modes,ring,seam,draws,context"
   ).split(","),
 );
 /** Pixels of a 1440 × 900 frame the ring may differ at by more than 2 levels. */
@@ -214,6 +219,73 @@ async function settledShot(page, options = {}) {
   }
 }
 
+/** Wait past the HUD's 100 ms update and the obstacle reader's 120 ms cache. */
+async function settledCaveAnnotations(page, scan) {
+  // Match ObstacleReader's active inputs, including Scan's reserve
+  // advisory. Read geometry only: filtered HUD still influences placement.
+  const selectors = [
+    "#campaign-coach",
+    "#campaign-return",
+    "#campaign-message",
+    "#campaign-danger",
+    "#campaign-extraction",
+    "#campaign-dock-toggle",
+    ".campaign-toolbar",
+    ".campaign-hud",
+    ".campaign-objective",
+    "#campaign-menu-toggle",
+    ".campaign-touch",
+  ].join(",");
+  let previous = "",
+    stableMilliseconds = 0;
+  for (let frame = 0; frame < 60; frame++) {
+    await advance(page, 50);
+    const current = await page.evaluate(
+      (selectors) => ({
+        scan: window.__campaignDebug.scan(),
+        hudScan: document.body.dataset.campaignScan,
+        annotations: window.__campaignDebug.annotations(),
+        obstacles: [...document.querySelectorAll(selectors)].flatMap((node) => {
+          const css = getComputedStyle(node);
+          const box = node.getBoundingClientRect();
+          if (
+            node.hidden ||
+            !node.getClientRects().length ||
+            css.display === "none" ||
+            css.visibility === "hidden" ||
+            Number(css.opacity) === 0 ||
+            box.width <= 0 ||
+            box.height <= 0
+          )
+            return [];
+          return [
+            {
+              id: node.id,
+              left: box.left,
+              top: box.top,
+              right: box.right,
+              bottom: box.bottom,
+            },
+          ];
+        }),
+      }),
+      selectors,
+    );
+    const signature = JSON.stringify(current);
+    stableMilliseconds =
+      current.scan === scan &&
+      current.hudScan === String(scan) &&
+      signature === previous
+        ? stableMilliseconds + 50
+        : 0;
+    if (stableMilliseconds >= 300) return;
+    previous = signature;
+  }
+  assert.fail(
+    "cave annotations and active obstacles did not settle for 300 ms within 60 steps",
+  );
+}
+
 async function hudFree(page, file) {
   await page.evaluate(() => window.__campaignDebug.overlays(false));
   await advance(page, 50);
@@ -318,6 +390,189 @@ function motionMeasure(payload) {
 const results = { base, checks: [...checks], fields, throttle, runs: {} };
 const browser = await launchBrowser();
 try {
+  if (checks.has("caves")) {
+    results.caves = {};
+    // Six pages, two Scan states each. Do not import scrambled gameplay:
+    // that would change visibility near the rig. This adapter-only probe
+    // changes every unknown current/pristine input without changing which
+    // facts the player knows, the camera, physics, or existing annotations.
+    for (const [renderer, search, expected] of [
+      ["field", { field: 1 }, "field"],
+      ["fallback", { field: 0 }, "retained (?field=0)"],
+      ["canvas", { renderer: "canvas", field: 0 }, "retained (?field=0)"],
+    ])
+      for (const [form, settings] of Object.entries(FORMS)) {
+        const { context, page, faults } = await open(browser, settings, {
+          ...search,
+          ...(form === "desktop" ? { backing: 2 } : {}),
+        });
+        try {
+          const checkpoint = fixtures["c-site-W01-SITE-4-wreck@2"].checkpoint();
+          await restore(page, checkpoint);
+          await settledView(page, checkpoint);
+          assert.equal(
+            await page.evaluate(() => typeof window.__campaignDebug.caveLayers),
+            "function",
+            "cave render harness is installed",
+          );
+          await page.evaluate(() => window.__campaignDebug.overlays(true));
+          // filter preserves layout and the computed opacity/visibility
+          // read by the annotation obstacle solver. Hiding annotations via
+          // overlays(false), display, visibility, or opacity would remove
+          // precisely the Scan coverage this check promises.
+          await page.addStyleTag({
+            content: `
+              .campaign-shell > :not(#campaign-game):not(#campaign-world-labels),
+              #campaign-frametime { filter: opacity(0) !important; }
+              body.campaign-hit::after { display: none !important; }
+              /* Rotated images can drift by one RGB level with unchanged
+                 inputs. Stabilize compositing without moving or hiding them. */
+              #campaign-world-labels { will-change: transform; }
+            `,
+          });
+          for (const scan of [false, true]) {
+            const name = `${renderer}-${form}-scan${Number(scan)}`;
+            await page.evaluate((enabled) => {
+              window.__campaignDebug.caveLayers({ scrambleUnknown: null });
+              window.__campaignDebug.scan(enabled);
+            }, scan);
+            await advance(page, 100);
+            await settledCaveAnnotations(page, scan);
+            const before = `${out}/caves-${name}-a.png`;
+            await writeFile(before, await settledShot(page));
+            const snapshot = await page.evaluate(() => ({
+              layers: window.__campaignDebug.caveLayers(),
+              annotations: window.__campaignDebug.annotations(),
+              drawnFrames: window.__campaignDebug.drawnFrames(),
+              scan: window.__campaignDebug.scan(),
+            }));
+            const info = await dataset(page);
+            assert.equal(info.terrainRenderer, expected, name);
+            assert.equal(
+              info.renderer,
+              renderer === "canvas" ? "canvas" : "webgl",
+              name,
+            );
+            assert.equal(snapshot.scan, scan, `${name}: forced Scan state`);
+            assert.equal(snapshot.layers.input.scrambleUnknown, null);
+            assert.ok(
+              snapshot.layers.input.unknownCells > 0,
+              `${name}: there are hidden cave inputs to re-roll`,
+            );
+            for (const frame of ["cave-backwall-far", "cave-backwall-near"]) {
+              assert.ok(
+                snapshot.layers.backWalls.some(
+                  (item) => item.frame === frame && item.alpha > 0,
+                ),
+                `${name}: ${frame} visibly contributes`,
+              );
+              assert.ok(
+                snapshot.drawnFrames.some((item) => item.frame === frame),
+                `${name}: ${frame} is drawn from a resident atlas`,
+              );
+            }
+            if (scan)
+              assert.ok(
+                snapshot.annotations.some((item) => item.scan),
+                `${name}: Scan annotations remain in the capture`,
+              );
+            await advance(page, 100);
+            const control = `${out}/caves-${name}-control.png`;
+            await writeFile(control, await settledShot(page));
+            const controlDifferingPixels = differing(before, control);
+            assert.equal(
+              controlDifferingPixels,
+              0,
+              `${name}: unchanged-input full-frame control 0 px`,
+            );
+            const seed = 0x4ca7e;
+            await page.evaluate(
+              (scrambleUnknown) =>
+                window.__campaignDebug.caveLayers({ scrambleUnknown }),
+              seed,
+            );
+            await advance(page, 100);
+            const after = `${out}/caves-${name}-b.png`;
+            await writeFile(after, await settledShot(page));
+            const changed = await page.evaluate(() => ({
+              layers: window.__campaignDebug.caveLayers(),
+              annotations: window.__campaignDebug.annotations(),
+            }));
+            assert.equal(changed.layers.input.scrambleUnknown, seed);
+            assert.equal(
+              changed.layers.input.unknownCells,
+              snapshot.layers.input.unknownCells,
+            );
+            assert.deepEqual(
+              changed.layers.backWalls,
+              snapshot.layers.backWalls,
+              `${name}: hidden caves cannot alter back-wall placements`,
+            );
+            // T4 has no dressing yet; T5 supplies this same hook field.
+            assert.deepEqual(
+              changed.layers.dressing ?? [],
+              snapshot.layers.dressing ?? [],
+              `${name}: hidden caves cannot alter dressing placements`,
+            );
+            assert.deepEqual(
+              changed.annotations,
+              snapshot.annotations,
+              `${name}: hidden caves cannot alter Scan annotations`,
+            );
+            const pixels = differing(before, after);
+            assert.equal(pixels, 0, `${name}: full-frame cave scramble 0 px`);
+            await page.evaluate(() => (window.__renderProbe.frames.length = 0));
+            for (let n = 0; n < 6; n++) await advance(page, 50);
+            const parked = await dataset(page);
+            const probe = await page.evaluate(readRenderProbe);
+            const residentBytes = Number(parked.residentTextureBytes);
+            assert.ok(
+              residentBytes > 0 &&
+                residentBytes <= (form === "phone" ? 40 : 64) * 1024 ** 2,
+              `${name}: active resident texture budget`,
+            );
+            if (renderer !== "canvas") {
+              assert.ok(
+                Number(parked.drawCalls) > 0 &&
+                  Number(parked.drawCalls) <= (form === "phone" ? 10 : 12),
+                `${name}: ${parked.drawCalls} draw calls`,
+              );
+              assert.equal(
+                probe.textureUploads + probe.textureSubUploads,
+                0,
+                `${name}: no parked texture uploads`,
+              );
+            }
+            assert.deepEqual(
+              await page.evaluate(() => window.__campaignDebug.frameMisses()),
+              {},
+              `${name}: no missing atlas frames`,
+            );
+            results.caves[name] = {
+              terrainRenderer: parked.terrainRenderer,
+              backingScale: Number(parked.backingScale),
+              scan,
+              unknownCells: snapshot.layers.input.unknownCells,
+              backWallFragments: snapshot.layers.backWalls.length,
+              dressing: snapshot.layers.dressing?.length ?? 0,
+              annotations: snapshot.annotations.length,
+              differingPixels: pixels,
+              controlDifferingPixels,
+              drawCalls: Number(parked.drawCalls),
+              residentBytes,
+              stillTextureUploads: probe.textureUploads,
+              stillTextureSubUploads: probe.textureSubUploads,
+            };
+            console.log(
+              `caves ${name}: ${JSON.stringify(results.caves[name])}`,
+            );
+          }
+          assert.deepEqual(faults, []);
+        } finally {
+          await context.close();
+        }
+      }
+  }
   if (checks.has("tier")) {
     // The boot choice: by renderer and fragment highp, never by pointer.
     results.tier = {};

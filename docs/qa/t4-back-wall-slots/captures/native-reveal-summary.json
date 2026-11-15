@@ -1,0 +1,55 @@
+{
+  "sourceCommit": "992901d5930f0c29a2a01537579a89e81eb607bd",
+  "method": "Native phone SITE4 checkpoint with discovery cleared before restore; ordinary visibility establishes the initial region, then up/right/left controls each run120 scene steps at1000/60 ms. Scene clock resumes. Consecutive partial cell-centre alphas infer duration as scene-time delta / alpha delta. Frozen/reduced-motion behavior is covered separately by unit tests.",
+  "assertions": {
+    "positiveNativeDiscovery": true,
+    "positiveFadeSamples": true,
+    "fadeDurationSeconds": 0.3,
+    "slopeNumericToleranceSeconds": 1e-06,
+    "phoneMaxDraws": 10,
+    "phoneMaxActiveTextureBytes": 41943040,
+    "pageErrors": 0
+  },
+  "fullEvidenceSha256": "2c541c53c4f4bb9ab4548a348e69ad00bdfd46337cba14f73841a15cb1586ab0",
+  "fullEvidenceRetention": "Full per-frame samples retained with the local acceptance artifacts; this review file contains their asserted summary.",
+  "results": [
+    {
+      "sourceCommit": "992901d5930f0c29a2a01537579a89e81eb607bd",
+      "previewURL": "http://127.0.0.1:5182/",
+      "field": 1,
+      "maxDraws": 9,
+      "maxObservedDraws": 9,
+      "maxBytes": 7989200,
+      "maxQuads": 156,
+      "fadeFrames": 124,
+      "maxFading": 70,
+      "measuredFadeDurationSeconds": {
+        "samples": 731,
+        "min": 0.2999999999999996,
+        "max": 0.3000000000000002
+      },
+      "unknownBefore": 2355,
+      "unknownAfter": 2281,
+      "faults": []
+    },
+    {
+      "sourceCommit": "992901d5930f0c29a2a01537579a89e81eb607bd",
+      "previewURL": "http://127.0.0.1:5182/",
+      "field": 0,
+      "maxDraws": 8,
+      "maxObservedDraws": 8,
+      "maxBytes": 26549552,
+      "maxQuads": 156,
+      "fadeFrames": 124,
+      "maxFading": 70,
+      "measuredFadeDurationSeconds": {
+        "samples": 731,
+        "min": 0.2999999999999996,
+        "max": 0.3000000000000002
+      },
+      "unknownBefore": 2355,
+      "unknownAfter": 2281,
+      "faults": []
+    }
+  ]
+}
