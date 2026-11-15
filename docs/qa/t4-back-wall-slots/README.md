@@ -43,14 +43,14 @@ intersections are skipped, and all source transforms stay upright.
 
 ## Acceptance and evidence
 
-| Check | Result / method |
-| --- | --- |
-| Natural versus dug, known cells only | Detached adapter and adversarial unreadable-hidden-array tests. |
-| Seeded world-position phase, wrapped seam | Unit checks cover a complete world lap and alternating upright source-edge continuity. |
-| 300 ms reveal and neighbour-margin fade | Behavioural tests cover new cells, new margins, reset, frozen and reduced-motion clocks. Native phone movement also measured 731 cell-centre fade slopes per renderer at 300 ms, with 70 fragments fading simultaneously. |
-| Hidden-cave scramble | New `T2_CHECKS=caves` compares full frames and the actual rendered plans in 12 cases: desktop/phone × pinned field/retained WebGL/Canvas × Scan off/on. It changes every hidden current/pristine input to the new cave adapter without changing simulation or discovery. Existing fog, POI and terrain scramble checks also run. |
-| Phone 10 draw calls, boot 20/active 40 MiB, desktop 64 MiB, parked 0 uploads | Existing render/memory/masked-beacon checks plus targeted cave captures; no new texture or stencil pass. A8 expanded residency peaks at 63.64 MiB desktop and 36.13 MiB phone. |
-| Back-wall luma 28–42 and sd ≥4; brightness ordering | Actual SITE4 field frames pass all five masked-region targets on desktop and phone: luma 33.0/33.5, sd 12.0/12.8, unknown-minus-air 25.6/29.2, known-solid-minus-air 60.1/63.9, and mean air b* −7.6/−7.7 below rock −3.8. These sample the existing known-air interiors in the lit game frame, not an isolated strip mask. |
+| Check                                                                        | Result / method                                                                                                                                                                                                                                                                                                                  |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Natural versus dug, known cells only                                         | Detached adapter and adversarial unreadable-hidden-array tests.                                                                                                                                                                                                                                                                  |
+| Seeded world-position phase, wrapped seam                                    | Unit checks cover a complete world lap and alternating upright source-edge continuity.                                                                                                                                                                                                                                           |
+| 300 ms reveal and neighbour-margin fade                                      | Behavioural tests cover new cells, new margins, reset, frozen and reduced-motion clocks. Native phone movement also measured 731 cell-centre fade slopes per renderer at 300 ms, with 70 fragments fading simultaneously.                                                                                                        |
+| Hidden-cave scramble                                                         | New `T2_CHECKS=caves` compares full frames and the actual rendered plans in 12 cases: desktop/phone × pinned field/retained WebGL/Canvas × Scan off/on. It changes every hidden current/pristine input to the new cave adapter without changing simulation or discovery. Existing fog, POI and terrain scramble checks also run. |
+| Phone 10 draw calls, boot 20/active 40 MiB, desktop 64 MiB, parked 0 uploads | Existing render/memory/masked-beacon checks plus targeted cave captures; no new texture or stencil pass. A8 expanded residency peaks at 63.64 MiB desktop and 36.13 MiB phone.                                                                                                                                                   |
+| Back-wall luma 28–42 and sd ≥4; brightness ordering                          | Actual SITE4 field frames pass all five masked-region targets on desktop and phone: luma 33.0/33.5, sd 12.0/12.8, unknown-minus-air 25.6/29.2, known-solid-minus-air 60.1/63.9, and mean air b* −7.6/−7.7 below rock −3.8. These sample the existing known-air interiors in the lit game frame, not an isolated strip mask.      |
 
 The new caves check is part of the `verify` job, the default T2 suite and
 the Firefox/WebKit T2 workflow lists.
@@ -62,6 +62,13 @@ unchanged-input control exposed one-level rounding changes in Chromium's
 rotated HOME arrow. Labels, geometry and Scan stay visible and unchanged.
 Every case now also requires an unchanged-input full-frame control to match
 at exactly 0 pixels before the hidden-input comparison.
+After each Scan change, the harness requires annotation plans and active HUD
+obstacle geometry to remain identical for at least 300 ms, sampled every 50 ms
+with a bounded timeout. Scan reveals the return-reserve advisory on the HUD's
+100 ms update; the annotation solver's 120 ms obstacle cache can then lag that
+new box. Two screenshots only 50 ms apart could capture the temporary HOME
+label position. The wait observes the real layout; it neither freezes nor
+hides annotations, and both exact-zero pixel checks remain mandatory.
 
 `__campaignDebug.caveLayers()` reports the last rendered fragments. Its
 `backWalls` switch supplies same-build before/after fixtures; its hidden-input

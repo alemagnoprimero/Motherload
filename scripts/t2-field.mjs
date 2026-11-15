@@ -219,6 +219,73 @@ async function settledShot(page, options = {}) {
   }
 }
 
+/** Wait past the HUD's 100 ms update and the obstacle reader's 120 ms cache. */
+async function settledCaveAnnotations(page, scan) {
+  // Match ObstacleReader's active inputs, including Scan's reserve
+  // advisory. Read geometry only: filtered HUD still influences placement.
+  const selectors = [
+    "#campaign-coach",
+    "#campaign-return",
+    "#campaign-message",
+    "#campaign-danger",
+    "#campaign-extraction",
+    "#campaign-dock-toggle",
+    ".campaign-toolbar",
+    ".campaign-hud",
+    ".campaign-objective",
+    "#campaign-menu-toggle",
+    ".campaign-touch",
+  ].join(",");
+  let previous = "",
+    stableMilliseconds = 0;
+  for (let frame = 0; frame < 60; frame++) {
+    await advance(page, 50);
+    const current = await page.evaluate(
+      (selectors) => ({
+        scan: window.__campaignDebug.scan(),
+        hudScan: document.body.dataset.campaignScan,
+        annotations: window.__campaignDebug.annotations(),
+        obstacles: [...document.querySelectorAll(selectors)].flatMap((node) => {
+          const css = getComputedStyle(node);
+          const box = node.getBoundingClientRect();
+          if (
+            node.hidden ||
+            !node.getClientRects().length ||
+            css.display === "none" ||
+            css.visibility === "hidden" ||
+            Number(css.opacity) === 0 ||
+            box.width <= 0 ||
+            box.height <= 0
+          )
+            return [];
+          return [
+            {
+              id: node.id,
+              left: box.left,
+              top: box.top,
+              right: box.right,
+              bottom: box.bottom,
+            },
+          ];
+        }),
+      }),
+      selectors,
+    );
+    const signature = JSON.stringify(current);
+    stableMilliseconds =
+      current.scan === scan &&
+      current.hudScan === String(scan) &&
+      signature === previous
+        ? stableMilliseconds + 50
+        : 0;
+    if (stableMilliseconds >= 300) return;
+    previous = signature;
+  }
+  assert.fail(
+    "cave annotations and active obstacles did not settle for 300 ms within 60 steps",
+  );
+}
+
 async function hudFree(page, file) {
   await page.evaluate(() => window.__campaignDebug.overlays(false));
   await advance(page, 50);
@@ -370,6 +437,7 @@ try {
               window.__campaignDebug.scan(enabled);
             }, scan);
             await advance(page, 100);
+            await settledCaveAnnotations(page, scan);
             const before = `${out}/caves-${name}-a.png`;
             await writeFile(before, await settledShot(page));
             const snapshot = await page.evaluate(() => ({
