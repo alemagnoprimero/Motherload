@@ -10,10 +10,12 @@ the missing canonical fixtures remain explicit in captures.json and README.md.
 """
 
 import argparse
+import copy
 import hashlib
 import importlib.util
 import json
 import math
+import re
 from pathlib import Path
 import sys
 from urllib.parse import parse_qs
@@ -309,9 +311,82 @@ def validate_record(name, phase, item, capture, record, expected_renderer):
     }
 
 
-def state_parity(before, after):
-    states = [json.loads(Path(capture["state"]).read_text()) for capture in (before, after)]
+def idle_energy_policy(repo):
+    """Read the model's idle rate; canonical fixtures have no held controls."""
+    source = repo / "src/campaign/motion.ts"
+    matches = re.findall(r"\bidleEnergy\s*:\s*([0-9]+(?:\.[0-9]+)?)\s*,", source.read_text())
+    require(len(matches) == 1, "Expected one numeric MOTION.idleEnergy constant")
+    rate = float(matches[0])
+    require(math.isfinite(rate) and rate > 0, "Invalid model idle energy rate")
+    return {"ratePerSecond": rate, "rateSource": "src/campaign/motion.ts: MOTION.idleEnergy",
+            "ruleSource": "src/campaign/model.ts: underground idle fuel/spent/clamp rule",
+            "minimumCanonicalY": 0.5,
+            "assumption": "Canonical fixtures hold no controls and compare the same underground pose."}
+
+
+def semantic_state_parity(states, label, step_ms, policy):
+    """Allow one settled-frame step, strictly checking every other state fact.
+
+    settledView waits for asynchronous art and four unchanged frames. Its
+    last 50 ms advance can vary across contexts. Scene animation is frozen,
+    but simulation elapsed/idle fuel continue; these are the only exceptions.
+    Raw files and recorded full hashes are authenticated before this function.
+    """
+    require(step_ms == 50, f"{label}: expected recorded 50 ms settle step")
+    before, after = states
+    world = before["currentWorld"]
+    require(after["currentWorld"] == world, f"{label}: current world differs")
+    paths = [("elapsed",), ("progress", "records", world, "elapsed"), ("vehicle", "energy")]
+    stripped = [copy.deepcopy(state) for state in states]
+    scalars = []
+    for path in paths:
+        values = []
+        for state in stripped:
+            parent = state
+            for key in path[:-1]:
+                parent = parent[key]
+            value = parent.pop(path[-1])
+            require(type(value) in (int, float) and math.isfinite(value) and value >= 0,
+                    f"{label}: invalid nonnegative scalar state.{'.'.join(path)}")
+            values.append(value)
+        scalars.append({"path": "state." + ".".join(path), "before": values[0],
+                        "after": values[1], "delta": values[1] - values[0]})
+    require(data_sha256(stripped[0]) == data_sha256(stripped[1]),
+            f"{label}: state differs outside the three settled-time scalars")
+    epsilon = 1e-9  # Numerical representation only, not an extra simulation step.
+    elapsed_delta = scalars[0]["delta"]
+    require(abs(elapsed_delta) <= step_ms / 1000 + epsilon,
+            f"{label}: elapsed drift exceeds one recorded settle step")
+    require(abs(scalars[1]["delta"] - elapsed_delta) <= epsilon,
+            f"{label}: current-world elapsed drift differs from global elapsed")
+    require(all(state["vehicle"]["y"] > policy["minimumCanonicalY"] for state in states),
+            f"{label}: idle-drain parity requires the same underground pose")
+    earlier, later = (before, after) if elapsed_delta >= 0 else (after, before)
+    expected_energy = max(0, earlier["vehicle"]["energy"]
+                          - policy["ratePerSecond"] * abs(elapsed_delta))
+    require(abs(later["vehicle"]["energy"] - expected_energy) <= epsilon,
+            f"{label}: energy drift differs from the model's underground idle drain")
+    full_hashes = [data_sha256(state) for state in states]
+    return {
+        "fullStateEqual": full_hashes[0] == full_hashes[1],
+        "fullStateCanonicalSha256": full_hashes,
+        "fullStateHashEncoding": "Python sorted-key compact JSON; raw file and original JS hashes retained separately",
+        "allOtherStateEqual": True, "recordedSettleStepMs": step_ms,
+        "allowedScalars": scalars, "idleEnergyPolicy": policy, "numericEpsilon": epsilon,
+    }
+
+
+def capture_state_parity(before, after, key, label, step_ms, policy):
+    require(all(capture.get(key) for capture in (before, after)), f"{label}: missing {key} file")
+    states = [json.loads(Path(capture[key]).read_text()) for capture in (before, after)]
     states = [state.get("state", state) for state in states]
+    parity = semantic_state_parity(states, label, step_ms, policy)
+    parity["rawStateFileSha256"] = [sha256(capture[key]) for capture in (before, after)]
+    return states, parity
+
+
+def state_parity(before, after, label, step_ms, policy):
+    states, parity = capture_state_parity(before, after, "state", label, step_ms, policy)
     geometry, discovery, deposits = [], [], []
     for state in states:
         worlds = state["worlds"]
@@ -320,11 +395,12 @@ def state_parity(before, after):
                          for key, world in worlds.items()})
         discovery.append({key: world["discovered"] for key, world in worlds.items()})
         deposits.append({key: world.get("packages", []) for key, world in worlds.items()})
-    return {
+    return {**parity,
         "geometryUnchanged": geometry[0] == geometry[1],
         "discoveryUnchanged": discovery[0] == discovery[1],
         "depositsUnchanged": deposits[0] == deposits[1],
-        "rigUnchanged": states[0]["vehicle"] == states[1]["vehicle"],
+        "rigPoseUnchanged": ({key: value for key, value in states[0]["vehicle"].items() if key != "energy"}
+                             == {key: value for key, value in states[1]["vehicle"].items() if key != "energy"}),
         "geometrySha256": [data_sha256(value) for value in geometry],
         "discoverySha256": [data_sha256(value) for value in discovery],
     }
@@ -410,6 +486,7 @@ def main():
     parser.add_argument("--allow-partial", action="store_true")
     args = parser.parse_args()
     metrics, sheets = load_tools(args.repo.resolve())
+    idle_policy = idle_energy_policy(args.repo.resolve())
     before, after = [load_manifest(args.captures / phase) for phase in ("before", "after")]
     staged = json.loads((args.captures / "runtime-layers.json").read_text())
     require(staged["item"] == args.item, "runtime capture item differs from --item")
@@ -442,13 +519,16 @@ def main():
                         f"{key}: stored post-import discovery count differs from baseline state")
         require(runtime[f"before/{name}"]["checkpointSha256"]
                 == runtime[f"after/{name}"]["checkpointSha256"], f"{name}: checkpoint hashes differ")
-        require(runtime[f"before/{name}"]["postImportBaselineSha256"]
-                == runtime[f"after/{name}"]["postImportBaselineSha256"],
-                f"{name}: settled post-import baseline hashes differ")
-        parity[name] = state_parity(previous, capture)
+        step_ms = runtime[f"before/{name}"]["settled"]["stepMs"]
+        _, baseline = capture_state_parity(previous, capture, "baselineState",
+                                           f"{name}: settled baseline", step_ms, idle_policy)
+        baseline["recordedFullStateSha256"] = [runtime[f"{phase}/{name}"]["postImportBaselineSha256"]
+                                               for phase in ("before", "after")]
+        parity[name] = state_parity(previous, capture, f"{name}: final state", step_ms, idle_policy)
+        parity[name]["postImportBaseline"] = baseline
         require(all(parity[name][key] for key in
-                    ("geometryUnchanged", "discoveryUnchanged", "depositsUnchanged", "rigUnchanged")),
-                f"{name}: exported geometry, discovery, deposits or rig differs")
+                    ("geometryUnchanged", "discoveryUnchanged", "depositsUnchanged", "rigPoseUnchanged")),
+                f"{name}: exported geometry, discovery, deposits or rig pose differs")
     args.out.mkdir(parents=True, exist_ok=True)
     result = {
         "item": args.item, "convention": CONVENTIONS[args.item],
@@ -477,8 +557,14 @@ def main():
              f"Completed canonical pairs: {len(names)}/{len(CANONICAL)}. "
              + ("Missing: " + ", ".join(missing) + "." if missing else "All eight are measured."), "",
              "Each completed screenshot passed two byte-identical captures one 50 ms scene step apart. "
-             "Original checkpoint hashes, settled post-import baseline hashes, camera, exported geology, "
-             "discovery, deposits and rig agree across each pair. The driver changes render switches only.", "",
+             "Original checkpoint hashes, camera, exported geology, discovery, deposits and rig pose agree "
+             "across each pair. Every baseline/final state field is compared strictly except global elapsed, "
+             "current-world record elapsed and vehicle energy. The ordinary asynchronous settle may add "
+             "one recorded 50 ms step: the two elapsed deltas must match, and energy must follow the "
+             "model's underground idle drain, including its zero clamp. Energy is not claimed unchanged. "
+             "Raw file hashes and original full baseline hashes remain authenticated and recorded; "
+             "`captures.json` reports full-state equality, every allowed scalar before/after/delta, "
+             "and the model rate. All other state differences fail. The driver changes render switches only.", "",
              "Transit checkpoints initially have no discovered cells; the normal restore/render path "
              "discovers nearby cells before the baseline is exported. Discovery is checked against that "
              "settled baseline, not against the initially empty array. Terrain tiles must still match the "
